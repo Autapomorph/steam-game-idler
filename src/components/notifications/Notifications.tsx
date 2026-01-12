@@ -116,7 +116,7 @@ export default function Notifications(): ReactElement {
               {/* Notification list or empty state */}
               <div className='max-h-[550px] overflow-y-auto'>
                 {notifications.length === 0 ? (
-                  <div className='flex flex-col items-center justify-center py-16 text-center text-altwhite/85 bg-red-500'>
+                  <div className='flex flex-col items-center justify-center py-16 text-center text-altwhite/85'>
                     <TbBell size={48} className='mb-2 opacity-30' />
                     <p className='text-sm'>{t('notifications.empty')}</p>
                   </div>
