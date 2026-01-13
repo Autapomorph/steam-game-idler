@@ -140,7 +140,7 @@
   "settings.general.displayName": "Показать имя",
   "settings.general.steamId": "Steam ID",
   "settings.general.antiAway": "Всегда онлайн",
-  "settings.general.antiAway.description": "Предотвращает установку Steam вашим статусом как \"нет на месте\", пока SGI запущен",
+  "settings.general.antiAway.description": "Предотвращает установку Steam вашего статуса как \"нет на месте\", пока SGI запущен",
   "settings.general.freeGameNotifications": "Уведомления о бесплатных играх",
   "settings.general.freeGameNotifications.description": "Получать уведомления о бесплатных играх в Steam",
   "settings.general.startMinimized": "Запускать в свернутом виде",
