@@ -39,7 +39,9 @@ export const handleRefetch = async (
   manual: boolean = true,
 ): Promise<void> => {
   try {
-    if (manual && steamId !== '76561198158912649' && steamId !== '76561198999797359') {
+    const devAccounts = JSON.parse(process.env.STEAM_DEV_ACCOUNTS ?? '[]') as string[]
+
+    if (manual && !devAccounts.includes(steamId ?? '')) {
       // Check if user is on cooldown for refreshing games
       const cooldown = sessionStorage.getItem('cooldown')
       if (cooldown && moment().unix() < Number(cooldown)) {
