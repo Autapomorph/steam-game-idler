@@ -110,6 +110,7 @@ export default function GeneralSettings(): ReactElement {
         <div className='flex justify-between items-center'>
           <div className='flex flex-col gap-2 w-1/2'>
             <p className='text-sm text-content font-bold'>{t('settings.general.language')}</p>
+            <p className='text-xs text-altwhite'>{t('settings.general.language.description')}</p>
           </div>
           <LanguageSwitch />
         </div>
