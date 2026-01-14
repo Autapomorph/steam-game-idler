@@ -1,22 +1,22 @@
-import type { Game, UserSettings, UserSummary } from '@/types'
+import type { Game, UserSettings, UserSummary } from '@/types';
 
-import { Time } from '@internationalized/date'
+import { Time } from '@internationalized/date';
 
-import { create } from 'zustand'
+import { create } from 'zustand';
 
 interface UserStore {
-  userSummary: UserSummary
-  setUserSummary: (value: UserSummary | ((prev: UserSummary) => UserSummary)) => void
-  achievementsUnavailable: boolean
-  setAchievementsUnavailable: (value: boolean | ((prev: boolean) => boolean)) => void
-  statisticsUnavailable: boolean
-  setStatisticsUnavailable: (value: boolean | ((prev: boolean) => boolean)) => void
-  gamesList: Game[]
-  setGamesList: (value: Game[] | ((prev: Game[]) => Game[])) => void
-  freeGamesList: Game[]
-  setFreeGamesList: (value: Game[] | ((prev: Game[]) => Game[])) => void
-  userSettings: UserSettings
-  setUserSettings: (value: UserSettings | ((prev: UserSettings) => UserSettings)) => void
+  userSummary: UserSummary;
+  setUserSummary: (value: UserSummary | ((prev: UserSummary) => UserSummary)) => void;
+  achievementsUnavailable: boolean;
+  setAchievementsUnavailable: (value: boolean | ((prev: boolean) => boolean)) => void;
+  statisticsUnavailable: boolean;
+  setStatisticsUnavailable: (value: boolean | ((prev: boolean) => boolean)) => void;
+  gamesList: Game[];
+  setGamesList: (value: Game[] | ((prev: Game[]) => Game[])) => void;
+  freeGamesList: Game[];
+  setFreeGamesList: (value: Game[] | ((prev: Game[]) => Game[])) => void;
+  userSettings: UserSettings;
+  setUserSettings: (value: UserSettings | ((prev: UserSettings) => UserSettings)) => void;
 }
 
 export const useUserStore = create<UserStore>(set => ({
@@ -28,12 +28,14 @@ export const useUserStore = create<UserStore>(set => ({
   achievementsUnavailable: true,
   setAchievementsUnavailable: value =>
     set(state => ({
-      achievementsUnavailable: typeof value === 'function' ? value(state.achievementsUnavailable) : value,
+      achievementsUnavailable:
+        typeof value === 'function' ? value(state.achievementsUnavailable) : value,
     })),
   statisticsUnavailable: true,
   setStatisticsUnavailable: value =>
     set(state => ({
-      statisticsUnavailable: typeof value === 'function' ? value(state.statisticsUnavailable) : value,
+      statisticsUnavailable:
+        typeof value === 'function' ? value(state.statisticsUnavailable) : value,
     })),
   gamesList: [],
   setGamesList: value =>
@@ -97,4 +99,4 @@ export const useUserStore = create<UserStore>(set => ({
     set(state => ({
       userSettings: typeof value === 'function' ? value(state.userSettings) : value,
     })),
-}))
+}));

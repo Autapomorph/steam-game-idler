@@ -33,6 +33,6 @@ const config = {
   },
   darkMode: 'class',
   plugins: [],
-}
+};
 
-export default config
+export default config;

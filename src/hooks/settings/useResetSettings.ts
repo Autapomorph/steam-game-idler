@@ -1,27 +1,30 @@
-import type { InvokeSettings } from '@/types'
-import type { Dispatch, SetStateAction } from 'react'
+import type { InvokeSettings } from '@/types';
+import type { Dispatch, SetStateAction } from 'react';
 
-import { invoke } from '@tauri-apps/api/core'
+import { invoke } from '@tauri-apps/api/core';
 
-import { useDisclosure } from '@heroui/react'
-import { useUserStore } from '@/stores/userStore'
-import { useTranslation } from 'react-i18next'
+import { useDisclosure } from '@heroui/react';
+import { useUserStore } from '@/stores/userStore';
+import { useTranslation } from 'react-i18next';
 
-import { logEvent } from '@/utils/tasks'
-import { showDangerToast, showSuccessToast } from '@/utils/toasts'
+import { logEvent } from '@/utils/tasks';
+import { showDangerToast, showSuccessToast } from '@/utils/toasts';
 
 interface ResetSettingsHook {
-  handleResetSettings: (onClose: () => void, setRefreshKey: Dispatch<SetStateAction<number>>) => Promise<void>
-  isOpen: boolean
-  onOpen: () => void
-  onOpenChange: () => void
+  handleResetSettings: (
+    onClose: () => void,
+    setRefreshKey: Dispatch<SetStateAction<number>>,
+  ) => Promise<void>;
+  isOpen: boolean;
+  onOpen: () => void;
+  onOpenChange: () => void;
 }
 
 export default function useResetSettings(): ResetSettingsHook {
-  const { t } = useTranslation()
-  const userSummary = useUserStore(state => state.userSummary)
-  const setUserSettings = useUserStore(state => state.setUserSettings)
-  const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const { t } = useTranslation();
+  const userSummary = useUserStore(state => state.userSummary);
+  const setUserSettings = useUserStore(state => state.setUserSettings);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   // Reset settings to default
   const handleResetSettings = async (
@@ -31,18 +34,18 @@ export default function useResetSettings(): ResetSettingsHook {
     try {
       const response = await invoke<InvokeSettings>('reset_user_settings', {
         steamId: userSummary?.steamId,
-      })
-      setUserSettings(response.settings)
-      setRefreshKey(prevKey => prevKey + 1)
-      showSuccessToast(t('toast.resetSettings.success'))
-      logEvent('[Settings] Reset to default')
-      onClose()
+      });
+      setUserSettings(response.settings);
+      setRefreshKey(prevKey => prevKey + 1);
+      showSuccessToast(t('toast.resetSettings.success'));
+      logEvent('[Settings] Reset to default');
+      onClose();
     } catch (error) {
-      showDangerToast(t('common.error'))
-      console.error('Error in (handleResetSettings):', error)
-      logEvent(`[Error] in (handleResetSettings): ${error}`)
+      showDangerToast(t('common.error'));
+      console.error('Error in (handleResetSettings):', error);
+      logEvent(`[Error] in (handleResetSettings): ${error}`);
     }
-  }
+  };
 
-  return { handleResetSettings, isOpen, onOpen, onOpenChange }
+  return { handleResetSettings, isOpen, onOpen, onOpenChange };
 }

@@ -1,5 +1,11 @@
-import { defineCollections, defineConfig, defineDocs, frontmatterSchema, metaSchema } from 'fumadocs-mdx/config'
-import { z } from 'zod'
+import {
+  defineCollections,
+  defineConfig,
+  defineDocs,
+  frontmatterSchema,
+  metaSchema,
+} from 'fumadocs-mdx/config';
+import { z } from 'zod';
 
 // You can customise Zod schemas for frontmatter and `meta.json` here
 // see https://fumadocs.dev/docs/mdx/collections
@@ -14,13 +20,13 @@ export const docs = defineDocs({
   meta: {
     schema: metaSchema,
   },
-})
+});
 
 export default defineConfig({
   mdxOptions: {
     // MDX options
   },
-})
+});
 
 export const blog = defineCollections({
   type: 'doc',
@@ -33,4 +39,4 @@ export const blog = defineCollections({
     includeProcessedMarkdown: true,
   },
   async: true,
-})
+});

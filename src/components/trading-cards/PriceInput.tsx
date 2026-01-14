@@ -1,27 +1,28 @@
-import type useTradingCardsList from '@/hooks/trading-cards/useTradingCardsList'
-import type { TradingCard } from '@/types'
-import type { ReactElement } from 'react'
+import type useTradingCardsList from '@/hooks/trading-cards/useTradingCardsList';
+import type { TradingCard } from '@/types';
+import type { ReactElement } from 'react';
 
-import { Button, cn, NumberInput } from '@heroui/react'
-import { useTranslation } from 'react-i18next'
-import { TbPackageExport } from 'react-icons/tb'
+import { Button, cn, NumberInput } from '@heroui/react';
+import { useTranslation } from 'react-i18next';
+import { TbPackageExport } from 'react-icons/tb';
 
-import CustomTooltip from '@/components/ui/CustomTooltip'
+import CustomTooltip from '@/components/ui/CustomTooltip';
 
 interface PriceInputProps {
-  item: TradingCard
-  tradingCardContext: ReturnType<typeof useTradingCardsList>
+  item: TradingCard;
+  tradingCardContext: ReturnType<typeof useTradingCardsList>;
 }
 
 export default function PriceInput({ item, tradingCardContext }: PriceInputProps): ReactElement {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   return (
-    <div className='flex items-center justify-center gap-1 mt-2'>
+    <div className="flex items-center justify-center gap-1 mt-2">
       <NumberInput
-        size='sm'
+        size="sm"
         isInvalid={
-          tradingCardContext.selectedCards[item.assetid] && tradingCardContext.getCardPriceValue(item.assetid) <= 0
+          tradingCardContext.selectedCards[item.assetid] &&
+          tradingCardContext.getCardPriceValue(item.assetid) <= 0
         }
         value={tradingCardContext.getCardPriceValue(item.assetid)}
         maxValue={99999}
@@ -32,8 +33,8 @@ export default function PriceInput({ item, tradingCardContext }: PriceInputProps
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
         }}
-        aria-label='statistic value'
-        className='w-[85px]'
+        aria-label="statistic value"
+        className="w-[85px]"
         classNames={{
           inputWrapper: cn(
             'bg-input data-[hover=true]:!bg-inputhover border-none',
@@ -49,23 +50,26 @@ export default function PriceInput({ item, tradingCardContext }: PriceInputProps
         onValueChange={value => tradingCardContext.updateCardPrice(item.assetid, value)}
       />
 
-      <CustomTooltip content={t('common.list')} placement='top'>
+      <CustomTooltip content={t('common.list')} placement="top">
         <Button
           isIconOnly
-          className='bg-btn-secondary text-btn-text font-bold'
-          radius='full'
+          className="bg-btn-secondary text-btn-text font-bold"
+          radius="full"
           isLoading={tradingCardContext.loadingListButton}
-          isDisabled={tradingCardContext.loadingListButton || tradingCardContext.getCardPriceValue(item.assetid) <= 0}
+          isDisabled={
+            tradingCardContext.loadingListButton ||
+            tradingCardContext.getCardPriceValue(item.assetid) <= 0
+          }
           startContent={!tradingCardContext.loadingListButton && <TbPackageExport size={20} />}
           onPress={() => {
             tradingCardContext.handleSellSingleCard(
               item.assetid,
               item.id,
               tradingCardContext.getCardPriceValue(item.assetid),
-            )
+            );
           }}
         />
       </CustomTooltip>
     </div>
-  )
+  );
 }

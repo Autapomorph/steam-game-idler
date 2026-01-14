@@ -1,55 +1,65 @@
-import type { ActivePageType, CurrentSettingsTabType, Game, InvokeSettings, UserSummary } from '@/types'
-import type { DragEndEvent } from '@dnd-kit/core'
-import type { ReactElement, ReactNode } from 'react'
+import type {
+  ActivePageType,
+  CurrentSettingsTabType,
+  Game,
+  InvokeSettings,
+  UserSummary,
+} from '@/types';
+import type { DragEndEvent } from '@dnd-kit/core';
+import type { ReactElement, ReactNode } from 'react';
 
-import { invoke } from '@tauri-apps/api/core'
+import { invoke } from '@tauri-apps/api/core';
 
-import { Alert, Button, cn, useDisclosure } from '@heroui/react'
-import { useCallback, useEffect, useState } from 'react'
-import { useNavigationStore } from '@/stores/navigationStore'
-import { useStateStore } from '@/stores/stateStore'
-import { useUserStore } from '@/stores/userStore'
-import { DndContext } from '@dnd-kit/core'
-import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
-import { useTranslation } from 'react-i18next'
-import { TbAward, TbCards, TbEdit, TbHeart, TbHourglassLow, TbSettings } from 'react-icons/tb'
+import { Alert, Button, cn, useDisclosure } from '@heroui/react';
+import { useCallback, useEffect, useState } from 'react';
+import { useNavigationStore } from '@/stores/navigationStore';
+import { useStateStore } from '@/stores/stateStore';
+import { useUserStore } from '@/stores/userStore';
+import { DndContext } from '@dnd-kit/core';
+import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { useTranslation } from 'react-i18next';
+import { TbAward, TbCards, TbEdit, TbHeart, TbHourglassLow, TbSettings } from 'react-icons/tb';
 
-import AchievementOrderModal from '@/components/customlists/AchievementOrderModal'
-import EditListModal from '@/components/customlists/EditListModal'
-import ManualAdd from '@/components/customlists/ManualAdd'
-import RecommendedCardDropsCarousel from '@/components/customlists/RecommendedCardDropsCarousel'
-import GameCard from '@/components/ui/GameCard'
-import { useAutomate } from '@/hooks/automation/useAutomateButtons'
-import useCustomList from '@/hooks/customlists/useCustomList'
-import { startAutoIdleGamesImpl } from '@/hooks/layout/useWindow'
-import { getAllGamesWithDrops } from '@/utils/automation'
+import AchievementOrderModal from '@/components/customlists/AchievementOrderModal';
+import EditListModal from '@/components/customlists/EditListModal';
+import ManualAdd from '@/components/customlists/ManualAdd';
+import RecommendedCardDropsCarousel from '@/components/customlists/RecommendedCardDropsCarousel';
+import GameCard from '@/components/ui/GameCard';
+import { useAutomate } from '@/hooks/automation/useAutomateButtons';
+import useCustomList from '@/hooks/customlists/useCustomList';
+import { startAutoIdleGamesImpl } from '@/hooks/layout/useWindow';
+import { getAllGamesWithDrops } from '@/utils/automation';
 
-type CustomListType = 'cardFarmingList' | 'achievementUnlockerList' | 'autoIdleList' | 'favoritesList'
+type CustomListType =
+  | 'cardFarmingList'
+  | 'achievementUnlockerList'
+  | 'autoIdleList'
+  | 'favoritesList';
 
 interface CustomListProps {
-  type: CustomListType
+  type: CustomListType;
 }
 
 interface GameWithDropsData {
-  id: string
-  name: string
-  remaining: number
+  id: string;
+  name: string;
+  remaining: number;
 }
 
 interface ListTypeConfig {
-  title: string
-  description: string
-  icon: ReactNode
-  startButton: 'startCardFarming' | 'startAchievementUnlocker' | 'startAutoIdleGamesImpl' | null
-  buttonLabel: string | null
-  settingsButton?: boolean
-  settingsButtonLink?: string
-  switches?: boolean
+  title: string;
+  description: string;
+  icon: ReactNode;
+  startButton: 'startCardFarming' | 'startAchievementUnlocker' | 'startAutoIdleGamesImpl' | null;
+  buttonLabel: string | null;
+  settingsButton?: boolean;
+  settingsButtonLink?: string;
+  switches?: boolean;
 }
 
 export default function CustomList({ type }: CustomListProps): ReactElement {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const {
     list,
     setList,
@@ -69,73 +79,73 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
     handleUpdateListOrder,
     handleClearList,
     handleBlacklistGame,
-  } = useCustomList(type)
-  const [isEditModalOpen, setEditModalOpen] = useState(false)
-  const [gamesWithDrops, setGamesWithDrops] = useState<Game[]>([])
-  const [isLoadingDrops, setIsLoadingDrops] = useState(false)
-  const [selectedGame, setSelectedGame] = useState<Game | null>(null)
-  const { startCardFarming, startAchievementUnlocker } = useAutomate()
-  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
-  const transitionDuration = useStateStore(state => state.transitionDuration)
-  const isCardFarming = useStateStore(state => state.isCardFarming)
-  const isAchievementUnlocker = useStateStore(state => state.isAchievementUnlocker)
-  const { isOpen, onOpen, onOpenChange } = useDisclosure()
-  const setActivePage = useNavigationStore(state => state.setActivePage)
-  const setPreviousActivePage = useNavigationStore(state => state.setPreviousActivePage)
-  const setCurrentSettingsTab = useNavigationStore(state => state.setCurrentSettingsTab)
-  const userSummary = useUserStore(state => state.userSummary)
-  const userSettings = useUserStore(state => state.userSettings)
-  const [columnCount, setColumnCount] = useState(5)
+  } = useCustomList(type);
+  const [isEditModalOpen, setEditModalOpen] = useState(false);
+  const [gamesWithDrops, setGamesWithDrops] = useState<Game[]>([]);
+  const [isLoadingDrops, setIsLoadingDrops] = useState(false);
+  const [selectedGame, setSelectedGame] = useState<Game | null>(null);
+  const { startCardFarming, startAchievementUnlocker } = useAutomate();
+  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed);
+  const transitionDuration = useStateStore(state => state.transitionDuration);
+  const isCardFarming = useStateStore(state => state.isCardFarming);
+  const isAchievementUnlocker = useStateStore(state => state.isAchievementUnlocker);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const setActivePage = useNavigationStore(state => state.setActivePage);
+  const setPreviousActivePage = useNavigationStore(state => state.setPreviousActivePage);
+  const setCurrentSettingsTab = useNavigationStore(state => state.setCurrentSettingsTab);
+  const userSummary = useUserStore(state => state.userSummary);
+  const userSettings = useUserStore(state => state.userSettings);
+  const [columnCount, setColumnCount] = useState(5);
 
   const handleResize = useCallback((): void => {
     if (window.innerWidth >= 3200) {
-      setColumnCount(12)
+      setColumnCount(12);
     } else if (window.innerWidth >= 2300) {
-      setColumnCount(10)
+      setColumnCount(10);
     } else if (window.innerWidth >= 2000) {
-      setColumnCount(8)
+      setColumnCount(8);
     } else if (window.innerWidth >= 1500) {
-      setColumnCount(7)
+      setColumnCount(7);
     } else {
-      setColumnCount(5)
+      setColumnCount(5);
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
-    handleResize()
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [handleResize])
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [handleResize]);
 
   const handleDragEnd = (event: DragEndEvent): void => {
-    const { active, over } = event
+    const { active, over } = event;
     if (over && active.id !== over.id) {
       setList(items => {
-        const oldIndex = items.findIndex(item => item.appid === active.id)
-        const newIndex = items.findIndex(item => item.appid === over.id)
-        const newList = arrayMove(items, oldIndex, newIndex)
-        handleUpdateListOrder(newList)
-        return newList
-      })
+        const oldIndex = items.findIndex(item => item.appid === active.id);
+        const newIndex = items.findIndex(item => item.appid === over.id);
+        const newList = arrayMove(items, oldIndex, newIndex);
+        handleUpdateListOrder(newList);
+        return newList;
+      });
     }
-  }
+  };
 
   useEffect(() => {
     const getGamesWithDrops = async (): Promise<void> => {
       if (type === 'cardFarmingList' && userSettings?.general?.showCardDropsCarousel) {
-        const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
+        const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary;
 
         const cachedUserSettings = await invoke<InvokeSettings>('get_user_settings', {
           steamId: userSummary?.steamId,
-        })
+        });
 
-        setIsLoadingDrops(true)
+        setIsLoadingDrops(true);
 
-        const credentials = cachedUserSettings.settings.cardFarming.credentials
+        const credentials = cachedUserSettings.settings.cardFarming.credentials;
 
         if (!credentials?.sid || !credentials?.sls) {
-          setIsLoadingDrops(false)
-          return
+          setIsLoadingDrops(false);
+          return;
         }
 
         const gamesWithDropsData = (await getAllGamesWithDrops(
@@ -143,7 +153,7 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
           credentials.sid,
           credentials.sls,
           credentials?.sma,
-        )) as unknown as GameWithDropsData[]
+        )) as unknown as GameWithDropsData[];
 
         const parsedGamesData: Game[] = gamesWithDropsData.map((game: GameWithDropsData) => ({
           appid: parseInt(game.id),
@@ -152,16 +162,18 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
           img_icon_url: '',
           has_community_visible_stats: false,
           remaining: game.remaining,
-        }))
+        }));
 
-        const shuffledAndLimitedGames = [...parsedGamesData].sort(() => Math.random() - 0.5).slice(0, 10)
+        const shuffledAndLimitedGames = [...parsedGamesData]
+          .sort(() => Math.random() - 0.5)
+          .slice(0, 10);
 
-        setGamesWithDrops(shuffledAndLimitedGames)
-        setIsLoadingDrops(false)
+        setGamesWithDrops(shuffledAndLimitedGames);
+        setIsLoadingDrops(false);
       }
-    }
-    getGamesWithDrops()
-  }, [type, userSettings?.general?.showCardDropsCarousel])
+    };
+    getGamesWithDrops();
+  }, [type, userSettings?.general?.showCardDropsCarousel]);
 
   const listTypes: Record<CustomListType, ListTypeConfig> = {
     cardFarmingList: {
@@ -197,22 +209,22 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
       startButton: null,
       buttonLabel: null,
     },
-  }
+  };
 
-  const listType = listTypes[type]
+  const listType = listTypes[type];
 
   if (!listType) {
-    return <p>{t('customLists.invalid')}</p>
+    return <p>{t('customLists.invalid')}</p>;
   }
 
   const handleAddGameFromCarousel = (game: Game): void => {
-    handleAddGame(game)
-  }
+    handleAddGame(game);
+  };
 
   const handleGameClick = (game: Game): void => {
-    setSelectedGame(game)
-    onOpen()
-  }
+    setSelectedGame(game);
+    onOpen();
+  };
 
   return (
     <>
@@ -228,16 +240,16 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
         }}
       >
         <div className={cn('w-[calc(100vw-227px)] z-50 pl-6 pt-2')}>
-          <div className='flex justify-between items-center pb-3'>
-            <div className='flex items-center gap-1 select-none'>
-              <div className='flex flex-col justify-center'>
-                <p className='text-3xl font-black'>{listType.title}</p>
-                <p className='text-xs text-altwhite my-2'>{listType.description}</p>
+          <div className="flex justify-between items-center pb-3">
+            <div className="flex items-center gap-1 select-none">
+              <div className="flex flex-col justify-center">
+                <p className="text-3xl font-black">{listType.title}</p>
+                <p className="text-xs text-altwhite my-2">{listType.description}</p>
 
-                <div className='flex items-center gap-2 mt-1'>
+                <div className="flex items-center gap-2 mt-1">
                   <Button
-                    className='bg-btn-secondary text-btn-text font-bold'
-                    radius='full'
+                    className="bg-btn-secondary text-btn-text font-bold"
+                    radius="full"
                     startContent={<TbEdit fontSize={20} />}
                     onPress={() => setEditModalOpen(true)}
                   >
@@ -249,15 +261,19 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
                   {listType.settingsButton && listType.settingsButtonLink && (
                     <Button
                       isIconOnly
-                      radius='full'
-                      className='bg-btn-secondary text-btn-text font-bold'
+                      radius="full"
+                      className="bg-btn-secondary text-btn-text font-bold"
                       startContent={<TbSettings size={20} />}
                       isDisabled={isCardFarming || isAchievementUnlocker}
                       onPress={() => {
-                        setPreviousActivePage(('customlists/' + listType.settingsButtonLink) as ActivePageType)
-                        setActivePage('settings')
+                        setPreviousActivePage(
+                          ('customlists/' + listType.settingsButtonLink) as ActivePageType,
+                        );
+                        setActivePage('settings');
                         if (listType.settingsButtonLink) {
-                          setCurrentSettingsTab(listType.settingsButtonLink as CurrentSettingsTabType)
+                          setCurrentSettingsTab(
+                            listType.settingsButtonLink as CurrentSettingsTabType,
+                          );
                         }
                       }}
                     />
@@ -274,20 +290,21 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
                       style={{
                         backgroundImage: 'var(--gradient-btn)',
                       }}
-                      radius='full'
+                      radius="full"
                       startContent={listType.icon}
                       onPress={
                         listType.startButton === 'startCardFarming'
                           ? () => {
-                              void startCardFarming()
+                              void startCardFarming();
                             }
                           : listType.startButton === 'startAchievementUnlocker'
                             ? () => {
-                                void startAchievementUnlocker()
+                                void startAchievementUnlocker();
                               }
                             : listType.startButton === 'startAutoIdleGamesImpl'
                               ? () => {
-                                  if (userSummary?.steamId) void startAutoIdleGamesImpl(userSummary.steamId, true)
+                                  if (userSummary?.steamId)
+                                    void startAutoIdleGamesImpl(userSummary.steamId, true);
                                 }
                               : undefined
                       }
@@ -302,10 +319,10 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
         </div>
 
         {type === 'cardFarmingList' && !userSettings.cardFarming.credentials && (
-          <div className='mx-6 mb-1 max-w-fit'>
+          <div className="mx-6 mb-1 max-w-fit">
             <Alert
-              color='primary'
-              variant='faded'
+              color="primary"
+              variant="faded"
               classNames={{
                 base: '!bg-dynamic/30 text-dynamic !border-dynamic/40',
                 iconWrapper: '!bg-dynamic/30 border-dynamic/40',
@@ -324,7 +341,7 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
 
         {list.length > 0 && (
           <div>
-            <p className='text-lg font-black px-6'>{t('customLists.yourList')}</p>
+            <p className="text-lg font-black px-6">{t('customLists.yourList')}</p>
           </div>
         )}
         <DndContext onDragEnd={handleDragEnd}>
@@ -342,14 +359,21 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
                 list
                   .slice(0, visibleGames)
                   .map(item => (
-                    <SortableGameCard key={item.appid} item={item} type={type} onOpen={() => handleGameClick(item)} />
+                    <SortableGameCard
+                      key={item.appid}
+                      item={item}
+                      type={type}
+                      onOpen={() => handleGameClick(item)}
+                    />
                   ))}
             </div>
           </SortableContext>
         </DndContext>
       </div>
 
-      {selectedGame && <AchievementOrderModal item={selectedGame} isOpen={isOpen} onOpenChange={onOpenChange} />}
+      {selectedGame && (
+        <AchievementOrderModal item={selectedGame} isOpen={isOpen} onOpenChange={onOpenChange} />
+      )}
 
       <EditListModal
         type={type}
@@ -360,9 +384,9 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
         showBlacklist={showBlacklist}
         onOpenChange={setEditModalOpen}
         onClose={() => {
-          setSearchTerm('')
-          setShowInList(false)
-          setShowBlacklist(false)
+          setSearchTerm('');
+          setShowInList(false);
+          setShowBlacklist(false);
         }}
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
@@ -377,25 +401,31 @@ export default function CustomList({ type }: CustomListProps): ReactElement {
         blacklist={userSettings.cardFarming.blacklist || []}
       />
     </>
-  )
+  );
 }
 
 interface SortableGameCardProps {
-  item: Game
-  type: CustomListType
-  onOpen: () => void
+  item: Game;
+  type: CustomListType;
+  onOpen: () => void;
 }
 
 function SortableGameCard({ item, type, onOpen }: SortableGameCardProps): ReactElement {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: item.appid })
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: item.appid,
+  });
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-  }
+  };
 
   return (
-    <div className='cursor-grab' ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <GameCard item={item} isAchievementUnlocker={type === 'achievementUnlockerList'} onOpen={onOpen} />
+    <div className="cursor-grab" ref={setNodeRef} style={style} {...attributes} {...listeners}>
+      <GameCard
+        item={item}
+        isAchievementUnlocker={type === 'achievementUnlockerList'}
+        onOpen={onOpen}
+      />
     </div>
-  )
+  );
 }

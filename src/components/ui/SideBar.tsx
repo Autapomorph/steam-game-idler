@@ -1,17 +1,17 @@
-import type { SidebarItem } from '@/types/navigation'
-import type { ReactElement } from 'react'
+import type { SidebarItem } from '@/types/navigation';
+import type { ReactElement } from 'react';
 
-import { Button, cn, Divider } from '@heroui/react'
-import { useState } from 'react'
-import { useIdleStore } from '@/stores/idleStore'
-import { useNavigationStore } from '@/stores/navigationStore'
-import { useSearchStore } from '@/stores/searchStore'
-import { useStateStore } from '@/stores/stateStore'
-import { useUserStore } from '@/stores/userStore'
-import Image from 'next/image'
-import { useTranslation } from 'react-i18next'
-import { FiLogOut } from 'react-icons/fi'
-import { RiSearchLine } from 'react-icons/ri'
+import { Button, cn, Divider } from '@heroui/react';
+import { useState } from 'react';
+import { useIdleStore } from '@/stores/idleStore';
+import { useNavigationStore } from '@/stores/navigationStore';
+import { useSearchStore } from '@/stores/searchStore';
+import { useStateStore } from '@/stores/stateStore';
+import { useUserStore } from '@/stores/userStore';
+import Image from 'next/image';
+import { useTranslation } from 'react-i18next';
+import { FiLogOut } from 'react-icons/fi';
+import { RiSearchLine } from 'react-icons/ri';
 import {
   TbAward,
   TbBuildingStore,
@@ -22,29 +22,32 @@ import {
   TbHourglassLow,
   TbPlayerPlay,
   TbSettings,
-} from 'react-icons/tb'
+} from 'react-icons/tb';
 
-import Beta from '@/components/ui/Beta'
-import CustomModal from '@/components/ui/CustomModal'
-import HeaderTitle from '@/components/ui/header/HeaderTitle'
-import SearchBar from '@/components/ui/SearchBar'
-import useSideBar from '@/hooks/ui/useSideBar'
+import Beta from '@/components/ui/Beta';
+import CustomModal from '@/components/ui/CustomModal';
+import HeaderTitle from '@/components/ui/header/HeaderTitle';
+import SearchBar from '@/components/ui/SearchBar';
+import useSideBar from '@/hooks/ui/useSideBar';
 
 export default function SideBar(): ReactElement {
-  const { t } = useTranslation()
-  const [showSearchModal, setShowSearchModal] = useState(false)
-  const activePage = useNavigationStore(state => state.activePage)
-  const setActivePage = useNavigationStore(state => state.setActivePage)
-  const freeGamesList = useUserStore(state => state.freeGamesList)
-  const userSummary = useUserStore(state => state.userSummary)
-  const searchContent = useSearchStore()
-  const idleGamesList = useIdleStore(state => state.idleGamesList)
-  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
-  const isCardFarming = useStateStore(state => state.isCardFarming)
-  const isAchievementUnlocker = useStateStore(state => state.isAchievementUnlocker)
-  const transitionDuration = useStateStore(state => state.transitionDuration)
-  const setShowAchievements = useStateStore(state => state.setShowAchievements)
-  const { isOpen, onOpenChange, openConfirmation, handleLogout } = useSideBar(activePage, setActivePage)
+  const { t } = useTranslation();
+  const [showSearchModal, setShowSearchModal] = useState(false);
+  const activePage = useNavigationStore(state => state.activePage);
+  const setActivePage = useNavigationStore(state => state.setActivePage);
+  const freeGamesList = useUserStore(state => state.freeGamesList);
+  const userSummary = useUserStore(state => state.userSummary);
+  const searchContent = useSearchStore();
+  const idleGamesList = useIdleStore(state => state.idleGamesList);
+  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed);
+  const isCardFarming = useStateStore(state => state.isCardFarming);
+  const isAchievementUnlocker = useStateStore(state => state.isAchievementUnlocker);
+  const transitionDuration = useStateStore(state => state.transitionDuration);
+  const setShowAchievements = useStateStore(state => state.setShowAchievements);
+  const { isOpen, onOpenChange, openConfirmation, handleLogout } = useSideBar(
+    activePage,
+    setActivePage,
+  );
 
   const mainSidebarItems: SidebarItem[] = [
     {
@@ -101,21 +104,21 @@ export default function SideBar(): ReactElement {
       title: t('tradingCards.title'),
       icon: TbBuildingStore,
     },
-  ]
+  ];
 
   // Section headers and their corresponding first item indices
   const sectionHeaders: { [index: number]: string } = {
     0: t('sidebar.section.games'),
     4: t('sidebar.section.automation'),
     7: t('sidebar.section.misc'),
-  }
+  };
 
   // Helper to render section header if needed
   const renderSectionHeader = (index: number): ReactElement | null => {
-    const header = sectionHeaders[index]
-    if (!header) return null
+    const header = sectionHeaders[index];
+    if (!header) return null;
     if (sidebarCollapsed) {
-      return <Divider className='w-full bg-border/60 mt-0.5 mb-2' />
+      return <Divider className="w-full bg-border/60 mt-0.5 mb-2" />;
     }
     return (
       <div
@@ -127,21 +130,21 @@ export default function SideBar(): ReactElement {
       >
         {header}
       </div>
-    )
-  }
+    );
+  };
 
   const renderSidebarItem = (item: SidebarItem, index: number): ReactElement | null => {
-    const Icon = item.icon
-    const isCurrentPage = activePage === item.page
-    const isFreeGames = item.id === 'free-games'
-    const hasFreeGames = freeGamesList.length > 0
-    const isBeta = item.isBeta
+    const Icon = item.icon;
+    const isCurrentPage = activePage === item.page;
+    const isFreeGames = item.id === 'free-games';
+    const hasFreeGames = freeGamesList.length > 0;
+    const isBeta = item.isBeta;
 
     return (
       <div key={item.id}>
         {renderSectionHeader(index)}
 
-        <div className='flex w-full'>
+        <div className="flex w-full">
           {/* Left indicator */}
           {!sidebarCollapsed && (
             <div
@@ -164,8 +167,8 @@ export default function SideBar(): ReactElement {
               item.customClassName,
             )}
             onClick={() => {
-              setShowAchievements(false)
-              setActivePage(item.page)
+              setShowAchievements(false);
+              setActivePage(item.page);
             }}
           >
             <div
@@ -174,8 +177,11 @@ export default function SideBar(): ReactElement {
                 sidebarCollapsed ? 'justify-center' : 'justify-start',
               )}
             >
-              <div className='relative shrink-0'>
-                <Icon fontSize={20} className={isFreeGames && hasFreeGames ? 'text-[#ffc700]' : undefined} />
+              <div className="relative shrink-0">
+                <Icon
+                  fontSize={20}
+                  className={isFreeGames && hasFreeGames ? 'text-[#ffc700]' : undefined}
+                />
               </div>
               {!sidebarCollapsed && (
                 <div className={cn('transition-all duration-150 ease-in-out whitespace-nowrap')}>
@@ -194,8 +200,8 @@ export default function SideBar(): ReactElement {
           </div>
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   return (
     <>
@@ -209,14 +215,23 @@ export default function SideBar(): ReactElement {
           transitionProperty: 'min-width, max-width',
         }}
       >
-        <div className={cn('flex flex-col gap-1.5 p-2 w-full min-w-0', sidebarCollapsed ? 'items-center' : undefined)}>
+        <div
+          className={cn(
+            'flex flex-col gap-1.5 p-2 w-full min-w-0',
+            sidebarCollapsed ? 'items-center' : undefined,
+          )}
+        >
           <HeaderTitle />
 
           {/* Search button */}
           <Button
             isIconOnly={sidebarCollapsed}
-            radius='full'
-            isDisabled={activePage === 'idling' || activePage === 'freeGames' || activePage.includes('customlists')}
+            radius="full"
+            isDisabled={
+              activePage === 'idling' ||
+              activePage === 'freeGames' ||
+              activePage.includes('customlists')
+            }
             className={cn(
               'text-altwhite active:scale-95 w-full mt-4 duration-150',
               sidebarCollapsed ? 'w-0 justify-center' : 'min-w-40 justify-start',
@@ -243,15 +258,21 @@ export default function SideBar(): ReactElement {
             {!sidebarCollapsed && (
               <div>
                 {searchContent.gameQueryValue ? (
-                  <p className='text-sm text-dynamic font-bold'>{searchContent.gameQueryValue}</p>
+                  <p className="text-sm text-dynamic font-bold">{searchContent.gameQueryValue}</p>
                 ) : searchContent.tradingCardQueryValue ? (
-                  <p className='text-sm text-dynamic font-bold'>{searchContent.tradingCardQueryValue}</p>
+                  <p className="text-sm text-dynamic font-bold">
+                    {searchContent.tradingCardQueryValue}
+                  </p>
                 ) : searchContent.achievementQueryValue ? (
-                  <p className='text-sm text-dynamic font-bold'>{searchContent.achievementQueryValue}</p>
+                  <p className="text-sm text-dynamic font-bold">
+                    {searchContent.achievementQueryValue}
+                  </p>
                 ) : searchContent.statisticQueryValue ? (
-                  <p className='text-sm text-dynamic font-bold'>{searchContent.statisticQueryValue}</p>
+                  <p className="text-sm text-dynamic font-bold">
+                    {searchContent.statisticQueryValue}
+                  </p>
                 ) : (
-                  <p className='text-sm font-bold'>{t('common.search')}</p>
+                  <p className="text-sm font-bold">{t('common.search')}</p>
                 )}
               </div>
             )}
@@ -286,19 +307,21 @@ export default function SideBar(): ReactElement {
                 alt={userSummary?.personaName || 'User Avatar'}
                 width={sidebarCollapsed ? 28 : 32}
                 height={sidebarCollapsed ? 28 : 32}
-                className='rounded-full bg-white'
+                className="rounded-full bg-white"
               />
             </div>
 
             {!sidebarCollapsed && (
-              <div className='flex items-center justify-between w-full overflow-hidden'>
-                <div className='flex flex-col overflow-hidden'>
-                  <p className='text-sm leading-tight truncate whitespace-nowrap'>{userSummary?.personaName}</p>
-                  <p className='text-[10px] text-altwhite/70 leading-tight truncate whitespace-nowrap'>
+              <div className="flex items-center justify-between w-full overflow-hidden">
+                <div className="flex flex-col overflow-hidden">
+                  <p className="text-sm leading-tight truncate whitespace-nowrap">
+                    {userSummary?.personaName}
+                  </p>
+                  <p className="text-[10px] text-altwhite/70 leading-tight truncate whitespace-nowrap">
                     {userSummary?.steamId}
                   </p>
                 </div>
-                <div className='flex items-center gap-2'>
+                <div className="flex items-center gap-2">
                   <div
                     className={cn(
                       'text-altwhite hover:bg-white/7 rounded-full p-1.5 duration-150',
@@ -309,8 +332,8 @@ export default function SideBar(): ReactElement {
                     onClick={
                       !(isCardFarming || isAchievementUnlocker)
                         ? () => {
-                            setShowAchievements(false)
-                            setActivePage('settings')
+                            setShowAchievements(false);
+                            setActivePage('settings');
                           }
                         : undefined
                     }
@@ -324,7 +347,9 @@ export default function SideBar(): ReactElement {
                         ? 'opacity-40'
                         : 'hover:bg-danger/20 hover:text-danger cursor-pointer active:scale-95',
                     )}
-                    onClick={!(isCardFarming || isAchievementUnlocker) ? openConfirmation : undefined}
+                    onClick={
+                      !(isCardFarming || isAchievementUnlocker) ? openConfirmation : undefined
+                    }
                   >
                     <FiLogOut fontSize={18} />
                   </div>
@@ -332,7 +357,7 @@ export default function SideBar(): ReactElement {
               </div>
             )}
             {sidebarCollapsed && (
-              <div className='flex flex-col items-center gap-2'>
+              <div className="flex flex-col items-center gap-2">
                 <div
                   className={cn(
                     'text-altwhite hover:bg-white/7 rounded-full p-1.5 duration-150',
@@ -343,8 +368,8 @@ export default function SideBar(): ReactElement {
                   onClick={
                     !(isCardFarming || isAchievementUnlocker)
                       ? () => {
-                          setShowAchievements(false)
-                          setActivePage('settings')
+                          setShowAchievements(false);
+                          setActivePage('settings');
                         }
                       : undefined
                   }
@@ -378,22 +403,22 @@ export default function SideBar(): ReactElement {
         buttons={
           <>
             <Button
-              size='sm'
-              color='danger'
-              variant='light'
-              radius='full'
-              className='font-semibold'
+              size="sm"
+              color="danger"
+              variant="light"
+              radius="full"
+              className="font-semibold"
               onPress={onOpenChange}
             >
               {t('common.cancel')}
             </Button>
             <Button
-              size='sm'
-              className='bg-btn-secondary text-btn-text font-bold'
-              radius='full'
+              size="sm"
+              className="bg-btn-secondary text-btn-text font-bold"
+              radius="full"
               onPress={() => {
-                setShowAchievements(false)
-                handleLogout(onOpenChange)
+                setShowAchievements(false);
+                handleLogout(onOpenChange);
               }}
             >
               {t('common.confirm')}
@@ -402,5 +427,5 @@ export default function SideBar(): ReactElement {
         }
       />
     </>
-  )
+  );
 }

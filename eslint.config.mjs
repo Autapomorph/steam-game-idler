@@ -1,21 +1,21 @@
-import { dirname } from 'path'
-import { fileURLToPath } from 'url'
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
 
-import { FlatCompat } from '@eslint/eslintrc'
-import js from '@eslint/js'
-import nextPlugin from '@next/eslint-plugin-next'
-import typescriptParser from '@typescript-eslint/parser'
-import reactPlugin from 'eslint-plugin-react'
-import reactHooksPlugin from 'eslint-plugin-react-hooks'
-import unusedImports from 'eslint-plugin-unused-imports'
+import { FlatCompat } from '@eslint/eslintrc';
+import js from '@eslint/js';
+import nextPlugin from '@next/eslint-plugin-next';
+import typescriptParser from '@typescript-eslint/parser';
+import reactPlugin from 'eslint-plugin-react';
+import reactHooksPlugin from 'eslint-plugin-react-hooks';
+import unusedImports from 'eslint-plugin-unused-imports';
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const compat = new FlatCompat({
   baseDirectory: __dirname,
   recommendedConfig: js.configs.recommended,
-})
+});
 
 const config = [
   {
@@ -38,7 +38,7 @@ const config = [
     plugins: {
       'unused-imports': unusedImports,
       '@next/next': nextPlugin,
-      'react': reactPlugin,
+      react: reactPlugin,
       'react-hooks': reactHooksPlugin,
     },
     languageOptions: {
@@ -49,7 +49,7 @@ const config = [
       },
     },
     rules: {
-      'strict': 'error',
+      strict: 'error',
       '@typescript-eslint/no-unused-vars': 'off',
       'unused-imports/no-unused-imports': 'error',
       'unused-imports/no-unused-vars': [
@@ -93,14 +93,14 @@ const config = [
       'no-unreachable': 'error',
       'no-sync': 'error',
       'prefer-const': 'error',
-      'eqeqeq': ['error', 'always'],
+      eqeqeq: ['error', 'always'],
       'no-console': [
         'error',
         {
           allow: ['error', 'debug', 'warn'],
         },
       ],
-      'quotes': ['warn', 'single', { avoidEscape: true }],
+      quotes: ['warn', 'single', { avoidEscape: true }],
       'object-shorthand': ['warn', 'always'],
       '@typescript-eslint/triple-slash-reference': 'off',
     },
@@ -110,6 +110,6 @@ const config = [
       },
     },
   },
-]
+];
 
-export default config
+export default config;

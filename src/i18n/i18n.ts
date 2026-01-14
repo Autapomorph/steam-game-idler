@@ -1,14 +1,14 @@
-import i18n from 'i18next'
-import LanguageDetector from 'i18next-browser-languagedetector'
-import { initReactI18next } from 'react-i18next'
+import i18n from 'i18next';
+import LanguageDetector from 'i18next-browser-languagedetector';
+import { initReactI18next } from 'react-i18next';
 
-import translationENUS from '@/i18n/locales/en-US/translation.json'
-import translationRURU from '@/i18n/locales/ru-RU/translation.json'
+import translationENUS from '@/i18n/locales/en-US/translation.json';
+import translationRURU from '@/i18n/locales/ru-RU/translation.json';
 
 const resources = {
   'en-US': { translation: translationENUS },
   'ru-RU': { translation: translationRURU },
-}
+};
 
 i18n
   .use(LanguageDetector)
@@ -31,6 +31,6 @@ i18n
     interpolation: {
       escapeValue: false,
     },
-  })
+  });
 
-export default i18n
+export default i18n;

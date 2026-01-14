@@ -1,37 +1,19 @@
-/** @type {import("prettier").Config} */
-const config = {
+/**
+ * @see https://prettier.io/docs/configuration
+ * @type {import("prettier").Config}
+ */
+export default {
+  printWidth: 100,
   tabWidth: 2,
   useTabs: false,
-  semi: false,
-  printWidth: 120,
+  semi: true,
   singleQuote: true,
-  jsxSingleQuote: true,
+  quoteProps: 'as-needed',
+  jsxSingleQuote: false,
   trailingComma: 'all',
+  bracketSpacing: true,
+  bracketSameLine: false,
   arrowParens: 'avoid',
-  quoteProps: 'consistent',
-  plugins: ['@ianvs/prettier-plugin-sort-imports'],
-  importOrder: [
-    '<TYPES>^(node:)',
-    '<TYPES>',
-    '<TYPES>^[.]',
-    '',
-    '@internationalized/(.*)$',
-    '',
-    '@tauri-apps/(.*)$',
-    '',
-    '^@heroui/react$',
-    '^(react/(.*)$)|^(react$)',
-    '<THIRD_PARTY_MODULES>',
-    '',
-    '^@/components/(.*)$',
-    '^@/hooks/(.*)$',
-    '^@/utils/(.*)$',
-    '',
-    '@/i18n/(.*)$',
-  ],
-  importOrderParserPlugins: ['typescript', 'jsx', 'decorators-legacy'],
-  importOrderTypeScriptVersion: '5.0.0',
-  importOrderCaseSensitive: false,
-}
-
-export default config
+  vueIndentScriptAndStyle: true,
+  endOfLine: 'lf',
+};

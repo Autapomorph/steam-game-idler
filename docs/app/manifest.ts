@@ -1,6 +1,6 @@
-import type { Manifest } from 'next/dist/lib/metadata/types/manifest-types'
+import type { Manifest } from 'next/dist/lib/metadata/types/manifest-types';
 
-export const dynamic = 'force-static'
+export const dynamic = 'force-static';
 
 export default function manifest(): Manifest {
   return {
@@ -20,5 +20,5 @@ export default function manifest(): Manifest {
         type: 'image/x-icon',
       },
     ],
-  }
+  };
 }

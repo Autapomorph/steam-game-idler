@@ -1,4 +1,4 @@
-export type FAQEntry = { section: string } | { question: string; markdown: string }
+export type FAQEntry = { section: string } | { question: string; markdown: string };
 
 export const faqData: FAQEntry[] = [
   { section: 'General' },
@@ -20,7 +20,8 @@ export const faqData: FAQEntry[] = [
       '> ![Profile settings](/examples/profile-settings.webp)',
   },
   {
-    question: 'Do I need to make my Steam profile and game details public for the Steam card idler to work?',
+    question:
+      'Do I need to make my Steam profile and game details public for the Steam card idler to work?',
     markdown:
       '**Do I need to make my Steam profile and game details public for the Steam card idler to work?**\n' +
       '> In most cases, yes. For some features to function correctly SGI requires your Steam profile and game details to be set to public in your [Steam profile privacy settings](https://steamcommunity.com/my/edit/settings).\n' +
@@ -246,7 +247,8 @@ export const faqData: FAQEntry[] = [
       '> 5. Close the Registry Editor and restart SGI',
   },
   {
-    question: "Add some games to your card farming list or enable 'all games' in 'settings > card farming'",
+    question:
+      "Add some games to your card farming list or enable 'all games' in 'settings > card farming'",
     markdown:
       "**Add some games to your card farming list or enable 'all games' in 'settings > card farming'**\n" +
       '> Your `card farming list` is empty. You either need to add games to the list by following [these steps](/docs/features/card-farming), or enable [`Farm All Games`](/docs/settings/card-farming#farm-all-games) in [Settings > Card Farming](/docs/settings/card-farming).',
@@ -304,4 +306,4 @@ export const faqData: FAQEntry[] = [
       '>\n' +
       '> To avoid hitting the rate limit in the future, consider increasing the [Sell Delay](/docs/settings/trading-card-manager#sell-delay) in [Settings > Trading Card Manager](/docs/settings/trading-card-manager).',
   },
-]
+];

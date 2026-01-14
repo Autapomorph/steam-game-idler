@@ -1,39 +1,39 @@
-import type { InvokeSteamCredentials } from '@/types'
-import type { ReactElement } from 'react'
+import type { InvokeSteamCredentials } from '@/types';
+import type { ReactElement } from 'react';
 
-import { invoke } from '@tauri-apps/api/core'
+import { invoke } from '@tauri-apps/api/core';
 
-import { Button, cn, Divider, Input, Spinner } from '@heroui/react'
-import { useUserStore } from '@/stores/userStore'
-import Image from 'next/image'
-import { Trans, useTranslation } from 'react-i18next'
-import { TbChevronRight, TbEraser, TbRefresh, TbUpload } from 'react-icons/tb'
+import { Button, cn, Divider, Input, Spinner } from '@heroui/react';
+import { useUserStore } from '@/stores/userStore';
+import Image from 'next/image';
+import { Trans, useTranslation } from 'react-i18next';
+import { TbChevronRight, TbEraser, TbRefresh, TbUpload } from 'react-icons/tb';
 
-import ExtLink from '@/components/ui/ExtLink'
-import WebviewWindow from '@/components/ui/WebviewWindow'
+import ExtLink from '@/components/ui/ExtLink';
+import WebviewWindow from '@/components/ui/WebviewWindow';
 import {
   fetchGamesWithDropsData,
   handleCredentialsClear,
   handleCredentialsSave,
   useCardSettings,
-} from '@/hooks/settings/useCardSettings'
-import { logEvent } from '@/utils/tasks'
-import { showDangerToast } from '@/utils/toasts'
+} from '@/hooks/settings/useCardSettings';
+import { logEvent } from '@/utils/tasks';
+import { showDangerToast } from '@/utils/toasts';
 
 export default function SteamCredentials(): ReactElement {
-  const { t } = useTranslation()
-  const userSummary = useUserStore(state => state.userSummary)
-  const userSettings = useUserStore(state => state.userSettings)
-  const setUserSettings = useUserStore(state => state.setUserSettings)
-  const cardSettings = useCardSettings()
+  const { t } = useTranslation();
+  const userSummary = useUserStore(state => state.userSummary);
+  const userSettings = useUserStore(state => state.userSettings);
+  const setUserSettings = useUserStore(state => state.setUserSettings);
+  const cardSettings = useCardSettings();
 
   const handleShowSteamLoginWindow = async (): Promise<void> => {
-    const result = await invoke<InvokeSteamCredentials>('open_steam_login_window')
+    const result = await invoke<InvokeSteamCredentials>('open_steam_login_window');
 
     if (!result || result.success === false) {
-      showDangerToast(t('common.error'))
-      logEvent(`[Error] in (handleShowSteamLoginWindow): ${result?.message || 'Unknown error'}`)
-      return
+      showDangerToast(t('common.error'));
+      logEvent(`[Error] in (handleShowSteamLoginWindow): ${result?.message || 'Unknown error'}`);
+      return;
     }
 
     if (result.success) {
@@ -47,19 +47,19 @@ export default function SteamCredentials(): ReactElement {
         userSettings,
         setUserSettings,
         cardSettings.setIsCFDataLoading,
-      )
+      );
     }
-  }
+  };
 
   const handleSignOutCurrentUser = async (): Promise<void> => {
-    const result = await invoke<InvokeSteamCredentials>('delete_login_window_cookies')
+    const result = await invoke<InvokeSteamCredentials>('delete_login_window_cookies');
 
     if (!result || result.success === false) {
-      showDangerToast(t('common.error'))
+      showDangerToast(t('common.error'));
       logEvent(
         `[Error] in (handleSignOutCurrentUser) this error can occur if you are not already signed in: ${result?.message || 'Unknown error'}`,
-      )
-      return
+      );
+      return;
     }
 
     handleCredentialsClear(
@@ -72,127 +72,150 @@ export default function SteamCredentials(): ReactElement {
       setUserSettings,
       cardSettings.setGamesWithDrops,
       cardSettings.setTotalDropsRemaining,
-    )
-  }
+    );
+  };
 
   return (
-    <div className='relative flex flex-col gap-4 mt-9 pb-16 w-4/5'>
-      <div className='flex flex-col gap-0 select-none'>
-        <p className='flex items-center text-xs text-altwhite font-bold'>
+    <div className="relative flex flex-col gap-4 mt-9 pb-16 w-4/5">
+      <div className="flex flex-col gap-0 select-none">
+        <p className="flex items-center text-xs text-altwhite font-bold">
           {t('settings.title')}
           <span>
             <TbChevronRight size={12} />
           </span>
         </p>
-        <p className='text-3xl font-black'>{t('settings.cardFarming.steamCredentialsTitle')}</p>
+        <p className="text-3xl font-black">{t('settings.cardFarming.steamCredentialsTitle')}</p>
       </div>
 
-      <div className='flex flex-col gap-3 mt-4'>
-        <div className='flex justify-between items-start'>
-          <div className='flex flex-col gap-2 w-1/2'>
-            <div className='flex items-center'>
-              <p className='text-sm text-content font-bold'>{t('settings.steamCredentials.automated')}</p>
+      <div className="flex flex-col gap-3 mt-4">
+        <div className="flex justify-between items-start">
+          <div className="flex flex-col gap-2 w-1/2">
+            <div className="flex items-center">
+              <p className="text-sm text-content font-bold">
+                {t('settings.steamCredentials.automated')}
+              </p>
             </div>
-            <p className='text-xs text-altwhite'>{t('settings.steamCredentials.automated.description')}</p>
+            <p className="text-xs text-altwhite">
+              {t('settings.steamCredentials.automated.description')}
+            </p>
             <WebviewWindow
-              href='https://steamgameidler.com/docs/steam-credentials#automated-method'
-              className='text-xs text-dynamic hover:text-dynamic-hover duration-150'
+              href="https://steamgameidler.com/docs/steam-credentials#automated-method"
+              className="text-xs text-dynamic hover:text-dynamic-hover duration-150"
             >
               {t('common.learnMore')}
             </WebviewWindow>
           </div>
 
-          <div className='flex flex-col justify-end gap-2'>
+          <div className="flex flex-col justify-end gap-2">
             <Button
-              size='sm'
-              className='bg-btn-secondary text-btn-text font-bold'
-              radius='full'
+              size="sm"
+              className="bg-btn-secondary text-btn-text font-bold"
+              radius="full"
               onPress={handleShowSteamLoginWindow}
             >
               {cardSettings.hasCookies ? t('common.reauthenticate') : t('common.signInSteam')}
             </Button>
-            <Button size='sm' variant='light' radius='full' color='danger' onPress={handleSignOutCurrentUser}>
+            <Button
+              size="sm"
+              variant="light"
+              radius="full"
+              color="danger"
+              onPress={handleSignOutCurrentUser}
+            >
               {t('common.signOut')}
             </Button>
           </div>
         </div>
 
-        <Divider className='bg-border/70 my-4' />
+        <Divider className="bg-border/70 my-4" />
 
-        <div className='flex justify-between items-start'>
-          <div className='flex flex-col gap-2 w-1/2'>
-            <p className='text-sm text-content font-bold'>{t('settings.steamCredentials.manual')}</p>
-            <p className='text-xs text-altwhite'>
-              <Trans i18nKey='settings.cardFarming.steamCredentials'>
-                Steam credentials are required in order to use the Card Farming and Trading Card Manager features.&nbsp;
+        <div className="flex justify-between items-start">
+          <div className="flex flex-col gap-2 w-1/2">
+            <p className="text-sm text-content font-bold">
+              {t('settings.steamCredentials.manual')}
+            </p>
+            <p className="text-xs text-altwhite">
+              <Trans i18nKey="settings.cardFarming.steamCredentials">
+                Steam credentials are required in order to use the Card Farming and Trading Card
+                Manager features.&nbsp;
                 <WebviewWindow
-                  href='https://steamgameidler.com/docs/steam-credentials#manual-method'
-                  className='text-dynamic hover:text-dynamic-hover duration-150'
+                  href="https://steamgameidler.com/docs/steam-credentials#manual-method"
+                  className="text-dynamic hover:text-dynamic-hover duration-150"
                 >
                   Learn more
                 </WebviewWindow>
               </Trans>
             </p>
-            <p className='text-xs text-altwhite'>
-              <Trans i18nKey='settings.cardFarming.steamCredentialsTwo'>
+            <p className="text-xs text-altwhite">
+              <Trans i18nKey="settings.cardFarming.steamCredentialsTwo">
                 Get your Steam credentials from.&nbsp;
                 <ExtLink
-                  href='https://steamcommunity.com/'
-                  className='text-dynamic hover:text-dynamic-hover duration-150'
+                  href="https://steamcommunity.com/"
+                  className="text-dynamic hover:text-dynamic-hover duration-150"
                 >
                   https://steamcommunity.com/
                 </ExtLink>
               </Trans>
             </p>
             {cardSettings.cardFarmingUser && (
-              <div className='flex gap-4 bg-tab-panel p-2 rounded-lg items-center w-fit min-w-[50%] mt-3'>
+              <div className="flex gap-4 bg-tab-panel p-2 rounded-lg items-center w-fit min-w-[50%] mt-3">
                 {!cardSettings.isCFDataLoading ? (
                   <>
                     <Image
                       src={userSummary?.avatar || ''}
                       height={38}
                       width={38}
-                      alt='user avatar'
-                      className='w-9.5 h-9.5 rounded-full'
+                      alt="user avatar"
+                      className="w-9.5 h-9.5 rounded-full"
                       priority
                     />
-                    <div className='flex flex-col items-end gap-1'>
-                      <div className='flex gap-1'>
-                        <p className='text-sm text-altwhite font-bold'>{t('settings.cardFarming.gamesWithDrops')}</p>
-                        <p className='text-sm text-dynamic font-bold'>{userSettings.cardFarming.gamesWithDrops || 0}</p>
+                    <div className="flex flex-col items-end gap-1">
+                      <div className="flex gap-1">
+                        <p className="text-sm text-altwhite font-bold">
+                          {t('settings.cardFarming.gamesWithDrops')}
+                        </p>
+                        <p className="text-sm text-dynamic font-bold">
+                          {userSettings.cardFarming.gamesWithDrops || 0}
+                        </p>
                       </div>
-                      <div className='flex gap-1'>
-                        <p className='text-sm text-altwhite font-bold'>{t('settings.cardFarming.totalDrops')}</p>
-                        <p className='text-sm text-dynamic font-bold'>
+                      <div className="flex gap-1">
+                        <p className="text-sm text-altwhite font-bold">
+                          {t('settings.cardFarming.totalDrops')}
+                        </p>
+                        <p className="text-sm text-dynamic font-bold">
                           {userSettings.cardFarming.totalDropsRemaining || 0}
                         </p>
                       </div>
                     </div>
                     <div
-                      className='text-altwhite hover:bg-item-hover p-1 rounded-full cursor-pointer duration-150'
+                      className="text-altwhite hover:bg-item-hover p-1 rounded-full cursor-pointer duration-150"
                       onClick={() =>
-                        fetchGamesWithDropsData(userSummary, cardSettings.setIsCFDataLoading, setUserSettings)
+                        fetchGamesWithDropsData(
+                          userSummary,
+                          cardSettings.setIsCFDataLoading,
+                          setUserSettings,
+                        )
                       }
                     >
                       <TbRefresh size={18} />
                     </div>
                   </>
                 ) : (
-                  <div className='flex items-center justify-center gap-2'>
-                    <Spinner size='sm' variant='simple' />
-                    <p className='text-xs text-altwhite'>{t('settings.cardFarming.loading')}</p>
+                  <div className="flex items-center justify-center gap-2">
+                    <Spinner size="sm" variant="simple" />
+                    <p className="text-xs text-altwhite">{t('settings.cardFarming.loading')}</p>
                   </div>
                 )}
               </div>
             )}
           </div>
-          <div className='flex flex-col gap-4 w-62.5'>
+          <div className="flex flex-col gap-4 w-62.5">
             <Input
               isRequired
-              label='sessionid'
-              labelPlacement='outside'
-              placeholder='sessionid'
-              className='max-w-72.5'
+              label="sessionid"
+              labelPlacement="outside"
+              placeholder="sessionid"
+              className="max-w-72.5"
               classNames={{
                 inputWrapper: cn(
                   'bg-input data-[hover=true]:!bg-inputhover',
@@ -203,14 +226,14 @@ export default function SteamCredentials(): ReactElement {
               }}
               value={cardSettings.sidValue}
               onChange={e => cardSettings.setSidValue(e.target.value)}
-              type='password'
+              type="password"
             />
             <Input
               isRequired
-              label='steamLoginSecure'
-              labelPlacement='outside'
-              placeholder='steamLoginSecure'
-              className='max-w-72.5'
+              label="steamLoginSecure"
+              labelPlacement="outside"
+              placeholder="steamLoginSecure"
+              className="max-w-72.5"
               classNames={{
                 inputWrapper: cn(
                   'bg-input data-[hover=true]:!bg-inputhover',
@@ -221,13 +244,13 @@ export default function SteamCredentials(): ReactElement {
               }}
               value={cardSettings.slsValue}
               onChange={e => cardSettings.setSlsValue(e.target.value)}
-              type='password'
+              type="password"
             />
             <Input
               label={<p>steamParental / steamMachineAuth</p>}
-              labelPlacement='outside'
-              placeholder='steamParental / steamMachineAuth'
-              className='max-w-72.5'
+              labelPlacement="outside"
+              placeholder="steamParental / steamMachineAuth"
+              className="max-w-72.5"
               classNames={{
                 inputWrapper: cn(
                   'bg-input data-[hover=true]:!bg-inputhover',
@@ -238,14 +261,14 @@ export default function SteamCredentials(): ReactElement {
               }}
               value={cardSettings.smaValue}
               onChange={e => cardSettings.setSmaValue(e.target.value)}
-              type='password'
+              type="password"
             />
-            <div className='flex justify-end gap-2'>
+            <div className="flex justify-end gap-2">
               <Button
-                size='sm'
-                variant='light'
-                radius='full'
-                color='danger'
+                size="sm"
+                variant="light"
+                radius="full"
+                color="danger"
                 isDisabled={!cardSettings.hasCookies}
                 onPress={() =>
                   handleCredentialsClear(
@@ -265,10 +288,12 @@ export default function SteamCredentials(): ReactElement {
                 {t('common.clear')}
               </Button>
               <Button
-                size='sm'
-                className='bg-btn-secondary text-btn-text font-bold'
-                radius='full'
-                isDisabled={cardSettings.hasCookies || !cardSettings.sidValue || !cardSettings.slsValue}
+                size="sm"
+                className="bg-btn-secondary text-btn-text font-bold"
+                radius="full"
+                isDisabled={
+                  cardSettings.hasCookies || !cardSettings.sidValue || !cardSettings.slsValue
+                }
                 onPress={() =>
                   handleCredentialsSave(
                     cardSettings.sidValue,
@@ -291,5 +316,5 @@ export default function SteamCredentials(): ReactElement {
         </div>
       </div>
     </div>
-  )
+  );
 }

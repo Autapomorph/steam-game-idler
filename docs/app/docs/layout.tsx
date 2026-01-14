@@ -1,11 +1,11 @@
-import { baseOptions } from '../../lib/layout.shared'
-import { source } from '../../lib/source'
-import { DocsLayout } from 'fumadocs-ui/layouts/docs'
-import Image from 'next/image'
-import { FaDiscord, FaGithub } from 'react-icons/fa6'
+import { baseOptions } from '../../lib/layout.shared';
+import { source } from '../../lib/source';
+import { DocsLayout } from 'fumadocs-ui/layouts/docs';
+import Image from 'next/image';
+import { FaDiscord, FaGithub } from 'react-icons/fa6';
 
 export default function Layout({ children }: LayoutProps<'/docs'>) {
-  const base = baseOptions()
+  const base = baseOptions();
 
   return (
     <DocsLayout
@@ -33,13 +33,13 @@ export default function Layout({ children }: LayoutProps<'/docs'>) {
         ...base.nav,
         title: (
           <>
-            <Image src='/logo.svg' alt='Steam Game Idler' width={24} height={24} />
-            <span className=''>Steam Game Idler</span>
+            <Image src="/logo.svg" alt="Steam Game Idler" width={24} height={24} />
+            <span className="">Steam Game Idler</span>
           </>
         ),
       }}
     >
       {children}
     </DocsLayout>
-  )
+  );
 }

@@ -1,12 +1,12 @@
-import type { ReactElement } from 'react'
+import type { ReactElement } from 'react';
 
-import { cn, Select, SelectItem } from '@heroui/react'
-import { useEffect, useState } from 'react'
-import { TbCurrencyDollar } from 'react-icons/tb'
+import { cn, Select, SelectItem } from '@heroui/react';
+import { useEffect, useState } from 'react';
+import { TbCurrencyDollar } from 'react-icons/tb';
 
 export default function CurrencySwitch(): ReactElement | null {
-  const [mounted, setMounted] = useState(false)
-  const [currentCurrency, setCurrentCurrency] = useState(localStorage.getItem('currency') || '1')
+  const [mounted, setMounted] = useState(false);
+  const [currentCurrency, setCurrentCurrency] = useState(localStorage.getItem('currency') || '1');
 
   const currencies = [
     { key: '32', label: 'AED' },
@@ -58,33 +58,36 @@ export default function CurrencySwitch(): ReactElement | null {
     { key: '41', label: 'UYU' },
     { key: '15', label: 'VND' },
     { key: '28', label: 'ZAR' },
-  ]
+  ];
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
-  if (!mounted) return null
+  if (!mounted) return null;
 
   return (
     <Select
-      aria-label='language'
+      aria-label="language"
       disallowEmptySelection
-      radius='none'
+      radius="none"
       startContent={<TbCurrencyDollar />}
       items={currencies}
-      className='w-[250px]'
+      className="w-[250px]"
       classNames={{
         listbox: ['p-0'],
         value: ['text-sm !text-content'],
-        trigger: cn('bg-input data-[hover=true]:!bg-inputhover', 'data-[open=true]:!bg-input duration-100 rounded-lg'),
+        trigger: cn(
+          'bg-input data-[hover=true]:!bg-inputhover',
+          'data-[open=true]:!bg-input duration-100 rounded-lg',
+        ),
         popoverContent: ['bg-input rounded-xl justify-start !text-content'],
       }}
       defaultSelectedKeys={[currentCurrency]}
       onSelectionChange={e => {
-        const selectedCurrency = e.currentKey
-        setCurrentCurrency(selectedCurrency || 'USD')
-        localStorage.setItem('currency', selectedCurrency || 'USD')
+        const selectedCurrency = e.currentKey;
+        setCurrentCurrency(selectedCurrency || 'USD');
+        localStorage.setItem('currency', selectedCurrency || 'USD');
       }}
     >
       {currency => (
@@ -98,5 +101,5 @@ export default function CurrencySwitch(): ReactElement | null {
         </SelectItem>
       )}
     </Select>
-  )
+  );
 }

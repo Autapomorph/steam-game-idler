@@ -1,20 +1,20 @@
-import type { Achievement, ChangedStats, Statistic } from '@/types'
-import type { Dispatch, ReactElement, SetStateAction } from 'react'
+import type { Achievement, ChangedStats, Statistic } from '@/types';
+import type { Dispatch, ReactElement, SetStateAction } from 'react';
 
-import { Button, useDisclosure } from '@heroui/react'
-import { Trans, useTranslation } from 'react-i18next'
-import { TbRotateClockwise, TbUpload } from 'react-icons/tb'
+import { Button, useDisclosure } from '@heroui/react';
+import { Trans, useTranslation } from 'react-i18next';
+import { TbRotateClockwise, TbUpload } from 'react-icons/tb';
 
-import CustomModal from '@/components/ui/CustomModal'
-import useStatisticButtons from '@/hooks/achievements/useStatisticButtons'
+import CustomModal from '@/components/ui/CustomModal';
+import useStatisticButtons from '@/hooks/achievements/useStatisticButtons';
 
 interface StatisticButtonsProps {
-  statistics: Statistic[]
-  setStatistics: Dispatch<SetStateAction<Statistic[]>>
-  changedStats: ChangedStats
-  setChangedStats: Dispatch<SetStateAction<ChangedStats>>
-  setAchievements: Dispatch<SetStateAction<Achievement[]>>
-  setRefreshKey?: Dispatch<SetStateAction<number>>
+  statistics: Statistic[];
+  setStatistics: Dispatch<SetStateAction<Statistic[]>>;
+  changedStats: ChangedStats;
+  setChangedStats: Dispatch<SetStateAction<ChangedStats>>;
+  setAchievements: Dispatch<SetStateAction<Achievement[]>>;
+  setRefreshKey?: Dispatch<SetStateAction<number>>;
 }
 
 export default function StatisticButtons({
@@ -25,34 +25,34 @@ export default function StatisticButtons({
   setAchievements,
   setRefreshKey,
 }: StatisticButtonsProps): ReactElement {
-  const { t } = useTranslation()
-  const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const { t } = useTranslation();
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { handleUpdateAllStats, handleResetAll } = useStatisticButtons(
     statistics,
     setStatistics,
     changedStats,
     setChangedStats,
     setAchievements,
-  )
+  );
 
-  const changedCount = Object.keys(changedStats).length
-  const hasChanges = changedCount > 0
+  const changedCount = Object.keys(changedStats).length;
+  const hasChanges = changedCount > 0;
 
   return (
-    <div className='absolute top-0 right-0 flex gap-2 mt-4 px-10'>
+    <div className="absolute top-0 right-0 flex gap-2 mt-4 px-10">
       <Button
-        className='bg-btn-secondary text-btn-text font-bold'
-        radius='full'
+        className="bg-btn-secondary text-btn-text font-bold"
+        radius="full"
         onPress={() => {
-          if (setRefreshKey) setRefreshKey(prev => prev + 1)
+          if (setRefreshKey) setRefreshKey(prev => prev + 1);
         }}
       >
         {t('setup.refresh')}
       </Button>
 
       <Button
-        className='bg-btn-secondary text-btn-text font-bold'
-        radius='full'
+        className="bg-btn-secondary text-btn-text font-bold"
+        radius="full"
         onPress={handleUpdateAllStats}
         isDisabled={!hasChanges}
         startContent={<TbUpload size={19} />}
@@ -61,11 +61,11 @@ export default function StatisticButtons({
       </Button>
 
       <Button
-        className='font-bold'
-        radius='full'
-        color='danger'
+        className="font-bold"
+        radius="full"
+        color="danger"
         onPress={onOpen}
-        startContent={<TbRotateClockwise className='rotate-90' size={20} />}
+        startContent={<TbRotateClockwise className="rotate-90" size={20} />}
       >
         {t('achievementManager.statistics.resetAll')}
       </Button>
@@ -75,8 +75,8 @@ export default function StatisticButtons({
         onOpenChange={onOpenChange}
         title={t('common.confirm')}
         body={
-          <p className='text-sm'>
-            <Trans i18nKey='confirmation.resetStatistics'>
+          <p className="text-sm">
+            <Trans i18nKey="confirmation.resetStatistics">
               Are you sure you want to <strong>reset</strong> all statistics?
             </Trans>
           </p>
@@ -84,19 +84,19 @@ export default function StatisticButtons({
         buttons={
           <>
             <Button
-              size='sm'
-              color='danger'
-              variant='light'
-              radius='full'
-              className='font-semibold'
+              size="sm"
+              color="danger"
+              variant="light"
+              radius="full"
+              className="font-semibold"
               onPress={onOpenChange}
             >
               {t('common.cancel')}
             </Button>
             <Button
-              size='sm'
-              className='bg-btn-secondary text-btn-text font-bold'
-              radius='full'
+              size="sm"
+              className="bg-btn-secondary text-btn-text font-bold"
+              radius="full"
               onPress={() => handleResetAll(onOpenChange)}
             >
               {t('common.confirm')}
@@ -105,5 +105,5 @@ export default function StatisticButtons({
         }
       />
     </div>
-  )
+  );
 }

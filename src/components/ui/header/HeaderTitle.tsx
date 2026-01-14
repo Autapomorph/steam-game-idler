@@ -1,16 +1,19 @@
-import type { ReactElement } from 'react'
+import type { ReactElement } from 'react';
 
-import { cn } from '@heroui/react'
-import { useStateStore } from '@/stores/stateStore'
+import { cn } from '@heroui/react';
+import { useStateStore } from '@/stores/stateStore';
 
-import Logo from '@/components/ui/header/Logo'
+import Logo from '@/components/ui/header/Logo';
 
 export default function HeaderTitle(): ReactElement {
-  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
+  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed);
 
   return (
     <div
-      className={cn('flex items-center duration-300', sidebarCollapsed ? 'justify-center' : 'justify-start ml-2')}
+      className={cn(
+        'flex items-center duration-300',
+        sidebarCollapsed ? 'justify-center' : 'justify-start ml-2',
+      )}
       data-tauri-drag-region
     >
       <Logo />
@@ -28,5 +31,5 @@ export default function HeaderTitle(): ReactElement {
         </div>
       )}
     </div>
-  )
+  );
 }

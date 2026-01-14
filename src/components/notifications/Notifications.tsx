@@ -1,17 +1,22 @@
-import type { ReactElement } from 'react'
+import type { ReactElement } from 'react';
 
-import { cn } from '@heroui/react'
-import { useEffect } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
-import { useTranslation } from 'react-i18next'
-import { GoDotFill } from 'react-icons/go'
-import { TbBell } from 'react-icons/tb'
+import { cn } from '@heroui/react';
+import { useEffect } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
+import { GoDotFill } from 'react-icons/go';
+import { TbBell } from 'react-icons/tb';
 
-import CustomTooltip from '@/components/ui/CustomTooltip'
-import { handleOpenUrl, markAllAsSeen, timeAgo, useNotifications } from '@/hooks/notifications/useNotifications'
+import CustomTooltip from '@/components/ui/CustomTooltip';
+import {
+  handleOpenUrl,
+  markAllAsSeen,
+  timeAgo,
+  useNotifications,
+} from '@/hooks/notifications/useNotifications';
 
 export default function Notifications(): ReactElement {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const {
     notifications,
     showNotifications,
@@ -19,23 +24,23 @@ export default function Notifications(): ReactElement {
     unseenNotifications,
     setUnseenNotifications,
     dropdownRef,
-  } = useNotifications()
+  } = useNotifications();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent): void => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setShowNotifications(false)
+        setShowNotifications(false);
       }
-    }
+    };
 
-    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [dropdownRef, setShowNotifications])
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [dropdownRef, setShowNotifications]);
 
   return (
-    <div className='relative'>
+    <div className="relative">
       <CustomTooltip content={t('common.notifications')}>
         <div
           className={cn(
@@ -43,13 +48,16 @@ export default function Notifications(): ReactElement {
             'cursor-pointer active:scale-95 relative duration-150',
           )}
           onClick={() => {
-            setShowNotifications(!showNotifications)
+            setShowNotifications(!showNotifications);
           }}
         >
-          <TbBell fontSize={20} className={cn(unseenNotifications.length > 0 && 'text-yellow-400')} />
+          <TbBell
+            fontSize={20}
+            className={cn(unseenNotifications.length > 0 && 'text-yellow-400')}
+          />
           {/* Notification counter badge */}
           {unseenNotifications.length > 0 && (
-            <span className='absolute flex justify-center items-center w-4 h-4 top-1 right-2 bg-danger text-white text-[10px] font-bold rounded-full shadow'>
+            <span className="absolute flex justify-center items-center w-4 h-4 top-1 right-2 bg-danger text-white text-[10px] font-bold rounded-full shadow">
               {unseenNotifications.length}
             </span>
           )}
@@ -59,7 +67,7 @@ export default function Notifications(): ReactElement {
         {showNotifications && (
           <>
             <motion.div
-              className='fixed inset-0 bg-black opacity-50 z-998'
+              className="fixed inset-0 bg-black opacity-50 z-998"
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.5 }}
               exit={{ opacity: 0 }}
@@ -100,7 +108,7 @@ export default function Notifications(): ReactElement {
                 )}
               >
                 <span />
-                <div className='flex gap-3'>
+                <div className="flex gap-3">
                   {notifications.length > 0 && (
                     <button
                       className={cn(
@@ -114,11 +122,11 @@ export default function Notifications(): ReactElement {
                 </div>
               </div>
               {/* Notification list or empty state */}
-              <div className='max-h-[550px] overflow-y-auto'>
+              <div className="max-h-[550px] overflow-y-auto">
                 {notifications.length === 0 ? (
-                  <div className='flex flex-col items-center justify-center py-16 text-center text-altwhite/85'>
-                    <TbBell size={48} className='mb-2 opacity-30' />
-                    <p className='text-sm'>{t('notifications.empty')}</p>
+                  <div className="flex flex-col items-center justify-center py-16 text-center text-altwhite/85">
+                    <TbBell size={48} className="mb-2 opacity-30" />
+                    <p className="text-sm">{t('notifications.empty')}</p>
                   </div>
                 ) : (
                   notifications.map(notification => (
@@ -131,7 +139,12 @@ export default function Notifications(): ReactElement {
                           : 'hover:bg-item-hover',
                       )}
                       onClick={() =>
-                        handleOpenUrl(notification.url, notification.id, unseenNotifications, setUnseenNotifications)
+                        handleOpenUrl(
+                          notification.url,
+                          notification.id,
+                          unseenNotifications,
+                          setUnseenNotifications,
+                        )
                       }
                     >
                       {/* Icon for notification */}
@@ -146,14 +159,18 @@ export default function Notifications(): ReactElement {
                       />
 
                       {/* Notification content */}
-                      <div className='flex flex-col gap-1 w-full'>
-                        <div className='flex items-center gap-2'>
-                          <span className='text-xs font-semibold truncate'>{notification.title}</span>
-                          <span className='font-normal text-altwhite text-[11px] ml-1 min-w-12'>
+                      <div className="flex flex-col gap-1 w-full">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-semibold truncate">
+                            {notification.title}
+                          </span>
+                          <span className="font-normal text-altwhite text-[11px] ml-1 min-w-12">
                             • {timeAgo(Number(notification.timestamp))}
                           </span>
                         </div>
-                        <span className='text-xs text-wrap text-altwhite/90'>{notification.message}</span>
+                        <span className="text-xs text-wrap text-altwhite/90">
+                          {notification.message}
+                        </span>
                       </div>
                     </div>
                   ))
@@ -171,5 +188,5 @@ export default function Notifications(): ReactElement {
         )}
       </AnimatePresence>
     </div>
-  )
+  );
 }

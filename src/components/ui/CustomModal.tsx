@@ -1,17 +1,17 @@
-import type { ModalProps } from '@heroui/react'
-import type { ReactElement, ReactNode } from 'react'
+import type { ModalProps } from '@heroui/react';
+import type { ReactElement, ReactNode } from 'react';
 
-import { cn, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@heroui/react'
+import { cn, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from '@heroui/react';
 
 interface CustomModalProps {
-  isOpen?: boolean
-  onOpenChange?: () => void
-  className?: string
-  classNames?: ModalProps['classNames']
-  title?: ReactNode | string
-  body: ReactNode | string
-  buttons?: ReactNode
-  hideCloseButton?: boolean
+  isOpen?: boolean;
+  onOpenChange?: () => void;
+  className?: string;
+  classNames?: ModalProps['classNames'];
+  title?: ReactNode | string;
+  body: ReactNode | string;
+  buttons?: ReactNode;
+  hideCloseButton?: boolean;
 }
 
 export default function CustomModal({
@@ -38,13 +38,16 @@ export default function CustomModal({
     >
       <ModalContent>
         <>
-          <ModalHeader className='flex flex-col gap-1 border-b border-border/40' data-tauri-drag-region>
+          <ModalHeader
+            className="flex flex-col gap-1 border-b border-border/40"
+            data-tauri-drag-region
+          >
             {title}
           </ModalHeader>
-          <ModalBody className='my-0 p-6 text-sm max-h-80 overflow-auto'>{body}</ModalBody>
-          <ModalFooter className='border-t border-border/40 px-4 py-3'>{buttons}</ModalFooter>
+          <ModalBody className="my-0 p-6 text-sm max-h-80 overflow-auto">{body}</ModalBody>
+          <ModalFooter className="border-t border-border/40 px-4 py-3">{buttons}</ModalFooter>
         </>
       </ModalContent>
     </Modal>
-  )
+  );
 }

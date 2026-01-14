@@ -1,9 +1,9 @@
-import type { ReactElement } from 'react'
+import type { ReactElement } from 'react';
 
-import { cn } from '@heroui/react'
+import { cn } from '@heroui/react';
 
 interface BetaProps {
-  className?: string
+  className?: string;
 }
 
 export default function Beta({ className }: BetaProps): ReactElement {
@@ -17,5 +17,5 @@ export default function Beta({ className }: BetaProps): ReactElement {
     >
       beta
     </span>
-  )
+  );
 }

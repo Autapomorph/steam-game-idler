@@ -1,29 +1,29 @@
-import type { Dispatch, ReactElement, SetStateAction } from 'react'
+import type { Dispatch, ReactElement, SetStateAction } from 'react';
 
-import { Button } from '@heroui/react'
-import { useTranslation } from 'react-i18next'
-import { TbRotateClockwise } from 'react-icons/tb'
+import { Button } from '@heroui/react';
+import { useTranslation } from 'react-i18next';
+import { TbRotateClockwise } from 'react-icons/tb';
 
-import CustomModal from '@/components/ui/CustomModal'
-import useResetSettings from '@/hooks/settings/useResetSettings'
+import CustomModal from '@/components/ui/CustomModal';
+import useResetSettings from '@/hooks/settings/useResetSettings';
 
 interface ResetSettingsProps {
-  setRefreshKey: Dispatch<SetStateAction<number>>
+  setRefreshKey: Dispatch<SetStateAction<number>>;
 }
 
 export default function ResetSettings({ setRefreshKey }: ResetSettingsProps): ReactElement {
-  const { t } = useTranslation()
-  const { handleResetSettings, isOpen, onOpen, onOpenChange } = useResetSettings()
+  const { t } = useTranslation();
+  const { handleResetSettings, isOpen, onOpen, onOpenChange } = useResetSettings();
 
   return (
     <>
       <Button
-        size='sm'
-        variant='light'
-        radius='full'
-        color='danger'
+        size="sm"
+        variant="light"
+        radius="full"
+        color="danger"
         onPress={onOpen}
-        startContent={<TbRotateClockwise className='rotate-90' size={20} />}
+        startContent={<TbRotateClockwise className="rotate-90" size={20} />}
       >
         {t('settings.resetSettings.button')}
       </Button>
@@ -36,19 +36,19 @@ export default function ResetSettings({ setRefreshKey }: ResetSettingsProps): Re
         buttons={
           <>
             <Button
-              size='sm'
-              color='danger'
-              variant='light'
-              radius='full'
-              className='font-semibold'
+              size="sm"
+              color="danger"
+              variant="light"
+              radius="full"
+              className="font-semibold"
               onPress={onOpenChange}
             >
               {t('common.cancel')}
             </Button>
             <Button
-              size='sm'
-              className='bg-btn-secondary text-btn-text font-bold'
-              radius='full'
+              size="sm"
+              className="bg-btn-secondary text-btn-text font-bold"
+              radius="full"
               onPress={() => handleResetSettings(onOpenChange, setRefreshKey)}
             >
               {t('common.confirm')}
@@ -57,5 +57,5 @@ export default function ResetSettings({ setRefreshKey }: ResetSettingsProps): Re
         }
       />
     </>
-  )
+  );
 }
