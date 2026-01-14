@@ -231,7 +231,7 @@ jobs:
       - name: Create .env.production file
         run: |
           echo "KEY=${{ secrets.KEY }}" > .env.production
-          echo "STEAM_DEV_ACCOUNTS=${{ secrets.STEAM_DEV_ACCOUNTS }}" > .env.production
+          echo "STEAM_DEV_ACCOUNTS=${{ secrets.STEAM_DEV_ACCOUNTS }}" >> .env.production
         shell: pwsh
         working-directory: ${{ github.workspace }}
 

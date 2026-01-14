@@ -4,16 +4,27 @@
   "description": "Farm trading cards, manage achievements, and boost playtime effortlessly with Steam Game Idler",
   "author": "Autapomorph",
   "private": true,
+  "workspaces": [
+    "docs"
+  ],
   "scripts": {
     "dev": "next dev",
+    "dev:docs": "npm run dev -w steam-game-idler-docs",
+    "dev:all": "run-p tauri:dev dev:docs",
+    "pub:docs": "npm run pub -w steam-game-idler-docs",
     "build": "next build",
+    "build:docs": "npm run build -w steam-game-idler-docs",
+    "build:all": "run-s build build:docs",
     "start": "next start",
+    "start:docs": "npm run start -w steam-game-idler-docs",
     "lint": "eslint .",
+    "lint:docs": "npm run lint -w steam-game-idler-docs",
+    "lint:all": "run-s lint lint:docs",
     "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build",
     "prepare": "husky",
     "prettier": "prettier --write .",
-    "td": "tauri dev",
-    "tb": "tauri build",
     "main": "git checkout main && git pull && git fetch -p"
   },
   "dependencies": {
@@ -69,6 +80,7 @@
     "eslint-plugin-unused-imports": "^4.3.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
+    "npm-run-all": "^4.1.5",
     "postcss": "^8.5.6",
     "prettier": "^3.7.4",
     "tailwindcss": "^4.1.17",
