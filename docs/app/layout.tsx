@@ -6,7 +6,6 @@ import { Geist, Geist_Mono } from 'next/font/google'
 
 import './globals.css'
 
-import HelpDesk from '@docs/components/HelpDesk'
 import Script from 'next/script'
 
 const geist = Geist({
@@ -145,7 +144,6 @@ export default function Layout({ children }: LayoutProps<'/'>) {
           crossOrigin='anonymous'
         />
 
-        <HelpDesk />
       </head>
 
       <body className='flex flex-col min-h-screen'>
