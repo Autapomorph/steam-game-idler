@@ -1,6 +1,5 @@
 import AdOverlay from '@docs/components/AdOverlay'
 import SearchDialog from '@docs/components/search'
-import TelemetryLoader from '@docs/components/TelemetryLoader'
 import { RootProvider } from 'fumadocs-ui/provider/next'
 import { Geist, Geist_Mono } from 'next/font/google'
 
@@ -156,7 +155,6 @@ export default function Layout({ children }: LayoutProps<'/'>) {
         </RootProvider>
 
         <AdOverlay />
-        <TelemetryLoader />
       </body>
     </html>
   )
