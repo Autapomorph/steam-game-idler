@@ -1,14 +1,11 @@
-import type { ReactElement } from 'react';
-
 import { Spinner } from '@heroui/react';
 
-export default function Loader({
-  label,
-  styles,
-}: {
+interface Props {
   label?: string;
   styles?: string;
-}): ReactElement {
+}
+
+export default function Loader({ label, styles }: Props) {
   return (
     <div className={`flex justify-center items-center w-calc h-calc ${styles}`}>
       <Spinner

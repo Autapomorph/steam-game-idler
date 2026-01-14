@@ -1,6 +1,6 @@
 import { useDisclosure } from '@heroui/react';
-import { useUserStore } from '@/stores/userStore';
 
+import { useUserStore } from '@/stores/userStore';
 import { handleClearLogs } from '@/hooks/settings/useLogs';
 import { logEvent, preserveKeysAndClearData } from '@/utils/tasks';
 

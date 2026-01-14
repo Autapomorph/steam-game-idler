@@ -1,11 +1,9 @@
 import type { InvokeCustomList, InvokeSettings, InvokeValidateSession } from '@/types';
-
 import { invoke } from '@tauri-apps/api/core';
+import { useTranslation } from 'react-i18next';
 
 import { useStateStore } from '@/stores/stateStore';
 import { useUserStore } from '@/stores/userStore';
-import { useTranslation } from 'react-i18next';
-
 import { autoRevalidateSteamCredentials, checkSteamStatus, decrypt, logEvent } from '@/utils/tasks';
 import {
   showDangerToast,

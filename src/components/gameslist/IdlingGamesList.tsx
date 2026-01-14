@@ -1,20 +1,17 @@
-import type { InvokeKillProcess } from '@/types';
-import type { ReactElement } from 'react';
-
-import { invoke } from '@tauri-apps/api/core';
-
-import { Button, cn } from '@heroui/react';
 import { useCallback, useEffect, useState } from 'react';
+import { invoke } from '@tauri-apps/api/core';
+import { Button, cn } from '@heroui/react';
+import { TbPlayerStopFilled } from 'react-icons/tb';
+import { useTranslation } from 'react-i18next';
+
+import type { InvokeKillProcess } from '@/types';
 import { useIdleStore } from '@/stores/idleStore';
 import { useStateStore } from '@/stores/stateStore';
-import { useTranslation } from 'react-i18next';
-import { TbPlayerStopFilled } from 'react-icons/tb';
-
 import GameCard from '@/components/ui/GameCard';
 import { logEvent } from '@/utils/tasks';
 import { showDangerToast, showSuccessToast } from '@/utils/toasts';
 
-export default function IdlingGamesList(): ReactElement {
+export default function IdlingGamesList() {
   const { t } = useTranslation();
   const idleGamesList = useIdleStore(state => state.idleGamesList);
   const setIdleGamesList = useIdleStore(state => state.setIdleGamesList);

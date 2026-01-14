@@ -1,5 +1,3 @@
-import type { ReactElement } from 'react';
-
 import { FaCheck } from 'react-icons/fa';
 import { FaSteam } from 'react-icons/fa6';
 import { GoGrabber } from 'react-icons/go';
@@ -58,12 +56,12 @@ type ButtonType =
   | 'start-manually'
   | 'checkbox';
 
-interface MockButtonProps {
+interface Props {
   type: ButtonType;
   content?: string;
 }
 
-export default function MockButton({ type, content }: MockButtonProps): ReactElement | null {
+export default function MockButton({ type, content }: Props) {
   if (type === 'content') {
     return (
       <span className="inline-flex align-middle items-center justify-center bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1">

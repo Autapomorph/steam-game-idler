@@ -1,11 +1,10 @@
-import type { ReactElement } from 'react';
-
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { FiBook, FiCheck, FiDownload, FiX } from 'react-icons/fi';
 import { TbCards, TbShield, TbUsers } from 'react-icons/tb';
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'ArchiSteamFarm Feature Comparison',
   description:
     'See why Steam Game Idler is the best alternative to ArchiSteamFarm for Steam automation. Compare features like card farming, achievement management, and user experience',
@@ -36,7 +35,7 @@ export const metadata = {
     title: 'ArchiSteamFarm Feature Comparison | Steam Game Idler',
     description:
       'See why Steam Game Idler is the best alternative to ArchiSteamFarm for Steam automation. Compare features like card farming, achievement management, and user experience',
-    image: 'https://steamgameidler.com/asf-og-image.png',
+    images: 'https://steamgameidler.com/asf-og-image.png',
   },
   alternates: {
     canonical: '/alternatives/archisteamfarm',
@@ -87,7 +86,7 @@ const comparisonData = [
   },
 ];
 
-function ComparisonIcon({ value }: { value: boolean | string }): ReactElement | null {
+function ComparisonIcon({ value }: { value: boolean | string }) {
   if (typeof value === 'boolean') {
     return (
       <div className="flex justify-center">
@@ -99,10 +98,11 @@ function ComparisonIcon({ value }: { value: boolean | string }): ReactElement | 
       </div>
     );
   }
+
   return <span className="text-sm font-medium text-gray-700">{value}</span>;
 }
 
-export default function page(): ReactElement {
+export default function Page() {
   return (
     <div className="min-h-screen bg-linear-to-b from-white via-gray-50 to-white">
       {/* Hero Section */}

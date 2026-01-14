@@ -1,14 +1,11 @@
-import type { UserSettings } from '@/types';
-import type { ReactElement } from 'react';
-
 import { invoke } from '@tauri-apps/api/core';
 import { arch, locale, version } from '@tauri-apps/plugin-os';
-
 import { Button } from '@heroui/react';
-import { useUserStore } from '@/stores/userStore';
-import { useTranslation } from 'react-i18next';
 import { TbArrowBarUp } from 'react-icons/tb';
+import { useTranslation } from 'react-i18next';
 
+import type { UserSettings } from '@/types';
+import { useUserStore } from '@/stores/userStore';
 import { getAppVersion } from '@/utils/tasks';
 import { showDangerToast, showSuccessToast } from '@/utils/toasts';
 
@@ -147,7 +144,7 @@ export const getExportData = async (userSettings: UserSettings) => {
   return allSettings;
 };
 
-export default function ExportSettings(): ReactElement {
+export default function ExportSettings() {
   const { t } = useTranslation();
   const userSettings = useUserStore(state => state.userSettings);
 

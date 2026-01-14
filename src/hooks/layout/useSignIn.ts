@@ -1,11 +1,9 @@
-import type { InvokeUsers, InvokeUserSummary, UserSummary } from '@/types';
-
-import { invoke } from '@tauri-apps/api/core';
-
 import { useEffect, useState } from 'react';
-import { useUserStore } from '@/stores/userStore';
+import { invoke } from '@tauri-apps/api/core';
 import { useTranslation } from 'react-i18next';
 
+import type { InvokeUsers, InvokeUserSummary, UserSummary } from '@/types';
+import { useUserStore } from '@/stores/userStore';
 import { checkSteamStatus, decrypt, logEvent } from '@/utils/tasks';
 import { showAccountMismatchToast, showDangerToast } from '@/utils/toasts';
 

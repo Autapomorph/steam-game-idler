@@ -1,16 +1,14 @@
-import type { Achievement, UserSummary } from '@/types';
-import type { CSSProperties, Dispatch, ReactElement, SetStateAction } from 'react';
-
+import { memo, useMemo, type CSSProperties, type Dispatch, type SetStateAction } from 'react';
+import Image from 'next/image';
 import { Button, cn } from '@heroui/react';
-import { memo, useMemo } from 'react';
+import { TbCancel, TbLock, TbLockOpen } from 'react-icons/tb';
+import { useTranslation } from 'react-i18next';
+import { FixedSizeList as List } from 'react-window';
+
+import type { Achievement, UserSummary } from '@/types';
 import { useSearchStore } from '@/stores/searchStore';
 import { useStateStore } from '@/stores/stateStore';
 import { useUserStore } from '@/stores/userStore';
-import Image from 'next/image';
-import { useTranslation } from 'react-i18next';
-import { TbCancel, TbLock, TbLockOpen } from 'react-icons/tb';
-import { FixedSizeList as List } from 'react-window';
-
 import AchievementButtons from '@/components/achievements/AchievementButtons';
 import CustomTooltip from '@/components/ui/CustomTooltip';
 import { toggleAchievement } from '@/utils/achievements';
@@ -31,7 +29,7 @@ interface RowProps {
   data: RowData;
 }
 
-const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
+const Row = memo(({ index, style, data }: RowProps) => {
   const { userSummary, appId, appName, filteredAchievements, updateAchievement, t } = data;
   const item = filteredAchievements[index];
 
@@ -159,7 +157,7 @@ export default function AchievementsList({
   protectedAchievements,
   windowInnerHeight,
   setRefreshKey,
-}: AchievementsListProps): ReactElement {
+}: AchievementsListProps) {
   const { t } = useTranslation();
   const userSummary = useUserStore(state => state.userSummary);
   const achievementQueryValue = useSearchStore(state => state.achievementQueryValue);

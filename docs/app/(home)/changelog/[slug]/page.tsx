@@ -1,8 +1,8 @@
 import path from 'node:path';
-
-import { blog } from '../../../../lib/source';
-import { getMDXComponents } from 'mdx-components';
 import { notFound } from 'next/navigation';
+import { getMDXComponents } from 'mdx-components';
+
+import { blog } from '@lib/source';
 
 function getName(p: string) {
   return path.basename(p, path.extname(p));

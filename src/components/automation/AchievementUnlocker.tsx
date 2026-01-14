@@ -1,23 +1,21 @@
-import type { ActivePageType, Game } from '@/types';
-import type { ReactElement, SyntheticEvent } from 'react';
-
-import { Button, cn } from '@heroui/react';
-import { useEffect, useRef, useState } from 'react';
-import { useStateStore } from '@/stores/stateStore';
+import { useEffect, useRef, useState, type SyntheticEvent } from 'react';
 import Image from 'next/image';
-import { Trans, useTranslation } from 'react-i18next';
+import { Button, cn } from '@heroui/react';
 import { TbCheck, TbPlayerStopFilled } from 'react-icons/tb';
+import { Trans, useTranslation } from 'react-i18next';
 
+import type { ActivePageType, Game } from '@/types';
+import { useStateStore } from '@/stores/stateStore';
 import { useAchievementUnlocker } from '@/hooks/automation/useAchievementUnlocker';
 import { useAutomate } from '@/hooks/automation/useAutomateButtons';
 import { stopIdle } from '@/utils/idle';
 import { updateTrayIcon } from '@/utils/tasks';
 
-export default function AchievementUnlocker({
-  activePage,
-}: {
+interface Props {
   activePage: ActivePageType;
-}): ReactElement {
+}
+
+export default function AchievementUnlocker({ activePage }: Props) {
   const { t } = useTranslation();
   const isAchievementUnlocker = useStateStore(state => state.isAchievementUnlocker);
   const setIsAchievementUnlocker = useStateStore(state => state.setIsAchievementUnlocker);

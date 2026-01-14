@@ -1,10 +1,8 @@
 'use client';
 
-import type { ReactElement } from 'react';
-
 import Link from 'next/link';
 
-export default function TermsOfService(): ReactElement {
+export default function TermsOfService() {
   return (
     <div className="min-h-screen overflow-hidden py-12">
       {/* Home button */}

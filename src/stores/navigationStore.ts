@@ -1,6 +1,6 @@
-import type { ActivePageType, CurrentSettingsTabType, CurrentTabType } from '@/types';
-
 import { create } from 'zustand';
+
+import type { ActivePageType, CurrentSettingsTabType, CurrentTabType } from '@/types';
 
 interface NavigationStore {
   activePage: ActivePageType;

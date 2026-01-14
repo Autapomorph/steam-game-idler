@@ -1,15 +1,13 @@
 'use client';
 
-import type { ReactElement } from 'react';
-
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
+import Image from 'next/image';
 import { FaArrowRight, FaStar, FaWindows } from 'react-icons/fa';
 import { FaDiscord } from 'react-icons/fa6';
 import { FiBook, FiGithub } from 'react-icons/fi';
 
-export default function HeroSection(): ReactElement {
+export default function HeroSection() {
   const [latestVersion, setLatestVersion] = useState('1.2.3');
   const [stars, setStars] = useState<number | null>(null);
 

@@ -1,11 +1,10 @@
-import type { ReactElement } from 'react';
-
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { FiBook, FiCheck, FiDownload, FiShield, FiX } from 'react-icons/fi';
 import { TbAward, TbCards, TbTrendingUp } from 'react-icons/tb';
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Steam Achievement Manager Feature Comparison',
   description:
     'See why Steam Game Idler is the best alternative to Steam Achievement Manager for Steam automation. Compare features like card farming, achievement management, and user experience',
@@ -33,7 +32,7 @@ export const metadata = {
     title: 'Steam Achievement Manager Feature Comparison | Steam Game Idler',
     description:
       'See why Steam Game Idler is the best alternative to Steam Achievement Manager for Steam automation. Compare features like card farming, achievement management, and user experience',
-    image: 'https://steamgameidler.com/sam-og-image.png',
+    images: 'https://steamgameidler.com/sam-og-image.png',
   },
   alternates: {
     canonical: '/alternatives/steam-achievement-manager',
@@ -71,7 +70,7 @@ const comparisonData = [
   },
 ];
 
-function ComparisonIcon({ value }: { value: boolean | string }): ReactElement {
+function ComparisonIcon({ value }: { value: boolean | string }) {
   if (typeof value === 'boolean') {
     return (
       <div className="flex justify-center">
@@ -83,10 +82,11 @@ function ComparisonIcon({ value }: { value: boolean | string }): ReactElement {
       </div>
     );
   }
+
   return <span className="text-sm font-medium text-gray-700">{value}</span>;
 }
 
-export default function page(): ReactElement {
+export default function Page() {
   return (
     <div className="min-h-screen bg-linear-to-b from-white via-gray-50 to-white">
       {/* Hero Section */}

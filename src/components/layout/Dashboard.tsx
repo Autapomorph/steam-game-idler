@@ -1,10 +1,8 @@
-import type { ActivePageType, CustomListType } from '@/types';
-import type { ReactElement } from 'react';
-
 import { useEffect } from 'react';
+
+import type { ActivePageType, CustomListType } from '@/types';
 import { useNavigationStore } from '@/stores/navigationStore';
 import { useStateStore } from '@/stores/stateStore';
-
 import Achievements from '@/components/achievements/Achievements';
 import AchievementUnlocker from '@/components/automation/AchievementUnlocker';
 import CardFarming from '@/components/automation/CardFarming';
@@ -18,7 +16,7 @@ import Header from '@/components/ui/header/Header';
 import SideBar from '@/components/ui/SideBar';
 import { antiAwayStatus } from '@/utils/tasks';
 
-export default function Dashboard(): ReactElement {
+export default function Dashboard() {
   const showAchievements = useStateStore(state => state.showAchievements);
   const isCardFarming = useStateStore(state => state.isCardFarming);
   const isAchievementUnlocker = useStateStore(state => state.isAchievementUnlocker);
@@ -30,7 +28,7 @@ export default function Dashboard(): ReactElement {
     antiAwayStatus();
   }, [setActivePage]);
 
-  const renderContent = (): ReactElement => {
+  const renderContent = () => {
     if (showAchievements) return <Achievements />;
 
     const customListMap: Record<string, CustomListType> = {

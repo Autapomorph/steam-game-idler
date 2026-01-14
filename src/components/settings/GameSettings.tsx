@@ -1,15 +1,13 @@
-import type { Game } from '@/types';
-import type { CSSProperties, ReactElement, SyntheticEvent } from 'react';
-
-import { cn, Divider, Input, NumberInput } from '@heroui/react';
-import { memo, useEffect, useMemo, useState } from 'react';
-import { useUserStore } from '@/stores/userStore';
+import { memo, useEffect, useMemo, useState, type CSSProperties, type SyntheticEvent } from 'react';
 import Image from 'next/image';
-import { Trans, useTranslation } from 'react-i18next';
+import { cn, Divider, Input, NumberInput } from '@heroui/react';
 import { RiSearchLine } from 'react-icons/ri';
 import { TbChevronRight } from 'react-icons/tb';
+import { Trans, useTranslation } from 'react-i18next';
 import { FixedSizeList as List } from 'react-window';
 
+import type { Game } from '@/types';
+import { useUserStore } from '@/stores/userStore';
 import { useGameSettings } from '@/hooks/settings/useGameSettings';
 
 interface RowData {
@@ -24,7 +22,7 @@ interface RowProps {
   data: RowData;
 }
 
-const Row = memo(({ index, style, data }: RowProps): ReactElement => {
+const Row = memo(({ index, style, data }: RowProps) => {
   const { filteredGamesList, selectedGame, onGameSelect } = data;
   const item = filteredGamesList[index];
 
@@ -63,7 +61,7 @@ const Row = memo(({ index, style, data }: RowProps): ReactElement => {
 
 Row.displayName = 'Row';
 
-export default function GameSettings(): ReactElement {
+export default function GameSettings() {
   const { t } = useTranslation();
   const gamesList = useUserStore(state => state.gamesList);
   const [searchTerm, setSearchTerm] = useState('');

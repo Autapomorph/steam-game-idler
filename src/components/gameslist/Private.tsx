@@ -1,16 +1,15 @@
-import type { Dispatch, ReactElement, SetStateAction } from 'react';
-
+import type { Dispatch, SetStateAction } from 'react';
 import { Button } from '@heroui/react';
-import { useTranslation } from 'react-i18next';
 import { BiSolidMessageSquareError } from 'react-icons/bi';
+import { useTranslation } from 'react-i18next';
 
 import ExtLink from '@/components/ui/ExtLink';
 
-interface PrivateProps {
+interface Props {
   setRefreshKey: Dispatch<SetStateAction<number>>;
 }
 
-export default function Private({ setRefreshKey }: PrivateProps): ReactElement {
+export default function Private({ setRefreshKey }: Props) {
   const { t } = useTranslation();
 
   const handleRefresh = (): void => {

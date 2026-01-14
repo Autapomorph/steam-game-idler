@@ -1,21 +1,18 @@
-import type { ReactElement } from 'react';
-
-import { invoke } from '@tauri-apps/api/core';
-
-import { Button, cn, Spinner } from '@heroui/react';
 import { useEffect, useState } from 'react';
-import { useNavigationStore } from '@/stores/navigationStore';
 import Image from 'next/image';
-import { Trans, useTranslation } from 'react-i18next';
+import { invoke } from '@tauri-apps/api/core';
+import { Button, cn, Spinner } from '@heroui/react';
 import { TbArrowRight } from 'react-icons/tb';
+import { Trans, useTranslation } from 'react-i18next';
 
+import { useNavigationStore } from '@/stores/navigationStore';
 import Header from '@/components/ui/header/Header';
 import LanguageSwitch from '@/components/ui/i18n/LanguageSwitch';
 import SignInHero from '@/components/ui/SignInHero';
 import WebviewWindow from '@/components/ui/WebviewWindow';
 import useSignIn from '@/hooks/layout/useSignIn';
 
-export default function SignIn(): ReactElement {
+export default function SignIn() {
   const { t } = useTranslation();
   const setActivePage = useNavigationStore(state => state.setActivePage);
   const [refreshKey, setRefreshKey] = useState(0);

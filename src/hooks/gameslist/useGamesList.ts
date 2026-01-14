@@ -1,13 +1,10 @@
-import type { Game, InvokeGamesList, SortStyleValue } from '@/types';
-import type { Dispatch, SetStateAction } from 'react';
-
+import { useEffect, useMemo, useRef, useState, type Dispatch, type SetStateAction } from 'react';
 import { invoke } from '@tauri-apps/api/core';
-
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { useSearchStore } from '@/stores/searchStore';
-import { useUserStore } from '@/stores/userStore';
 import { useTranslation } from 'react-i18next';
 
+import type { Game, InvokeGamesList, SortStyleValue } from '@/types';
+import { useSearchStore } from '@/stores/searchStore';
+import { useUserStore } from '@/stores/userStore';
 import { decrypt, logEvent } from '@/utils/tasks';
 import { showDangerToast } from '@/utils/toasts';
 

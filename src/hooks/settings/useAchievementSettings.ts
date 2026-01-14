@@ -1,13 +1,10 @@
-import type { InvokeSettings, UserSettings, UserSummary } from '@/types';
-import type { TimeInputValue } from '@heroui/react';
-import type { Dispatch, SetStateAction } from 'react';
-
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
 import { invoke } from '@tauri-apps/api/core';
-
-import { useEffect, useState } from 'react';
-import { useUserStore } from '@/stores/userStore';
+import type { TimeInputValue } from '@heroui/react';
 import { useTranslation } from 'react-i18next';
 
+import type { InvokeSettings, UserSettings, UserSummary } from '@/types';
+import { useUserStore } from '@/stores/userStore';
 import { logEvent } from '@/utils/tasks';
 import { showDangerToast, t } from '@/utils/toasts';
 

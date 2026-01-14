@@ -1,14 +1,12 @@
-import type { ActivePageType, CurrentTabType } from '@/types';
 import type { Dispatch, SetStateAction } from 'react';
-
 import { invoke } from '@tauri-apps/api/core';
-
 import { useDisclosure } from '@heroui/react';
+import { useTranslation } from 'react-i18next';
+
+import type { ActivePageType, CurrentTabType } from '@/types';
 import { useNavigationStore } from '@/stores/navigationStore';
 import { useSearchStore } from '@/stores/searchStore';
 import { useUserStore } from '@/stores/userStore';
-import { useTranslation } from 'react-i18next';
-
 import { logEvent } from '@/utils/tasks';
 import { showDangerToast } from '@/utils/toasts';
 

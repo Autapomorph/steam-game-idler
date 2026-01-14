@@ -1,10 +1,11 @@
-import SearchDialog from '@docs/components/search';
-import { RootProvider } from 'fumadocs-ui/provider/next';
+import type { Metadata } from 'next';
+import Script from 'next/script';
 import { Geist, Geist_Mono } from 'next/font/google';
 
-import './globals.css';
+import SearchDialog from '@docs/components/search';
+import { RootProvider } from 'fumadocs-ui/provider/next';
 
-import Script from 'next/script';
+import './globals.css';
 
 const geist = Geist({
   variable: '--font-sans',
@@ -16,7 +17,7 @@ const mono = Geist_Mono({
   subsets: ['latin'],
 });
 
-export const metadata = {
+export const metadata: Metadata = {
   title: {
     default:
       'Steam Game Idler – The best alternative to ArchiSteamFarm, Steam Achievement Manager, and Idle Master',
@@ -61,7 +62,7 @@ export const metadata = {
       'Steam Game Idler – The best alternative to ArchiSteamFarm, Steam Achievement Manager, and Idle Master',
     description:
       'The best Steam card farmer and achievement manager in 2025. Farm trading cards, manage achievements, and idle games automatically. A great alternative to ArchiSteamFarm, Steam Achievement Manager, and Idle Master.',
-    image: 'https://steamgameidler.com/og-image.png',
+    images: 'https://steamgameidler.com/og-image.png',
   },
   other: {
     'msapplication-TileColor': '#fff',

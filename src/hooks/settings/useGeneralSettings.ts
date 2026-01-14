@@ -1,12 +1,9 @@
-import type { InvokeSettings, InvokeValidateKey, UserSettings } from '@/types';
-import type { Dispatch, SetStateAction } from 'react';
-
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
 import { invoke } from '@tauri-apps/api/core';
 import { disable, enable, isEnabled } from '@tauri-apps/plugin-autostart';
 
-import { useEffect, useState } from 'react';
+import type { InvokeSettings, InvokeValidateKey, UserSettings } from '@/types';
 import { useUserStore } from '@/stores/userStore';
-
 import { encrypt, logEvent } from '@/utils/tasks';
 import { showDangerToast, showSuccessToast, t } from '@/utils/toasts';
 

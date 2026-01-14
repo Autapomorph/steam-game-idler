@@ -1,8 +1,7 @@
-import type { Achievement, UserSummary } from '@/types';
 import type { Dispatch, SetStateAction } from 'react';
-
 import { useTranslation } from 'react-i18next';
 
+import type { Achievement, UserSummary } from '@/types';
 import { lockAllAchievements, unlockAllAchievements } from '@/utils/achievements';
 import { checkSteamStatus, logEvent } from '@/utils/tasks';
 import { showAccountMismatchToast, showDangerToast, showSuccessToast } from '@/utils/toasts';

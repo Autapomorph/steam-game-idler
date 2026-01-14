@@ -1,13 +1,12 @@
-import type { Game } from '@/types';
-import type { ReactElement, SyntheticEvent } from 'react';
-
-import { Button, Spinner } from '@heroui/react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, type SyntheticEvent } from 'react';
 import Image from 'next/image';
-import { useTranslation } from 'react-i18next';
+import { Button, Spinner } from '@heroui/react';
 import { TbChevronLeft, TbChevronRight, TbPlus } from 'react-icons/tb';
+import { useTranslation } from 'react-i18next';
 
-interface RecommendedCardDropsCarouselProps {
+import type { Game } from '@/types';
+
+interface Props {
   gamesWithDrops: Game[];
   onAddGame: (game: Game) => void;
   isLoading: boolean;
@@ -17,7 +16,7 @@ export default function RecommendedCardDropsCarousel({
   gamesWithDrops,
   onAddGame,
   isLoading,
-}: RecommendedCardDropsCarouselProps): ReactElement {
+}: Props) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [isAutoScrolling, setIsAutoScrolling] = useState(true);
   const autoScrollIntervalRef = useRef<NodeJS.Timeout | null>(null);

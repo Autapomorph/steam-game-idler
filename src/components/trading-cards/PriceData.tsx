@@ -1,21 +1,19 @@
-import type useTradingCardsList from '@/hooks/trading-cards/useTradingCardsList';
-import type { TradingCard } from '@/types';
-import type { ReactElement } from 'react';
-
 import { Button, Spinner, useDisclosure } from '@heroui/react';
-import { useTranslation } from 'react-i18next';
 import { TbArrowRight } from 'react-icons/tb';
+import { useTranslation } from 'react-i18next';
 
+import type { TradingCard } from '@/types';
+import type useTradingCardsList from '@/hooks/trading-cards/useTradingCardsList';
 import CustomModal from '@/components/ui/CustomModal';
 import { logEvent } from '@/utils/tasks';
 import { showPriceFetchCooldownToast } from '@/utils/toasts';
 
-interface PriceDataProps {
+interface Props {
   item: TradingCard;
   tradingCardContext: ReturnType<typeof useTradingCardsList>;
 }
 
-export default function PriceData({ item, tradingCardContext }: PriceDataProps): ReactElement {
+export default function PriceData({ item, tradingCardContext }: Props) {
   const { t } = useTranslation();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 

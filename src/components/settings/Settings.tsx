@@ -1,11 +1,10 @@
-import type { CurrentSettingsTabType } from '@/types';
-import type { Key, ReactElement } from 'react';
-
+import type { Key } from 'react';
 import { Button, cn, Tab, Tabs } from '@heroui/react';
-import { useNavigationStore } from '@/stores/navigationStore';
-import { useTranslation } from 'react-i18next';
 import { TbX } from 'react-icons/tb';
+import { useTranslation } from 'react-i18next';
 
+import type { CurrentSettingsTabType } from '@/types';
+import { useNavigationStore } from '@/stores/navigationStore';
 import AchievementSettings from '@/components/settings/AchievementSettings';
 import CardSettings from '@/components/settings/CardSettings';
 import CustomizationSettings from '@/components/settings/CustomizationSettings';
@@ -18,7 +17,7 @@ import SteamCredentials from '@/components/settings/SteamCredentials';
 import TradingCardManagerSettings from '@/components/settings/TradingCardManagerSettings';
 import useSettings from '@/hooks/settings/useSettings';
 
-export default function Settings(): ReactElement {
+export default function Settings() {
   const { t } = useTranslation();
   const { version, refreshKey } = useSettings();
   const setActivePage = useNavigationStore(state => state.setActivePage);

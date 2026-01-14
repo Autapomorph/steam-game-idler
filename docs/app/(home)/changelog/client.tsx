@@ -1,15 +1,12 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import { useEffect, useRef, useState, type PropsWithChildren } from 'react';
 
-import { useEffect, useRef, useState } from 'react';
-
-interface ChangelogClientProps {
-  children: ReactNode;
+interface Props extends PropsWithChildren {
   totalPosts: number;
 }
 
-export default function ChangelogClient({ children, totalPosts }: ChangelogClientProps) {
+export default function ChangelogClient({ children, totalPosts }: Props) {
   const [visibleCount, setVisibleCount] = useState(10);
   const observerRef = useRef<IntersectionObserver | null>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);

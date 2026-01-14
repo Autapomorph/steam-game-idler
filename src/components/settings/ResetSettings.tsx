@@ -1,17 +1,16 @@
-import type { Dispatch, ReactElement, SetStateAction } from 'react';
-
+import type { Dispatch, SetStateAction } from 'react';
 import { Button } from '@heroui/react';
-import { useTranslation } from 'react-i18next';
 import { TbRotateClockwise } from 'react-icons/tb';
+import { useTranslation } from 'react-i18next';
 
 import CustomModal from '@/components/ui/CustomModal';
 import useResetSettings from '@/hooks/settings/useResetSettings';
 
-interface ResetSettingsProps {
+interface Props {
   setRefreshKey: Dispatch<SetStateAction<number>>;
 }
 
-export default function ResetSettings({ setRefreshKey }: ResetSettingsProps): ReactElement {
+export default function ResetSettings({ setRefreshKey }: Props) {
   const { t } = useTranslation();
   const { handleResetSettings, isOpen, onOpen, onOpenChange } = useResetSettings();
 

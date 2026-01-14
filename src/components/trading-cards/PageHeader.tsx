@@ -1,12 +1,4 @@
-import type useTradingCardsList from '@/hooks/trading-cards/useTradingCardsList';
-import type { cardSortOption } from '@/types';
-import type { ReactElement } from 'react';
-
 import { Button, cn, Divider, Tab, Tabs, useDisclosure } from '@heroui/react';
-import { useNavigationStore } from '@/stores/navigationStore';
-import { useSearchStore } from '@/stores/searchStore';
-import { useStateStore } from '@/stores/stateStore';
-import { useTranslation } from 'react-i18next';
 import {
   TbChecks,
   TbChevronLeft,
@@ -16,8 +8,14 @@ import {
   TbSettings,
   TbX,
 } from 'react-icons/tb';
+import { useTranslation } from 'react-i18next';
 
+import type { cardSortOption } from '@/types';
+import { useNavigationStore } from '@/stores/navigationStore';
+import { useSearchStore } from '@/stores/searchStore';
+import { useStateStore } from '@/stores/stateStore';
 import CustomModal from '@/components/ui/CustomModal';
+import type useTradingCardsList from '@/hooks/trading-cards/useTradingCardsList';
 
 // Helper function to format seconds to HH:MM:SS
 const formatTime = (seconds: number): string => {
@@ -32,7 +30,7 @@ const formatTime = (seconds: number): string => {
   ].join(':');
 };
 
-interface PageHeaderProps {
+interface Props {
   selectedCardsWithPrice: string[];
   tradingCardContext: ReturnType<typeof useTradingCardsList>;
   currentPage: number;
@@ -46,7 +44,7 @@ export default function PageHeader({
   currentPage,
   totalPages,
   onPageChange,
-}: PageHeaderProps): ReactElement {
+}: Props) {
   const { t } = useTranslation();
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed);
   const transitionDuration = useStateStore(state => state.transitionDuration);

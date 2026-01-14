@@ -1,12 +1,18 @@
-import type { Achievement, ChangedStats, Statistic } from '@/types';
-import type { ChangeEvent, CSSProperties, Dispatch, ReactElement, SetStateAction } from 'react';
-
+import {
+  memo,
+  useMemo,
+  useState,
+  type ChangeEvent,
+  type CSSProperties,
+  type Dispatch,
+  type SetStateAction,
+} from 'react';
 import { cn, NumberInput } from '@heroui/react';
-import { memo, useMemo, useState } from 'react';
-import { useSearchStore } from '@/stores/searchStore';
 import { useTranslation } from 'react-i18next';
 import { FixedSizeList as List } from 'react-window';
 
+import type { Achievement, ChangedStats, Statistic } from '@/types';
+import { useSearchStore } from '@/stores/searchStore';
 import StatisticButtons from '@/components/achievements/StatisticButtons';
 
 interface RowData {
@@ -21,7 +27,7 @@ interface RowProps {
   data: RowData;
 }
 
-const Row = memo(({ index, style, data }: RowProps): ReactElement | null => {
+const Row = memo(({ index, style, data }: RowProps) => {
   const { filteredStatistics, updateStatistic, t } = data;
   const item1 = filteredStatistics[index * 2];
   const item2 = filteredStatistics[index * 2 + 1];
@@ -131,7 +137,7 @@ export default function StatisticsList({
   setAchievements,
   windowInnerHeight,
   setRefreshKey,
-}: StatisticsListProps): ReactElement {
+}: StatisticsListProps) {
   const { t } = useTranslation();
   const statisticQueryValue = useSearchStore(state => state.statisticQueryValue);
   const [changedStats, setChangedStats] = useState<ChangedStats>({});

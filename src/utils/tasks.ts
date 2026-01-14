@@ -1,4 +1,10 @@
-import crypto from 'crypto';
+import crypto from 'node:crypto';
+import type { Dispatch, SetStateAction } from 'react';
+import { getVersion } from '@tauri-apps/api/app';
+import { invoke } from '@tauri-apps/api/core';
+import { TrayIcon } from '@tauri-apps/api/tray';
+import { open } from '@tauri-apps/plugin-shell';
+
 import type {
   InvokeSettings,
   InvokeSteamCredentials,
@@ -7,13 +13,6 @@ import type {
   UserSettings,
   UserSummary,
 } from '@/types';
-import type { Dispatch, SetStateAction } from 'react';
-
-import { getVersion } from '@tauri-apps/api/app';
-import { invoke } from '@tauri-apps/api/core';
-import { TrayIcon } from '@tauri-apps/api/tray';
-import { open } from '@tauri-apps/plugin-shell';
-
 import { fetchUserSummary } from '@/hooks/settings/useCardSettings';
 import {
   showAccountMismatchToast,

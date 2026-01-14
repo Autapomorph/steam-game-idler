@@ -1,3 +1,7 @@
+import type { Dispatch, SetStateAction } from 'react';
+import { invoke } from '@tauri-apps/api/core';
+import { useTranslation } from 'react-i18next';
+
 import type {
   Achievement,
   ChangedStats,
@@ -6,14 +10,8 @@ import type {
   Statistic,
   StatValue,
 } from '@/types';
-import type { Dispatch, SetStateAction } from 'react';
-
-import { invoke } from '@tauri-apps/api/core';
-
 import { useStateStore } from '@/stores/stateStore';
 import { useUserStore } from '@/stores/userStore';
-import { useTranslation } from 'react-i18next';
-
 import { updateStats } from '@/utils/achievements';
 import { checkSteamStatus } from '@/utils/tasks';
 import { showDangerToast, showSuccessToast, showWarningToast } from '@/utils/toasts';

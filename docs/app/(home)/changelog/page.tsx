@@ -1,8 +1,9 @@
-import { blog } from '../../../lib/source';
-import ChangelogClient from './client';
+import Link from 'next/link';
 import { PathUtils } from 'fumadocs-core/source';
 import { getMDXComponents } from 'mdx-components';
-import Link from 'next/link';
+
+import { blog } from '@lib/source';
+import ChangelogClient from './client';
 
 interface BlogData {
   title: string;

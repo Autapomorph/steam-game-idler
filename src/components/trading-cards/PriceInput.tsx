@@ -1,19 +1,17 @@
-import type useTradingCardsList from '@/hooks/trading-cards/useTradingCardsList';
-import type { TradingCard } from '@/types';
-import type { ReactElement } from 'react';
-
 import { Button, cn, NumberInput } from '@heroui/react';
-import { useTranslation } from 'react-i18next';
 import { TbPackageExport } from 'react-icons/tb';
+import { useTranslation } from 'react-i18next';
 
+import type { TradingCard } from '@/types';
+import type useTradingCardsList from '@/hooks/trading-cards/useTradingCardsList';
 import CustomTooltip from '@/components/ui/CustomTooltip';
 
-interface PriceInputProps {
+interface Props {
   item: TradingCard;
   tradingCardContext: ReturnType<typeof useTradingCardsList>;
 }
 
-export default function PriceInput({ item, tradingCardContext }: PriceInputProps): ReactElement {
+export default function PriceInput({ item, tradingCardContext }: Props) {
   const { t } = useTranslation();
 
   return (

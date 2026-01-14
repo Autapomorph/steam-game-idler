@@ -1,11 +1,9 @@
-import type { ReactElement } from 'react';
-
-import { cn } from '@heroui/react';
 import { useEffect } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
+import { cn } from '@heroui/react';
 import { GoDotFill } from 'react-icons/go';
 import { TbBell } from 'react-icons/tb';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 import CustomTooltip from '@/components/ui/CustomTooltip';
 import {
@@ -15,7 +13,7 @@ import {
   useNotifications,
 } from '@/hooks/notifications/useNotifications';
 
-export default function Notifications(): ReactElement {
+export default function Notifications() {
   const { t } = useTranslation();
   const {
     notifications,

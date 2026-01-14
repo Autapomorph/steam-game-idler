@@ -1,10 +1,8 @@
-import type { LogEntry } from '@/types';
-
+import { useEffect, useState } from 'react';
 import { invoke } from '@tauri-apps/api/core';
 import { readTextFile } from '@tauri-apps/plugin-fs';
 
-import { useEffect, useState } from 'react';
-
+import type { LogEntry } from '@/types';
 import { logEvent } from '@/utils/tasks';
 import { showDangerToast, showSuccessToast, t } from '@/utils/toasts';
 

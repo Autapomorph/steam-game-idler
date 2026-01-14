@@ -1,15 +1,14 @@
-import type { Game, SortOption } from '@/types';
-import type { Dispatch, ReactElement, SetStateAction } from 'react';
-
+import type { Dispatch, SetStateAction } from 'react';
 import { Button, cn, Divider, Tab, Tabs } from '@heroui/react';
+import { TbX } from 'react-icons/tb';
+import { useTranslation } from 'react-i18next';
+
+import type { Game, SortOption } from '@/types';
 import { useSearchStore } from '@/stores/searchStore';
 import { useUserStore } from '@/stores/userStore';
-import { useTranslation } from 'react-i18next';
-import { TbX } from 'react-icons/tb';
-
 import { handleRefetch, usePageHeader } from '@/hooks/gameslist/usePageHeader';
 
-interface PageHeaderProps {
+interface Props {
   sortStyle: string;
   setSortStyle: Dispatch<SetStateAction<string>>;
   filteredGames: Game[];
@@ -22,7 +21,7 @@ export default function PageHeader({
   setSortStyle,
   filteredGames,
   setRefreshKey,
-}: PageHeaderProps): ReactElement {
+}: Props) {
   const { t } = useTranslation();
   const userSummary = useUserStore(state => state.userSummary);
   const gameQueryValue = useSearchStore(state => state.gameQueryValue);

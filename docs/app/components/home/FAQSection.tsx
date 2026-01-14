@@ -1,7 +1,5 @@
 'use client';
 
-import type { ReactElement } from 'react';
-
 import { useState } from 'react';
 
 // FAQ data for SEO targeting
@@ -67,17 +65,14 @@ const faqData = [
   },
 ];
 
-function AccordionItem({
-  question,
-  answer,
-  open,
-  onToggle,
-}: {
+interface Props {
   question: string;
   answer: string;
   open: boolean;
   onToggle: () => void;
-}): ReactElement {
+}
+
+function AccordionItem({ question, answer, open, onToggle }: Props) {
   return (
     <div className="border border-black/5 hover:border-black/10 rounded-xl bg-white hover:bg-[#00000003] duration-150">
       <button
@@ -108,15 +103,12 @@ function AccordionItem({
   );
 }
 
-export default function FAQSection(): ReactElement {
+export default function FAQSection() {
   // State: { [section]: openQuestion }
   const [openItems, setOpenItems] = useState<{ [section: string]: string | null }>({});
 
   // Helper to render accordions for a section
-  function renderAccordionItems(
-    section: string,
-    items: { question: string; answer: string }[],
-  ): ReactElement[] {
+  function renderAccordionItems(section: string, items: { question: string; answer: string }[]) {
     return items.map(({ question, answer }) => (
       <AccordionItem
         key={question}

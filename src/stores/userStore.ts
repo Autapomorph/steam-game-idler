@@ -1,8 +1,7 @@
-import type { Game, UserSettings, UserSummary } from '@/types';
-
+import { create } from 'zustand';
 import { Time } from '@internationalized/date';
 
-import { create } from 'zustand';
+import type { Game, UserSettings, UserSummary } from '@/types';
 
 interface UserStore {
   userSummary: UserSummary;

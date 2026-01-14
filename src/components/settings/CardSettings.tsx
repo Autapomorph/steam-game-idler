@@ -1,14 +1,12 @@
-import type { ReactElement } from 'react';
-
 import { Alert, cn, Divider, Select, SelectItem } from '@heroui/react';
-import { useUserStore } from '@/stores/userStore';
-import { useTranslation } from 'react-i18next';
 import { TbChevronRight } from 'react-icons/tb';
+import { useTranslation } from 'react-i18next';
 
+import { useUserStore } from '@/stores/userStore';
 import SettingsSwitch from '@/components/settings/SettingsSwitch';
 import { handleNextTaskChange, useCardSettings } from '@/hooks/settings/useCardSettings';
 
-export default function CardSettings(): ReactElement {
+export default function CardSettings() {
   const { t } = useTranslation();
   const userSummary = useUserStore(state => state.userSummary);
   const userSettings = useUserStore(state => state.userSettings);

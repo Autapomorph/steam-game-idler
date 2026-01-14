@@ -1,10 +1,8 @@
-import type { ReactElement } from 'react';
-
 import { cn, Divider, Select, SelectItem, Slider, TimeInput } from '@heroui/react';
-import { useUserStore } from '@/stores/userStore';
-import { useTranslation } from 'react-i18next';
 import { TbChevronRight } from 'react-icons/tb';
+import { useTranslation } from 'react-i18next';
 
+import { useUserStore } from '@/stores/userStore';
 import SettingsSwitch from '@/components/settings/SettingsSwitch';
 import {
   handleNextTaskChange,
@@ -13,7 +11,7 @@ import {
   useAchievementSettings,
 } from '@/hooks/settings/useAchievementSettings';
 
-export default function AchievementSettings(): ReactElement {
+export default function AchievementSettings() {
   const { t } = useTranslation();
   const userSummary = useUserStore(state => state.userSummary);
   const userSettings = useUserStore(state => state.userSettings);

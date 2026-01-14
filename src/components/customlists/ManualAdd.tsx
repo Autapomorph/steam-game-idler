@@ -1,19 +1,18 @@
-import type { Game } from '@/types';
-import type { Dispatch, KeyboardEvent, ReactElement, SetStateAction } from 'react';
-
+import type { Dispatch, KeyboardEvent, SetStateAction } from 'react';
 import { Button, cn, Input, NumberInput, useDisclosure } from '@heroui/react';
-import { useTranslation } from 'react-i18next';
 import { TbPlus } from 'react-icons/tb';
+import { useTranslation } from 'react-i18next';
 
+import type { Game } from '@/types';
 import CustomModal from '@/components/ui/CustomModal';
 import useManualAdd from '@/hooks/customlists/useManualAdd';
 
-interface ManualAddProps {
+interface Props {
   listName: string;
   setList: Dispatch<SetStateAction<Game[]>>;
 }
 
-export default function ManualAdd({ listName, setList }: ManualAddProps): ReactElement {
+export default function ManualAdd({ listName, setList }: Props) {
   const { t } = useTranslation();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const manualAdd = useManualAdd(listName, setList);

@@ -1,3 +1,6 @@
+import type { Dispatch, RefObject, SetStateAction } from 'react';
+import { invoke } from '@tauri-apps/api/core';
+
 import type {
   CardFarmingSettings,
   Game,
@@ -6,10 +9,6 @@ import type {
   InvokeSettings,
   UserSummary,
 } from '@/types';
-import type { Dispatch, RefObject, SetStateAction } from 'react';
-
-import { invoke } from '@tauri-apps/api/core';
-
 import { startAutoIdleGames } from '@/hooks/layout/useWindow';
 import { checkDrops, getAllGamesWithDrops } from '@/utils/automation';
 import { startFarmIdle, stopFarmIdle } from '@/utils/idle';

@@ -1,14 +1,11 @@
-import type { InvokeSteamCredentials } from '@/types';
-import type { ReactElement } from 'react';
-
-import { invoke } from '@tauri-apps/api/core';
-
-import { Button, cn, Divider, Input, Spinner } from '@heroui/react';
-import { useUserStore } from '@/stores/userStore';
 import Image from 'next/image';
-import { Trans, useTranslation } from 'react-i18next';
+import { invoke } from '@tauri-apps/api/core';
+import { Button, cn, Divider, Input, Spinner } from '@heroui/react';
 import { TbChevronRight, TbEraser, TbRefresh, TbUpload } from 'react-icons/tb';
+import { Trans, useTranslation } from 'react-i18next';
 
+import type { InvokeSteamCredentials } from '@/types';
+import { useUserStore } from '@/stores/userStore';
 import ExtLink from '@/components/ui/ExtLink';
 import WebviewWindow from '@/components/ui/WebviewWindow';
 import {
@@ -20,7 +17,7 @@ import {
 import { logEvent } from '@/utils/tasks';
 import { showDangerToast } from '@/utils/toasts';
 
-export default function SteamCredentials(): ReactElement {
+export default function SteamCredentials() {
   const { t } = useTranslation();
   const userSummary = useUserStore(state => state.userSummary);
   const userSettings = useUserStore(state => state.userSettings);

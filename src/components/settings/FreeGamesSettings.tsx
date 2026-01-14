@@ -1,20 +1,17 @@
-import type { InvokeSettings, InvokeSteamCredentials } from '@/types';
-import type { ReactElement } from 'react';
-
 import { invoke } from '@tauri-apps/api/core';
-
 import { Button, Divider } from '@heroui/react';
-import { useUserStore } from '@/stores/userStore';
-import { useTranslation } from 'react-i18next';
 import { TbChevronRight } from 'react-icons/tb';
+import { useTranslation } from 'react-i18next';
 
+import type { InvokeSettings, InvokeSteamCredentials } from '@/types';
+import { useUserStore } from '@/stores/userStore';
 import SettingsSwitch from '@/components/settings/SettingsSwitch';
 import Beta from '@/components/ui/Beta';
 import WebviewWindow from '@/components/ui/WebviewWindow';
 import { logEvent } from '@/utils/tasks';
 import { showDangerToast } from '@/utils/toasts';
 
-export default function CardSettings(): ReactElement {
+export default function CardSettings() {
   const { t } = useTranslation();
   const userSummary = useUserStore(state => state.userSummary);
   const userSettings = useUserStore(state => state.userSettings);

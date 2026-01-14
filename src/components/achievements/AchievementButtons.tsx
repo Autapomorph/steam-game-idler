@@ -1,17 +1,15 @@
-import type { Achievement, SortOption } from '@/types';
-import type { Dispatch, ReactElement, SetStateAction } from 'react';
-
+import { useState, type Dispatch, type SetStateAction } from 'react';
 import { Button, cn, Select, SelectItem, useDisclosure } from '@heroui/react';
-import { useState } from 'react';
+import { TbLock, TbLockOpen, TbSortDescending2 } from 'react-icons/tb';
+import { Trans, useTranslation } from 'react-i18next';
+
+import type { Achievement, SortOption } from '@/types';
 import { useStateStore } from '@/stores/stateStore';
 import { useUserStore } from '@/stores/userStore';
-import { Trans, useTranslation } from 'react-i18next';
-import { TbLock, TbLockOpen, TbSortDescending2 } from 'react-icons/tb';
-
 import CustomModal from '@/components/ui/CustomModal';
 import useAchievementButtons from '@/hooks/achievements/useAchievementButtons';
 
-interface AchievementButtonsProps {
+interface Props {
   achievements: Achievement[];
   setAchievements: Dispatch<SetStateAction<Achievement[]>>;
   protectedAchievements: boolean;
@@ -23,7 +21,7 @@ export default function AchievementButtons({
   setAchievements,
   protectedAchievements,
   setRefreshKey,
-}: AchievementButtonsProps): ReactElement {
+}: Props) {
   const { t } = useTranslation();
   const userSummary = useUserStore(state => state.userSummary);
   const appId = useStateStore(state => state.appId);

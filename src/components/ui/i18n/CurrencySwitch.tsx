@@ -1,10 +1,8 @@
-import type { ReactElement } from 'react';
-
-import { cn, Select, SelectItem } from '@heroui/react';
 import { useEffect, useState } from 'react';
+import { cn, Select, SelectItem } from '@heroui/react';
 import { TbCurrencyDollar } from 'react-icons/tb';
 
-export default function CurrencySwitch(): ReactElement | null {
+export default function CurrencySwitch() {
   const [mounted, setMounted] = useState(false);
   const [currentCurrency, setCurrentCurrency] = useState(localStorage.getItem('currency') || '1');
 

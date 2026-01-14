@@ -1,22 +1,19 @@
-import type { ErrorInfo, ReactNode } from 'react';
-
+import { Component, type ErrorInfo, type ReactNode, type PropsWithChildren } from 'react';
 import { Button, cn } from '@heroui/react';
-import { Component } from 'react';
 
 import ExtLink from '@/components/ui/ExtLink';
 
-interface ErrorBoundaryState {
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+interface Props extends PropsWithChildren {}
+
+interface State {
   hasError: boolean;
   error: Error | null;
   errorInfo: ErrorInfo | null;
 }
 
-interface ErrorBoundaryProps {
-  children: ReactNode;
-}
-
-class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  constructor(props: ErrorBoundaryProps) {
+class ErrorBoundary extends Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     this.state = {
       hasError: false,
@@ -25,7 +22,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     };
   }
 
-  static getDerivedStateFromError(): Partial<ErrorBoundaryState> {
+  static getDerivedStateFromError(): Partial<State> {
     return { hasError: true };
   }
 

@@ -1,21 +1,20 @@
-import type { AchievementUnlockerSettings, CardFarmingSettings, GeneralSettings } from '@/types';
-import type { ChangeEvent, ReactElement } from 'react';
-
+import type { ChangeEvent } from 'react';
 import { cn, Switch } from '@heroui/react';
-import { useUserStore } from '@/stores/userStore';
 
+import type { AchievementUnlockerSettings, CardFarmingSettings, GeneralSettings } from '@/types';
+import { useUserStore } from '@/stores/userStore';
 import { useAchievementSettings } from '@/hooks/settings/useAchievementSettings';
 import { useCardSettings } from '@/hooks/settings/useCardSettings';
 import { handleRunAtStartupChange, useGeneralSettings } from '@/hooks/settings/useGeneralSettings';
 import { handleCheckboxChange } from '@/hooks/settings/useSettings';
 import { antiAwayStatus } from '@/utils/tasks';
 
-interface SettingsCheckboxProps {
+interface Props {
   type: 'general' | 'cardFarming' | 'achievementUnlocker';
   name: string;
 }
 
-export default function SettingsSwitch({ type, name }: SettingsCheckboxProps): ReactElement {
+export default function SettingsSwitch({ type, name }: Props) {
   const userSummary = useUserStore(state => state.userSummary);
   const userSettings = useUserStore(state => state.userSettings);
   const setUserSettings = useUserStore(state => state.setUserSettings);

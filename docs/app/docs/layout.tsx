@@ -1,8 +1,9 @@
-import { baseOptions } from '../../lib/layout.shared';
-import { source } from '../../lib/source';
-import { DocsLayout } from 'fumadocs-ui/layouts/docs';
 import Image from 'next/image';
+import { DocsLayout } from 'fumadocs-ui/layouts/docs';
 import { FaDiscord, FaGithub } from 'react-icons/fa6';
+
+import { baseOptions } from '@lib/layout.shared';
+import { source } from '@lib/source';
 
 export default function Layout({ children }: LayoutProps<'/docs'>) {
   const base = baseOptions();

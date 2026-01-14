@@ -1,20 +1,18 @@
-import type { Achievement, CurrentTabType, Statistic } from '@/types';
-import type { ReactElement } from 'react';
-
-import { cn, Tab, Tabs } from '@heroui/react';
 import { useState } from 'react';
-import { useNavigationStore } from '@/stores/navigationStore';
-import { useStateStore } from '@/stores/stateStore';
 import Image from 'next/image';
+import { cn, Tab, Tabs } from '@heroui/react';
 import { useTranslation } from 'react-i18next';
 
+import type { Achievement, CurrentTabType, Statistic } from '@/types';
+import { useNavigationStore } from '@/stores/navigationStore';
+import { useStateStore } from '@/stores/stateStore';
 import AchievementsList from '@/components/achievements/AchievementsList';
 import PageHeader from '@/components/achievements/PageHeader';
 import StatisticsList from '@/components/achievements/StatisticsList';
 import Loader from '@/components/ui/Loader';
 import useAchievements from '@/hooks/achievements/useAchievements';
 
-export default function Achievements(): ReactElement {
+export default function Achievements() {
   const { t } = useTranslation();
   const setCurrentTab = useNavigationStore(state => state.setCurrentTab);
   const appId = useStateStore(state => state.appId);

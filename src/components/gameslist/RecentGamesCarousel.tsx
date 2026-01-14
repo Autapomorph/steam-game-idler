@@ -1,14 +1,12 @@
-import type { Game } from '@/types';
-import type { Dispatch, ReactElement, SetStateAction } from 'react';
-
+import { useCallback, useMemo, useRef, type Dispatch, type SetStateAction } from 'react';
 import { Button, cn } from '@heroui/react';
-import { useCallback, useMemo, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
 import { TbChevronLeft, TbChevronRight } from 'react-icons/tb';
+import { useTranslation } from 'react-i18next';
 
+import type { Game } from '@/types';
 import GameCard from '@/components/ui/GameCard';
 
-interface RecentGamesCarouselProps {
+interface Props {
   gamesContext: {
     sortStyle: string;
     recentGames: Game[];
@@ -16,9 +14,7 @@ interface RecentGamesCarouselProps {
   };
 }
 
-export default function RecentGamesCarousel({
-  gamesContext,
-}: RecentGamesCarouselProps): ReactElement {
+export default function RecentGamesCarousel({ gamesContext }: Props) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
 

@@ -1,6 +1,6 @@
-import type { Game } from '@/types';
-
 import { create } from 'zustand';
+
+import type { Game } from '@/types';
 
 interface IdleStore {
   idleGamesList: Game[];

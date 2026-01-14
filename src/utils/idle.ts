@@ -1,8 +1,7 @@
-import type { GameForFarming } from '@/hooks/automation/useCardFarming';
-import type { InvokeIdle, InvokeRunningProcess, InvokeSettings, UserSummary } from '@/types';
-
 import { invoke } from '@tauri-apps/api/core';
 
+import type { InvokeIdle, InvokeRunningProcess, InvokeSettings, UserSummary } from '@/types';
+import type { GameForFarming } from '@/hooks/automation/useCardFarming';
 import { checkSteamStatus, logEvent } from '@/utils/tasks';
 import { showAccountMismatchToast, showWarningToast, t } from '@/utils/toasts';
 

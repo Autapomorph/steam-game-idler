@@ -1,7 +1,5 @@
 'use client';
 
-import type { ReactElement } from 'react';
-
 import Link from 'next/link';
 import { FiArrowRight, FiClock, FiX } from 'react-icons/fi';
 import { TbAward, TbSettings2, TbTerminal2 } from 'react-icons/tb';
@@ -49,7 +47,7 @@ const competitors = [
   },
 ];
 
-export default function ComparisonSection(): ReactElement {
+export default function ComparisonSection() {
   return (
     <section
       className="py-12 sm:py-16 md:py-20 lg:py-24 relative"

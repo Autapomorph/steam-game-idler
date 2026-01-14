@@ -1,15 +1,11 @@
-import type { GamesListHook } from '@/hooks/gameslist/useGamesList';
-import type {
-  Game,
-  InvokeCustomList,
-  InvokeFreeGames,
-  InvokeRedeemFreeGame,
-  InvokeRunningProcess,
-  InvokeSettings,
-  UserSummary,
-} from '@/types';
-import type { Dispatch, SetStateAction } from 'react';
-
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type Dispatch,
+  type SetStateAction,
+} from 'react';
 import { invoke } from '@tauri-apps/api/core';
 import { emit, listen } from '@tauri-apps/api/event';
 import { Menu, MenuItem } from '@tauri-apps/api/menu';
@@ -22,15 +18,23 @@ import {
 } from '@tauri-apps/plugin-notification';
 import { relaunch } from '@tauri-apps/plugin-process';
 import { check } from '@tauri-apps/plugin-updater';
+import { useTheme } from 'next-themes';
+import { useTranslation } from 'react-i18next';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import type {
+  Game,
+  InvokeCustomList,
+  InvokeFreeGames,
+  InvokeRedeemFreeGame,
+  InvokeRunningProcess,
+  InvokeSettings,
+  UserSummary,
+} from '@/types';
+import type { GamesListHook } from '@/hooks/gameslist/useGamesList';
 import { useIdleStore } from '@/stores/idleStore';
 import { useStateStore } from '@/stores/stateStore';
 import { useUpdateStore } from '@/stores/updateStore';
 import { useUserStore } from '@/stores/userStore';
-import { useTheme } from 'next-themes';
-import { useTranslation } from 'react-i18next';
-
 import useGamesList from '@/hooks/gameslist/useGamesList';
 import { handleRefetch } from '@/hooks/gameslist/usePageHeader';
 import { startIdle } from '@/utils/idle';

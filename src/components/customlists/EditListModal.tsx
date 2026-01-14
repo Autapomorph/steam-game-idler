@@ -1,6 +1,11 @@
-import type { Game } from '@/types';
-import type { CSSProperties, Dispatch, ReactElement, SetStateAction, SyntheticEvent } from 'react';
-
+import {
+  memo,
+  type CSSProperties,
+  type Dispatch,
+  type SetStateAction,
+  type SyntheticEvent,
+} from 'react';
+import Image from 'next/image';
 import {
   Button,
   cn,
@@ -11,12 +16,12 @@ import {
   ModalFooter,
   ModalHeader,
 } from '@heroui/react';
-import { memo } from 'react';
-import Image from 'next/image';
-import { useTranslation } from 'react-i18next';
 import { RiSearchLine } from 'react-icons/ri';
 import { TbCheck } from 'react-icons/tb';
+import { useTranslation } from 'react-i18next';
 import { FixedSizeList as List } from 'react-window';
+
+import type { Game } from '@/types';
 
 interface RowData {
   t: (key: string) => string;
@@ -35,7 +40,7 @@ interface RowProps {
   data: RowData;
 }
 
-const Row = memo(({ index, style, data }: RowProps): ReactElement => {
+const Row = memo(({ index, style, data }: RowProps) => {
   const {
     t,
     filteredGamesList,
@@ -146,7 +151,7 @@ export default function EditListModal({
   handleClearList,
   handleBlacklistGame,
   blacklist,
-}: EditListModalProps): ReactElement {
+}: EditListModalProps) {
   const { t } = useTranslation();
   const itemData = {
     t,

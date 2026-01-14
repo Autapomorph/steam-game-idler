@@ -1,19 +1,21 @@
-import type { GameWithDrops } from '@/hooks/automation/useCardFarming';
-import type { ActivePageType } from '@/types';
-import type { ReactElement } from 'react';
-
-import { Button, cn, Spinner } from '@heroui/react';
 import { useEffect, useRef, useState } from 'react';
-import { useStateStore } from '@/stores/stateStore';
 import Image from 'next/image';
-import { Trans, useTranslation } from 'react-i18next';
+import { Button, cn, Spinner } from '@heroui/react';
 import { TbCheck, TbPlayerStopFilled } from 'react-icons/tb';
+import { Trans, useTranslation } from 'react-i18next';
 
+import type { ActivePageType } from '@/types';
+import { useStateStore } from '@/stores/stateStore';
+import type { GameWithDrops } from '@/hooks/automation/useCardFarming';
 import { useAutomate } from '@/hooks/automation/useAutomateButtons';
 import { handleCancel, useCardFarming } from '@/hooks/automation/useCardFarming';
 import { updateTrayIcon } from '@/utils/tasks';
 
-export default function CardFarming({ activePage }: { activePage: ActivePageType }): ReactElement {
+interface Props {
+  activePage: ActivePageType;
+}
+
+export default function CardFarming({ activePage }: Props) {
   const { t } = useTranslation();
   const isCardFarming = useStateStore(state => state.isCardFarming);
   const setIsCardFarming = useStateStore(state => state.setIsCardFarming);
@@ -67,7 +69,7 @@ export default function CardFarming({ activePage }: { activePage: ActivePageType
     }, 5000);
   }, []);
 
-  const renderGamesList = (): ReactElement => {
+  const renderGamesList = () => {
     if (!gamesWithDrops.size) {
       return (
         <Spinner
@@ -120,7 +122,7 @@ export default function CardFarming({ activePage }: { activePage: ActivePageType
     );
   };
 
-  const renderContent = (): ReactElement => {
+  const renderContent = () => {
     if (isComplete) {
       return (
         <div className="flex flex-col items-center justify-center">

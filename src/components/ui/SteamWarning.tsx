@@ -1,17 +1,14 @@
-import type { ReactElement } from 'react';
-
-import { invoke } from '@tauri-apps/api/core';
-
-import { Button, useDisclosure } from '@heroui/react';
 import { useEffect } from 'react';
-import { useStateStore } from '@/stores/stateStore';
-import { useUserStore } from '@/stores/userStore';
+import { invoke } from '@tauri-apps/api/core';
+import { Button, useDisclosure } from '@heroui/react';
 import { useTranslation } from 'react-i18next';
 
+import { useStateStore } from '@/stores/stateStore';
+import { useUserStore } from '@/stores/userStore';
 import CustomModal from '@/components/ui/CustomModal';
 import { checkSteamStatus } from '@/utils/tasks';
 
-export default function SteamWarning(): ReactElement {
+export default function SteamWarning() {
   const { t } = useTranslation();
   const showSteamWarning = useStateStore(state => state.showSteamWarning);
   const setShowSteamWarning = useStateStore(state => state.setShowSteamWarning);

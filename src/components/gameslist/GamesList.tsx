@@ -1,12 +1,10 @@
-import type { CSSProperties, ReactElement } from 'react';
-
+import { memo, useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { cn, Spinner } from '@heroui/react';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useStateStore } from '@/stores/stateStore';
-import { useUserStore } from '@/stores/userStore';
 import { useTranslation } from 'react-i18next';
 import { VariableSizeList as List } from 'react-window';
 
+import { useStateStore } from '@/stores/stateStore';
+import { useUserStore } from '@/stores/userStore';
 import PageHeader from '@/components/gameslist/PageHeader';
 import Private from '@/components/gameslist/Private';
 import RecentGamesCarousel from '@/components/gameslist/RecentGamesCarousel';
@@ -14,7 +12,7 @@ import RecommendedGamesCarousel from '@/components/gameslist/RecommendedGamesCar
 import GameCard from '@/components/ui/GameCard';
 import useGamesList from '@/hooks/gameslist/useGamesList';
 
-export default function GamesList(): ReactElement {
+export default function GamesList() {
   const gamesContext = useGamesList();
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed);
   const transitionDuration = useStateStore(state => state.transitionDuration);
@@ -118,51 +116,49 @@ export default function GamesList(): ReactElement {
     [rows, getDynamicRowHeight],
   );
 
-  const Row = React.memo(
-    ({ index, style }: { index: number; style: CSSProperties }): ReactElement | null => {
-      const rowType = rows[index];
-      if (rowType === 'recommended') {
-        return (
-          <div style={style}>
-            <RecommendedGamesCarousel gamesContext={gamesContext} />
-          </div>
-        );
-      }
-      if (rowType === 'recent') {
-        return (
-          <div style={style}>
-            <RecentGamesCarousel gamesContext={gamesContext} />
-          </div>
-        );
-      }
-      if (rowType === 'header') {
-        return (
-          <div style={style}>
-            <p className="text-lg font-black px-6">{t('gamesList.allGames')}</p>
-          </div>
-        );
-      }
-      if (typeof rowType === 'number') {
-        return (
-          <div
-            style={style}
-            className={cn(
-              'grid gap-x-5 gap-y-4 px-6',
-              columnCount === 7 ? 'grid-cols-7' : 'grid-cols-5',
-              columnCount === 8 ? 'grid-cols-8' : '',
-              columnCount === 10 ? 'grid-cols-10' : '',
-              columnCount === 12 ? 'grid-cols-12' : '',
-            )}
-          >
-            {games.slice(rowType * columnCount, (rowType + 1) * columnCount).map(item => (
-              <GameCard key={item.appid} item={item} />
-            ))}
-          </div>
-        );
-      }
-      return null;
-    },
-  );
+  const Row = memo(({ index, style }: { index: number; style: CSSProperties }) => {
+    const rowType = rows[index];
+    if (rowType === 'recommended') {
+      return (
+        <div style={style}>
+          <RecommendedGamesCarousel gamesContext={gamesContext} />
+        </div>
+      );
+    }
+    if (rowType === 'recent') {
+      return (
+        <div style={style}>
+          <RecentGamesCarousel gamesContext={gamesContext} />
+        </div>
+      );
+    }
+    if (rowType === 'header') {
+      return (
+        <div style={style}>
+          <p className="text-lg font-black px-6">{t('gamesList.allGames')}</p>
+        </div>
+      );
+    }
+    if (typeof rowType === 'number') {
+      return (
+        <div
+          style={style}
+          className={cn(
+            'grid gap-x-5 gap-y-4 px-6',
+            columnCount === 7 ? 'grid-cols-7' : 'grid-cols-5',
+            columnCount === 8 ? 'grid-cols-8' : '',
+            columnCount === 10 ? 'grid-cols-10' : '',
+            columnCount === 12 ? 'grid-cols-12' : '',
+          )}
+        >
+          {games.slice(rowType * columnCount, (rowType + 1) * columnCount).map(item => (
+            <GameCard key={item.appid} item={item} />
+          ))}
+        </div>
+      );
+    }
+    return null;
+  });
 
   if (!gamesContext.isLoading && gamesContext.gamesList.length === 0)
     return (

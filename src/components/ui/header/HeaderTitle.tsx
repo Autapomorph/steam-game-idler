@@ -1,11 +1,9 @@
-import type { ReactElement } from 'react';
-
 import { cn } from '@heroui/react';
-import { useStateStore } from '@/stores/stateStore';
 
+import { useStateStore } from '@/stores/stateStore';
 import Logo from '@/components/ui/header/Logo';
 
-export default function HeaderTitle(): ReactElement {
+export default function HeaderTitle() {
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed);
 
   return (

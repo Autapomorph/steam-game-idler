@@ -1,21 +1,17 @@
-import type { Achievement, Game, InvokeAchievementData } from '@/types';
-import type { DragEndEvent } from '@dnd-kit/core';
-import type { ReactElement } from 'react';
-
-import { invoke } from '@tauri-apps/api/core';
-
-import { Button, Checkbox, cn, Input, Spinner } from '@heroui/react';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useUserStore } from '@/stores/userStore';
-import { DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import Image from 'next/image';
+import { invoke } from '@tauri-apps/api/core';
+import { Button, Checkbox, cn, Input, Spinner } from '@heroui/react';
+import { GoGrabber } from 'react-icons/go';
+import { FaCheck, FaPlus } from 'react-icons/fa6';
+import { DndContext, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
-import { FaCheck, FaPlus } from 'react-icons/fa6';
-import { GoGrabber } from 'react-icons/go';
 
+import type { Achievement, Game, InvokeAchievementData } from '@/types';
+import { useUserStore } from '@/stores/userStore';
 import CustomModal from '@/components/ui/CustomModal';
 import WebviewWindow from '@/components/ui/WebviewWindow';
 import { checkSteamStatus, logEvent } from '@/utils/tasks';
@@ -36,7 +32,7 @@ const SortableAchievement = memo(function SortableAchievement({
 }: SortableAchievementProps & {
   onToggleSkip: (name: string) => void;
   onSetDelay: (name: string, value: number | null) => void;
-}): ReactElement {
+}) {
   const { t } = useTranslation();
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: achievement.name,
@@ -209,7 +205,7 @@ export default function AchievementOrderModal({
   item: Game;
   isOpen: boolean;
   onOpenChange: () => void;
-}): ReactElement {
+}) {
   const { t } = useTranslation();
   const userSummary = useUserStore(state => state.userSummary);
   const [isLoading, setIsLoading] = useState(false);

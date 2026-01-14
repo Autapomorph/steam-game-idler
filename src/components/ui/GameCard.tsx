@@ -1,11 +1,6 @@
-import type { Game } from '@/types';
-import type { ReactElement, SyntheticEvent } from 'react';
-
-import { Button } from '@heroui/react';
-import { memo } from 'react';
-import { useIdleStore } from '@/stores/idleStore';
-import { useStateStore } from '@/stores/stateStore';
+import { memo, type SyntheticEvent } from 'react';
 import Image from 'next/image';
+import { Button } from '@heroui/react';
 import { FaSteam } from 'react-icons/fa';
 import {
   TbArrowsSort,
@@ -14,12 +9,15 @@ import {
   TbPlayerStopFilled,
 } from 'react-icons/tb';
 
+import type { Game } from '@/types';
+import { useIdleStore } from '@/stores/idleStore';
+import { useStateStore } from '@/stores/stateStore';
 import CardMenu from '@/components/gameslist/CardMenu';
 import ExtLink from '@/components/ui/ExtLink';
 import IdleTimer from '@/components/ui/IdleTimer';
 import { handleIdle, handleStopIdle, viewAchievments } from '@/hooks/ui/useGameCard';
 
-interface GameCardProps {
+interface Props {
   item: Game;
   isFreeGame?: boolean;
   isAchievementUnlocker?: boolean;
@@ -31,7 +29,7 @@ const GameCard = memo(function GameCard({
   isFreeGame = false,
   isAchievementUnlocker = false,
   onOpen,
-}: GameCardProps): ReactElement {
+}: Props) {
   const idleGamesList = useIdleStore(state => state.idleGamesList);
   const setIdleGamesList = useIdleStore(state => state.setIdleGamesList);
   const setAppId = useStateStore(state => state.setAppId);

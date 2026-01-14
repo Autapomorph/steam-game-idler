@@ -1,8 +1,12 @@
-import type { Dispatch, RefObject, SetStateAction } from 'react';
-
+import {
+  useEffect,
+  useRef,
+  useState,
+  type Dispatch,
+  type RefObject,
+  type SetStateAction,
+} from 'react';
 import { open } from '@tauri-apps/plugin-shell';
-
-import { useEffect, useRef, useState } from 'react';
 
 interface Notification {
   id: string;

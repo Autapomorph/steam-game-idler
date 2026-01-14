@@ -1,5 +1,5 @@
-import type { ReactElement } from 'react';
-
+import { useEffect, useState } from 'react';
+import { getVersion } from '@tauri-apps/api/app';
 import {
   Button,
   Modal,
@@ -9,19 +9,15 @@ import {
   Spinner,
   useDisclosure,
 } from '@heroui/react';
-import { useEffect, useState } from 'react';
+import { FaStar } from 'react-icons/fa6';
+import { useTranslation } from 'react-i18next';
+
+import { useUpdateStore } from '@/stores/updateStore';
+import { handleOpenExtLink } from '@/utils/tasks';
 
 import 'github-markdown-css/github-markdown-light.css';
 
-import { getVersion } from '@tauri-apps/api/app';
-
-import { useUpdateStore } from '@/stores/updateStore';
-import { useTranslation } from 'react-i18next';
-import { FaStar } from 'react-icons/fa6';
-
-import { handleOpenExtLink } from '@/utils/tasks';
-
-export default function ChangelogModal(): ReactElement | null {
+export default function ChangelogModal() {
   const { t } = useTranslation();
   const showChangelog = useUpdateStore(state => state.showChangelog);
   const setShowChangelog = useUpdateStore(state => state.setShowChangelog);

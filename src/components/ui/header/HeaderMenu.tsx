@@ -1,15 +1,12 @@
-import type { ReactElement } from 'react';
-
+import { useEffect, useState } from 'react';
 import { invoke } from '@tauri-apps/api/core';
 import { relaunch } from '@tauri-apps/plugin-process';
 import { check } from '@tauri-apps/plugin-updater';
-
 import { cn, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react';
-import { useEffect, useState } from 'react';
-import { useUpdateStore } from '@/stores/updateStore';
-import { useTranslation } from 'react-i18next';
 import { TbBookFilled, TbDownload, TbListCheck, TbSquareRoundedChevronDown } from 'react-icons/tb';
+import { useTranslation } from 'react-i18next';
 
+import { useUpdateStore } from '@/stores/updateStore';
 import CustomTooltip from '@/components/ui/CustomTooltip';
 import {
   fetchLatest,
@@ -20,7 +17,7 @@ import {
 } from '@/utils/tasks';
 import { showDangerToast, showPrimaryToast } from '@/utils/toasts';
 
-export default function HeaderMenu(): ReactElement {
+export default function HeaderMenu() {
   const { t } = useTranslation();
   const setShowChangelog = useUpdateStore(state => state.setShowChangelog);
   const [showMenu, setShowMenu] = useState(false);

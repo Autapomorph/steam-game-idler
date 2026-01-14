@@ -1,12 +1,9 @@
-import type { Game, InvokeCustomList } from '@/types';
-import type { ChangeEvent, Dispatch, SetStateAction } from 'react';
-
+import { useState, type ChangeEvent, type Dispatch, type SetStateAction } from 'react';
 import { invoke } from '@tauri-apps/api/core';
-
-import { useState } from 'react';
-import { useUserStore } from '@/stores/userStore';
 import { useTranslation } from 'react-i18next';
 
+import type { Game, InvokeCustomList } from '@/types';
+import { useUserStore } from '@/stores/userStore';
 import { logEvent } from '@/utils/tasks';
 import { showDangerToast, showWarningToast } from '@/utils/toasts';
 

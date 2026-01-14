@@ -1,19 +1,16 @@
-import type { ReactElement } from 'react';
-
+import { useState } from 'react';
 import { invoke } from '@tauri-apps/api/core';
 import { relaunch } from '@tauri-apps/plugin-process';
 import { check } from '@tauri-apps/plugin-updater';
-
 import { Spinner } from '@heroui/react';
-import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { TbCircleArrowDown } from 'react-icons/tb';
+import { useTranslation } from 'react-i18next';
 
 import CustomTooltip from '@/components/ui/CustomTooltip';
 import { logEvent } from '@/utils/tasks';
 import { showDangerToast } from '@/utils/toasts';
 
-export default function UpdateButton(): ReactElement {
+export default function UpdateButton() {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
 

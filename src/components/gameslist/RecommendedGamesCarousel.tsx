@@ -1,22 +1,18 @@
-import type { Game } from '@/types';
-import type { ReactElement } from 'react';
-
-import { Button } from '@heroui/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Button } from '@heroui/react';
 import { TbChevronLeft, TbChevronRight } from 'react-icons/tb';
+import { useTranslation } from 'react-i18next';
 
+import type { Game } from '@/types';
 import GameCard from '@/components/ui/GameCard';
 
-interface RecommendedGamesCarouselProps {
+interface Props {
   gamesContext: {
     unplayedGames: Game[];
   };
 }
 
-export default function RecommendedGamesCarousel({
-  gamesContext,
-}: RecommendedGamesCarouselProps): ReactElement {
+export default function RecommendedGamesCarousel({ gamesContext }: Props) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [isAutoScrolling, setIsAutoScrolling] = useState(true);
   const autoScrollIntervalRef = useRef<NodeJS.Timeout | null>(null);

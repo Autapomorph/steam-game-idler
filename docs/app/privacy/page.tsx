@@ -1,10 +1,8 @@
 'use client';
 
-import type { ReactElement } from 'react';
-
 import Link from 'next/link';
 
-export default function PrivacyPolicy(): ReactElement {
+export default function PrivacyPolicy() {
   return (
     <div className="min-h-screen overflow-hidden py-12">
       {/* Home button */}

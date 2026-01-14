@@ -1,17 +1,14 @@
-import type { InvokeSettings, UserSettings, UserSummary } from '@/types';
-import type { Dispatch, ReactElement, SetStateAction } from 'react';
-
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
 import { invoke } from '@tauri-apps/api/core';
-
 import { Alert, cn, Divider, NumberInput, Select, SelectItem } from '@heroui/react';
-import { useEffect, useState } from 'react';
-import { useUserStore } from '@/stores/userStore';
-import { Trans, useTranslation } from 'react-i18next';
 import { TbChevronRight } from 'react-icons/tb';
+import { Trans, useTranslation } from 'react-i18next';
 
+import type { InvokeSettings, UserSettings, UserSummary } from '@/types';
+import { useUserStore } from '@/stores/userStore';
 import { useCardSettings } from '@/hooks/settings/useCardSettings';
 
-export default function TradingCardManagerSettings(): ReactElement {
+export default function TradingCardManagerSettings() {
   const { t } = useTranslation();
   const userSummary = useUserStore(state => state.userSummary);
   const userSettings = useUserStore(state => state.userSettings);

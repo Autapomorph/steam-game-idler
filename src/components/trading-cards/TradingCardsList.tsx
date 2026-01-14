@@ -1,17 +1,15 @@
-import type { TradingCard } from '@/types';
-import type { ReactElement } from 'react';
-
-import { Alert, Checkbox, cn, Spinner } from '@heroui/react';
 import { useEffect, useMemo, useState } from 'react';
-import { useSearchStore } from '@/stores/searchStore';
-import { useStateStore } from '@/stores/stateStore';
-import { useUserStore } from '@/stores/userStore';
 import Image from 'next/image';
-import { useTranslation } from 'react-i18next';
+import { Alert, Checkbox, cn, Spinner } from '@heroui/react';
 import { FaCheckCircle } from 'react-icons/fa';
 import { SiExpertsexchange } from 'react-icons/si';
 import { TbLock, TbLockOpen } from 'react-icons/tb';
+import { useTranslation } from 'react-i18next';
 
+import type { TradingCard } from '@/types';
+import { useSearchStore } from '@/stores/searchStore';
+import { useStateStore } from '@/stores/stateStore';
+import { useUserStore } from '@/stores/userStore';
 import PageHeader from '@/components/trading-cards/PageHeader';
 import PriceData from '@/components/trading-cards/PriceData';
 import PriceInput from '@/components/trading-cards/PriceInput';
@@ -19,7 +17,7 @@ import CustomTooltip from '@/components/ui/CustomTooltip';
 import ExtLink from '@/components/ui/ExtLink';
 import useTradingCardsList from '@/hooks/trading-cards/useTradingCardsList';
 
-export default function TradingCardsList(): ReactElement {
+export default function TradingCardsList() {
   const { t } = useTranslation();
   const tradingCardQueryValue = useSearchStore(state => state.tradingCardQueryValue);
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed);
@@ -87,7 +85,7 @@ export default function TradingCardsList(): ReactElement {
     [tradingCardContext.selectedCards, tradingCardContext.changedCardPrices],
   );
 
-  const renderCard = (item: TradingCard): ReactElement | null => {
+  const renderCard = (item: TradingCard) => {
     if (!item) return null;
 
     const isLocked = lockedCards.includes(item.id);

@@ -1,13 +1,11 @@
-import type { ReactElement } from 'react';
-
-import { useNavigationStore } from '@/stores/navigationStore';
 import { FaGithub } from 'react-icons/fa6';
 import { TbBookFilled } from 'react-icons/tb';
 
+import { useNavigationStore } from '@/stores/navigationStore';
 import ExtLink from '@/components/ui/ExtLink';
 import WebviewWindow from '@/components/ui/WebviewWindow';
 
-export default function SocialButtons(): ReactElement {
+export default function SocialButtons() {
   const currentSettingsTab = useNavigationStore(state => state.currentSettingsTab);
 
   return (

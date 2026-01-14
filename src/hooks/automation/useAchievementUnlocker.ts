@@ -1,3 +1,7 @@
+import type { Dispatch, RefObject, SetStateAction } from 'react';
+import { invoke } from '@tauri-apps/api/core';
+import type { TimeInputValue } from '@heroui/react';
+
 import type {
   Achievement,
   AchievementUnlockerSettings,
@@ -7,11 +11,6 @@ import type {
   InvokeSettings,
   UserSummary,
 } from '@/types';
-import type { TimeInputValue } from '@heroui/react';
-import type { Dispatch, RefObject, SetStateAction } from 'react';
-
-import { invoke } from '@tauri-apps/api/core';
-
 import { startAutoIdleGames } from '@/hooks/layout/useWindow';
 import { unlockAchievement } from '@/utils/achievements';
 import { isWithinSchedule } from '@/utils/automation';

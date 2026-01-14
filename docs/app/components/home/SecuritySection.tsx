@@ -1,11 +1,9 @@
 'use client';
 
-import type { ReactElement } from 'react';
-
 import { FiCode, FiEye, FiRefreshCw } from 'react-icons/fi';
 import { TbBrandGithub } from 'react-icons/tb';
 
-export default function SecuritySection(): ReactElement {
+export default function SecuritySection() {
   return (
     <section
       className="py-12 sm:py-16 md:py-20 lg:py-24 relative overflow-hidden"

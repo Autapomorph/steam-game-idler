@@ -1,20 +1,18 @@
-import type { ReactElement } from 'react';
-
-import { cn } from '@heroui/react';
 import { useEffect, useState } from 'react';
-import { useNavigationStore } from '@/stores/navigationStore';
-import { useStateStore } from '@/stores/stateStore';
-import { useUpdateStore } from '@/stores/updateStore';
+import { cn } from '@heroui/react';
 import { TbLayoutSidebar, TbLayoutSidebarFilled } from 'react-icons/tb';
 import { VscChromeClose, VscChromeMaximize, VscChromeMinimize } from 'react-icons/vsc';
 
+import { useNavigationStore } from '@/stores/navigationStore';
+import { useStateStore } from '@/stores/stateStore';
+import { useUpdateStore } from '@/stores/updateStore';
 import Notifications from '@/components/notifications/Notifications';
 import HeaderMenu from '@/components/ui/header/HeaderMenu';
 import UpdateButton from '@/components/ui/UpdateButton';
 import useHeader from '@/hooks/ui/useHeader';
 import { isPortableCheck } from '@/utils/tasks';
 
-export default function Header(): ReactElement {
+export default function Header() {
   const { windowMinimize, windowToggleMaximize, windowClose } = useHeader();
   const updateAvailable = useUpdateStore(state => state.updateAvailable);
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed);

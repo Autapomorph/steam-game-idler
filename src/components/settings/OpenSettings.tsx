@@ -1,16 +1,13 @@
-import type { ReactElement } from 'react';
-
 import { invoke } from '@tauri-apps/api/core';
-
 import { Button } from '@heroui/react';
-import { useUserStore } from '@/stores/userStore';
-import { useTranslation } from 'react-i18next';
 import { TbFolders } from 'react-icons/tb';
+import { useTranslation } from 'react-i18next';
 
+import { useUserStore } from '@/stores/userStore';
 import { logEvent } from '@/utils/tasks';
 import { showDangerToast } from '@/utils/toasts';
 
-export default function OpenSettings(): ReactElement {
+export default function OpenSettings() {
   const { t } = useTranslation();
   const userSummary = useUserStore(state => state.userSummary);
 

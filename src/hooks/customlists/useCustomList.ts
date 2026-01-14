@@ -1,12 +1,16 @@
-import type { Game, InvokeCustomList, InvokeSettings } from '@/types';
-import type { Dispatch, RefObject, SetStateAction } from 'react';
-
+import {
+  useEffect,
+  useRef,
+  useState,
+  type Dispatch,
+  type RefObject,
+  type SetStateAction,
+} from 'react';
 import { invoke } from '@tauri-apps/api/core';
 
-import { useEffect, useRef, useState } from 'react';
+import type { Game, InvokeCustomList, InvokeSettings } from '@/types';
 import { useStateStore } from '@/stores/stateStore';
 import { useUserStore } from '@/stores/userStore';
-
 import { showDangerToast } from '@/utils/toasts';
 
 interface CustomListHook {

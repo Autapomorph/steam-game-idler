@@ -1,26 +1,28 @@
-import type { ChangeEvent, KeyboardEvent, ReactElement } from 'react';
-
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type KeyboardEvent,
+} from 'react';
 import { cn, Input, Modal, ModalBody, ModalContent, ModalHeader } from '@heroui/react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { RiSearchLine } from 'react-icons/ri';
+import { TbX } from 'react-icons/tb';
+import { useTranslation } from 'react-i18next';
+
 import { useNavigationStore } from '@/stores/navigationStore';
 import { useSearchStore } from '@/stores/searchStore';
 import { useStateStore } from '@/stores/stateStore';
 import { useUserStore } from '@/stores/userStore';
-import { useTranslation } from 'react-i18next';
-import { RiSearchLine } from 'react-icons/ri';
-import { TbX } from 'react-icons/tb';
-
 import useHeader from '@/hooks/ui/useHeader';
 
-interface SearchBarProps {
+interface Props {
   isModalOpen?: boolean;
   onModalClose?: () => void;
 }
 
-export default function SearchBar({
-  isModalOpen = false,
-  onModalClose,
-}: SearchBarProps): ReactElement {
+export default function SearchBar({ isModalOpen = false, onModalClose }: Props) {
   const { t } = useTranslation();
   const [inputValue, setInputValue] = useState<string>('');
   const searchContext = useSearchStore();

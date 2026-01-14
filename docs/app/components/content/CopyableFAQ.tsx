@@ -1,6 +1,6 @@
 'use client';
 
-import type { ReactElement, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import { useRef } from 'react';
 import { faqData } from '../../../content/docs/faqData';
@@ -14,7 +14,7 @@ interface Props {
   value?: string;
 }
 
-export default function CopyableFAQ({ id, question, children, value }: Props): ReactElement {
+export default function CopyableFAQ({ id, question, children, value }: Props) {
   const answerRef = useRef<HTMLDivElement>(null);
 
   const copyToClipboard = (text: string): void => {

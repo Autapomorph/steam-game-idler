@@ -1,16 +1,13 @@
-import type { InvokeSettings } from '@/types';
-import type { ReactElement } from 'react';
-
-import { invoke } from '@tauri-apps/api/core';
-
-import { Divider, Radio, RadioGroup } from '@heroui/react';
 import { useEffect, useState } from 'react';
-import { useUserStore } from '@/stores/userStore';
-import { useTheme } from 'next-themes';
 import Image from 'next/image';
-import { useTranslation } from 'react-i18next';
+import { invoke } from '@tauri-apps/api/core';
+import { Divider, Radio, RadioGroup } from '@heroui/react';
 import { TbChevronRight } from 'react-icons/tb';
+import { useTheme } from 'next-themes';
+import { useTranslation } from 'react-i18next';
 
+import type { InvokeSettings } from '@/types';
+import { useUserStore } from '@/stores/userStore';
 import SettingsSwitch from '@/components/settings/SettingsSwitch';
 
 interface Theme {
@@ -18,7 +15,7 @@ interface Theme {
   label: string;
 }
 
-export default function CustomizationSettings(): ReactElement | null {
+export default function CustomizationSettings() {
   const { t } = useTranslation();
   const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);

@@ -1,30 +1,24 @@
-import type { ReactElement } from 'react';
-
 import { invoke } from '@tauri-apps/api/core';
-
 import { Alert, Button, cn } from '@heroui/react';
+import { SiSteam, SiSteamdb } from 'react-icons/si';
+import { TbAlertHexagonFilled, TbFoldersFilled, TbX } from 'react-icons/tb';
+import { Trans, useTranslation } from 'react-i18next';
+
 import { useNavigationStore } from '@/stores/navigationStore';
 import { useSearchStore } from '@/stores/searchStore';
 import { useStateStore } from '@/stores/stateStore';
 import { useUserStore } from '@/stores/userStore';
-import { Trans, useTranslation } from 'react-i18next';
-import { SiSteam, SiSteamdb } from 'react-icons/si';
-import { TbAlertHexagonFilled, TbFoldersFilled, TbX } from 'react-icons/tb';
-
 import CustomTooltip from '@/components/ui/CustomTooltip';
 import ExtLink from '@/components/ui/ExtLink';
 import { logEvent } from '@/utils/tasks';
 import { showDangerToast } from '@/utils/toasts';
 
-interface PageHeaderProps {
+interface Props {
   protectedAchievements: boolean;
   protectedStatistics: boolean;
 }
 
-export default function PageHeader({
-  protectedAchievements,
-  protectedStatistics,
-}: PageHeaderProps): ReactElement {
+export default function PageHeader({ protectedAchievements, protectedStatistics }: Props) {
   const { t } = useTranslation();
   const userSummary = useUserStore(state => state.userSummary);
   const setAchievementsUnavailable = useUserStore(state => state.setAchievementsUnavailable);

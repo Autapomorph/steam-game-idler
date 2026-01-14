@@ -1,3 +1,6 @@
+import { useState, type Dispatch, type SetStateAction } from 'react';
+import { invoke } from '@tauri-apps/api/core';
+
 import type {
   CardFarmingUser,
   InvokeSettings,
@@ -6,13 +9,7 @@ import type {
   UserSettings,
   UserSummary,
 } from '@/types';
-import type { Dispatch, SetStateAction } from 'react';
-
-import { invoke } from '@tauri-apps/api/core';
-
-import { useEffect, useState } from 'react';
 import { useUserStore } from '@/stores/userStore';
-
 import { getAllGamesWithDrops } from '@/utils/automation';
 import { decrypt, encrypt, logEvent } from '@/utils/tasks';
 import {

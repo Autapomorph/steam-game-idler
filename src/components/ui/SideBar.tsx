@@ -1,15 +1,6 @@
-import type { SidebarItem } from '@/types/navigation';
-import type { ReactElement } from 'react';
-
-import { Button, cn, Divider } from '@heroui/react';
 import { useState } from 'react';
-import { useIdleStore } from '@/stores/idleStore';
-import { useNavigationStore } from '@/stores/navigationStore';
-import { useSearchStore } from '@/stores/searchStore';
-import { useStateStore } from '@/stores/stateStore';
-import { useUserStore } from '@/stores/userStore';
 import Image from 'next/image';
-import { useTranslation } from 'react-i18next';
+import { Button, cn, Divider } from '@heroui/react';
 import { FiLogOut } from 'react-icons/fi';
 import { RiSearchLine } from 'react-icons/ri';
 import {
@@ -23,14 +14,21 @@ import {
   TbPlayerPlay,
   TbSettings,
 } from 'react-icons/tb';
+import { useTranslation } from 'react-i18next';
 
+import type { SidebarItem } from '@/types/navigation';
+import { useIdleStore } from '@/stores/idleStore';
+import { useNavigationStore } from '@/stores/navigationStore';
+import { useSearchStore } from '@/stores/searchStore';
+import { useStateStore } from '@/stores/stateStore';
+import { useUserStore } from '@/stores/userStore';
 import Beta from '@/components/ui/Beta';
 import CustomModal from '@/components/ui/CustomModal';
 import HeaderTitle from '@/components/ui/header/HeaderTitle';
 import SearchBar from '@/components/ui/SearchBar';
 import useSideBar from '@/hooks/ui/useSideBar';
 
-export default function SideBar(): ReactElement {
+export default function SideBar() {
   const { t } = useTranslation();
   const [showSearchModal, setShowSearchModal] = useState(false);
   const activePage = useNavigationStore(state => state.activePage);
@@ -114,7 +112,7 @@ export default function SideBar(): ReactElement {
   };
 
   // Helper to render section header if needed
-  const renderSectionHeader = (index: number): ReactElement | null => {
+  const renderSectionHeader = (index: number) => {
     const header = sectionHeaders[index];
     if (!header) return null;
     if (sidebarCollapsed) {
@@ -133,7 +131,7 @@ export default function SideBar(): ReactElement {
     );
   };
 
-  const renderSidebarItem = (item: SidebarItem, index: number): ReactElement | null => {
+  const renderSidebarItem = (item: SidebarItem, index: number) => {
     const Icon = item.icon;
     const isCurrentPage = activePage === item.page;
     const isFreeGames = item.id === 'free-games';

@@ -3,7 +3,11 @@ import { FaArrowRight, FaWindows } from 'react-icons/fa';
 import { FiGithub } from 'react-icons/fi';
 import { HiOutlineLightningBolt } from 'react-icons/hi';
 
-export default function DocsCTA({ content }: { content: string }) {
+interface Props {
+  content: string;
+}
+
+export default function DocsCTA({ content }: Props) {
   return (
     <div className="not-prose my-8">
       <div className="relative overflow-hidden rounded-lg border border-neutral-200 bg-linear-to-br from-blue-50 to-indigo-50 p-8 dark:border-neutral-800 dark:from-blue-950/30 dark:to-indigo-950/30">

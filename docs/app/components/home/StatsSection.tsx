@@ -1,12 +1,10 @@
 'use client';
 
-import type { ReactElement } from 'react';
-
 import { useEffect, useState } from 'react';
 import { FiDownload, FiGlobe, FiStar } from 'react-icons/fi';
 import { TbCode } from 'react-icons/tb';
 
-export default function StatsSection(): ReactElement {
+export default function StatsSection() {
   const [githubStars, setGithubStars] = useState(999);
   const [isLoading, setIsLoading] = useState(true);
 

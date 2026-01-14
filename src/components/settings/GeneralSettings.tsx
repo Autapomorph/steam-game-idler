@@ -1,11 +1,9 @@
-import type { ReactElement } from 'react';
-
-import { Button, cn, Divider, Input } from '@heroui/react';
-import { useUserStore } from '@/stores/userStore';
 import Image from 'next/image';
-import { Trans, useTranslation } from 'react-i18next';
+import { Button, cn, Divider, Input } from '@heroui/react';
 import { TbChevronRight, TbEraser, TbUpload } from 'react-icons/tb';
+import { Trans, useTranslation } from 'react-i18next';
 
+import { useUserStore } from '@/stores/userStore';
 import SettingsSwitch from '@/components/settings/SettingsSwitch';
 import ExtLink from '@/components/ui/ExtLink';
 import CurrencySwitch from '@/components/ui/i18n/CurrencySwitch';
@@ -17,7 +15,7 @@ import {
   useGeneralSettings,
 } from '@/hooks/settings/useGeneralSettings';
 
-export default function GeneralSettings(): ReactElement {
+export default function GeneralSettings() {
   const { t } = useTranslation();
   const userSummary = useUserStore(state => state.userSummary);
   const setUserSettings = useUserStore(state => state.setUserSettings);

@@ -1,3 +1,12 @@
+import { useCallback, useEffect, useState, type ReactNode } from 'react';
+import { invoke } from '@tauri-apps/api/core';
+import { Alert, Button, cn, useDisclosure } from '@heroui/react';
+import { TbAward, TbCards, TbEdit, TbHeart, TbHourglassLow, TbSettings } from 'react-icons/tb';
+import { DndContext, type DragEndEvent } from '@dnd-kit/core';
+import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { useTranslation } from 'react-i18next';
+
 import type {
   ActivePageType,
   CurrentSettingsTabType,
@@ -5,22 +14,9 @@ import type {
   InvokeSettings,
   UserSummary,
 } from '@/types';
-import type { DragEndEvent } from '@dnd-kit/core';
-import type { ReactElement, ReactNode } from 'react';
-
-import { invoke } from '@tauri-apps/api/core';
-
-import { Alert, Button, cn, useDisclosure } from '@heroui/react';
-import { useCallback, useEffect, useState } from 'react';
 import { useNavigationStore } from '@/stores/navigationStore';
 import { useStateStore } from '@/stores/stateStore';
 import { useUserStore } from '@/stores/userStore';
-import { DndContext } from '@dnd-kit/core';
-import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import { useTranslation } from 'react-i18next';
-import { TbAward, TbCards, TbEdit, TbHeart, TbHourglassLow, TbSettings } from 'react-icons/tb';
-
 import AchievementOrderModal from '@/components/customlists/AchievementOrderModal';
 import EditListModal from '@/components/customlists/EditListModal';
 import ManualAdd from '@/components/customlists/ManualAdd';
@@ -58,7 +54,7 @@ interface ListTypeConfig {
   switches?: boolean;
 }
 
-export default function CustomList({ type }: CustomListProps): ReactElement {
+export default function CustomList({ type }: CustomListProps) {
   const { t } = useTranslation();
   const {
     list,
@@ -410,7 +406,7 @@ interface SortableGameCardProps {
   onOpen: () => void;
 }
 
-function SortableGameCard({ item, type, onOpen }: SortableGameCardProps): ReactElement {
+function SortableGameCard({ item, type, onOpen }: SortableGameCardProps) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: item.appid,
   });

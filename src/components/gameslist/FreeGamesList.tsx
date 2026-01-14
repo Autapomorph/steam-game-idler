@@ -1,15 +1,13 @@
-import type { Game } from '@/types';
-import type { ReactElement } from 'react';
-
-import { cn } from '@heroui/react';
 import { useCallback, useEffect, useState } from 'react';
-import { useStateStore } from '@/stores/stateStore';
-import { useUserStore } from '@/stores/userStore';
+import { cn } from '@heroui/react';
 import { useTranslation } from 'react-i18next';
 
+import type { Game } from '@/types';
+import { useStateStore } from '@/stores/stateStore';
+import { useUserStore } from '@/stores/userStore';
 import GameCard from '@/components/ui/GameCard';
 
-export default function FreeGamesList(): ReactElement {
+export default function FreeGamesList() {
   const { t } = useTranslation();
   const freeGamesList = useUserStore(state => state.freeGamesList);
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed);

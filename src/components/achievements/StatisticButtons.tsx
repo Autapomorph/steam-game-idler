@@ -1,14 +1,13 @@
-import type { Achievement, ChangedStats, Statistic } from '@/types';
-import type { Dispatch, ReactElement, SetStateAction } from 'react';
-
+import type { Dispatch, SetStateAction } from 'react';
 import { Button, useDisclosure } from '@heroui/react';
-import { Trans, useTranslation } from 'react-i18next';
 import { TbRotateClockwise, TbUpload } from 'react-icons/tb';
+import { Trans, useTranslation } from 'react-i18next';
 
+import type { Achievement, ChangedStats, Statistic } from '@/types';
 import CustomModal from '@/components/ui/CustomModal';
 import useStatisticButtons from '@/hooks/achievements/useStatisticButtons';
 
-interface StatisticButtonsProps {
+interface Props {
   statistics: Statistic[];
   setStatistics: Dispatch<SetStateAction<Statistic[]>>;
   changedStats: ChangedStats;
@@ -24,7 +23,7 @@ export default function StatisticButtons({
   setChangedStats,
   setAchievements,
   setRefreshKey,
-}: StatisticButtonsProps): ReactElement {
+}: Props) {
   const { t } = useTranslation();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { handleUpdateAllStats, handleResetAll } = useStatisticButtons(
