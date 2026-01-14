@@ -1,4 +1,3 @@
-import AdOverlay from '@docs/components/AdOverlay'
 import SearchDialog from '@docs/components/search'
 import { RootProvider } from 'fumadocs-ui/provider/next'
 import { Geist, Geist_Mono } from 'next/font/google'
@@ -16,12 +15,6 @@ const mono = Geist_Mono({
   variable: '--font-mono',
   subsets: ['latin'],
 })
-
-declare global {
-  interface Window {
-    adsbygoogle: Record<string, unknown>[]
-  }
-}
 
 export const metadata = {
   title: {
@@ -70,9 +63,6 @@ export const metadata = {
   },
   other: {
     'msapplication-TileColor': '#fff',
-    'google-site-verification': 'gOZEIhRh4BCNzE1r4etZeuJoex3aVaUrATjMnsnyYuY',
-    'google-adsense-account': 'ca-pub-8915288433444527',
-    'bdbfaa2fd4578c4db1970a32318ef980869bbd26': 'bdbfaa2fd4578c4db1970a32318ef980869bbd26',
     'referrer': 'strict-origin-when-cross-origin',
   },
   alternates: {
@@ -136,13 +126,6 @@ export default function Layout({ children }: LayoutProps<'/'>) {
     <html lang='en' className={`${geist.variable} ${mono.variable}`} suppressHydrationWarning>
       <head>
         <Script type='application/ld+json' dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }} />
-
-        <script
-          async
-          src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8915288433444527'
-          crossOrigin='anonymous'
-        />
-
       </head>
 
       <body className='flex flex-col min-h-screen'>
@@ -153,8 +136,6 @@ export default function Layout({ children }: LayoutProps<'/'>) {
         >
           {children}
         </RootProvider>
-
-        <AdOverlay />
       </body>
     </html>
   )
