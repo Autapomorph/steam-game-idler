@@ -259,7 +259,7 @@ jobs:
           import base64
           import json
 
-          nsis_signature_path = './src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.nsis.zip.sig'
+          nsis_signature_path = './src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.exe.sig'
           latest_json_path = './latest.json'
 
           with open(nsis_signature_path, 'r') as sig_file:
@@ -372,8 +372,7 @@ jobs:
           body_path: ./release_notes.md
           files: |
             ./src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.exe
-            ./src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.nsis.zip
-            ./src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.nsis.zip.sig
+            ./src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.exe.sig
             ./src-tauri/target/release/Steam Game Idler_${{ github.event.inputs.version }}_x64-portable.zip
 
       - name: Cleanup artifacts
