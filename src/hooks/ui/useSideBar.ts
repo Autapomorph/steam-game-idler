@@ -1,73 +1,71 @@
-import type { ActivePageType, CurrentTabType } from '@/types'
-import type { Dispatch, SetStateAction } from 'react'
+import type { Dispatch, SetStateAction } from 'react';
+import { invoke } from '@tauri-apps/api/core';
+import { useDisclosure } from '@heroui/react';
+import { useTranslation } from 'react-i18next';
 
-import { invoke } from '@tauri-apps/api/core'
-
-import { useDisclosure } from '@heroui/react'
-import { useNavigationStore } from '@/stores/navigationStore'
-import { useSearchStore } from '@/stores/searchStore'
-import { useUserStore } from '@/stores/userStore'
-import { useTranslation } from 'react-i18next'
-
-import { logEvent } from '@/utils/tasks'
-import { showDangerToast } from '@/utils/toasts'
+import type { ActivePageType, CurrentTabType } from '@/types';
+import { useNavigationStore } from '@/stores/navigationStore';
+import { useSearchStore } from '@/stores/searchStore';
+import { useUserStore } from '@/stores/userStore';
+import { logEvent } from '@/utils/tasks';
+import { showDangerToast } from '@/utils/toasts';
 
 interface SideBarHook {
-  isOpen: boolean
-  onOpenChange: () => void
-  activePage: ActivePageType
-  setActivePage: Dispatch<SetStateAction<ActivePageType>>
-  openConfirmation: () => void
-  handleLogout: (onClose: () => void) => Promise<void>
+  isOpen: boolean;
+  onOpenChange: () => void;
+  activePage: ActivePageType;
+  setActivePage: Dispatch<SetStateAction<ActivePageType>>;
+  openConfirmation: () => void;
+  handleLogout: (onClose: () => void) => Promise<void>;
 }
 
 export default function useSideBar(
   activePage: ActivePageType,
   setActivePage: Dispatch<SetStateAction<ActivePageType>>,
 ): SideBarHook {
-  const { t } = useTranslation()
-  const setGameQueryValue = useSearchStore(state => state.setGameQueryValue)
-  const setAchievementQueryValue = useSearchStore(state => state.setAchievementQueryValue)
-  const setCurrentTab = useNavigationStore(state => state.setCurrentTab)
-  const userSummary = useUserStore(state => state.userSummary)
-  const setUserSummary = useUserStore(state => state.setUserSummary)
-  const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const { t } = useTranslation();
+  const setGameQueryValue = useSearchStore(state => state.setGameQueryValue);
+  const setAchievementQueryValue = useSearchStore(state => state.setAchievementQueryValue);
+  const setCurrentTab = useNavigationStore(state => state.setCurrentTab);
+  const userSummary = useUserStore(state => state.userSummary);
+  const setUserSummary = useUserStore(state => state.setUserSummary);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const openConfirmation = (): void => {
-    onOpen()
-  }
+    onOpen();
+  };
 
   // Handle logging out
   const handleLogout = async (onClose: () => void): Promise<void> => {
     try {
-      onClose()
-      setUserSummary(null)
-      clearLocalStorageData()
-      await invoke('kill_all_steamutil_processes')
-      logEvent(`[System] Logged out of ${userSummary?.personaName}`)
+      onClose();
+      setUserSummary(null);
+      clearLocalStorageData();
+      await invoke('kill_all_steamutil_processes');
+      logEvent(`[System] Logged out of ${userSummary?.personaName}`);
     } catch (error) {
-      showDangerToast(t('common.error'))
-      console.error('Error in (handleLogout):', error)
-      logEvent(`[Error] in (handleLogout): ${error}`)
+      showDangerToast(t('common.error'));
+      console.error('Error in (handleLogout):', error);
+      logEvent(`[Error] in (handleLogout): ${error}`);
     }
-  }
+  };
 
   // Clear local storage data and reset states on logout
   const clearLocalStorageData = async (): Promise<void> => {
     try {
-      setActivePage('' as ActivePageType)
-      setCurrentTab('' as CurrentTabType)
-      setGameQueryValue('')
-      setAchievementQueryValue('')
+      setActivePage('' as ActivePageType);
+      setCurrentTab('' as CurrentTabType);
+      setGameQueryValue('');
+      setAchievementQueryValue('');
 
-      localStorage.removeItem('sortStyle')
-      localStorage.removeItem('userSummary')
+      localStorage.removeItem('sortStyle');
+      localStorage.removeItem('userSummary');
     } catch (error) {
-      showDangerToast(t('common.error'))
-      console.error('Error in (clearLocalStorageData):', error)
-      logEvent(`[Error] in (clearLocalStorageData): ${error}`)
+      showDangerToast(t('common.error'));
+      console.error('Error in (clearLocalStorageData):', error);
+      logEvent(`[Error] in (clearLocalStorageData): ${error}`);
     }
-  }
+  };
 
   return {
     isOpen,
@@ -76,5 +74,5 @@ export default function useSideBar(
     setActivePage,
     openConfirmation,
     handleLogout,
-  }
+  };
 }

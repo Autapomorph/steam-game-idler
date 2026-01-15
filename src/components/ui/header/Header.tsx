@@ -1,35 +1,33 @@
-import type { ReactElement } from 'react'
+import { useEffect, useState } from 'react';
+import { cn } from '@heroui/react';
+import { TbLayoutSidebar, TbLayoutSidebarFilled } from 'react-icons/tb';
+import { VscChromeClose, VscChromeMaximize, VscChromeMinimize } from 'react-icons/vsc';
 
-import { cn } from '@heroui/react'
-import { useEffect, useState } from 'react'
-import { useNavigationStore } from '@/stores/navigationStore'
-import { useStateStore } from '@/stores/stateStore'
-import { useUpdateStore } from '@/stores/updateStore'
-import { TbLayoutSidebar, TbLayoutSidebarFilled } from 'react-icons/tb'
-import { VscChromeClose, VscChromeMaximize, VscChromeMinimize } from 'react-icons/vsc'
+import { useNavigationStore } from '@/stores/navigationStore';
+import { useStateStore } from '@/stores/stateStore';
+import { useUpdateStore } from '@/stores/updateStore';
+import Notifications from '@/components/notifications/Notifications';
+import HeaderMenu from '@/components/ui/header/HeaderMenu';
+import UpdateButton from '@/components/ui/UpdateButton';
+import useHeader from '@/hooks/ui/useHeader';
+import { isPortableCheck } from '@/utils/tasks';
 
-import Notifications from '@/components/notifications/Notifications'
-import HeaderMenu from '@/components/ui/header/HeaderMenu'
-import UpdateButton from '@/components/ui/UpdateButton'
-import useHeader from '@/hooks/ui/useHeader'
-import { isPortableCheck } from '@/utils/tasks'
-
-export default function Header(): ReactElement {
-  const { windowMinimize, windowToggleMaximize, windowClose } = useHeader()
-  const updateAvailable = useUpdateStore(state => state.updateAvailable)
-  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
-  const transitionDuration = useStateStore(state => state.transitionDuration)
-  const setSidebarCollapsed = useStateStore(state => state.setSidebarCollapsed)
-  const setTransitionDuration = useStateStore(state => state.setTransitionDuration)
-  const activePage = useNavigationStore(state => state.activePage)
-  const [isPortable, setIsPortable] = useState<boolean | null>(null)
+export default function Header() {
+  const { windowMinimize, windowToggleMaximize, windowClose } = useHeader();
+  const updateAvailable = useUpdateStore(state => state.updateAvailable);
+  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed);
+  const transitionDuration = useStateStore(state => state.transitionDuration);
+  const setSidebarCollapsed = useStateStore(state => state.setSidebarCollapsed);
+  const setTransitionDuration = useStateStore(state => state.setTransitionDuration);
+  const activePage = useNavigationStore(state => state.activePage);
+  const [isPortable, setIsPortable] = useState<boolean | null>(null);
 
   useEffect(() => {
-    ;(async () => {
-      const portable = await isPortableCheck()
-      setIsPortable(portable)
-    })()
-  }, [])
+    (async () => {
+      const portable = await isPortableCheck();
+      setIsPortable(portable);
+    })();
+  }, []);
 
   return (
     <div
@@ -43,7 +41,7 @@ export default function Header(): ReactElement {
       }}
       data-tauri-drag-region
     >
-      <div className='flex justify-between gap-1.5 h-9 w-full' data-tauri-drag-region>
+      <div className="flex justify-between gap-1.5 h-9 w-full" data-tauri-drag-region>
         {activePage !== 'setup' && activePage !== 'settings' && (
           <div
             className={cn(
@@ -57,19 +55,23 @@ export default function Header(): ReactElement {
               transitionTimingFunction: 'ease-in-out, ease, ease',
             }}
             onClick={() => {
-              setTransitionDuration('300ms')
-              setSidebarCollapsed(!sidebarCollapsed)
-              localStorage.setItem('sidebarCollapsed', String(!sidebarCollapsed))
+              setTransitionDuration('300ms');
+              setSidebarCollapsed(!sidebarCollapsed);
+              localStorage.setItem('sidebarCollapsed', String(!sidebarCollapsed));
               setTimeout(() => {
-                setTransitionDuration('0ms')
-              }, 100)
+                setTransitionDuration('0ms');
+              }, 100);
             }}
           >
-            {sidebarCollapsed ? <TbLayoutSidebarFilled fontSize={18} /> : <TbLayoutSidebar fontSize={18} />}
+            {sidebarCollapsed ? (
+              <TbLayoutSidebarFilled fontSize={18} />
+            ) : (
+              <TbLayoutSidebar fontSize={18} />
+            )}
           </div>
         )}
 
-        <div className='flex justify-end items-center h-full w-full' data-tauri-drag-region>
+        <div className="flex justify-end items-center h-full w-full" data-tauri-drag-region>
           {isPortable === false && updateAvailable && <UpdateButton />}
 
           {activePage !== 'setup' && (
@@ -79,8 +81,8 @@ export default function Header(): ReactElement {
             </>
           )}
 
-          <div className='flex justify-center items-center'>
-            <div className='flex justify-center items-center'>
+          <div className="flex justify-center items-center">
+            <div className="flex justify-center items-center">
               <div
                 className={cn(
                   'flex justify-center items-center',
@@ -89,11 +91,11 @@ export default function Header(): ReactElement {
                 )}
                 onClick={windowMinimize}
               >
-                <VscChromeMinimize fontSize={16} className='text-content' />
+                <VscChromeMinimize fontSize={16} className="text-content" />
               </div>
             </div>
 
-            <div className='flex justify-center items-center'>
+            <div className="flex justify-center items-center">
               <div
                 className={cn(
                   'flex justify-center items-center',
@@ -102,11 +104,11 @@ export default function Header(): ReactElement {
                 )}
                 onClick={windowToggleMaximize}
               >
-                <VscChromeMaximize fontSize={16} className='text-content' />
+                <VscChromeMaximize fontSize={16} className="text-content" />
               </div>
             </div>
 
-            <div className='flex justify-center items-center'>
+            <div className="flex justify-center items-center">
               <div
                 className={cn(
                   'flex justify-center items-center',
@@ -115,12 +117,12 @@ export default function Header(): ReactElement {
                 )}
                 onClick={windowClose}
               >
-                <VscChromeClose fontSize={16} className='text-content' />
+                <VscChromeClose fontSize={16} className="text-content" />
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

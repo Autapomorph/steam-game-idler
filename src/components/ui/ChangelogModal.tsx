@@ -1,53 +1,57 @@
-import type { ReactElement } from 'react'
+import { useEffect, useState } from 'react';
+import { getVersion } from '@tauri-apps/api/app';
+import {
+  Button,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  Spinner,
+  useDisclosure,
+} from '@heroui/react';
+import { FaStar } from 'react-icons/fa6';
+import { useTranslation } from 'react-i18next';
 
-import { Button, Modal, ModalBody, ModalContent, ModalFooter, Spinner, useDisclosure } from '@heroui/react'
-import { useEffect, useState } from 'react'
+import { useUpdateStore } from '@/stores/updateStore';
+import { handleOpenExtLink } from '@/utils/tasks';
 
-import 'github-markdown-css/github-markdown-light.css'
+import 'github-markdown-css/github-markdown-light.css';
 
-import { getVersion } from '@tauri-apps/api/app'
-
-import { useUpdateStore } from '@/stores/updateStore'
-import { useTranslation } from 'react-i18next'
-import { FaStar } from 'react-icons/fa6'
-
-import { handleOpenExtLink } from '@/utils/tasks'
-
-export default function ChangelogModal(): ReactElement | null {
-  const { t } = useTranslation()
-  const showChangelog = useUpdateStore(state => state.showChangelog)
-  const setShowChangelog = useUpdateStore(state => state.setShowChangelog)
-  const { isOpen, onOpen, onOpenChange } = useDisclosure()
-  const [appVersion, setAppVersion] = useState('')
-  const [isVersionLoaded, setIsVersionLoaded] = useState(false)
+export default function ChangelogModal() {
+  const { t } = useTranslation();
+  const showChangelog = useUpdateStore(state => state.showChangelog);
+  const setShowChangelog = useUpdateStore(state => state.setShowChangelog);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [appVersion, setAppVersion] = useState('');
+  const [isVersionLoaded, setIsVersionLoaded] = useState(false);
 
   useEffect(() => {
     if (showChangelog && isVersionLoaded) {
-      onOpen()
-      setShowChangelog(false)
+      onOpen();
+      setShowChangelog(false);
     }
-  }, [onOpen, showChangelog, setShowChangelog, isVersionLoaded])
+  }, [onOpen, showChangelog, setShowChangelog, isVersionLoaded]);
 
   useEffect(() => {
-    ;(async () => {
+    (async () => {
       try {
-        const version = await getVersion()
-        setAppVersion(version)
-        setIsVersionLoaded(true)
+        const version = await getVersion();
+        setAppVersion(version);
+        setIsVersionLoaded(true);
       } catch (error) {
-        console.error('Failed to get app version:', error)
-        setAppVersion('latest')
-        setIsVersionLoaded(true)
+        console.error('Failed to get app version:', error);
+        setAppVersion('latest');
+        setIsVersionLoaded(true);
       }
-    })()
-  }, [])
+    })();
+  }, []);
 
   return (
     <Modal
       isOpen={isOpen}
       onOpenChange={onOpenChange}
-      size='lg'
-      className='text-content bg-transparent border border-border rounded-4xl'
+      size="lg"
+      className="text-content bg-transparent border border-border rounded-4xl"
       classNames={{
         closeButton: 'mr-1.5 mt-1.5',
       }}
@@ -56,44 +60,50 @@ export default function ChangelogModal(): ReactElement | null {
       }}
     >
       <ModalContent>
-        <ModalBody className='p-0'>
+        <ModalBody className="p-0">
           {isVersionLoaded ? (
-            <iframe src={`https://steamgameidler.com/changelog/${appVersion}`} className='min-h-[500px]' />
+            <iframe
+              title="Changelog"
+              src={`https://steamgameidler.com/changelog/${appVersion}`}
+              className="min-h-125"
+            />
           ) : (
-            <div className='flex items-center justify-center min-h-[500px]'>
-              <Spinner variant='simple' className='m-10' />
+            <div className="flex items-center justify-center min-h-125">
+              <Spinner variant="simple" className="m-10" />
             </div>
           )}
         </ModalBody>
 
-        <ModalFooter className='border-t border-border justify-between'>
+        <ModalFooter className="border-t border-border justify-between">
           <Button
-            size='sm'
-            color='warning'
-            variant='flat'
-            radius='full'
-            className='font-semibold'
+            size="sm"
+            color="warning"
+            variant="flat"
+            radius="full"
+            className="font-semibold"
             startContent={<FaStar size={20} />}
             onPress={() => handleOpenExtLink('https://github.com/Autapomorph/steam-game-idler')}
           >
             {t('changelog.star')}
           </Button>
-          <div className='flex gap-2'>
+          <div className="flex gap-2">
             <Button
-              size='sm'
-              color='danger'
-              variant='light'
-              radius='full'
-              className='font-semibold'
+              size="sm"
+              color="danger"
+              variant="light"
+              radius="full"
+              className="font-semibold"
               onPress={onOpenChange}
             >
               {t('common.close')}
             </Button>
             <Button
-              size='sm'
-              radius='full'
-              className='bg-white text-black font-semibold'
-              onPress={() => handleOpenExtLink(`https://steamgameidler.com/changelog#${appVersion}`)}
+              size="sm"
+              radius="full"
+              className="bg-white text-black font-semibold"
+              onPress={() =>
+                handleOpenExtLink(`https://steamgameidler.com/changelog#${appVersion}`)
+              }
             >
               {t('menu.changelog')}
             </Button>
@@ -101,5 +111,5 @@ export default function ChangelogModal(): ReactElement | null {
         </ModalFooter>
       </ModalContent>
     </Modal>
-  )
+  );
 }

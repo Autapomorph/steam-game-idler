@@ -1,60 +1,63 @@
-import type { ReactElement } from 'react'
+import { useEffect, useState } from 'react';
+import { invoke } from '@tauri-apps/api/core';
+import { relaunch } from '@tauri-apps/plugin-process';
+import { check } from '@tauri-apps/plugin-updater';
+import { cn, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react';
+import { TbBookFilled, TbDownload, TbListCheck, TbSquareRoundedChevronDown } from 'react-icons/tb';
+import { useTranslation } from 'react-i18next';
 
-import { invoke } from '@tauri-apps/api/core'
-import { relaunch } from '@tauri-apps/plugin-process'
-import { check } from '@tauri-apps/plugin-updater'
+import { useUpdateStore } from '@/stores/updateStore';
+import CustomTooltip from '@/components/ui/CustomTooltip';
+import {
+  fetchLatest,
+  handleOpenExtLink,
+  isPortableCheck,
+  logEvent,
+  preserveKeysAndClearData,
+} from '@/utils/tasks';
+import { showDangerToast, showPrimaryToast } from '@/utils/toasts';
 
-import { cn, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react'
-import { useEffect, useState } from 'react'
-import { useUpdateStore } from '@/stores/updateStore'
-import { useTranslation } from 'react-i18next'
-import { TbBookFilled, TbDownload, TbListCheck, TbSquareRoundedChevronDown } from 'react-icons/tb'
-
-import CustomTooltip from '@/components/ui/CustomTooltip'
-import { fetchLatest, handleOpenExtLink, isPortableCheck, logEvent, preserveKeysAndClearData } from '@/utils/tasks'
-import { showDangerToast, showPrimaryToast } from '@/utils/toasts'
-
-export default function HeaderMenu(): ReactElement {
-  const { t } = useTranslation()
-  const setShowChangelog = useUpdateStore(state => state.setShowChangelog)
-  const [showMenu, setShowMenu] = useState(false)
-  const [isPortable, setIsPortable] = useState(false)
+export default function HeaderMenu() {
+  const { t } = useTranslation();
+  const setShowChangelog = useUpdateStore(state => state.setShowChangelog);
+  const [showMenu, setShowMenu] = useState(false);
+  const [isPortable, setIsPortable] = useState(false);
 
   useEffect(() => {
-    ;(async () => {
-      const portable = await isPortableCheck()
-      setIsPortable(portable)
-    })()
-  }, [])
+    (async () => {
+      const portable = await isPortableCheck();
+      setIsPortable(portable);
+    })();
+  }, []);
 
   const handleUpdate = async (): Promise<void> => {
     try {
-      const update = await check()
+      const update = await check();
       if (update) {
-        localStorage.setItem('hasUpdated', 'true')
-        await invoke('kill_all_steamutil_processes')
-        const latest = await fetchLatest()
-        await update.downloadAndInstall()
+        localStorage.setItem('hasUpdated', 'true');
+        await invoke('kill_all_steamutil_processes');
+        const latest = await fetchLatest();
+        await update.downloadAndInstall();
         if (latest?.major) {
-          await preserveKeysAndClearData()
+          await preserveKeysAndClearData();
         }
-        await relaunch()
+        await relaunch();
       } else {
-        showPrimaryToast(t('toast.checkUpdate.none'))
+        showPrimaryToast(t('toast.checkUpdate.none'));
       }
     } catch (error) {
-      showDangerToast(t('toast.checkUpdate.error'))
-      console.error('Error in (handleUpdate):', error)
-      logEvent(`Error in (handleUpdate): ${error}`)
+      showDangerToast(t('toast.checkUpdate.error'));
+      console.error('Error in (handleUpdate):', error);
+      logEvent(`Error in (handleUpdate): ${error}`);
     }
-  }
+  };
 
   return (
     <CustomTooltip content={t('common.menu')}>
       <div>
         <Dropdown
-          aria-label='Settings actions'
-          backdrop='opaque'
+          aria-label="Settings actions"
+          backdrop="opaque"
           onOpenChange={() => setShowMenu(!showMenu)}
           classNames={{
             content: ['rounded-xl p-0 bg-transparent'],
@@ -72,15 +75,15 @@ export default function HeaderMenu(): ReactElement {
           </DropdownTrigger>
 
           <DropdownMenu
-            aria-label='Settings actions'
+            aria-label="Settings actions"
             classNames={{ base: 'bg-popover border border-border rounded-xl' }}
           >
             <DropdownItem
               showDivider
-              key='help'
+              key="help"
               startContent={<TbBookFilled size={18} />}
-              textValue='Help'
-              className='rounded-xl text-content'
+              textValue="Help"
+              className="rounded-xl text-content"
               classNames={{
                 base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
               }}
@@ -90,10 +93,10 @@ export default function HeaderMenu(): ReactElement {
             </DropdownItem>
 
             <DropdownItem
-              key='changelog'
+              key="changelog"
               startContent={<TbListCheck size={18} />}
-              textValue='Changelog'
-              className='rounded-xl text-content'
+              textValue="Changelog"
+              className="rounded-xl text-content"
               classNames={{
                 base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
               }}
@@ -102,12 +105,12 @@ export default function HeaderMenu(): ReactElement {
               {t('menu.changelog')}
             </DropdownItem>
 
-            {isPortable === false ? (
+            {!isPortable ? (
               <DropdownItem
-                key='updates'
+                key="updates"
                 startContent={<TbDownload size={18} />}
-                textValue='Check for updates'
-                className='rounded-xl text-content'
+                textValue="Check for updates"
+                className="rounded-xl text-content"
                 classNames={{
                   base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
                 }}
@@ -120,5 +123,5 @@ export default function HeaderMenu(): ReactElement {
         </Dropdown>
       </div>
     </CustomTooltip>
-  )
+  );
 }

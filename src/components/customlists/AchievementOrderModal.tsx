@@ -1,30 +1,26 @@
-import type { Achievement, Game, InvokeAchievementData } from '@/types'
-import type { DragEndEvent } from '@dnd-kit/core'
-import type { ReactElement } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import Image from 'next/image';
+import { invoke } from '@tauri-apps/api/core';
+import { Button, Checkbox, cn, Input, Spinner } from '@heroui/react';
+import { GoGrabber } from 'react-icons/go';
+import { FaCheck, FaPlus } from 'react-icons/fa6';
+import { DndContext, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
+import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
+import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { useTranslation } from 'react-i18next';
 
-import { invoke } from '@tauri-apps/api/core'
-
-import { Button, Checkbox, cn, Input, Spinner } from '@heroui/react'
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useUserStore } from '@/stores/userStore'
-import { DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
-import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
-import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
-import Image from 'next/image'
-import { useTranslation } from 'react-i18next'
-import { FaCheck, FaPlus } from 'react-icons/fa6'
-import { GoGrabber } from 'react-icons/go'
-
-import CustomModal from '@/components/ui/CustomModal'
-import WebviewWindow from '@/components/ui/WebviewWindow'
-import { checkSteamStatus, logEvent } from '@/utils/tasks'
-import { showAccountMismatchToast, showDangerToast } from '@/utils/toasts'
+import type { Achievement, Game, InvokeAchievementData } from '@/types';
+import { useUserStore } from '@/stores/userStore';
+import CustomModal from '@/components/ui/CustomModal';
+import WebviewWindow from '@/components/ui/WebviewWindow';
+import { checkSteamStatus, logEvent } from '@/utils/tasks';
+import { showAccountMismatchToast, showDangerToast } from '@/utils/toasts';
 
 interface SortableAchievementProps {
-  item: Game
-  achievement: Achievement
-  index: number
+  item: Game;
+  achievement: Achievement;
+  index: number;
 }
 
 const SortableAchievement = memo(function SortableAchievement({
@@ -34,64 +30,66 @@ const SortableAchievement = memo(function SortableAchievement({
   onToggleSkip,
   onSetDelay,
 }: SortableAchievementProps & {
-  onToggleSkip: (name: string) => void
-  onSetDelay: (name: string, value: number | null) => void
-}): ReactElement {
-  const { t } = useTranslation()
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: achievement.name })
+  onToggleSkip: (name: string) => void;
+  onSetDelay: (name: string, value: number | null) => void;
+}) {
+  const { t } = useTranslation();
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: achievement.name,
+  });
 
-  const iconUrl = 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/'
+  const iconUrl = 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/';
   const icon = achievement.achieved
     ? `${iconUrl}${item.appid}/${achievement.iconNormal}`
-    : `${iconUrl}${item.appid}/${achievement.iconLocked}`
+    : `${iconUrl}${item.appid}/${achievement.iconLocked}`;
 
-  const [showDelayInput, setShowDelayInput] = useState(false)
+  const [showDelayInput, setShowDelayInput] = useState(false);
   const [delayValue, setDelayValue] = useState<number | ''>(
     achievement.delayNextUnlock !== undefined ? achievement.delayNextUnlock : '',
-  )
-  const inputRef = useRef<HTMLInputElement>(null)
+  );
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    setDelayValue(achievement.delayNextUnlock !== undefined ? achievement.delayNextUnlock : '')
-  }, [achievement.delayNextUnlock])
+    setDelayValue(achievement.delayNextUnlock !== undefined ? achievement.delayNextUnlock : '');
+  }, [achievement.delayNextUnlock]);
 
   useEffect(() => {
     if (showDelayInput && inputRef.current) {
-      inputRef.current.focus()
-      inputRef.current.select()
+      inputRef.current.focus();
+      inputRef.current.select();
     }
-  }, [showDelayInput])
+  }, [showDelayInput]);
 
   const handleDelayChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const val = e.target.value
+    const val = e.target.value;
     if (val === '') {
-      setDelayValue('')
+      setDelayValue('');
     } else {
-      const num = Math.max(0, Number(val))
-      setDelayValue(num)
+      const num = Math.max(0, Number(val));
+      setDelayValue(num);
     }
-  }
+  };
 
-  const handleShowInput = (): void => setShowDelayInput(true)
+  const handleShowInput = (): void => setShowDelayInput(true);
 
   const handleClearInput = (): void => {
-    setShowDelayInput(false)
-    setDelayValue('')
-    onSetDelay(achievement.name, null)
-  }
+    setShowDelayInput(false);
+    setDelayValue('');
+    onSetDelay(achievement.name, null);
+  };
 
   const handleInputBlur = (): void => {
-    setShowDelayInput(false)
+    setShowDelayInput(false);
     if (delayValue === '' || delayValue === 0) {
-      onSetDelay(achievement.name, null)
+      onSetDelay(achievement.name, null);
     } else {
-      onSetDelay(achievement.name, Number(delayValue))
+      onSetDelay(achievement.name, Number(delayValue));
     }
-  }
+  };
 
   return (
-    <div className='grid grid-cols-[40px_1fr] gap-2 items-center duration-150'>
-      <span className='text-lg font-bold text-altwhite text-center select-none'>{index + 1}</span>
+    <div className="grid grid-cols-[40px_1fr] gap-2 items-center duration-150">
+      <span className="text-lg font-bold text-altwhite text-center select-none">{index + 1}</span>
       <div
         ref={setNodeRef}
         style={{
@@ -104,24 +102,24 @@ const SortableAchievement = memo(function SortableAchievement({
           achievement.skip === true && 'opacity-40',
         )}
       >
-        <div className='flex items-center justify-center w-[26px]'>
+        <div className="flex items-center justify-center w-6.5">
           <Checkbox
             isSelected={achievement.skip !== true}
             onValueChange={() => onToggleSkip(achievement.name)}
             onClick={e => e.stopPropagation()}
-            className='ml-3'
+            className="ml-3"
           />
         </div>
         <Image
-          className='rounded-full ml-8 select-none'
+          className="rounded-full ml-8 select-none"
           src={icon}
           width={32}
           height={32}
           alt={`${achievement.name} image`}
           priority
         />
-        <div className='flex-1 min-w-0 select-none'>
-          <p className='font-semibold truncate'>{achievement.name}</p>
+        <div className="flex-1 min-w-0 select-none">
+          <p className="font-semibold truncate">{achievement.name}</p>
           <p
             className={cn(
               'text-xs text-gray-400 truncate',
@@ -131,48 +129,48 @@ const SortableAchievement = memo(function SortableAchievement({
             {achievement.description}
           </p>
 
-          <div className=''>
+          <div className="">
             {!showDelayInput && (
               <Button
-                size='sm'
-                className='text-xs max-h-5 bg-transparent p-0 cursor-pointer hover:opacity-80 duration-150'
-                type='button'
+                size="sm"
+                className="text-xs max-h-5 bg-transparent p-0 cursor-pointer hover:opacity-80 duration-150"
+                type="button"
                 onPress={handleShowInput}
                 onPointerDown={e => e.stopPropagation()}
               >
                 {delayValue !== '' && delayValue !== 0 ? (
-                  <p className='flex items-center text-green-400'>
-                    <FaCheck className='inline-block mr-1' />
+                  <p className="flex items-center text-green-400">
+                    <FaCheck className="inline-block mr-1" />
                     {t('customLists.achievementUnlocker.editDelay', { minutes: delayValue })}
                   </p>
                 ) : (
-                  <p className='flex items-center text-blue-400'>
-                    <FaPlus className='inline-block mr-1' />
+                  <p className="flex items-center text-blue-400">
+                    <FaPlus className="inline-block mr-1" />
                     {t('customLists.achievementUnlocker.addDelay')}
                   </p>
                 )}
               </Button>
             )}
             {showDelayInput && (
-              <div className='flex items-center gap-2 mt-1'>
+              <div className="flex items-center gap-2 mt-1">
                 <Input
                   ref={inputRef}
-                  type='number'
+                  type="number"
                   min={0}
-                  className='w-16 text-xs'
+                  className="w-16 text-xs"
                   value={delayValue.toString() || '0'}
                   onChange={handleDelayChange}
-                  size='sm'
+                  size="sm"
                   onPointerDown={e => e.stopPropagation()}
                   onBlur={handleInputBlur}
                 />
-                <span className='text-xs text-gray-400'>{t('common.minutes')}</span>
+                <span className="text-xs text-gray-400">{t('common.minutes')}</span>
                 <Button
-                  size='sm'
-                  color='danger'
-                  variant='light'
-                  radius='full'
-                  className='font-semibold'
+                  size="sm"
+                  color="danger"
+                  variant="light"
+                  radius="full"
+                  className="font-semibold"
                   onPress={handleClearInput}
                   onMouseDown={handleClearInput}
                   onPointerDown={e => e.stopPropagation()}
@@ -186,50 +184,55 @@ const SortableAchievement = memo(function SortableAchievement({
         <span
           {...listeners}
           {...attributes}
-          className='cursor-grab active:cursor-grabbing'
+          className="cursor-grab active:cursor-grabbing"
           style={{ touchAction: 'none' }}
         >
-          <GoGrabber size={30} className='text-altwhite hover:scale-115 hover:text-white duration-150' />
+          <GoGrabber
+            size={30}
+            className="text-altwhite hover:scale-115 hover:text-white duration-150"
+          />
         </span>
       </div>
     </div>
-  )
-})
+  );
+});
 
 export default function AchievementOrderModal({
   item,
   isOpen,
   onOpenChange,
 }: {
-  item: Game
-  isOpen: boolean
-  onOpenChange: () => void
-}): ReactElement {
-  const { t } = useTranslation()
-  const userSummary = useUserStore(state => state.userSummary)
-  const [isLoading, setIsLoading] = useState(false)
-  const [achievements, setAchievements] = useState<Achievement[]>([])
-  const [originalAchievements, setOriginalAchievements] = useState<Achievement[]>([])
+  item: Game;
+  isOpen: boolean;
+  onOpenChange: () => void;
+}) {
+  const { t } = useTranslation();
+  const userSummary = useUserStore(state => state.userSummary);
+  const [isLoading, setIsLoading] = useState(false);
+  const [achievements, setAchievements] = useState<Achievement[]>([]);
+  const [originalAchievements, setOriginalAchievements] = useState<Achievement[]>([]);
 
   const handleDragEnd = useCallback((event: DragEndEvent): void => {
-    const { active, over } = event
+    const { active, over } = event;
 
     if (over && active.id !== over.id) {
       setAchievements(items => {
-        const oldIndex = items.findIndex(item => item.name === active.id)
-        const newIndex = items.findIndex(item => item.name === over.id)
-        return arrayMove(items, oldIndex, newIndex)
-      })
+        const oldIndex = items.findIndex(item => item.name === active.id);
+        const newIndex = items.findIndex(item => item.name === over.id);
+        return arrayMove(items, oldIndex, newIndex);
+      });
     }
-  }, [])
+  }, []);
 
   const handleToggleSkip = useCallback((achievementName: string): void => {
     setAchievements(items =>
       items.map(achievement =>
-        achievement.name === achievementName ? { ...achievement, skip: achievement.skip !== true } : achievement,
+        achievement.name === achievementName
+          ? { ...achievement, skip: achievement.skip !== true }
+          : achievement,
       ),
-    )
-  }, [])
+    );
+  }, []);
 
   const handleSetDelay = useCallback((achievementName: string, value: number | null): void => {
     setAchievements(items =>
@@ -237,14 +240,14 @@ export default function AchievementOrderModal({
         achievement.name === achievementName
           ? value === null
             ? (() => {
-                const { delayNextUnlock, ...rest } = achievement
-                return rest
+                const { delayNextUnlock, ...rest } = achievement;
+                return rest;
               })()
             : { ...achievement, delayNextUnlock: value }
           : achievement,
       ),
-    )
-  }, [])
+    );
+  }, []);
 
   const handleSave = async (): Promise<void> => {
     try {
@@ -254,58 +257,66 @@ export default function AchievementOrderModal({
         achievementOrder: {
           achievements,
         },
-      })
-      onOpenChange()
+      });
+      onOpenChange();
     } catch (error) {
-      console.error('Error saving achievement order:', error)
-      showDangerToast(t('toast.achievementOrder.error'))
+      console.error('Error saving achievement order:', error);
+      showDangerToast(t('toast.achievementOrder.error'));
     }
-  }
+  };
 
   useEffect(() => {
     const getAchievementData = async (): Promise<void> => {
       try {
-        setIsLoading(true)
-        setAchievements([])
-        setOriginalAchievements([])
+        setIsLoading(true);
+        setAchievements([]);
+        setOriginalAchievements([]);
 
         // Make sure Steam client is running
-        const isSteamRunning = checkSteamStatus(true)
-        if (!isSteamRunning) return setIsLoading(false)
+        const isSteamRunning = await checkSteamStatus(true);
+        if (!isSteamRunning) return setIsLoading(false);
 
         // First try to get custom achievement order
-        const customOrder = await invoke<{ achievement_order: { achievements: Achievement[] } | null }>(
-          'get_achievement_order',
-          {
-            steamId: userSummary?.steamId,
-            appId: item.appid,
-          },
-        )
+        const customOrder = await invoke<{
+          achievement_order: { achievements: Achievement[] } | null;
+        }>('get_achievement_order', {
+          steamId: userSummary?.steamId,
+          appId: item.appid,
+        });
 
         // Fetch achievement data to sync states
         const response = await invoke<InvokeAchievementData | string>('get_achievement_data', {
           steamId: userSummary?.steamId,
           appId: item.appid,
           refetch: false,
-        })
+        });
 
         // Handle case where Steam API initialization failed
         if (typeof response === 'string' && response.includes('Failed to initialize Steam API')) {
-          setIsLoading(false)
-          showAccountMismatchToast('danger')
-          logEvent(`Error in (getAchievementData): ${response}`)
-          return
+          setIsLoading(false);
+          showAccountMismatchToast('danger');
+          logEvent(`Error in (getAchievementData): ${response}`);
+          return;
         }
 
-        const achievementData = response as InvokeAchievementData
+        const achievementData = response as InvokeAchievementData;
 
         // If we have a custom order, update its achievement states and use it
-        if (customOrder.achievement_order?.achievements && achievementData?.achievement_data?.achievements) {
-          const updatedAchievements = customOrder.achievement_order.achievements.map(achievement => {
-            const currentState = achievementData.achievement_data.achievements.find(a => a.name === achievement.name)
-            return currentState ? { ...achievement, achieved: currentState.achieved } : achievement
-          })
-          setAchievements(updatedAchievements)
+        if (
+          customOrder.achievement_order?.achievements &&
+          achievementData?.achievement_data?.achievements
+        ) {
+          const updatedAchievements = customOrder.achievement_order.achievements.map(
+            achievement => {
+              const currentState = achievementData.achievement_data.achievements.find(
+                a => a.name === achievement.name,
+              );
+              return currentState
+                ? { ...achievement, achieved: currentState.achieved }
+                : achievement;
+            },
+          );
+          setAchievements(updatedAchievements);
           // Save the default order (from achievementData) for reset
           setOriginalAchievements(
             achievementData.achievement_data.achievements.map(a => ({
@@ -313,46 +324,46 @@ export default function AchievementOrderModal({
               skip: undefined,
               delayNextUnlock: undefined,
             })),
-          )
-          setIsLoading(false)
-          return
+          );
+          setIsLoading(false);
+          return;
         }
 
         // Otherwise use achievement data directly
         if (achievementData?.achievement_data?.achievements) {
           if (achievementData.achievement_data.achievements.length > 0) {
-            setAchievements(achievementData.achievement_data.achievements)
+            setAchievements(achievementData.achievement_data.achievements);
             setOriginalAchievements(
               achievementData.achievement_data.achievements.map(a => ({
                 ...a,
                 skip: undefined,
                 delayNextUnlock: undefined,
               })),
-            )
+            );
           }
         }
 
-        setIsLoading(false)
+        setIsLoading(false);
       } catch (error) {
-        setIsLoading(false)
-        showDangerToast(t('toast.achievementData.error'))
-        console.error('Error in (getAchievementData):', error)
-        logEvent(`Error in (getAchievementData): ${error}`)
+        setIsLoading(false);
+        showDangerToast(t('toast.achievementData.error'));
+        console.error('Error in (getAchievementData):', error);
+        logEvent(`Error in (getAchievementData): ${error}`);
       }
-    }
+    };
 
     if (isOpen && item.appid) {
-      getAchievementData()
+      getAchievementData();
     }
-  }, [t, isOpen, item.appid, userSummary?.steamId])
+  }, [t, isOpen, item.appid, userSummary?.steamId]);
 
-  const sensors = useSensors(useSensor(PointerSensor))
+  const sensors = useSensors(useSensor(PointerSensor));
 
   const achievementList = useMemo(
     () => (
       <DndContext sensors={sensors} onDragEnd={handleDragEnd} modifiers={[restrictToVerticalAxis]}>
         <SortableContext items={achievements.map(a => a.name)}>
-          <div className='grid grid-cols-1 gap-1'>
+          <div className="grid grid-cols-1 gap-1">
             {achievements.map((achievement, index) => (
               <SortableAchievement
                 item={item}
@@ -368,7 +379,7 @@ export default function AchievementOrderModal({
       </DndContext>
     ),
     [achievements, handleDragEnd, handleToggleSkip, handleSetDelay, item, sensors],
-  )
+  );
 
   // Reset handler: restore original order and clear skips/delays
   const handleReset = useCallback(() => {
@@ -378,8 +389,8 @@ export default function AchievementOrderModal({
         skip: undefined,
         delayNextUnlock: undefined,
       })),
-    )
-  }, [originalAchievements])
+    );
+  }, [originalAchievements]);
 
   return (
     <CustomModal
@@ -390,29 +401,33 @@ export default function AchievementOrderModal({
         base: 'max-w-xl bg-base/85 backdrop-blur-sm',
       }}
       title={
-        <div className='flex justify-between items-center'>
-          <p className='truncate'>{item.name}</p>
+        <div className="flex justify-between items-center">
+          <p className="truncate">{item.name}</p>
         </div>
       }
       body={
-        <div className='overflow-x-hidden overflow-y-auto relative '>
+        <div className="overflow-x-hidden overflow-y-auto relative ">
           {isLoading ? (
-            <div className='flex justify-center items-center w-full p-4'>
+            <div className="flex justify-center items-center w-full p-4">
               <Spinner />
             </div>
           ) : achievements.length === 0 ? (
-            <div className='flex justify-center items-center w-full p-4'>
-              <p className='text-center text-content'>{t('achievementManager.achievements.empty')}</p>
+            <div className="flex justify-center items-center w-full p-4">
+              <p className="text-center text-content">
+                {t('achievementManager.achievements.empty')}
+              </p>
             </div>
           ) : (
             <>
-              <div className='grid grid-cols-[40px_1fr] gap-2 items-center p-2 mb-2 border-b border-border sticky top-0 bg-sidebar z-50'>
-                <span className='text-sm font-semibold text-content select-none text-center w-[26px]'>#</span>
-                <div className='flex items-center gap-3 pl-0'>
-                  <span className='text-sm font-semibold text-content text-center'>
+              <div className="grid grid-cols-[40px_1fr] gap-2 items-center p-2 mb-2 border-b border-border sticky top-0 bg-sidebar z-50">
+                <span className="text-sm font-semibold text-content select-none text-center w-6.5">
+                  #
+                </span>
+                <div className="flex items-center gap-3 pl-0">
+                  <span className="text-sm font-semibold text-content text-center">
                     {t('achievementManager.achievements.unlock')}
                   </span>
-                  <span className='text-sm font-semibold text-content flex-1 ml-8'>
+                  <span className="text-sm font-semibold text-content flex-1 ml-8">
                     {t('achievementManager.achievements.title')}
                   </span>
                 </div>
@@ -424,34 +439,41 @@ export default function AchievementOrderModal({
       }
       buttons={
         <>
-          <WebviewWindow href='https://steamgameidler.com/docs/features/achievement-unlocker#custom-order--unlock-delay'>
-            <p className='text-xs cursor-pointer hover:text-altwhite duration-150 p-2 rounded-lg'>{t('setup.help')}</p>
+          <WebviewWindow href="https://steamgameidler.com/docs/features/achievement-unlocker#custom-order--unlock-delay">
+            <p className="text-xs cursor-pointer hover:text-altwhite duration-150 p-2 rounded-lg">
+              {t('setup.help')}
+            </p>
           </WebviewWindow>
           <Button
-            size='sm'
-            color='danger'
-            variant='light'
-            radius='full'
-            className='font-semibold'
+            size="sm"
+            color="danger"
+            variant="light"
+            radius="full"
+            className="font-semibold"
             onPress={onOpenChange}
           >
             {t('common.cancel')}
           </Button>
           <Button
-            size='sm'
-            color='danger'
-            variant='light'
-            radius='full'
-            className='font-semibold'
+            size="sm"
+            color="danger"
+            variant="light"
+            radius="full"
+            className="font-semibold"
             onPress={handleReset}
           >
             {t('achievementManager.statistics.resetAll')}
           </Button>
-          <Button size='sm' className='bg-btn-secondary text-btn-text font-bold' radius='full' onPress={handleSave}>
+          <Button
+            size="sm"
+            className="bg-btn-secondary text-btn-text font-bold"
+            radius="full"
+            onPress={handleSave}
+          >
             {t('common.save')}
           </Button>
         </>
       }
     />
-  )
+  );
 }

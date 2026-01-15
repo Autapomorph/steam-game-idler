@@ -1,40 +1,39 @@
-import type { Game } from '@/types'
-import type { Dispatch, KeyboardEvent, ReactElement, SetStateAction } from 'react'
+import type { Dispatch, KeyboardEvent, SetStateAction } from 'react';
+import { Button, cn, Input, NumberInput, useDisclosure } from '@heroui/react';
+import { TbPlus } from 'react-icons/tb';
+import { useTranslation } from 'react-i18next';
 
-import { Button, cn, Input, NumberInput, useDisclosure } from '@heroui/react'
-import { useTranslation } from 'react-i18next'
-import { TbPlus } from 'react-icons/tb'
+import type { Game } from '@/types';
+import CustomModal from '@/components/ui/CustomModal';
+import useManualAdd from '@/hooks/customlists/useManualAdd';
 
-import CustomModal from '@/components/ui/CustomModal'
-import useManualAdd from '@/hooks/customlists/useManualAdd'
-
-interface ManualAddProps {
-  listName: string
-  setList: Dispatch<SetStateAction<Game[]>>
+interface Props {
+  listName: string;
+  setList: Dispatch<SetStateAction<Game[]>>;
 }
 
-export default function ManualAdd({ listName, setList }: ManualAddProps): ReactElement {
-  const { t } = useTranslation()
-  const { isOpen, onOpen, onOpenChange } = useDisclosure()
-  const manualAdd = useManualAdd(listName, setList)
+export default function ManualAdd({ listName, setList }: Props) {
+  const { t } = useTranslation();
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const manualAdd = useManualAdd(listName, setList);
 
   const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>, onClose: () => void): void => {
     if (e.key === 'Enter') {
-      manualAdd.handleAdd(onClose)
+      manualAdd.handleAdd(onClose);
     }
-  }
+  };
 
   const handleClose = (): void => {
-    manualAdd.setAppNameValue('')
-    manualAdd.setAppIdValue(0)
-  }
+    manualAdd.setAppNameValue('');
+    manualAdd.setAppIdValue(0);
+  };
 
   return (
     <>
       <Button
         isIconOnly
-        className='bg-btn-secondary text-btn-text font-bold'
-        radius='full'
+        className="bg-btn-secondary text-btn-text font-bold"
+        radius="full"
         startContent={<TbPlus fontSize={18} />}
         onPress={onOpen}
       />
@@ -42,8 +41,8 @@ export default function ManualAdd({ listName, setList }: ManualAddProps): ReactE
       <CustomModal
         isOpen={isOpen}
         onOpenChange={() => {
-          onOpenChange()
-          handleClose()
+          onOpenChange();
+          handleClose();
         }}
         title={t('customLists.manualAdd.title')}
         body={
@@ -70,7 +69,7 @@ export default function ManualAdd({ listName, setList }: ManualAddProps): ReactE
               label={t('customLists.manualAdd.gameId')}
               value={Number(manualAdd.appIdValue)}
               formatOptions={{ useGrouping: false }}
-              aria-label='manual add'
+              aria-label="manual add"
               classNames={{
                 inputWrapper: cn(
                   'bg-input data-[hover=true]:!bg-inputhover',
@@ -88,19 +87,19 @@ export default function ManualAdd({ listName, setList }: ManualAddProps): ReactE
         buttons={
           <>
             <Button
-              size='sm'
-              color='danger'
-              variant='light'
-              radius='full'
-              className='font-semibold'
+              size="sm"
+              color="danger"
+              variant="light"
+              radius="full"
+              className="font-semibold"
               onPress={onOpenChange}
             >
               {t('common.cancel')}
             </Button>
             <Button
-              size='sm'
-              className='bg-btn-secondary text-btn-text font-bold'
-              radius='full'
+              size="sm"
+              className="bg-btn-secondary text-btn-text font-bold"
+              radius="full"
               isLoading={manualAdd.isLoading}
               isDisabled={!manualAdd.appNameValue || !manualAdd.appIdValue}
               onPress={() => manualAdd.handleAdd(onOpenChange)}
@@ -111,5 +110,5 @@ export default function ManualAdd({ listName, setList }: ManualAddProps): ReactE
         }
       />
     </>
-  )
+  );
 }

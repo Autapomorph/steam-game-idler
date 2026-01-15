@@ -4,7 +4,13 @@
 :root {
   --gradient-bg: linear-gradient(to bottom, #171717ff 0%, #070707ff 100%);
   --gradient-alt: linear-gradient(to bottom, #171717ff 0%, #0c0c0cff 100%);
-  --gradient-btn: linear-gradient(100deg, #154d66ff 0%, #227ca5ff 40%, #2eabe5ff 70%, #34bfffff 100%);
+  --gradient-btn: linear-gradient(
+    100deg,
+    #154d66ff 0%,
+    #227ca5ff 40%,
+    #2eabe5ff 70%,
+    #34bfffff 100%
+  );
   --sb-thumb: #515255;
   --sb-track: #222326;
   --holo-bg: linear-gradient(120deg, #3031358f 0%, #2020228f 50%, #3031358f 100%);
@@ -24,13 +30,25 @@
 .dark {
   --gradient-bg: linear-gradient(to bottom, #171717ff 0%, #070707ff 100%);
   --gradient-alt: linear-gradient(to bottom, #171717ff 0%, #0c0c0cff 100%);
-  --gradient-btn: linear-gradient(100deg, #154d66ff 0%, #227ca5ff 40%, #2eabe5ff 70%, #34bfffff 100%);
+  --gradient-btn: linear-gradient(
+    100deg,
+    #154d66ff 0%,
+    #227ca5ff 40%,
+    #2eabe5ff 70%,
+    #34bfffff 100%
+  );
 }
 
 .black {
   --gradient-bg: linear-gradient(to bottom, #000000 0%, #050505 100%);
   --gradient-alt: linear-gradient(to bottom, #000000 0%, #0a0a0a 100%);
-  --gradient-btn: linear-gradient(100deg, #232323ff 0%, #383838ff 40%, #5e5e5eff 70%, #606060ff 100%);
+  --gradient-btn: linear-gradient(
+    100deg,
+    #232323ff 0%,
+    #383838ff 40%,
+    #5e5e5eff 70%,
+    #606060ff 100%
+  );
 }
 
 ::-webkit-scrollbar {
@@ -216,11 +234,20 @@ svg {
   --space: calc(var(--position) * 2);
   width: var(--size);
   height: var(--size);
-  background: radial-gradient(circle at var(--position) var(--position), white calc(var(--position) / 4), transparent 0)
+  background: radial-gradient(
+      circle at var(--position) var(--position),
+      white calc(var(--position) / 4),
+      transparent 0
+    )
     padding-box;
   background-size: var(--space) var(--space);
   background-repeat: space;
-  mask-image: conic-gradient(from calc(var(--gradient-angle) + 45deg), black, transparent 10% 90%, black);
+  mask-image: conic-gradient(
+    from calc(var(--gradient-angle) + 45deg),
+    black,
+    transparent 10% 90%,
+    black
+  );
   border-radius: 0.5rem;
   opacity: 0.4;
   z-index: -1;

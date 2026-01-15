@@ -1,39 +1,39 @@
-import type { InvokeSteamCredentials } from '@/types'
-import type { ReactElement } from 'react'
+import type { SyntheticEvent } from 'react';
+import Image from 'next/image';
+import { invoke } from '@tauri-apps/api/core';
+import { Button, cn, Divider, Input, Spinner, useDisclosure } from '@heroui/react';
+import { TbChevronRight, TbEraser, TbUpload } from 'react-icons/tb';
+import { Trans, useTranslation } from 'react-i18next';
 
-import { invoke } from '@tauri-apps/api/core'
-
-import { Button, cn, Divider, Input, Spinner } from '@heroui/react'
-import { useUserStore } from '@/stores/userStore'
-import Image from 'next/image'
-import { Trans, useTranslation } from 'react-i18next'
-import { TbChevronRight, TbEraser, TbRefresh, TbUpload } from 'react-icons/tb'
-
-import ExtLink from '@/components/ui/ExtLink'
-import WebviewWindow from '@/components/ui/WebviewWindow'
+import type { InvokeSteamCredentials } from '@/types';
+import { useUserStore } from '@/stores/userStore';
+import CustomModal from '@/components/ui/CustomModal';
+import ExtLink from '@/components/ui/ExtLink';
+import WebviewWindow from '@/components/ui/WebviewWindow';
 import {
   fetchGamesWithDropsData,
   handleCredentialsClear,
   handleCredentialsSave,
   useCardSettings,
-} from '@/hooks/settings/useCardSettings'
-import { logEvent } from '@/utils/tasks'
-import { showDangerToast } from '@/utils/toasts'
+} from '@/hooks/settings/useCardSettings';
+import { logEvent } from '@/utils/tasks';
+import { showDangerToast } from '@/utils/toasts';
 
-export default function SteamCredentials(): ReactElement {
-  const { t } = useTranslation()
-  const userSummary = useUserStore(state => state.userSummary)
-  const userSettings = useUserStore(state => state.userSettings)
-  const setUserSettings = useUserStore(state => state.setUserSettings)
-  const cardSettings = useCardSettings()
+export default function SteamCredentials() {
+  const { t } = useTranslation();
+  const userSummary = useUserStore(state => state.userSummary);
+  const userSettings = useUserStore(state => state.userSettings);
+  const setUserSettings = useUserStore(state => state.setUserSettings);
+  const cardSettings = useCardSettings();
+  const { isOpen, onOpenChange } = useDisclosure();
 
   const handleShowSteamLoginWindow = async (): Promise<void> => {
-    const result = await invoke<InvokeSteamCredentials>('open_steam_login_window')
+    const result = await invoke<InvokeSteamCredentials>('open_steam_login_window');
 
-    if (!result || result.success === false) {
-      showDangerToast(t('common.error'))
-      logEvent(`[Error] in (handleShowSteamLoginWindow): ${result?.message || 'Unknown error'}`)
-      return
+    if (!result?.success) {
+      showDangerToast(t('common.error'));
+      logEvent(`[Error] in (handleShowSteamLoginWindow): ${result?.message || 'Unknown error'}`);
+      return;
     }
 
     if (result.success) {
@@ -47,19 +47,20 @@ export default function SteamCredentials(): ReactElement {
         userSettings,
         setUserSettings,
         cardSettings.setIsCFDataLoading,
-      )
+        cardSettings.setGamesWithDropsData,
+      );
     }
-  }
+  };
 
   const handleSignOutCurrentUser = async (): Promise<void> => {
-    const result = await invoke<InvokeSteamCredentials>('delete_login_window_cookies')
+    const result = await invoke<InvokeSteamCredentials>('delete_login_window_cookies');
 
-    if (!result || result.success === false) {
-      showDangerToast(t('common.error'))
+    if (!result?.success) {
+      showDangerToast(t('common.error'));
       logEvent(
         `[Error] in (handleSignOutCurrentUser) this error can occur if you are not already signed in: ${result?.message || 'Unknown error'}`,
-      )
-      return
+      );
+      return;
     }
 
     handleCredentialsClear(
@@ -72,127 +73,184 @@ export default function SteamCredentials(): ReactElement {
       setUserSettings,
       cardSettings.setGamesWithDrops,
       cardSettings.setTotalDropsRemaining,
-    )
-  }
+    );
+  };
+
+  const handleImageError = (event: SyntheticEvent<HTMLImageElement, Event>): void => {
+    // eslint-disable-next-line no-param-reassign
+    (event.target as HTMLImageElement).src = '/fallback.webp';
+  };
 
   return (
-    <div className='relative flex flex-col gap-4 mt-9 pb-16 w-4/5'>
-      <div className='flex flex-col gap-0 select-none'>
-        <p className='flex items-center text-xs text-altwhite font-bold'>
+    <div className="relative flex flex-col gap-4 mt-9 pb-16 w-4/5">
+      <div className="flex flex-col gap-0 select-none">
+        <p className="flex items-center text-xs text-altwhite font-bold">
           {t('settings.title')}
           <span>
             <TbChevronRight size={12} />
           </span>
         </p>
-        <p className='text-3xl font-black'>{t('settings.cardFarming.steamCredentialsTitle')}</p>
+        <p className="text-3xl font-black">{t('settings.cardFarming.steamCredentialsTitle')}</p>
       </div>
 
-      <div className='flex flex-col gap-3 mt-4'>
-        <div className='flex justify-between items-start'>
-          <div className='flex flex-col gap-2 w-1/2'>
-            <div className='flex items-center'>
-              <p className='text-sm text-content font-bold'>{t('settings.steamCredentials.automated')}</p>
+      <div className="flex flex-col gap-3 mt-4">
+        <div className="flex justify-between items-start">
+          <div className="flex flex-col gap-2 w-1/2">
+            <div className="flex items-center">
+              <p className="text-sm text-content font-bold">
+                {t('settings.steamCredentials.automated')}
+              </p>
             </div>
-            <p className='text-xs text-altwhite'>{t('settings.steamCredentials.automated.description')}</p>
+            <p className="text-xs text-altwhite">
+              {t('settings.steamCredentials.automated.description')}
+            </p>
             <WebviewWindow
-              href='https://steamgameidler.com/docs/steam-credentials#automated-method'
-              className='text-xs text-dynamic hover:text-dynamic-hover duration-150'
+              href="https://steamgameidler.com/docs/steam-credentials#automated-method"
+              className="text-xs text-dynamic hover:text-dynamic-hover duration-150"
             >
               {t('common.learnMore')}
             </WebviewWindow>
           </div>
 
-          <div className='flex flex-col justify-end gap-2'>
+          <div className="flex flex-col justify-end gap-2">
             <Button
-              size='sm'
-              className='bg-btn-secondary text-btn-text font-bold'
-              radius='full'
+              size="sm"
+              className="bg-btn-secondary text-btn-text font-bold"
+              radius="full"
               onPress={handleShowSteamLoginWindow}
             >
               {cardSettings.hasCookies ? t('common.reauthenticate') : t('common.signInSteam')}
             </Button>
-            <Button size='sm' variant='light' radius='full' color='danger' onPress={handleSignOutCurrentUser}>
+            <Button
+              size="sm"
+              variant="light"
+              radius="full"
+              color="danger"
+              onPress={handleSignOutCurrentUser}
+            >
               {t('common.signOut')}
             </Button>
           </div>
         </div>
 
-        <Divider className='bg-border/70 my-4' />
+        <Divider className="bg-border/70 my-4" />
 
-        <div className='flex justify-between items-start'>
-          <div className='flex flex-col gap-2 w-1/2'>
-            <p className='text-sm text-content font-bold'>{t('settings.steamCredentials.manual')}</p>
-            <p className='text-xs text-altwhite'>
-              <Trans i18nKey='settings.cardFarming.steamCredentials'>
-                Steam credentials are required in order to use the Card Farming and Trading Card Manager features.&nbsp;
+        <div className="flex justify-between items-start">
+          <div className="flex flex-col gap-2 w-1/2">
+            <p className="text-sm text-content font-bold">
+              {t('settings.steamCredentials.manual')}
+            </p>
+            <p className="text-xs text-altwhite">
+              <Trans i18nKey="settings.cardFarming.steamCredentials">
+                Steam credentials are required in order to use the Card Farming and Trading Card
+                Manager features.&nbsp;
                 <WebviewWindow
-                  href='https://steamgameidler.com/docs/steam-credentials#manual-method'
-                  className='text-dynamic hover:text-dynamic-hover duration-150'
+                  href="https://steamgameidler.com/docs/steam-credentials#manual-method"
+                  className="text-dynamic hover:text-dynamic-hover duration-150"
                 >
                   Learn more
                 </WebviewWindow>
               </Trans>
             </p>
-            <p className='text-xs text-altwhite'>
-              <Trans i18nKey='settings.cardFarming.steamCredentialsTwo'>
+            <p className="text-xs text-altwhite">
+              <Trans i18nKey="settings.cardFarming.steamCredentialsTwo">
                 Get your Steam credentials from.&nbsp;
                 <ExtLink
-                  href='https://steamcommunity.com/'
-                  className='text-dynamic hover:text-dynamic-hover duration-150'
+                  href="https://steamcommunity.com/"
+                  className="text-dynamic hover:text-dynamic-hover duration-150"
                 >
                   https://steamcommunity.com/
                 </ExtLink>
               </Trans>
             </p>
             {cardSettings.cardFarmingUser && (
-              <div className='flex gap-4 bg-tab-panel p-2 rounded-lg items-center w-fit min-w-[50%] mt-3'>
+              <div className="flex gap-4 bg-tab-panel p-2 rounded-lg items-center w-fit min-w-[50%] mt-3">
                 {!cardSettings.isCFDataLoading ? (
-                  <>
-                    <Image
-                      src={userSummary?.avatar || ''}
-                      height={38}
-                      width={38}
-                      alt='user avatar'
-                      className='w-9.5 h-9.5 rounded-full'
-                      priority
-                    />
-                    <div className='flex flex-col items-end gap-1'>
-                      <div className='flex gap-1'>
-                        <p className='text-sm text-altwhite font-bold'>{t('settings.cardFarming.gamesWithDrops')}</p>
-                        <p className='text-sm text-dynamic font-bold'>{userSettings.cardFarming.gamesWithDrops || 0}</p>
-                      </div>
-                      <div className='flex gap-1'>
-                        <p className='text-sm text-altwhite font-bold'>{t('settings.cardFarming.totalDrops')}</p>
-                        <p className='text-sm text-dynamic font-bold'>
-                          {userSettings.cardFarming.totalDropsRemaining || 0}
-                        </p>
+                  <div className="flex-col">
+                    <div className="flex justify-center items-center gap-3">
+                      <Image
+                        src={userSummary?.avatar || ''}
+                        height={38}
+                        width={38}
+                        alt="user avatar"
+                        className="w-9.5 h-9.5 rounded-full"
+                        priority
+                      />
+                      <div className="flex flex-col items-end gap-1">
+                        <div className="flex gap-1">
+                          <p className="text-sm text-altwhite font-bold mr-2">
+                            {t('settings.cardFarming.gamesWithDrops')}
+                          </p>
+                          <p className="text-sm text-dynamic font-bold">
+                            {userSettings.cardFarming.gamesWithDrops || 0}
+                          </p>
+                        </div>
+                        <div className="flex gap-1">
+                          <p className="text-sm text-altwhite font-bold mr-2">
+                            {t('settings.cardFarming.totalDrops')}
+                          </p>
+                          <p className="text-sm text-dynamic font-bold">
+                            {userSettings.cardFarming.totalDropsRemaining || 0}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                    <div
-                      className='text-altwhite hover:bg-item-hover p-1 rounded-full cursor-pointer duration-150'
-                      onClick={() =>
-                        fetchGamesWithDropsData(userSummary, cardSettings.setIsCFDataLoading, setUserSettings)
-                      }
-                    >
-                      <TbRefresh size={18} />
+
+                    <div className="flex justify-center gap-2 mt-3">
+                      <Button
+                        size="sm"
+                        className="bg-btn-secondary text-btn-text font-bold"
+                        radius="full"
+                        fullWidth
+                        onPress={() => {
+                          if (cardSettings.gamesWithDropsData.length === 0) {
+                            fetchGamesWithDropsData(
+                              userSummary,
+                              cardSettings.setIsCFDataLoading,
+                              setUserSettings,
+                              cardSettings.setGamesWithDropsData,
+                            );
+                          }
+                          onOpenChange();
+                        }}
+                      >
+                        {t('common.viewList')}
+                      </Button>
+                      <Button
+                        size="sm"
+                        className="bg-btn-secondary text-btn-text font-bold"
+                        radius="full"
+                        fullWidth
+                        onPress={() =>
+                          fetchGamesWithDropsData(
+                            userSummary,
+                            cardSettings.setIsCFDataLoading,
+                            setUserSettings,
+                            cardSettings.setGamesWithDropsData,
+                          )
+                        }
+                      >
+                        {t('setup.refresh')}
+                      </Button>
                     </div>
-                  </>
+                  </div>
                 ) : (
-                  <div className='flex items-center justify-center gap-2'>
-                    <Spinner size='sm' variant='simple' />
-                    <p className='text-xs text-altwhite'>{t('settings.cardFarming.loading')}</p>
+                  <div className="flex items-center justify-center gap-2">
+                    <Spinner size="sm" variant="simple" />
+                    <p className="text-xs text-altwhite">{t('settings.cardFarming.loading')}</p>
                   </div>
                 )}
               </div>
             )}
           </div>
-          <div className='flex flex-col gap-4 w-62.5'>
+
+          <div className="flex flex-col gap-4 w-62.5">
             <Input
               isRequired
-              label='sessionid'
-              labelPlacement='outside'
-              placeholder='sessionid'
-              className='max-w-72.5'
+              label="sessionid"
+              labelPlacement="outside"
+              placeholder="sessionid"
+              className="max-w-72.5"
               classNames={{
                 inputWrapper: cn(
                   'bg-input data-[hover=true]:!bg-inputhover',
@@ -203,14 +261,14 @@ export default function SteamCredentials(): ReactElement {
               }}
               value={cardSettings.sidValue}
               onChange={e => cardSettings.setSidValue(e.target.value)}
-              type='password'
+              type="password"
             />
             <Input
               isRequired
-              label='steamLoginSecure'
-              labelPlacement='outside'
-              placeholder='steamLoginSecure'
-              className='max-w-72.5'
+              label="steamLoginSecure"
+              labelPlacement="outside"
+              placeholder="steamLoginSecure"
+              className="max-w-72.5"
               classNames={{
                 inputWrapper: cn(
                   'bg-input data-[hover=true]:!bg-inputhover',
@@ -221,13 +279,13 @@ export default function SteamCredentials(): ReactElement {
               }}
               value={cardSettings.slsValue}
               onChange={e => cardSettings.setSlsValue(e.target.value)}
-              type='password'
+              type="password"
             />
             <Input
               label={<p>steamParental / steamMachineAuth</p>}
-              labelPlacement='outside'
-              placeholder='steamParental / steamMachineAuth'
-              className='max-w-72.5'
+              labelPlacement="outside"
+              placeholder="steamParental / steamMachineAuth"
+              className="max-w-72.5"
               classNames={{
                 inputWrapper: cn(
                   'bg-input data-[hover=true]:!bg-inputhover',
@@ -238,14 +296,14 @@ export default function SteamCredentials(): ReactElement {
               }}
               value={cardSettings.smaValue}
               onChange={e => cardSettings.setSmaValue(e.target.value)}
-              type='password'
+              type="password"
             />
-            <div className='flex justify-end gap-2'>
+            <div className="flex justify-end gap-2">
               <Button
-                size='sm'
-                variant='light'
-                radius='full'
-                color='danger'
+                size="sm"
+                variant="light"
+                radius="full"
+                color="danger"
                 isDisabled={!cardSettings.hasCookies}
                 onPress={() =>
                   handleCredentialsClear(
@@ -265,10 +323,12 @@ export default function SteamCredentials(): ReactElement {
                 {t('common.clear')}
               </Button>
               <Button
-                size='sm'
-                className='bg-btn-secondary text-btn-text font-bold'
-                radius='full'
-                isDisabled={cardSettings.hasCookies || !cardSettings.sidValue || !cardSettings.slsValue}
+                size="sm"
+                className="bg-btn-secondary text-btn-text font-bold"
+                radius="full"
+                isDisabled={
+                  cardSettings.hasCookies || !cardSettings.sidValue || !cardSettings.slsValue
+                }
                 onPress={() =>
                   handleCredentialsSave(
                     cardSettings.sidValue,
@@ -280,6 +340,7 @@ export default function SteamCredentials(): ReactElement {
                     userSettings,
                     setUserSettings,
                     cardSettings.setIsCFDataLoading,
+                    cardSettings.setGamesWithDropsData,
                   )
                 }
                 startContent={<TbUpload size={20} />}
@@ -290,6 +351,75 @@ export default function SteamCredentials(): ReactElement {
           </div>
         </div>
       </div>
+
+      <CustomModal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        classNames={{
+          body: '!p-0 !max-h-[60vh] !min-h-[60vh]',
+          base: 'max-w-xl bg-base/85 backdrop-blur-sm',
+        }}
+        title={
+          <div className="flex justify-between items-center">
+            <p className="truncate">{t('settings.cardFarming.gamesWithDrops')}</p>
+          </div>
+        }
+        body={
+          <div className="overflow-x-hidden overflow-y-auto relative">
+            {cardSettings.isCFDataLoading ? (
+              <div className="flex justify-center items-center w-full p-4">
+                <Spinner />
+              </div>
+            ) : cardSettings.gamesWithDropsData.length === 0 ? (
+              <div className="flex justify-center items-center w-full p-4">
+                <p className="text-center text-content">
+                  {t('customLists.cardFarming.drops', { count: 0 })}
+                </p>
+              </div>
+            ) : (
+              <div className="flex flex-col">
+                {cardSettings.gamesWithDropsData.map(item => (
+                  <div
+                    className="flex items-center gap-3 hover:bg-item-hover px-3 py-1 duration-150 select-none"
+                    key={item.id}
+                  >
+                    <Image
+                      src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${item.id}/header.jpg`}
+                      className="aspect-62/29 rounded-sm"
+                      width={62}
+                      height={29}
+                      alt={`${item.name} image`}
+                      priority
+                      onError={handleImageError}
+                    />
+                    <ExtLink
+                      className="text-sm max-w-1/2 text-dynamic hover:text-dynamic-hover duration-150"
+                      href={`https://steamcommunity.com/my/gamecards/${item.id}`}
+                    >
+                      <p className="truncate">{item.name}</p>
+                    </ExtLink>
+                    <p className="grow text-right">
+                      {t('customLists.cardFarming.drops', { count: item.remaining || 0 })}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        }
+        buttons={
+          <Button
+            size="sm"
+            color="danger"
+            variant="light"
+            radius="full"
+            className="font-semibold"
+            onPress={onOpenChange}
+          >
+            {t('common.close')}
+          </Button>
+        }
+      />
     </div>
-  )
+  );
 }

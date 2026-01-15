@@ -1,60 +1,60 @@
-import type { TradingCard } from '@/types'
-import type { ReactElement } from 'react'
+import { useEffect, useMemo, useState } from 'react';
+import Image from 'next/image';
+import { Alert, Checkbox, cn, Spinner } from '@heroui/react';
+import { FaCheckCircle } from 'react-icons/fa';
+import { SiExpertsexchange } from 'react-icons/si';
+import { TbLock, TbLockOpen } from 'react-icons/tb';
+import { useTranslation } from 'react-i18next';
 
-import { Alert, Checkbox, cn, Spinner } from '@heroui/react'
-import { useEffect, useMemo, useState } from 'react'
-import { useSearchStore } from '@/stores/searchStore'
-import { useStateStore } from '@/stores/stateStore'
-import { useUserStore } from '@/stores/userStore'
-import Image from 'next/image'
-import { useTranslation } from 'react-i18next'
-import { FaCheckCircle } from 'react-icons/fa'
-import { SiExpertsexchange } from 'react-icons/si'
-import { TbLock, TbLockOpen } from 'react-icons/tb'
+import type { TradingCard } from '@/types';
+import { useSearchStore } from '@/stores/searchStore';
+import { useStateStore } from '@/stores/stateStore';
+import { useUserStore } from '@/stores/userStore';
+import PageHeader from '@/components/trading-cards/PageHeader';
+import PriceData from '@/components/trading-cards/PriceData';
+import PriceInput from '@/components/trading-cards/PriceInput';
+import CustomTooltip from '@/components/ui/CustomTooltip';
+import ExtLink from '@/components/ui/ExtLink';
+import useTradingCardsList from '@/hooks/trading-cards/useTradingCardsList';
 
-import PageHeader from '@/components/trading-cards/PageHeader'
-import PriceData from '@/components/trading-cards/PriceData'
-import PriceInput from '@/components/trading-cards/PriceInput'
-import CustomTooltip from '@/components/ui/CustomTooltip'
-import ExtLink from '@/components/ui/ExtLink'
-import useTradingCardsList from '@/hooks/trading-cards/useTradingCardsList'
+export default function TradingCardsList() {
+  const { t } = useTranslation();
+  const tradingCardQueryValue = useSearchStore(state => state.tradingCardQueryValue);
+  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed);
+  const transitionDuration = useStateStore(state => state.transitionDuration);
+  const userSettings = useUserStore(state => state.userSettings);
+  const [lockedCards, setLockedCards] = useState<string[]>([]);
+  const [cardsPerRow, setCardsPerRow] = useState(6);
+  const [currentPage, setCurrentPage] = useState(1);
+  const tradingCardContext = useTradingCardsList();
 
-export default function TradingCardsList(): ReactElement {
-  const { t } = useTranslation()
-  const tradingCardQueryValue = useSearchStore(state => state.tradingCardQueryValue)
-  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
-  const transitionDuration = useStateStore(state => state.transitionDuration)
-  const userSettings = useUserStore(state => state.userSettings)
-  const [lockedCards, setLockedCards] = useState<string[]>([])
-  const [cardsPerRow, setCardsPerRow] = useState(6)
-  const [currentPage, setCurrentPage] = useState(1)
-  const tradingCardContext = useTradingCardsList()
-
-  const CARDS_PER_PAGE = 54
+  const CARDS_PER_PAGE = 54;
 
   useEffect(() => {
-    const storedLockedCards = localStorage.getItem('lockedTradingCards')
+    const storedLockedCards = localStorage.getItem('lockedTradingCards');
     if (storedLockedCards) {
-      setLockedCards(JSON.parse(storedLockedCards))
+      setLockedCards(JSON.parse(storedLockedCards));
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
     const updateCardsPerRow = (): void => {
-      setCardsPerRow(window.innerWidth >= 1536 ? 9 : 6)
-    }
-    updateCardsPerRow()
-    window.addEventListener('resize', updateCardsPerRow)
-    return () => window.removeEventListener('resize', updateCardsPerRow)
-  }, [])
+      setCardsPerRow(window.innerWidth >= 1536 ? 9 : 6);
+    };
+    updateCardsPerRow();
+    window.addEventListener('resize', updateCardsPerRow);
+    return () => window.removeEventListener('resize', updateCardsPerRow);
+  }, []);
 
   const handleLockCard = (id: string): void => {
     setLockedCards(prev => {
-      const newLockedCards = prev.includes(id) ? prev.filter(cardId => cardId !== id) : [...prev, id]
-      localStorage.setItem('lockedTradingCards', JSON.stringify(newLockedCards))
-      return newLockedCards
-    })
-  }
+      const newLockedCards = prev.includes(id)
+        ? prev.filter(cardId => cardId !== id)
+        : [...prev, id];
+      localStorage.setItem('lockedTradingCards', JSON.stringify(newLockedCards));
+      return newLockedCards;
+    });
+  };
 
   const filteredTradingCardsList = useMemo(
     () =>
@@ -64,14 +64,18 @@ export default function TradingCardsList(): ReactElement {
           card.appname.toLowerCase().includes(tradingCardQueryValue.toLowerCase()),
       ),
     [tradingCardContext.tradingCardsList, tradingCardQueryValue],
-  )
+  );
 
-  const totalPages = Math.ceil(filteredTradingCardsList.length / CARDS_PER_PAGE)
+  const totalPages = Math.ceil(filteredTradingCardsList.length / CARDS_PER_PAGE);
 
   const paginatedCards = useMemo(
-    () => filteredTradingCardsList.slice((currentPage - 1) * CARDS_PER_PAGE, currentPage * CARDS_PER_PAGE),
+    () =>
+      filteredTradingCardsList.slice(
+        (currentPage - 1) * CARDS_PER_PAGE,
+        currentPage * CARDS_PER_PAGE,
+      ),
     [filteredTradingCardsList, currentPage],
-  )
+  );
 
   const selectedCardsWithPrice = useMemo(
     () =>
@@ -79,13 +83,13 @@ export default function TradingCardsList(): ReactElement {
         id => tradingCardContext.selectedCards[id] && tradingCardContext.changedCardPrices[id] > 0,
       ),
     [tradingCardContext.selectedCards, tradingCardContext.changedCardPrices],
-  )
+  );
 
-  const renderCard = (item: TradingCard): ReactElement | null => {
-    if (!item) return null
+  const renderCard = (item: TradingCard) => {
+    if (!item) return null;
 
-    const isLocked = lockedCards.includes(item.id)
-    const isFoil = item.foil
+    const isLocked = lockedCards.includes(item.id);
+    const isFoil = item.foil;
 
     return (
       <div
@@ -96,9 +100,9 @@ export default function TradingCardsList(): ReactElement {
           isFoil && 'holo-bg',
         )}
       >
-        <div className='relative flex justify-between items-center w-full mb-2'>
+        <div className="relative flex justify-between items-center w-full mb-2">
           <Checkbox
-            size='sm'
+            size="sm"
             name={item.assetid}
             isSelected={tradingCardContext.selectedCards[item.assetid] || false}
             onChange={() => tradingCardContext.toggleCardSelection(item.assetid)}
@@ -112,20 +116,26 @@ export default function TradingCardsList(): ReactElement {
             }}
           />
 
-          <div className='flex items-center gap-1'>
-            <CustomTooltip content={t('tradingCards.lockCard')} placement='top'>
+          <div className="flex items-center gap-1">
+            <CustomTooltip content={t('tradingCards.lockCard')} placement="top">
               <div
-                className='hover:bg-item-hover rounded-full p-1 cursor-pointer duration-200'
+                className="hover:bg-item-hover rounded-full p-1 cursor-pointer duration-200"
                 onClick={() => handleLockCard(item.id)}
               >
-                {isLocked ? <TbLock fontSize={14} className='text-yellow-500' /> : <TbLockOpen fontSize={14} />}
+                {isLocked ? (
+                  <TbLock fontSize={14} className="text-yellow-500" />
+                ) : (
+                  <TbLockOpen fontSize={14} />
+                )}
               </div>
             </CustomTooltip>
 
-            <CustomTooltip content={t('tradingCards.cardExchange')} placement='top'>
+            <CustomTooltip content={t('tradingCards.cardExchange')} placement="top">
               <div>
-                <ExtLink href={`https://www.steamcardexchange.net/index.php?gamepage-appid-${item.appid}`}>
-                  <div className='hover:bg-item-hover rounded-full p-1.5 cursor-pointer duration-200'>
+                <ExtLink
+                  href={`https://www.steamcardexchange.net/index.php?gamepage-appid-${item.appid}`}
+                >
+                  <div className="hover:bg-item-hover rounded-full p-1.5 cursor-pointer duration-200">
                     <SiExpertsexchange fontSize={10} />
                   </div>
                 </ExtLink>
@@ -136,34 +146,36 @@ export default function TradingCardsList(): ReactElement {
 
         <CustomTooltip
           important
-          placement='right'
+          placement="right"
           content={
-            <div className='py-2'>
+            <div className="py-2">
               <Image
-                className='w-[150px] h-auto border border-border'
+                className="w-37.5 h-auto border border-border"
                 src={item.image}
                 width={224}
                 height={261}
                 alt={`${item.appname} image`}
-                priority={true}
+                priority
               />
             </div>
           }
         >
-          <div className='flex items-center justify-between bg-input rounded-lg p-1.5 border border-border'>
+          <div className="flex items-center justify-between bg-input rounded-lg p-1.5 border border-border">
             <Image
-              className='w-20 h-auto border border-border'
+              className="w-20 h-auto border border-border"
               src={item.image}
               width={224}
               height={261}
               alt={`${item.appname} image`}
-              priority={true}
+              priority
             />
           </div>
         </CustomTooltip>
 
-        <div className='flex flex-col items-center justify-center gap-0.5 mt-2'>
-          <p className='text-xs truncate max-w-[140px]'>{item.full_name.replace('(Trading Card)', '') || 'Unknown'}</p>
+        <div className="flex flex-col items-center justify-center gap-0.5 mt-2">
+          <p className="text-xs truncate max-w-35">
+            {item.full_name.replace('(Trading Card)', '') || 'Unknown'}
+          </p>
 
           <CustomTooltip
             content={
@@ -171,17 +183,20 @@ export default function TradingCardsList(): ReactElement {
                 ? t('tradingCards.badgeLevel', { level: item.badge_level })
                 : t('tradingCards.noBadge')
             }
-            placement='top'
+            placement="top"
             important
           >
-            <div className='flex items-center justify-center gap-1'>
+            <div className="flex items-center justify-center gap-1">
               {item.badge_level > 0 && (
-                <div className='flex items-center justify-center'>
-                  <FaCheckCircle size={12} className='text-green-400' />
+                <div className="flex items-center justify-center">
+                  <FaCheckCircle size={12} className="text-green-400" />
                 </div>
               )}
               <p
-                className={cn('text-xs text-altwhite truncate max-w-[140px]', item.badge_level > 0 && 'text-green-400')}
+                className={cn(
+                  'text-xs text-altwhite truncate max-w-35',
+                  item.badge_level > 0 && 'text-green-400',
+                )}
               >
                 {item.appname}
               </p>
@@ -193,8 +208,8 @@ export default function TradingCardsList(): ReactElement {
 
         <PriceData item={item} tradingCardContext={tradingCardContext} />
       </div>
-    )
-  }
+    );
+  };
 
   return (
     <div
@@ -217,10 +232,10 @@ export default function TradingCardsList(): ReactElement {
       />
 
       {!userSettings.cardFarming.credentials && (
-        <div className='mx-6 max-w-fit'>
+        <div className="mx-6 max-w-fit">
           <Alert
-            color='primary'
-            variant='faded'
+            color="primary"
+            variant="faded"
             classNames={{
               base: '!bg-dynamic/30 text-dynamic !border-dynamic/40',
               iconWrapper: '!bg-dynamic/30 border-dynamic/40',
@@ -232,16 +247,18 @@ export default function TradingCardsList(): ReactElement {
       )}
 
       {!tradingCardContext.isLoading ? (
-        <div className='flex flex-col'>
-          <div className={`grid gap-4 px-6 pt-2 ${cardsPerRow === 9 ? 'grid-cols-9' : 'grid-cols-6'}`}>
+        <div className="flex flex-col">
+          <div
+            className={`grid gap-4 px-6 pt-2 ${cardsPerRow === 9 ? 'grid-cols-9' : 'grid-cols-6'}`}
+          >
             {paginatedCards.map(item => renderCard(item))}
           </div>
         </div>
       ) : (
-        <div className='flex justify-center items-center w-calc h-[calc(100vh-224px)]'>
-          <Spinner variant='simple' />
+        <div className="flex justify-center items-center w-calc h-[calc(100vh-224px)]">
+          <Spinner variant="simple" />
         </div>
       )}
     </div>
-  )
+  );
 }

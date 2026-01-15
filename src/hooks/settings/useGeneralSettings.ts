@@ -1,50 +1,47 @@
-import type { InvokeSettings, InvokeValidateKey, UserSettings } from '@/types'
-import type { Dispatch, SetStateAction } from 'react'
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
+import { invoke } from '@tauri-apps/api/core';
+import { disable, enable, isEnabled } from '@tauri-apps/plugin-autostart';
 
-import { invoke } from '@tauri-apps/api/core'
-import { disable, enable, isEnabled } from '@tauri-apps/plugin-autostart'
-
-import { useEffect, useState } from 'react'
-import { useUserStore } from '@/stores/userStore'
-
-import { encrypt, logEvent } from '@/utils/tasks'
-import { showDangerToast, showSuccessToast, t } from '@/utils/toasts'
+import type { InvokeSettings, InvokeValidateKey, UserSettings } from '@/types';
+import { useUserStore } from '@/stores/userStore';
+import { encrypt, logEvent } from '@/utils/tasks';
+import { showDangerToast, showSuccessToast, t } from '@/utils/toasts';
 
 interface GeneralSettingsHook {
-  startupState: boolean | null
-  setStartupState: Dispatch<SetStateAction<boolean | null>>
-  keyValue: string
-  setKeyValue: Dispatch<SetStateAction<string>>
-  hasKey: boolean
-  setHasKey: Dispatch<SetStateAction<boolean>>
-  sliderLabel: string
-  setSliderLabel: Dispatch<SetStateAction<string>>
+  startupState: boolean | null;
+  setStartupState: Dispatch<SetStateAction<boolean | null>>;
+  keyValue: string;
+  setKeyValue: Dispatch<SetStateAction<string>>;
+  hasKey: boolean;
+  setHasKey: Dispatch<SetStateAction<boolean>>;
+  sliderLabel: string;
+  setSliderLabel: Dispatch<SetStateAction<string>>;
 }
 
 export const useGeneralSettings = (): GeneralSettingsHook => {
-  const userSettings = useUserStore(state => state.userSettings)
-  const [startupState, setStartupState] = useState<boolean | null>(null)
-  const [keyValue, setKeyValue] = useState('')
-  const [hasKey, setHasKey] = useState(false)
-  const [sliderLabel, setSliderLabel] = useState('')
+  const userSettings = useUserStore(state => state.userSettings);
+  const [startupState, setStartupState] = useState<boolean | null>(null);
+  const [keyValue, setKeyValue] = useState('');
+  const [hasKey, setHasKey] = useState(false);
+  const [sliderLabel, setSliderLabel] = useState('');
 
   useEffect(() => {
     // Check the current state of auto start
     const checkStartupState = async (): Promise<void> => {
-      const isEnabledState = await isEnabled()
-      setStartupState(isEnabledState)
-    }
-    checkStartupState()
-  }, [])
+      const isEnabledState = await isEnabled();
+      setStartupState(isEnabledState);
+    };
+    checkStartupState();
+  }, []);
 
   useEffect(() => {
     // Load Steam web API key from localStorage
-    const apiKey = userSettings.general.apiKey
+    const { apiKey } = userSettings.general;
     if (apiKey && apiKey.length > 0) {
-      setHasKey(true)
-      setKeyValue(apiKey)
+      setHasKey(true);
+      setKeyValue(apiKey);
     }
-  }, [userSettings.general.apiKey])
+  }, [userSettings.general, userSettings.general.apiKey]);
 
   return {
     startupState,
@@ -55,27 +52,27 @@ export const useGeneralSettings = (): GeneralSettingsHook => {
     setHasKey,
     sliderLabel,
     setSliderLabel,
-  }
-}
+  };
+};
 
 // Toggle app auto start using tauri plugin
 export const handleRunAtStartupChange = async (
   setStartupState: Dispatch<SetStateAction<boolean | null>>,
 ): Promise<void> => {
   try {
-    const isEnabledState = await isEnabled()
+    const isEnabledState = await isEnabled();
     if (isEnabledState) {
-      await disable()
+      await disable();
     } else {
-      await enable()
+      await enable();
     }
-    setStartupState(!isEnabledState)
+    setStartupState(!isEnabledState);
   } catch (error) {
-    showDangerToast(t('common.error'))
-    console.error('Error in (handleRunAtStartupChange):', error)
-    logEvent(`[Error] in (handleRunAtStartupChange): ${error}`)
+    showDangerToast(t('common.error'));
+    console.error('Error in (handleRunAtStartupChange):', error);
+    logEvent(`[Error] in (handleRunAtStartupChange): ${error}`);
   }
-}
+};
 
 // Saves Steam web API key to localStorage
 export const handleKeySave = async (
@@ -89,30 +86,30 @@ export const handleKeySave = async (
       const validate = await invoke<InvokeValidateKey>('validate_steam_api_key', {
         steamId,
         apiKey: keyValue,
-      })
+      });
 
       if (validate.response) {
         const response = await invoke<InvokeSettings>('update_user_settings', {
           steamId,
           key: 'general.apiKey',
           value: encrypt(keyValue),
-        })
-        setUserSettings(response.settings)
+        });
+        setUserSettings(response.settings);
 
-        setHasKey(true)
+        setHasKey(true);
 
-        showSuccessToast(t('toast.apiKey.save'))
-        logEvent('[Settings - General] Steam web API key added')
+        showSuccessToast(t('toast.apiKey.save'));
+        logEvent('[Settings - General] Steam web API key added');
       } else {
-        showDangerToast(t('toast.apiKey.error'))
+        showDangerToast(t('toast.apiKey.error'));
       }
     }
   } catch (error) {
-    showDangerToast(t('common.error'))
-    console.error('Error in (handleKeySave):', error)
-    logEvent(`[Error] in (handleKeySave): ${error}`)
+    showDangerToast(t('common.error'));
+    console.error('Error in (handleKeySave):', error);
+    logEvent(`[Error] in (handleKeySave): ${error}`);
   }
-}
+};
 
 // Removes Steam API key from localStorage and resets state
 export const handleClear = async (
@@ -126,15 +123,15 @@ export const handleClear = async (
       steamId,
       key: 'general.apiKey',
       value: null,
-    })
-    setUserSettings(response.settings)
-    setKeyValue('')
-    setHasKey(false)
-    showSuccessToast(t('toast.apiKey.clear'))
-    logEvent('[Settings - General] Steam web API key cleared')
+    });
+    setUserSettings(response.settings);
+    setKeyValue('');
+    setHasKey(false);
+    showSuccessToast(t('toast.apiKey.clear'));
+    logEvent('[Settings - General] Steam web API key cleared');
   } catch (error) {
-    showDangerToast(t('common.error'))
-    console.error('Error in (handleClear):', error)
-    logEvent(`[Error] in (handleClear): ${error}`)
+    showDangerToast(t('common.error'));
+    console.error('Error in (handleClear):', error);
+    logEvent(`[Error] in (handleClear): ${error}`);
   }
-}
+};

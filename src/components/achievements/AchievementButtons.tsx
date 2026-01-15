@@ -1,21 +1,19 @@
-import type { Achievement, SortOption } from '@/types'
-import type { Dispatch, ReactElement, SetStateAction } from 'react'
+import { useState, type Dispatch, type SetStateAction } from 'react';
+import { Button, cn, Select, SelectItem, useDisclosure } from '@heroui/react';
+import { TbLock, TbLockOpen, TbSortDescending2 } from 'react-icons/tb';
+import { Trans, useTranslation } from 'react-i18next';
 
-import { Button, cn, Select, SelectItem, useDisclosure } from '@heroui/react'
-import { useState } from 'react'
-import { useStateStore } from '@/stores/stateStore'
-import { useUserStore } from '@/stores/userStore'
-import { Trans, useTranslation } from 'react-i18next'
-import { TbLock, TbLockOpen, TbSortDescending2 } from 'react-icons/tb'
+import type { Achievement, SortOption } from '@/types';
+import { useStateStore } from '@/stores/stateStore';
+import { useUserStore } from '@/stores/userStore';
+import CustomModal from '@/components/ui/CustomModal';
+import useAchievementButtons from '@/hooks/achievements/useAchievementButtons';
 
-import CustomModal from '@/components/ui/CustomModal'
-import useAchievementButtons from '@/hooks/achievements/useAchievementButtons'
-
-interface AchievementButtonsProps {
-  achievements: Achievement[]
-  setAchievements: Dispatch<SetStateAction<Achievement[]>>
-  protectedAchievements: boolean
-  setRefreshKey?: Dispatch<SetStateAction<number>>
+interface Props {
+  achievements: Achievement[];
+  setAchievements: Dispatch<SetStateAction<Achievement[]>>;
+  protectedAchievements: boolean;
+  setRefreshKey?: Dispatch<SetStateAction<number>>;
 }
 
 export default function AchievementButtons({
@@ -23,14 +21,17 @@ export default function AchievementButtons({
   setAchievements,
   protectedAchievements,
   setRefreshKey,
-}: AchievementButtonsProps): ReactElement {
-  const { t } = useTranslation()
-  const userSummary = useUserStore(state => state.userSummary)
-  const appId = useStateStore(state => state.appId)
-  const appName = useStateStore(state => state.appName)
-  const { isOpen, onOpen, onOpenChange } = useDisclosure()
-  const { handleChange, handleUnlockAll, handleLockAll } = useAchievementButtons(userSummary, setAchievements)
-  const [state, setState] = useState('')
+}: Props) {
+  const { t } = useTranslation();
+  const userSummary = useUserStore(state => state.userSummary);
+  const appId = useStateStore(state => state.appId);
+  const appName = useStateStore(state => state.appName);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { handleChange, handleUnlockAll, handleLockAll } = useAchievementButtons(
+    userSummary,
+    setAchievements,
+  );
+  const [state, setState] = useState('');
 
   const sortOptions: SortOption[] = [
     {
@@ -57,37 +58,37 @@ export default function AchievementButtons({
       key: 'protected',
       label: t('achievementManager.achievements.sort.protected'),
     },
-  ]
+  ];
 
-  const unAchieved = achievements.filter(achievement => !achievement.achieved)
-  const achieved = achievements.filter(achievement => achievement.achieved)
+  const unAchieved = achievements.filter(achievement => !achievement.achieved);
+  const achieved = achievements.filter(achievement => achievement.achieved);
 
   const getTranslatedState = (state: string): string => {
-    if (state === 'unlock') return t('achievementManager.achievements.unlock')
-    if (state === 'lock') return t('achievementManager.achievements.lock')
-    return state
-  }
+    if (state === 'unlock') return t('achievementManager.achievements.unlock');
+    if (state === 'lock') return t('achievementManager.achievements.lock');
+    return state;
+  };
 
   const handleShowModal = (onOpen: () => void, state: string): void => {
-    setState(state)
-    onOpen()
-  }
+    setState(state);
+    onOpen();
+  };
 
   return (
-    <div className='absolute top-0 right-0 flex gap-2 mt-4 px-10'>
+    <div className="absolute top-0 right-0 flex gap-2 mt-4 px-10">
       <Button
-        className='bg-btn-secondary text-btn-text font-bold'
-        radius='full'
+        className="bg-btn-secondary text-btn-text font-bold"
+        radius="full"
         onPress={() => {
-          if (setRefreshKey) setRefreshKey(prev => prev + 1)
+          if (setRefreshKey) setRefreshKey(prev => prev + 1);
         }}
       >
         {t('setup.refresh')}
       </Button>
 
       <Button
-        className='bg-btn-secondary text-btn-text font-bold'
-        radius='full'
+        className="bg-btn-secondary text-btn-text font-bold"
+        radius="full"
         isDisabled={protectedAchievements || unAchieved.length === 0}
         onPress={() => handleShowModal(onOpen, 'unlock')}
         startContent={<TbLockOpen size={20} />}
@@ -96,9 +97,9 @@ export default function AchievementButtons({
       </Button>
 
       <Button
-        className='font-bold'
-        radius='full'
-        color='danger'
+        className="font-bold"
+        radius="full"
+        color="danger"
         isDisabled={protectedAchievements || achieved.length === 0}
         onPress={() => handleShowModal(onOpen, 'lock')}
         startContent={<TbLock size={20} />}
@@ -107,12 +108,12 @@ export default function AchievementButtons({
       </Button>
 
       <Select
-        aria-label='sort'
+        aria-label="sort"
         disallowEmptySelection
-        radius='none'
+        radius="none"
         startContent={<TbSortDescending2 fontSize={26} />}
         items={sortOptions}
-        className='w-[230px]'
+        className="w-57.5"
         classNames={{
           listbox: ['p-0'],
           value: ['text-sm !text-content'],
@@ -124,7 +125,7 @@ export default function AchievementButtons({
         }}
         defaultSelectedKeys={['percent']}
         onSelectionChange={e => {
-          handleChange(e.currentKey, achievements, setAchievements)
+          handleChange(e.currentKey, achievements, setAchievements);
         }}
       >
         {item => (
@@ -143,9 +144,9 @@ export default function AchievementButtons({
         onOpenChange={onOpenChange}
         title={t('common.confirm')}
         body={
-          <p className='text-sm'>
+          <p className="text-sm">
             <Trans
-              i18nKey='achievementManager.achievements.modal'
+              i18nKey="achievementManager.achievements.modal"
               values={{
                 state: getTranslatedState(state).toLowerCase(),
               }}
@@ -157,28 +158,26 @@ export default function AchievementButtons({
         buttons={
           <>
             <Button
-              size='sm'
-              color='danger'
-              variant='light'
-              radius='full'
-              className='font-semibold'
+              size="sm"
+              color="danger"
+              variant="light"
+              radius="full"
+              className="font-semibold"
               onPress={onOpenChange}
             >
               {t('common.cancel')}
             </Button>
             <Button
-              size='sm'
-              className='bg-btn-secondary text-btn-text font-bold'
-              radius='full'
+              size="sm"
+              className="bg-btn-secondary text-btn-text font-bold"
+              radius="full"
               onPress={() => {
                 if (state === 'unlock') {
                   if (appId && appName) {
-                    handleUnlockAll(appId, appName, achievements, onOpenChange)
+                    handleUnlockAll(appId, appName, achievements, onOpenChange);
                   }
-                } else {
-                  if (appId && appName) {
-                    handleLockAll(appId, appName, achievements, onOpenChange)
-                  }
+                } else if (appId && appName) {
+                  handleLockAll(appId, appName, achievements, onOpenChange);
                 }
               }}
             >
@@ -188,5 +187,5 @@ export default function AchievementButtons({
         }
       />
     </div>
-  )
+  );
 }

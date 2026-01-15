@@ -1,40 +1,38 @@
-import type { Game } from '@/types'
-import type { ReactElement } from 'react'
+import { useCallback, useEffect, useState } from 'react';
+import { cn } from '@heroui/react';
+import { useTranslation } from 'react-i18next';
 
-import { cn } from '@heroui/react'
-import { useCallback, useEffect, useState } from 'react'
-import { useStateStore } from '@/stores/stateStore'
-import { useUserStore } from '@/stores/userStore'
-import { useTranslation } from 'react-i18next'
+import type { Game } from '@/types';
+import { useStateStore } from '@/stores/stateStore';
+import { useUserStore } from '@/stores/userStore';
+import GameCard from '@/components/ui/GameCard';
 
-import GameCard from '@/components/ui/GameCard'
-
-export default function FreeGamesList(): ReactElement {
-  const { t } = useTranslation()
-  const freeGamesList = useUserStore(state => state.freeGamesList)
-  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
-  const transitionDuration = useStateStore(state => state.transitionDuration)
-  const [columnCount, setColumnCount] = useState(5)
+export default function FreeGamesList() {
+  const { t } = useTranslation();
+  const freeGamesList = useUserStore(state => state.freeGamesList);
+  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed);
+  const transitionDuration = useStateStore(state => state.transitionDuration);
+  const [columnCount, setColumnCount] = useState(5);
 
   const handleResize = useCallback((): void => {
     if (window.innerWidth >= 3200) {
-      setColumnCount(12)
+      setColumnCount(12);
     } else if (window.innerWidth >= 2300) {
-      setColumnCount(10)
+      setColumnCount(10);
     } else if (window.innerWidth >= 2000) {
-      setColumnCount(8)
+      setColumnCount(8);
     } else if (window.innerWidth >= 1500) {
-      setColumnCount(7)
+      setColumnCount(7);
     } else {
-      setColumnCount(5)
+      setColumnCount(5);
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
-    handleResize()
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [handleResize])
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [handleResize]);
 
   return (
     <div
@@ -48,12 +46,12 @@ export default function FreeGamesList(): ReactElement {
       }}
     >
       <div className={cn('w-[calc(100vw-227px)] z-50 pl-6 pt-2')}>
-        <div className='flex justify-between items-center pb-3'>
-          <div className='flex items-center gap-1 select-none'>
-            <div className='flex flex-col justify-center'>
-              <p className='text-3xl font-black'>{t('freeGames.title')}</p>
+        <div className="flex justify-between items-center pb-3">
+          <div className="flex items-center gap-1 select-none">
+            <div className="flex flex-col justify-center">
+              <p className="text-3xl font-black">{t('freeGames.title')}</p>
 
-              <p className='text-xs text-altwhite my-2'>
+              <p className="text-xs text-altwhite my-2">
                 {freeGamesList.length > 0
                   ? t('common.showing', {
                       count: freeGamesList.length,
@@ -75,9 +73,10 @@ export default function FreeGamesList(): ReactElement {
           columnCount === 12 ? 'grid-cols-12' : '',
         )}
       >
-        {freeGamesList &&
-          freeGamesList.map((item: Game) => <GameCard key={item.appid} item={item} isFreeGame={true} />)}
+        {freeGamesList?.map((item: Game) => (
+          <GameCard key={item.appid} item={item} isFreeGame />
+        ))}
       </div>
     </div>
-  )
+  );
 }

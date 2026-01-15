@@ -1,23 +1,26 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # Visual Studio
-.vs
+.vs/
 
 # dependencies
-/node_modules
-/.pnp
+node_modules/
+.pnp
 .pnp.js
 .yarn/install-state.gz
 
 # testing
-/coverage
+coverage/
 
 # next.js
-/.next/
-/out/
+.next/
+out/
 
 # production
-/build
+build/
+
+# generated content
+.source
 
 # misc
 .DS_Store
@@ -33,7 +36,7 @@ yarn-error.log*
 !.env.example
 
 # vercel
-.vercel
+.vercel/
 
 # typescript
 *.tsbuildinfo
@@ -46,6 +49,6 @@ src-tauri/gen
 .window-state.json
 
 # rust-analyzer
-target
+target/
 
 *.ps1

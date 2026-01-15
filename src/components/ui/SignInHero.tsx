@@ -1,8 +1,8 @@
-import Image from 'next/image'
-import { Trans, useTranslation } from 'react-i18next'
+import Image from 'next/image';
+import { Trans, useTranslation } from 'react-i18next';
 
 export default function SignInHero() {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   const uniqueItems = [
     { id: '1', src: '/cover-art/1091500.webp' },
@@ -38,16 +38,18 @@ export default function SignInHero() {
     { id: '31', src: '/cover-art/1174180.webp' },
     { id: '32', src: '/cover-art/381210.webp' },
     { id: '33', src: '/cover-art/1623730.webp' },
-  ]
+  ];
 
-  const items = Array.from({ length: 2 }).flatMap((_, repeat) => uniqueItems.map(item => ({ ...item, repeat })))
+  const items = Array.from({ length: 2 }).flatMap((_, repeat) =>
+    uniqueItems.map(item => ({ ...item, repeat })),
+  );
 
   return (
-    <div className='relative flex items-center justify-center h-[75vh] w-full mt-9 overflow-hidden rounded-3xl inner-glow'>
-      <div className='pointer-events-none absolute left-0 bottom-0 w-full h-1/4 z-20' />
-      <div className='absolute flex flex-col items-center justify-between w-[90%] h-[90%] z-10 pointer-events-none'>
-        <p className='font-black text-[52px] leading-14 text-center'>
-          <Trans i18nKey='setup.hero.title'>
+    <div className="relative flex items-center justify-center h-[75vh] w-full mt-9 overflow-hidden rounded-3xl inner-glow">
+      <div className="pointer-events-none absolute left-0 bottom-0 w-full h-1/4 z-20" />
+      <div className="absolute flex flex-col items-center justify-between w-[90%] h-[90%] z-10 pointer-events-none">
+        <p className="font-black text-[52px] leading-14 text-center">
+          <Trans i18nKey="setup.hero.title">
             The Only Steam
             <br />
             Automation Tool
@@ -56,13 +58,19 @@ export default function SignInHero() {
           </Trans>
         </p>
 
-        <p className='text-lg mt-4 text-center'>{t('setup.hero.subtitle')}</p>
+        <p className="text-lg mt-4 text-center">{t('setup.hero.subtitle')}</p>
 
-        <Image src='/mock.webp' alt='app mockup' width={730} height={380} className='mt-10 -translate-x-3' />
+        <Image
+          src="/mock.webp"
+          alt="app mockup"
+          width={730}
+          height={380}
+          className="mt-10 -translate-x-3"
+        />
       </div>
 
-      <div className='relative w-full h-full opacity-15'>
-        <div className='mx-auto h-full w-[170%] -translate-x-72 -translate-y-18 animate-skew-scroll grid grid-cols-8 gap-3'>
+      <div className="relative w-full h-full opacity-15">
+        <div className="mx-auto h-full w-[170%] -translate-x-72 -translate-y-18 animate-skew-scroll grid grid-cols-8 gap-3">
           {items.map((item, idx) => (
             <div
               key={`${item.id}-${item.repeat}`}
@@ -70,17 +78,17 @@ export default function SignInHero() {
               style={{ breakInside: 'avoid' }}
             >
               <Image
-                loading='lazy'
+                loading="lazy"
                 src={item.src}
                 alt={item.src}
                 width={130}
                 height={130}
-                className='rounded-lg w-full h-full object-cover hover:scale-105 duration-150'
+                className="rounded-lg w-full h-full object-cover hover:scale-105 duration-150"
               />
             </div>
           ))}
         </div>
       </div>
     </div>
-  )
+  );
 }
