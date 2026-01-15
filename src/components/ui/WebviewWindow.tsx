@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default function WebviewWindow({ children, href, className = '' }: Props) {
-  const handleClick = async (e: MouseEvent<HTMLAnchorElement>): Promise<void> => {
+  const handleClick = async (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     try {
       const appWindow = new Window('ext-link');
@@ -19,7 +19,7 @@ export default function WebviewWindow({ children, href, className = '' }: Props)
           ? href.replace('https://steamgameidler.com', 'http://localhost:3001')
           : href;
 
-      appWindow.once('tauri://created', async function () {
+      appWindow.once('tauri://created', async () => {
         appWindow.setTitle(`Steam Game Idler - ${parseHref}`);
         appWindow.setPosition(new LogicalPosition(10, 10));
         appWindow.setSize(new LogicalSize(1500, 825));
@@ -29,6 +29,7 @@ export default function WebviewWindow({ children, href, className = '' }: Props)
         appWindow.setDecorations(true);
         appWindow.setShadow(true);
 
+        // eslint-disable-next-line no-new
         new Webview(appWindow, 'ext-link', {
           url: parseHref,
           x: 0,

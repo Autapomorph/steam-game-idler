@@ -34,14 +34,12 @@ export default function RecentGamesCarousel({ gamesContext }: Props) {
         } else {
           newScroll = maxScroll;
         }
+      } else if (currentScroll + scrollAmount < maxScroll) {
+        newScroll = currentScroll + scrollAmount;
+      } else if (currentScroll < maxScroll) {
+        newScroll = maxScroll;
       } else {
-        if (currentScroll + scrollAmount < maxScroll) {
-          newScroll = currentScroll + scrollAmount;
-        } else if (currentScroll < maxScroll) {
-          newScroll = maxScroll;
-        } else {
-          newScroll = 0;
-        }
+        newScroll = 0;
       }
 
       container.scrollTo({

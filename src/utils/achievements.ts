@@ -35,12 +35,11 @@ export async function unlockAchievement(
     if (status.success) {
       logEvent(`[Achievement Manager] Unlocked ${achievementName} for ${appName} (${appId})`);
       return true;
-    } else {
-      logEvent(
-        `[Error] [Achievement Manager] Failed to unlock ${achievementName} for ${appName} (${appId})`,
-      );
-      return false;
     }
+    logEvent(
+      `[Error] [Achievement Manager] Failed to unlock ${achievementName} for ${appName} (${appId})`,
+    );
+    return false;
   } catch (error) {
     console.error('Error in unlockAchievement util: ', error);
     logEvent(`[Error] in (unlockAchievement) util: ${error}`);
@@ -70,19 +69,18 @@ export async function toggleAchievement(
       showSuccessToast(t('toast.toggle.success', { type, achievementName, appName }));
       logEvent(`[Achievement Manager] ${type} ${achievementName} for ${appName} (${appId})`);
       return true;
-    } else {
-      showDangerToast(
-        t('toast.toggle.error', {
-          type: type.replace('ed', '').toLowerCase(),
-          achievementName,
-          appName,
-        }),
-      );
-      logEvent(
-        `[Error] [Achievement Manager] Failed to ${type.replace('ed', '').toLowerCase()} ${achievementName} for ${appName} (${appId})`,
-      );
-      return false;
     }
+    showDangerToast(
+      t('toast.toggle.error', {
+        type: type.replace('ed', '').toLowerCase(),
+        achievementName,
+        appName,
+      }),
+    );
+    logEvent(
+      `[Error] [Achievement Manager] Failed to ${type.replace('ed', '').toLowerCase()} ${achievementName} for ${appName} (${appId})`,
+    );
+    return false;
   } catch (error) {
     console.error('Error in toggleAchievement util: ', error);
     logEvent(`[Error] in (toggleAchievement) util: ${error}`);
@@ -113,12 +111,11 @@ export async function unlockAllAchievements(
         `[Achievement Manager] Unlocked ${achievementsArr.length} achievements for ${appName} (${appId})`,
       );
       return true;
-    } else {
-      logEvent(
-        `[Error] [Achievement Manager] Failed to unlock all achievements for ${appName} (${appId})`,
-      );
-      return false;
     }
+    logEvent(
+      `[Error] [Achievement Manager] Failed to unlock all achievements for ${appName} (${appId})`,
+    );
+    return false;
   } catch (error) {
     console.error('Error in unlockAllAchievements util: ', error);
     logEvent(`[Error] in (unlockAllAchievements) util: ${error}`);
@@ -149,12 +146,11 @@ export async function lockAllAchievements(
         `[Achievement Manager] Locked ${achievementsArr.length} achievements for ${appName} (${appId})`,
       );
       return true;
-    } else {
-      logEvent(
-        `[Error] [Achievement Manager] Failed to lock all achievements for ${appName} (${appId})`,
-      );
-      return false;
     }
+    logEvent(
+      `[Error] [Achievement Manager] Failed to lock all achievements for ${appName} (${appId})`,
+    );
+    return false;
   } catch (error) {
     console.error('Error in lockAllAchievements util: ', error);
     logEvent(`[Error] in (lockAllAchievements) util: ${error}`);
@@ -191,10 +187,9 @@ export async function updateStats(
     if (status.success) {
       logEvent(`[Statistics Manager] Updated ${valuesArr.length} stats for ${appName} (${appId})`);
       return true;
-    } else {
-      logEvent(`[Error] [Statistics Manager] Failed to update stats for ${appName} (${appId})`);
-      return false;
     }
+    logEvent(`[Error] [Statistics Manager] Failed to update stats for ${appName} (${appId})`);
+    return false;
   } catch (error) {
     console.error('Error in updateStats util: ', error);
     logEvent(`[Error] in (updateStats) util: ${error}`);

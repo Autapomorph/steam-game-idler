@@ -27,6 +27,7 @@ const Row = memo(({ index, style, data }: RowProps) => {
   const item = filteredGamesList[index];
 
   const handleImageError = (event: SyntheticEvent<HTMLImageElement, Event>): void => {
+    // eslint-disable-next-line no-param-reassign
     (event.target as HTMLImageElement).src = '/fallback.webp';
   };
 
@@ -50,7 +51,7 @@ const Row = memo(({ index, style, data }: RowProps) => {
           width={62}
           height={29}
           alt={`${item.name} image`}
-          priority={true}
+          priority
           onError={handleImageError}
         />
         <p className="text-sm truncate mr-8">{item.name}</p>
@@ -159,7 +160,7 @@ export default function GameSettings() {
             minValue={0}
             maxValue={99999}
             aria-label="max idle time"
-            className="w-[90px]"
+            className="w-22.5"
             classNames={{
               inputWrapper: cn(
                 'bg-input data-[hover=true]:!bg-inputhover border-none',
@@ -193,7 +194,7 @@ export default function GameSettings() {
             minValue={0}
             maxValue={99999}
             aria-label="max idle time"
-            className="w-[90px]"
+            className="w-22.5"
             isDisabled={!selectedGame}
             classNames={{
               inputWrapper: cn(
@@ -228,7 +229,7 @@ export default function GameSettings() {
             minValue={0}
             maxValue={99999}
             aria-label="max card drops"
-            className="w-[90px]"
+            className="w-22.5"
             isDisabled={!selectedGame}
             classNames={{
               inputWrapper: cn(
@@ -263,7 +264,7 @@ export default function GameSettings() {
             minValue={0}
             maxValue={99999}
             aria-label="max achievement unlocks"
-            className="w-[90px]"
+            className="w-22.5"
             isDisabled={!selectedGame}
             classNames={{
               inputWrapper: cn(

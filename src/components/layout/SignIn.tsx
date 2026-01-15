@@ -41,7 +41,7 @@ export default function SignIn() {
         </WebviewWindow>
 
         <LanguageSwitch
-          className="w-[180px] pointer-events-auto"
+          className="w-45 pointer-events-auto"
           classNames={{
             trigger: [
               'bg-input/80 data-[hover=true]:!bg-inputhover/80 data-[open=true]:!bg-inputhover/80 duration-100 rounded-lg border border-border',

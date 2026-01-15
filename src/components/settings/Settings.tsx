@@ -42,7 +42,7 @@ export default function Settings() {
         />
       </div>
 
-      <div className="absolute flex flex-col items-center gap-4 bottom-4 left-0 px-6 w-[250px] z-40">
+      <div className="absolute flex flex-col items-center gap-4 bottom-4 left-0 px-6 w-62.5 z-40">
         <SocialButtons />
         <span className="text-xs text-altwhite text-center">Steam Game Idler v{version}</span>
       </div>

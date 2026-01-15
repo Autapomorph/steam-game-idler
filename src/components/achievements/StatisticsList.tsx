@@ -64,7 +64,7 @@ const Row = memo(({ index, style, data }: RowProps) => {
               formatOptions={{ useGrouping: false }}
               onChange={e => updateStatistic(item1.id, e)}
               aria-label="statistic value"
-              className="w-[120px]"
+              className="w-30"
               classNames={{
                 inputWrapper: cn(
                   'bg-stats-input data-[hover=true]:!bg-stats-inputhover',
@@ -103,7 +103,7 @@ const Row = memo(({ index, style, data }: RowProps) => {
               formatOptions={{ useGrouping: false }}
               onChange={e => updateStatistic(item2.id, e)}
               aria-label="statistic value"
-              className="w-[120px]"
+              className="w-30"
               classNames={{
                 inputWrapper: cn(
                   'bg-stats-input data-[hover=true]:!bg-stats-inputhover',

@@ -1,5 +1,6 @@
 import { Button, cn } from '@heroui/react';
 import { TbChevronRight, TbEraser, TbFolders } from 'react-icons/tb';
+// eslint-disable-next-line import-x/no-unresolved
 import { GeistMono } from 'geist/font/mono';
 import { useTranslation } from 'react-i18next';
 

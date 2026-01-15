@@ -3,6 +3,7 @@ import { cn, Spinner } from '@heroui/react';
 import { useTranslation } from 'react-i18next';
 import { VariableSizeList as List } from 'react-window';
 
+import type { Game } from '@/types';
 import { useStateStore } from '@/stores/stateStore';
 import { useUserStore } from '@/stores/userStore';
 import PageHeader from '@/components/gameslist/PageHeader';
@@ -10,7 +11,67 @@ import Private from '@/components/gameslist/Private';
 import RecentGamesCarousel from '@/components/gameslist/RecentGamesCarousel';
 import RecommendedGamesCarousel from '@/components/gameslist/RecommendedGamesCarousel';
 import GameCard from '@/components/ui/GameCard';
-import useGamesList from '@/hooks/gameslist/useGamesList';
+import useGamesList, { type GamesListHook } from '@/hooks/gameslist/useGamesList';
+
+interface RowData {
+  rows: ('recommended' | 'recent' | 'header' | number)[];
+  games: Game[];
+  columnCount: number;
+  gamesContext: GamesListHook;
+  t: (key: string) => string;
+}
+
+interface RowProps {
+  index: number;
+  style: CSSProperties;
+  data: RowData;
+}
+
+const Row = memo(({ index, style, data }: RowProps) => {
+  const { rows, games, columnCount, gamesContext, t } = data;
+
+  const rowType = rows[index];
+  if (rowType === 'recommended') {
+    return (
+      <div style={style}>
+        <RecommendedGamesCarousel gamesContext={gamesContext} />
+      </div>
+    );
+  }
+  if (rowType === 'recent') {
+    return (
+      <div style={style}>
+        <RecentGamesCarousel gamesContext={gamesContext} />
+      </div>
+    );
+  }
+  if (rowType === 'header') {
+    return (
+      <div style={style}>
+        <p className="text-lg font-black px-6">{t('gamesList.allGames')}</p>
+      </div>
+    );
+  }
+  if (typeof rowType === 'number') {
+    return (
+      <div
+        style={style}
+        className={cn(
+          'grid gap-x-5 gap-y-4 px-6',
+          columnCount === 7 ? 'grid-cols-7' : 'grid-cols-5',
+          columnCount === 8 ? 'grid-cols-8' : '',
+          columnCount === 10 ? 'grid-cols-10' : '',
+          columnCount === 12 ? 'grid-cols-12' : '',
+        )}
+      >
+        {games.slice(rowType * columnCount, (rowType + 1) * columnCount).map(item => (
+          <GameCard key={item.appid} item={item} />
+        ))}
+      </div>
+    );
+  }
+  return null;
+});
 
 export default function GamesList() {
   const gamesContext = useGamesList();
@@ -69,7 +130,7 @@ export default function GamesList() {
     () =>
       !gamesContext.isLoading &&
       gamesContext.unplayedGames.length > 0 &&
-      userSettings?.general?.showRecommendedCarousel !== false,
+      userSettings?.general?.showRecommendedCarousel,
     [
       gamesContext.isLoading,
       gamesContext.unplayedGames.length,
@@ -81,7 +142,7 @@ export default function GamesList() {
     () =>
       !gamesContext.isLoading &&
       gamesContext.recentGames.length > 0 &&
-      userSettings?.general?.showRecentCarousel !== false,
+      userSettings?.general?.showRecentCarousel,
     [
       gamesContext.isLoading,
       gamesContext.recentGames.length,
@@ -89,12 +150,12 @@ export default function GamesList() {
     ],
   );
 
-  const rows = useMemo((): Array<'recommended' | 'recent' | 'header' | number> => {
-    const r: Array<'recommended' | 'recent' | 'header' | number> = [];
+  const rows = useMemo((): ('recommended' | 'recent' | 'header' | number)[] => {
+    const r: ('recommended' | 'recent' | 'header' | number)[] = [];
     if (hasRecommended) r.push('recommended');
     if (hasRecent) r.push('recent');
     r.push('header');
-    for (let i = 0; i < gameRowCount; i++) r.push(i);
+    for (let i = 0; i < gameRowCount; i += 1) r.push(i);
     return r;
   }, [hasRecommended, hasRecent, gameRowCount]);
 
@@ -116,49 +177,16 @@ export default function GamesList() {
     [rows, getDynamicRowHeight],
   );
 
-  const Row = memo(({ index, style }: { index: number; style: CSSProperties }) => {
-    const rowType = rows[index];
-    if (rowType === 'recommended') {
-      return (
-        <div style={style}>
-          <RecommendedGamesCarousel gamesContext={gamesContext} />
-        </div>
-      );
-    }
-    if (rowType === 'recent') {
-      return (
-        <div style={style}>
-          <RecentGamesCarousel gamesContext={gamesContext} />
-        </div>
-      );
-    }
-    if (rowType === 'header') {
-      return (
-        <div style={style}>
-          <p className="text-lg font-black px-6">{t('gamesList.allGames')}</p>
-        </div>
-      );
-    }
-    if (typeof rowType === 'number') {
-      return (
-        <div
-          style={style}
-          className={cn(
-            'grid gap-x-5 gap-y-4 px-6',
-            columnCount === 7 ? 'grid-cols-7' : 'grid-cols-5',
-            columnCount === 8 ? 'grid-cols-8' : '',
-            columnCount === 10 ? 'grid-cols-10' : '',
-            columnCount === 12 ? 'grid-cols-12' : '',
-          )}
-        >
-          {games.slice(rowType * columnCount, (rowType + 1) * columnCount).map(item => (
-            <GameCard key={item.appid} item={item} />
-          ))}
-        </div>
-      );
-    }
-    return null;
-  });
+  const itemData = useMemo<RowData>(
+    () => ({
+      rows,
+      games,
+      columnCount,
+      gamesContext,
+      t,
+    }),
+    [rows, games, columnCount, gamesContext, t],
+  );
 
   if (!gamesContext.isLoading && gamesContext.gamesList.length === 0)
     return (
@@ -204,6 +232,7 @@ export default function GamesList() {
             overflowX: 'hidden',
           }}
           ref={listRef}
+          itemData={itemData}
         >
           {Row}
         </List>

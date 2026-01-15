@@ -83,7 +83,7 @@ export default function AchievementSettings() {
               disallowEmptySelection
               radius="none"
               items={taskOptions}
-              className="w-[200px]"
+              className="w-50"
               placeholder={t('common.nextTask.selectPlaceholder')}
               classNames={{
                 listbox: ['p-0'],
@@ -136,7 +136,7 @@ export default function AchievementSettings() {
               isDisabled={!userSettings?.achievementUnlocker?.schedule}
               value={userSettings?.achievementUnlocker?.scheduleFrom}
               size="sm"
-              className="w-[95px]"
+              className="w-23.75"
               classNames={{
                 inputWrapper: cn(
                   'rounded-lg min-h-[25px] max-h-[25px] bg-input',
@@ -158,7 +158,7 @@ export default function AchievementSettings() {
               isDisabled={!userSettings?.achievementUnlocker?.schedule}
               value={userSettings?.achievementUnlocker?.scheduleTo}
               size="sm"
-              className="w-[95px]"
+              className="w-23.75"
               classNames={{
                 inputWrapper: cn(
                   'rounded-lg min-h-[25px] max-h-[25px] bg-input',
@@ -193,7 +193,7 @@ export default function AchievementSettings() {
             defaultValue={userSettings?.achievementUnlocker?.interval}
             formatOptions={{ style: 'currency', currency: 'USD' }}
             hideValue
-            className="mt-2 w-[350px]"
+            className="mt-2 w-87.5"
             classNames={{
               track: 'bg-input',
               filler: 'bg-dynamic',

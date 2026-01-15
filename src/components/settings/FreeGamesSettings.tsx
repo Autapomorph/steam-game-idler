@@ -11,7 +11,7 @@ import WebviewWindow from '@/components/ui/WebviewWindow';
 import { logEvent } from '@/utils/tasks';
 import { showDangerToast } from '@/utils/toasts';
 
-export default function CardSettings() {
+export default function FreeGamesSettings() {
   const { t } = useTranslation();
   const userSummary = useUserStore(state => state.userSummary);
   const userSettings = useUserStore(state => state.userSettings);
@@ -20,7 +20,7 @@ export default function CardSettings() {
   const handleShowStoreLoginWindow = async (): Promise<void> => {
     const result = await invoke<InvokeSteamCredentials>('open_store_login_window');
 
-    if (!result || result.success === false) {
+    if (!result?.success) {
       showDangerToast(t('common.error'));
       logEvent(`[Error] in (handleShowStoreLoginWindow): ${result?.message || 'Unknown error'}`);
       return;
@@ -38,7 +38,7 @@ export default function CardSettings() {
   const handleSignOutCurrentStoreUser = async (): Promise<void> => {
     const result = await invoke<InvokeSteamCredentials>('delete_store_cookies');
 
-    if (!result || result.success === false) {
+    if (!result?.success) {
       showDangerToast(t('common.error'));
       logEvent(
         `[Error] in (handleSignOutCurrentStoreUser) this error can occur if you are not already signed in: ${result?.message || 'Unknown error'}`,

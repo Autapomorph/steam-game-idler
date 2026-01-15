@@ -105,7 +105,7 @@ export default function HeaderMenu() {
               {t('menu.changelog')}
             </DropdownItem>
 
-            {isPortable === false ? (
+            {!isPortable ? (
               <DropdownItem
                 key="updates"
                 startContent={<TbDownload size={18} />}

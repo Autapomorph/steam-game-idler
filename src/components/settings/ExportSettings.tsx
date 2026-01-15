@@ -24,13 +24,13 @@ interface ExportedData {
 
 const collectSystemInfo = async (): Promise<SystemType> => {
   const system = {} as SystemType;
-  const osVersion = await version();
-  const cpuArch = await arch();
+  const osVersion = version();
+  const cpuArch = arch();
   const isPortable = await invoke<boolean>('is_portable');
 
   let winVersion = 'Windows';
-  const buildMatch = osVersion.match(/^10\.0\.(\d+)$/);
-  if (buildMatch && buildMatch[1]) {
+  const buildMatch = /^10\.0\.(\d+)$/.exec(osVersion);
+  if (buildMatch?.[1]) {
     const buildNumber = Number(buildMatch[1]);
     winVersion = buildNumber >= 22000 ? 'Windows 11' : 'Windows 10';
   }
@@ -51,10 +51,7 @@ const sanitizeUserSettings = (settings: UserSettings): Partial<UserSettings> => 
     if (sanitizedSettings.cardFarming.credentials) {
       delete sanitizedSettings.cardFarming.credentials;
     }
-    if (
-      sanitizedSettings.cardFarming.userSummary &&
-      sanitizedSettings.cardFarming.userSummary.steamId
-    ) {
+    if (sanitizedSettings.cardFarming.userSummary?.steamId) {
       delete sanitizedSettings.cardFarming.userSummary.steamId;
     }
   }
@@ -63,7 +60,7 @@ const sanitizeUserSettings = (settings: UserSettings): Partial<UserSettings> => 
     delete sanitizedSettings.general.apiKey;
   }
 
-  return sanitizedSettings;
+  return sanitizedSettings as Partial<UserSettings>;
 };
 
 const processLocalStorageItem = (key: string, value: string | null): string | null | object => {
@@ -95,10 +92,9 @@ const processLocalStorageItem = (key: string, value: string | null): string | nu
         if (sanitizedValue.credentials) {
           delete sanitizedValue.credentials;
         }
-        return sanitizedValue;
-      } else {
-        return parsedValue;
+        return sanitizedValue as object;
       }
+      return parsedValue as object;
     } catch (error) {
       console.error(`Error parsing JSON for key "${key}":`, error);
       return value;
@@ -111,21 +107,22 @@ const processLocalStorageItem = (key: string, value: string | null): string | nu
 const collectLocalStorageData = (): Record<string, unknown> => {
   const storageData: Record<string, unknown> = {};
 
-  for (let i = 0; i < localStorage.length; i++) {
+  for (let i = 0; i < localStorage.length; i += 1) {
     const key = localStorage.key(i);
-    if (!key) continue;
-    const value = localStorage.getItem(key);
-    const processedValue = processLocalStorageItem(key, value);
+    if (key) {
+      const value = localStorage.getItem(key);
+      const processedValue = processLocalStorageItem(key, value);
 
-    if (processedValue !== null) {
-      storageData[key] = processedValue;
+      if (processedValue !== null) {
+        storageData[key] = processedValue;
+      }
     }
   }
 
   return storageData;
 };
 
-export const getExportData = async (userSettings: UserSettings) => {
+const getExportData = async (userSettings: UserSettings) => {
   const allSettings: ExportedData = {} as ExportedData;
 
   // Add app version

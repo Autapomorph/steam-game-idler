@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Script from 'next/script';
 import { Geist, Geist_Mono } from 'next/font/google';
 
-import SearchDialog from '@docs/components/search';
+import DefaultSearchDialog from '@docs/components/search';
 import { RootProvider } from 'fumadocs-ui/provider/next';
 
 import './globals.css';
@@ -61,7 +61,7 @@ export const metadata: Metadata = {
     title:
       'Steam Game Idler – The best alternative to ArchiSteamFarm, Steam Achievement Manager, and Idle Master',
     description:
-      'The best Steam card farmer and achievement manager in 2025. Farm trading cards, manage achievements, and idle games automatically. A great alternative to ArchiSteamFarm, Steam Achievement Manager, and Idle Master.',
+      'The best Steam card farmer and achievement manager in 2026. Farm trading cards, manage achievements, and idle games automatically. A great alternative to ArchiSteamFarm, Steam Achievement Manager, and Idle Master.',
     images: 'https://steamgameidler.com/og-image.png',
   },
   other: {
@@ -126,6 +126,7 @@ export default function Layout({ children }: LayoutProps<'/'>) {
     <html lang="en" className={`${geist.variable} ${mono.variable}`} suppressHydrationWarning>
       <head>
         <Script
+          id="schema_data"
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
         />
@@ -134,7 +135,7 @@ export default function Layout({ children }: LayoutProps<'/'>) {
       <body className="flex flex-col min-h-screen">
         <RootProvider
           search={{
-            SearchDialog,
+            SearchDialog: DefaultSearchDialog,
           }}
         >
           {children}

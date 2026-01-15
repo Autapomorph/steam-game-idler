@@ -19,7 +19,7 @@ export default function useSettings(): SettingsHook {
   useEffect(() => {
     const getAndSetVersion = async (): Promise<void> => {
       const version = await getAppVersion();
-      setVersion(version ? version : '0.0.0');
+      setVersion(version || '0.0.0');
     };
     getAndSetVersion();
   }, []);

@@ -5,7 +5,7 @@ export interface SortOption {
   label: string;
 }
 
-export interface cardSortOption {
+export interface CardSortOption {
   key: SortStyleValue;
   label: string;
 }

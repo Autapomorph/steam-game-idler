@@ -150,12 +150,12 @@ export default function TradingCardsList() {
           content={
             <div className="py-2">
               <Image
-                className="w-[150px] h-auto border border-border"
+                className="w-37.5 h-auto border border-border"
                 src={item.image}
                 width={224}
                 height={261}
                 alt={`${item.appname} image`}
-                priority={true}
+                priority
               />
             </div>
           }
@@ -167,13 +167,13 @@ export default function TradingCardsList() {
               width={224}
               height={261}
               alt={`${item.appname} image`}
-              priority={true}
+              priority
             />
           </div>
         </CustomTooltip>
 
         <div className="flex flex-col items-center justify-center gap-0.5 mt-2">
-          <p className="text-xs truncate max-w-[140px]">
+          <p className="text-xs truncate max-w-35">
             {item.full_name.replace('(Trading Card)', '') || 'Unknown'}
           </p>
 
@@ -194,7 +194,7 @@ export default function TradingCardsList() {
               )}
               <p
                 className={cn(
-                  'text-xs text-altwhite truncate max-w-[140px]',
+                  'text-xs text-altwhite truncate max-w-35',
                   item.badge_level > 0 && 'text-green-400',
                 )}
               >

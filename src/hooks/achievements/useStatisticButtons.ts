@@ -36,7 +36,7 @@ export default function useStatisticButtons(
   // Handle updating only changed statistics
   const handleUpdateAllStats = async (): Promise<void> => {
     // Make sure Steam client is running
-    const isSteamRunning = checkSteamStatus(true);
+    const isSteamRunning = await checkSteamStatus(true);
     if (!isSteamRunning) return;
 
     // Get list of stats that were modified by the user
@@ -82,7 +82,7 @@ export default function useStatisticButtons(
     onClose();
 
     // Make sure Steam client is running
-    const isSteamRunning = checkSteamStatus(true);
+    const isSteamRunning = await checkSteamStatus(true);
     if (!isSteamRunning) return;
 
     // Reset all stats

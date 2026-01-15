@@ -2,7 +2,7 @@ import { invoke } from '@tauri-apps/api/core';
 import type { TimeInputValue } from '@heroui/react';
 import { Time } from '@internationalized/date';
 
-import type { Game, InvokeDropsRemaining, InvokeGamesWithDrops } from '@/types';
+import type { GameWithRemainingDrops, InvokeDropsRemaining, InvokeGamesWithDrops } from '@/types';
 import { decrypt, logEvent } from '@/utils/tasks';
 import { showMissingCredentialsToast } from '@/utils/toasts';
 
@@ -28,11 +28,10 @@ export async function checkDrops(
       appId,
     });
 
-    if (res && res.remaining) {
+    if (res?.remaining) {
       return res.remaining;
-    } else {
-      return 0;
     }
+    return 0;
   } catch (error) {
     console.error('Error in checkDrops util: ', error);
     logEvent(`[Error] in (checkDrops) util: ${error}`);
@@ -46,7 +45,7 @@ export async function getAllGamesWithDrops(
   sid: string | undefined,
   sls: string | undefined,
   sma: string | undefined,
-): Promise<Game[]> {
+): Promise<GameWithRemainingDrops[]> {
   try {
     if (!sid || !sls) {
       showMissingCredentialsToast();
@@ -62,9 +61,8 @@ export async function getAllGamesWithDrops(
 
     if (res.gamesWithDrops && res.gamesWithDrops.length > 0) {
       return res.gamesWithDrops;
-    } else {
-      return [];
     }
+    return [];
   } catch (error) {
     console.error('Error in getAllGamesWithDrops util: ', error);
     logEvent(`[Error] in (getAllGamesWithDrops) util: ${error}`);
@@ -83,7 +81,6 @@ export function isWithinSchedule(
   const scheduleToTime = new Time(scheduleTo.hour, scheduleTo.minute);
   if (scheduleToTime.compare(scheduleFromTime) < 0) {
     return currentTime.compare(scheduleFromTime) >= 0 || currentTime.compare(scheduleToTime) < 0;
-  } else {
-    return currentTime.compare(scheduleFromTime) >= 0 && currentTime.compare(scheduleToTime) < 0;
   }
+  return currentTime.compare(scheduleFromTime) >= 0 && currentTime.compare(scheduleToTime) < 0;
 }

@@ -47,16 +47,12 @@ export function useGameSettings({ appId }: UseGameSettingsProps = {}): UseGameSe
         appId &&
         isGameSpecificSettings(userSettings.gameSettings[appId])
       ) {
-        gameSettings = userSettings.gameSettings[appId] as GameSpecificSettings;
+        gameSettings = userSettings.gameSettings[appId];
       }
       setMaxIdleTime(gameSettings.maxIdleTime || 0);
       setMaxCardDrops(gameSettings.maxCardDrops || 0);
       setMaxAchievementUnlocks(gameSettings.maxAchievementUnlocks || 0);
-      setGlobalMaxIdleTime(
-        (userSettings.gameSettings &&
-          (userSettings.gameSettings as GameSettings).globalMaxIdleTime) ||
-          0,
-      );
+      setGlobalMaxIdleTime(userSettings.gameSettings?.globalMaxIdleTime || 0);
       isInitializedRef.current = true;
     };
     isInitializedRef.current = false;
@@ -144,7 +140,7 @@ export function useGameSettings({ appId }: UseGameSettingsProps = {}): UseGameSe
 
     let gameSettings: GameSpecificSettings = {};
     if (userSettings.gameSettings && isGameSpecificSettings(userSettings.gameSettings[appId])) {
-      gameSettings = userSettings.gameSettings[appId] as GameSpecificSettings;
+      gameSettings = userSettings.gameSettings[appId];
     }
     setMaxIdleTime(gameSettings.maxIdleTime || 0);
     setMaxCardDrops(gameSettings.maxCardDrops || 0);

@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import type { Game } from '@/types';
 import { useStateStore } from '@/stores/stateStore';
-import { handleIdle, viewAchievments } from '@/hooks/ui/useGameCard';
+import { handleIdle, viewAchievements } from '@/hooks/ui/useGameCard';
 
 interface Props {
   item: Game;
@@ -56,7 +56,7 @@ export default function CardMenu({ item }: Props) {
           classNames={{ base: ['data-[hover=true]:bg-item-hover'] }}
           key="achievements"
           startContent={<TbAwardFilled size={16} className="text-content" />}
-          onPress={() => viewAchievments(item, setAppId, setAppName, setShowAchievements)}
+          onPress={() => viewAchievements(item, setAppId, setAppName, setShowAchievements)}
           textValue="View achievements"
         >
           <p className="text-sm text-content">{t('cardMenu.achievements')}</p>

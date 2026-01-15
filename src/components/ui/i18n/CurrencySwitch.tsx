@@ -71,7 +71,7 @@ export default function CurrencySwitch() {
       radius="none"
       startContent={<TbCurrencyDollar />}
       items={currencies}
-      className="w-[250px]"
+      className="w-62.5"
       classNames={{
         listbox: ['p-0'],
         value: ['text-sm !text-content'],

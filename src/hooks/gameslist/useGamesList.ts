@@ -152,26 +152,25 @@ export const fetchGamesList = async (
       gamesList: cachedGamesList || [],
       recentGamesList: cachedRecentGamesList || [],
     };
-  } else {
-    // Fallback to API if cache isn't available or user requested refresh
-    const gamesListResponse = await invoke<InvokeGamesList>('get_games_list', {
-      steamId,
-      apiKey: apiKey ? decrypt(apiKey) : null,
-    });
-
-    const recentGamesListResponse = await invoke<InvokeGamesList>('get_recent_games', {
-      steamId,
-      apiKey: apiKey ? decrypt(apiKey) : null,
-    });
-
-    const gamesList = gamesListResponse.games_list;
-    const recentGamesList = recentGamesListResponse.games_list;
-
-    return {
-      gamesList: gamesList || [],
-      recentGamesList: recentGamesList || [],
-    };
   }
+  // Fallback to API if cache isn't available or user requested refresh
+  const gamesListResponse = await invoke<InvokeGamesList>('get_games_list', {
+    steamId,
+    apiKey: apiKey ? decrypt(apiKey) : null,
+  });
+
+  const recentGamesListResponse = await invoke<InvokeGamesList>('get_recent_games', {
+    steamId,
+    apiKey: apiKey ? decrypt(apiKey) : null,
+  });
+
+  const gamesList = gamesListResponse.games_list;
+  const recentGamesList = recentGamesListResponse.games_list;
+
+  return {
+    gamesList: gamesList || [],
+    recentGamesList: recentGamesList || [],
+  };
 };
 
 // Sort and filter the games list based on sortStyle

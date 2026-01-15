@@ -36,6 +36,7 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   render(): ReactNode {
+    // eslint-disable-next-line react/destructuring-assignment
     if (this.state.hasError) {
       const { error, errorInfo } = this.state;
 
@@ -48,7 +49,7 @@ class ErrorBoundary extends Component<Props, State> {
 
 ### Stack
 \`\`\`
-${errorInfo && errorInfo.componentStack}
+${errorInfo?.componentStack}
 \`\`\``;
       const encodedTitle = encodeURIComponent(issueTitle || 'Error in Steam Game Idler');
       const encodedBody = encodeURIComponent(issueBody);
@@ -86,7 +87,7 @@ ${errorInfo && errorInfo.componentStack}
                 <div className="bg-base border border-border rounded-lg h-full w-full p-1 overflow-hidden">
                   <div className="overflow-y-scroll h-full">
                     <pre className="text-xs text-altwhite font-semibold text-left text-wrap p-1">
-                      {errorInfo && errorInfo.componentStack}
+                      {errorInfo?.componentStack}
                     </pre>
                   </div>
                 </div>
@@ -115,6 +116,7 @@ ${errorInfo && errorInfo.componentStack}
       );
     }
 
+    // eslint-disable-next-line react/destructuring-assignment
     return this.props.children;
   }
 }

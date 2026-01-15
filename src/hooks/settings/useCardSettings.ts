@@ -1,8 +1,9 @@
-import { useState, type Dispatch, type SetStateAction } from 'react';
+import { useState, useEffect, type Dispatch, type SetStateAction } from 'react';
 import { invoke } from '@tauri-apps/api/core';
 
 import type {
   CardFarmingUser,
+  GameWithRemainingDrops,
   InvokeSettings,
   InvokeUserSummary,
   InvokeValidateSession,
@@ -25,6 +26,8 @@ interface CardSettingsHook {
   sidValue: string;
   slsValue: string;
   smaValue: string;
+  gamesWithDropsData: GameWithRemainingDrops[];
+  setGamesWithDropsData: Dispatch<SetStateAction<GameWithRemainingDrops[]>>;
   gamesWithDrops: number;
   totalDropsRemaining: number;
   hasCookies: boolean;
@@ -45,6 +48,7 @@ export const useCardSettings = (): CardSettingsHook => {
   const [sidValue, setSidValue] = useState(''); // sessionid
   const [slsValue, setSlsValue] = useState(''); // steamLoginSecure
   const [smaValue, setSmaValue] = useState(''); // steamMachineAuth
+  const [gamesWithDropsData, setGamesWithDropsData] = useState<GameWithRemainingDrops[]>([]);
   const [gamesWithDrops, setGamesWithDrops] = useState(0);
   const [totalDropsRemaining, setTotalDropsRemaining] = useState(0);
   const [hasCookies, setHasCookies] = useState(false);
@@ -69,6 +73,8 @@ export const useCardSettings = (): CardSettingsHook => {
     sidValue,
     slsValue,
     smaValue,
+    gamesWithDropsData,
+    setGamesWithDropsData,
     gamesWithDrops,
     totalDropsRemaining,
     hasCookies,
@@ -112,12 +118,12 @@ const getStoredSettings = async (
   setCardFarmingUser: Dispatch<SetStateAction<CardFarmingUser | null>>,
 ): Promise<void> => {
   try {
-    const credentials = userSettings.cardFarming.credentials;
+    const { credentials } = userSettings.cardFarming;
     const cardFarmingUser = userSettings.cardFarming.userSummary;
-    const gamesWithDrops = userSettings.cardFarming.gamesWithDrops;
-    const totalDropsRemaining = userSettings.cardFarming.totalDropsRemaining;
+    const { gamesWithDrops } = userSettings.cardFarming;
+    const { totalDropsRemaining } = userSettings.cardFarming;
 
-    if (credentials && credentials.sid && credentials.sls) {
+    if (credentials?.sid && credentials.sls) {
       setHasCookies(true);
       setSidValue(credentials.sid);
       setSlsValue(credentials.sls);
@@ -141,6 +147,7 @@ export const fetchGamesWithDropsData = async (
   userSummary: UserSummary,
   setIsCFDataLoading: Dispatch<SetStateAction<boolean>>,
   setUserSettings: Dispatch<SetStateAction<UserSettings>>,
+  setGamesWithDropsData: Dispatch<SetStateAction<GameWithRemainingDrops[]>>,
 ): Promise<void> => {
   try {
     setIsCFDataLoading(true);
@@ -149,9 +156,9 @@ export const fetchGamesWithDropsData = async (
       steamId: userSummary?.steamId,
     });
 
-    const credentials = cachedUserSummary.settings.cardFarming.credentials;
+    const { credentials } = cachedUserSummary.settings.cardFarming;
 
-    if (!credentials || !credentials.sid || !credentials.sls) {
+    if (!credentials?.sid || !credentials.sls) {
       setIsCFDataLoading(false);
       return showOutdatedCredentialsToast();
     }
@@ -188,6 +195,8 @@ export const fetchGamesWithDropsData = async (
       credentials.sls,
       credentials?.sma,
     );
+
+    setGamesWithDropsData(getGamesWithDrops);
 
     const gamesWithDrops = getGamesWithDrops.length;
     const totalDropsRemaining = getGamesWithDrops.reduce(
@@ -229,6 +238,7 @@ export const handleCredentialsSave = async (
   userSettings: UserSettings,
   setUserSettings: Dispatch<SetStateAction<UserSettings>>,
   setIsCFDataLoading: Dispatch<SetStateAction<boolean>>,
+  setGamesWithDropsData: Dispatch<SetStateAction<GameWithRemainingDrops[]>>,
 ): Promise<void> => {
   try {
     if (sidValue.length > 0 && slsValue.length > 0) {
@@ -243,7 +253,7 @@ export const handleCredentialsSave = async (
       if (validate.user) {
         // Extract steamID from the steamLoginSecure cookie (first 17 chars)
         const steamId = slsValue.slice(0, 17);
-        const apiKey = userSettings.general.apiKey;
+        const { apiKey } = userSettings.general;
 
         // Wait for user info first, which should be faster
         const cardFarmingUser = await fetchUserSummary(steamId, apiKey);
@@ -251,7 +261,7 @@ export const handleCredentialsSave = async (
         // Make sure user isn't trying to farm cards with different account than they're logged in with
         if (cardFarmingUser.steamId !== userSummary?.steamId) {
           showAccountMismatchToast('danger');
-          return logEvent('[Error] in (handleSave) Account mismatch between Steam and SGI');
+          return await logEvent('[Error] in (handleSave) Account mismatch between Steam and SGI');
         }
 
         // Save valid cookies and update UI state
@@ -274,7 +284,12 @@ export const handleCredentialsSave = async (
         showSuccessToast(t('toast.cardFarming.logIn', { user: validate.user }));
         logEvent(`[Settings - Card Farming] Logged in as ${validate.user}`);
 
-        fetchGamesWithDropsData(userSummary, setIsCFDataLoading, setUserSettings);
+        fetchGamesWithDropsData(
+          userSummary,
+          setIsCFDataLoading,
+          setUserSettings,
+          setGamesWithDropsData,
+        );
       } else {
         showIncorrectCredentialsToast();
         logEvent('[Error] [Settings - Card Farming] Incorrect card farming credentials');

@@ -73,10 +73,9 @@ export default function FreeGamesList() {
           columnCount === 12 ? 'grid-cols-12' : '',
         )}
       >
-        {freeGamesList &&
-          freeGamesList.map((item: Game) => (
-            <GameCard key={item.appid} item={item} isFreeGame={true} />
-          ))}
+        {freeGamesList?.map((item: Game) => (
+          <GameCard key={item.appid} item={item} isFreeGame />
+        ))}
       </div>
     </div>
   );

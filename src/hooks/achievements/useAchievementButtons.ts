@@ -96,7 +96,7 @@ export default function useAchievementButtons(
       onClose();
 
       // Make sure Steam client is running
-      const isSteamRunning = checkSteamStatus(true);
+      const isSteamRunning = await checkSteamStatus(true);
       if (!isSteamRunning) return;
 
       // Unlock all achievements
@@ -144,7 +144,7 @@ export default function useAchievementButtons(
       onClose();
 
       // Make sure Steam client is running
-      const isSteamRunning = checkSteamStatus(true);
+      const isSteamRunning = await checkSteamStatus(true);
       if (!isSteamRunning) return;
 
       // Lock all achievemnts

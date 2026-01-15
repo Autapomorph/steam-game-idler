@@ -4,9 +4,10 @@ import { createRelativeLink } from 'fumadocs-ui/mdx';
 import { DocsBody, DocsPage } from 'fumadocs-ui/page';
 
 import { getPageImage, source } from '@lib/source';
-import { getMDXComponents } from '../../..//mdx-components';
+import { getMDXComponents } from '../../../mdx-components';
 
 export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
+  // eslint-disable-next-line react/destructuring-assignment
   const params = await props.params;
   const page = source.getPage(params.slug);
   if (!page) notFound();
@@ -16,7 +17,7 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
   return (
     <DocsPage toc={page.data.toc} full={page.data.full} tableOfContent={{ style: 'clerk' }}>
       <DocsBody>
-        {/* eslint-disable-next-line */}
+        {}
         <MDX
           components={getMDXComponents({
             // this allows you to link to other pages with relative file paths

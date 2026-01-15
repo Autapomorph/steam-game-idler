@@ -113,7 +113,7 @@ export default function AchievementButtons({
         radius="none"
         startContent={<TbSortDescending2 fontSize={26} />}
         items={sortOptions}
-        className="w-[230px]"
+        className="w-57.5"
         classNames={{
           listbox: ['p-0'],
           value: ['text-sm !text-content'],
@@ -176,10 +176,8 @@ export default function AchievementButtons({
                   if (appId && appName) {
                     handleUnlockAll(appId, appName, achievements, onOpenChange);
                   }
-                } else {
-                  if (appId && appName) {
-                    handleLockAll(appId, appName, achievements, onOpenChange);
-                  }
+                } else if (appId && appName) {
+                  handleLockAll(appId, appName, achievements, onOpenChange);
                 }
               }}
             >

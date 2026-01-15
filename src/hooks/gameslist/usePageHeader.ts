@@ -36,7 +36,7 @@ export const handleRefetch = async (
   t: (key: string, options?: Record<string, unknown>) => string,
   steamId: string | undefined,
   setRefreshKey: Dispatch<SetStateAction<number>>,
-  manual: boolean = true,
+  manual = true,
 ): Promise<void> => {
   try {
     const devAccounts = JSON.parse(process.env.STEAM_DEV_ACCOUNTS ?? '[]') as string[];

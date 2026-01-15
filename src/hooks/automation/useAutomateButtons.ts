@@ -35,7 +35,7 @@ export const useAutomate = (): AutomateButtonsHook => {
       if (!isSteamRunning) return;
 
       // Retrieve Steam cookies from local storage
-      let credentials = userSettings.cardFarming.credentials;
+      let { credentials } = userSettings.cardFarming;
 
       // Attempt to automatically revalidate Steam credentials for PRO users
       const autoRevalidateResult = await autoRevalidateSteamCredentials(setUserSettings);

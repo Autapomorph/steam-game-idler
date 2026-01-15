@@ -109,7 +109,9 @@ export default function IdlingGamesList() {
           columnCount === 12 ? 'grid-cols-12' : '',
         )}
       >
-        {idleGamesList && idleGamesList.map(item => <GameCard key={item.appid} item={item} />)}
+        {idleGamesList?.map(item => (
+          <GameCard key={item.appid} item={item} />
+        ))}
       </div>
     </div>
   );

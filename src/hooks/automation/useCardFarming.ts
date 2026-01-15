@@ -5,6 +5,7 @@ import type {
   CardFarmingSettings,
   Game,
   GameSettings,
+  GameWithRemainingDrops,
   InvokeCustomList,
   InvokeSettings,
   UserSummary,
@@ -33,13 +34,6 @@ interface DropsCheckResult {
   gamesSet: Set<GameWithDrops>;
 }
 
-interface GameWithRemainingDrops {
-  id: number;
-  name: string;
-  remaining: number;
-  playtime: number;
-}
-
 interface CycleStep {
   action: (gamesSet: Set<GameWithDrops>) => Promise<boolean>;
   delay: number;
@@ -55,6 +49,7 @@ export const useCardFarming = async (
   abortControllerRef: RefObject<AbortController>,
 ): Promise<() => void> => {
   const cleanup = (): void => {
+    // eslint-disable-next-line no-param-reassign
     isMountedRef.current = false;
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
@@ -86,21 +81,20 @@ export const useCardFarming = async (
             await stopFarmIdle(gamesSet);
             setIsCardFarming(false);
             await startAchievementUnlocker();
-            logEvent('[Card Farming] No drops remaining - moving to next task: ' + nextTask.task);
+            logEvent(`[Card Farming] No drops remaining - moving to next task: ${nextTask.task}`);
           }
 
           if (nextTask.task && nextTask.task === 'autoIdle') {
             await stopFarmIdle(gamesSet);
             setIsCardFarming(false);
             await startAutoIdleGames();
-            logEvent('[Card Farming] No drops remaining - moving to next task: ' + nextTask.task);
+            logEvent(`[Card Farming] No drops remaining - moving to next task: ${nextTask.task}`);
           }
 
           return setIsComplete(true);
-        } else {
-          logEvent('[Card Farming] No games left - stopping');
-          return setIsComplete(true);
         }
+        logEvent('[Card Farming] No games left - stopping');
+        return setIsComplete(true);
       }
 
       if (isMountedRef.current) {
@@ -127,8 +121,8 @@ const checkGamesForDrops = async (): Promise<DropsCheckResult> => {
   });
 
   const gameSettings = response.settings.gameSettings || {};
-  const credentials = response.settings.cardFarming.credentials;
-  const allGames = response.settings.cardFarming.allGames;
+  const { credentials } = response.settings.cardFarming;
+  const { allGames } = response.settings.cardFarming;
   const blacklist = response.settings.cardFarming.blacklist || [];
   const skipNoPlaytime = response.settings.cardFarming.skipNoPlaytime || false;
 
@@ -195,12 +189,14 @@ const processGamesWithDrops = (
         // Skip if game is blacklisted
         if (blacklist.includes(gameId)) {
           logEvent(`[Card Farming] Skipping ${gameName} (${gameId}) because it is blacklisted`);
+          // eslint-disable-next-line no-continue
           continue;
         }
 
         // Remove games with 0 playtime if 'skipNoPlaytime' is enabled
         if (skipNoPlaytime && playtime <= 0) {
           logEvent(`[Card Farming] Skipping ${gameName} (${gameId}) due to zero playtime`);
+          // eslint-disable-next-line no-continue
           continue;
         }
 
@@ -338,16 +334,20 @@ export const beginFarmingCycle = async (
         return false;
       }
 
+      // eslint-disable-next-line no-await-in-loop
       const success = await step.action(gamesSet);
 
       if (success) {
+        // eslint-disable-next-line no-await-in-loop
         await delay(step.delay, isMountedRef, abortControllerRef);
 
         if (step.action === stopFarmIdle) {
+          // eslint-disable-next-line no-await-in-loop, no-param-reassign
           gamesSet = await checkDropsRemaining(gamesSet);
 
           // Check if we should add more games to the list
           if (gamesSet.size < 32) {
+            // eslint-disable-next-line no-await-in-loop
             const { gamesSet: refreshedSet } = await checkGamesForDrops();
             for (const game of refreshedSet) {
               if (gamesSet.size >= 32) break;
@@ -381,7 +381,7 @@ const checkDropsRemaining = async (gameSet: Set<GameWithDrops>): Promise<Set<Gam
       const response = await invoke<InvokeSettings>('get_user_settings', {
         steamId: userSummary?.steamId,
       });
-      const credentials = response.settings.cardFarming.credentials;
+      const { credentials } = response.settings.cardFarming;
 
       const dropsRemaining = await checkDrops(
         userSummary?.steamId,
@@ -522,6 +522,7 @@ export const handleCancel = async (
   } catch (error) {
     handleError('handleCancel', error);
   } finally {
+    // eslint-disable-next-line no-param-reassign
     isMountedRef.current = false;
     abortControllerRef.current.abort();
   }

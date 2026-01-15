@@ -40,7 +40,6 @@ export default function useManualAdd(
       if (response.error) {
         setIsLoading(false);
         showWarningToast(response.error);
-        return;
       } else {
         setList(response.list_data);
         setAppNameValue('');

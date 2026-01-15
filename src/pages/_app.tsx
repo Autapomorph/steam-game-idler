@@ -12,7 +12,7 @@ export default function App({ Component, pageProps }: AppProps) {
       attribute="class"
       // Themes
       themes={['dark', 'black']}
-      enableSystem={true}
+      enableSystem
       defaultTheme="dark"
       disableTransitionOnChange
     >

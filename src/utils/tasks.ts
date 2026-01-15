@@ -22,7 +22,7 @@ import {
   t,
 } from '@/utils/toasts';
 
-export async function checkSteamStatus(showToast: boolean = false): Promise<boolean> {
+export async function checkSteamStatus(showToast = false): Promise<boolean> {
   try {
     const isSteamRunning = await invoke<boolean>('is_steam_running');
     if (!isSteamRunning && showToast) showSteamNotRunningToast();
@@ -41,7 +41,7 @@ export async function fetchLatest(): Promise<LatestData | null> {
       'https://raw.githubusercontent.com/Autapomorph/steam-game-idler/main/latest.json',
     );
     const data = await res.json();
-    return data;
+    return data as LatestData;
   } catch (error) {
     console.error('Error in (fetchLatest):', error);
     logEvent(`[Error] in (fetchLatest): ${error}`);
@@ -62,7 +62,7 @@ export async function antiAwayStatus(active: boolean | null = null): Promise<voi
       steamId: userSummary?.steamId,
     });
 
-    const settings = response.settings;
+    const { settings } = response;
 
     const { antiAway } = settings?.general || {};
 
@@ -78,11 +78,9 @@ export async function antiAwayStatus(active: boolean | null = null): Promise<voi
           3 * 60 * 1000,
         );
       }
-    } else {
-      if (antiAwayInterval) {
-        clearInterval(antiAwayInterval);
-        antiAwayInterval = null;
-      }
+    } else if (antiAwayInterval) {
+      clearInterval(antiAwayInterval);
+      antiAwayInterval = null;
     }
   } catch (error) {
     console.error('Error in (antiAwayStatus):', error);
@@ -97,17 +95,13 @@ export async function autoRevalidateSteamCredentials(
   try {
     const result = await invoke<InvokeSteamCredentials>('open_steam_login_window');
 
-    if (!result || result.success === false) {
+    if (!result?.success) {
       showDangerToast(t('common.error'));
       logEvent(`[Error] in (handleShowSteamLoginWindow): ${result?.message || 'Unknown error'}`);
       return;
     }
 
-    if (
-      result.success === true &&
-      result.sessionid.length > 0 &&
-      result.steamLoginSecure.length > 0
-    ) {
+    if (result.success && result.sessionid.length > 0 && result.steamLoginSecure.length > 0) {
       const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary;
 
       const cachedUserSettings = await invoke<InvokeSettings>('get_user_settings', {
@@ -124,7 +118,7 @@ export async function autoRevalidateSteamCredentials(
 
       if (validate.user) {
         const steamId = result.steamLoginSecure.slice(0, 17);
-        const apiKey = cachedUserSettings.settings.general.apiKey;
+        const { apiKey } = cachedUserSettings.settings.general;
 
         // Wait for user info first, which should be faster
         const cardFarmingUser = await fetchUserSummary(steamId, apiKey);
@@ -132,7 +126,7 @@ export async function autoRevalidateSteamCredentials(
         // Make sure user isn't trying to farm cards with different account than they're logged in with
         if (cardFarmingUser.steamId !== userSummary?.steamId) {
           showAccountMismatchToast('danger');
-          return logEvent('[Error] in (handleSave) Account mismatch between Steam and SGI');
+          return await logEvent('[Error] in (handleSave) Account mismatch between Steam and SGI');
         }
 
         // Save valid cookies and update UI state
@@ -162,10 +156,9 @@ export async function autoRevalidateSteamCredentials(
         return {
           credentials: updatedUserSettings.settings.cardFarming.credentials,
         };
-      } else {
-        showIncorrectCredentialsToast();
-        logEvent('[Error] [Settings - Card Farming] Incorrect card farming credentials');
       }
+      showIncorrectCredentialsToast();
+      logEvent('[Error] [Settings - Card Farming] Incorrect card farming credentials');
     }
   } catch (error) {
     showDangerToast(t('common.error'));
@@ -185,13 +178,13 @@ export const preserveKeysAndClearData = async (): Promise<void> => {
       'isFirstTimeUser',
     ];
 
-    const preservedData: Record<string, string> = keysToPreserve.reduce(
+    const preservedData: Record<string, string> = keysToPreserve.reduce<Record<string, string>>(
       (acc, key) => {
         const value = localStorage.getItem(key);
         if (value) acc[key] = value;
         return acc;
       },
-      {} as Record<string, string>,
+      {},
     );
 
     localStorage.clear();
@@ -238,7 +231,7 @@ export function encrypt(string: string): string {
     let encrypted = cipher.update(string, 'utf8', 'hex');
     encrypted += cipher.final('hex');
     const authTag = cipher.getAuthTag();
-    return iv.toString('hex') + ':' + authTag.toString('hex') + ':' + encrypted;
+    return `${iv.toString('hex')}:${authTag.toString('hex')}:${encrypted}`;
   } catch (error) {
     console.error('Error in encrypt function:', error);
     return '';

@@ -76,6 +76,7 @@ function AccordionItem({ question, answer, open, onToggle }: Props) {
   return (
     <div className="border border-black/5 hover:border-black/10 rounded-xl bg-white hover:bg-[#00000003] duration-150">
       <button
+        type="button"
         className="w-full text-left p-4 font-semibold text-gray-800 focus:outline-none flex justify-between items-center cursor-pointer"
         aria-expanded={open}
         aria-controls={question.replace(/\s+/g, '-')}
@@ -105,7 +106,7 @@ function AccordionItem({ question, answer, open, onToggle }: Props) {
 
 export default function FAQSection() {
   // State: { [section]: openQuestion }
-  const [openItems, setOpenItems] = useState<{ [section: string]: string | null }>({});
+  const [openItems, setOpenItems] = useState<Record<string, string | null>>({});
 
   // Helper to render accordions for a section
   function renderAccordionItems(section: string, items: { question: string; answer: string }[]) {
@@ -236,7 +237,7 @@ export default function FAQSection() {
 
         {/* FAQ grid */}
         <div className="flex flex-wrap gap-8 max-w-6xl mx-auto">
-          {preparedFaqData.map((section, idx) => (
+          {preparedFaqData.map(section => (
             <article
               key={section.section}
               className="group block relative overflow-hidden bg-white border-2 border-gray-200 hover:border-gray-300 rounded-3xl p-8 hover:shadow-lg transition-all duration-200 transform"

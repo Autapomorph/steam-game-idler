@@ -143,7 +143,7 @@ export default function ComparisonSection() {
 
         {/* Competitor Cards */}
         <div className="grid lg:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto">
-          {competitors.map((competitor, index) => (
+          {competitors.map(competitor => (
             <article key={competitor.name}>
               <Link
                 prefetch={false}

@@ -5,18 +5,14 @@ import type { GameForFarming } from '@/hooks/automation/useCardFarming';
 import { checkSteamStatus, logEvent } from '@/utils/tasks';
 import { showAccountMismatchToast, showWarningToast, t } from '@/utils/toasts';
 
-const idleTimeouts: { [key: number]: ReturnType<typeof setTimeout> } = {};
-const idleIntervals: { [key: number]: ReturnType<typeof setTimeout> } = {};
+const idleTimeouts: Record<number, ReturnType<typeof setTimeout>> = {};
+const idleIntervals: Record<number, ReturnType<typeof setTimeout>> = {};
 
 // Start idling a game
-export async function startIdle(
-  appId: number,
-  appName: string,
-  manual: boolean = true,
-): Promise<boolean> {
+export async function startIdle(appId: number, appName: string, manual = true): Promise<boolean> {
   try {
     // Make sure Steam client is running
-    const isSteamRunning = checkSteamStatus(true);
+    const isSteamRunning = await checkSteamStatus(true);
     if (!isSteamRunning) return false;
 
     const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary;
@@ -92,12 +88,11 @@ export async function startIdle(
       }
       logEvent(`[Idle] Started idling ${appName} (${appId})`);
       return true;
-    } else {
-      showAccountMismatchToast('danger');
-      console.error(`Error starting idler for ${appName} (${appId}): ${idleResponse.error}`);
-      logEvent(`[Error] [Idle] Failed to idle ${appName} (${appId}) - account mismatch`);
-      return false;
     }
+    showAccountMismatchToast('danger');
+    console.error(`Error starting idler for ${appName} (${appId}): ${idleResponse.error}`);
+    logEvent(`[Error] [Idle] Failed to idle ${appName} (${appId}) - account mismatch`);
+    return false;
   } catch (error) {
     console.error('Error in startIdle util: ', error);
     logEvent(`[Error] in (startIdle) util: ${error}`);
@@ -129,9 +124,8 @@ export async function stopIdle(
     if (response.success) {
       logEvent(`[Idle] Stopped idling ${appName} (${appId})`);
       return true;
-    } else {
-      return false;
     }
+    return false;
   } catch (error) {
     console.error('Error in stopIdle util (these errors can often be ignored): ', error);
     return false;
@@ -142,7 +136,7 @@ export async function stopIdle(
 export async function startFarmIdle(gamesSet: Set<GameForFarming>): Promise<boolean> {
   try {
     // Make sure Steam client is running
-    const isSteamRunning = checkSteamStatus(true);
+    const isSteamRunning = await checkSteamStatus(true);
     if (!isSteamRunning) return false;
 
     const gamesList = Array.from(gamesSet).map(game => ({
@@ -154,14 +148,11 @@ export async function startFarmIdle(gamesSet: Set<GameForFarming>): Promise<bool
     if (response.success) {
       logEvent(`[Card Farming] Started idling ${gamesSet.size} games`);
       return true;
-    } else {
-      showAccountMismatchToast('danger');
-      console.error('Error starting farm idle: ', response.error);
-      logEvent(
-        '[Error] [Card Farming] Failed to idle one or more games - possible account mismatch',
-      );
-      return false;
     }
+    showAccountMismatchToast('danger');
+    console.error('Error starting farm idle: ', response.error);
+    logEvent('[Error] [Card Farming] Failed to idle one or more games - possible account mismatch');
+    return false;
   } catch (error) {
     console.error('Error in startFarmIdle util: ', error);
     logEvent(`[Error] in (startFarmIdle) util: ${error}`);

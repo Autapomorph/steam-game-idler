@@ -27,19 +27,13 @@ export default function SettingsSwitch({ type, name }: Props) {
     if (!userSettings) return false;
 
     if (type === 'general') {
-      return Boolean((userSettings.general as GeneralSettings)[name as keyof GeneralSettings]);
+      return Boolean(userSettings.general[name as keyof GeneralSettings]);
     }
     if (type === 'cardFarming') {
-      return Boolean(
-        (userSettings.cardFarming as CardFarmingSettings)[name as keyof CardFarmingSettings],
-      );
+      return Boolean(userSettings.cardFarming[name as keyof CardFarmingSettings]);
     }
     if (type === 'achievementUnlocker') {
-      return Boolean(
-        (userSettings.achievementUnlocker as AchievementUnlockerSettings)[
-          name as keyof AchievementUnlockerSettings
-        ],
-      );
+      return Boolean(userSettings.achievementUnlocker[name as keyof AchievementUnlockerSettings]);
     }
     return false;
   };

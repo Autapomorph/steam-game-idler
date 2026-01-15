@@ -35,6 +35,4 @@ export interface StatValue {
   value: number;
 }
 
-export interface ChangedStats {
-  [key: string]: number;
-}
+export type ChangedStats = Record<string, number>;

@@ -84,7 +84,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
           });
       case 'foil':
         return list
-          .filter(card => card.foil === true)
+          .filter(card => card.foil)
           .sort((a, b) => {
             const levelA = a.badge_level || 0;
             const levelB = b.badge_level || 0;
@@ -105,7 +105,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
   useEffect(() => {
     const getTradingCards = async (): Promise<void> => {
       try {
-        const credentials = userSettings.cardFarming.credentials;
+        const { credentials } = userSettings.cardFarming;
         const apiKey = userSettings.general?.apiKey;
 
         if (!credentials?.sid || !credentials?.sls) return;
@@ -116,7 +116,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
           steamId: userSummary?.steamId,
         });
 
-        if (cachedCards && cachedCards.card_data) {
+        if (cachedCards?.card_data) {
           const sortedCards = cachedCards.card_data.sort((a, b) =>
             a.appname.localeCompare(b.appname),
           );
@@ -160,11 +160,12 @@ export default function useTradingCardsList(): UseTradingCardsList {
     };
     getTradingCards();
   }, [
-    refreshKey,
     t,
+    refreshKey,
     userSettings.cardFarming.credentials,
     userSummary?.steamId,
     userSettings.general?.apiKey,
+    userSettings.cardFarming,
   ]);
 
   const fetchCardPrices = async (
@@ -173,7 +174,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
     setLoadingItemPrice(prev => ({ ...prev, [hash]: true }));
 
     try {
-      const credentials = userSettings.cardFarming.credentials;
+      const { credentials } = userSettings.cardFarming;
 
       if (!credentials?.sid || !credentials?.sls) {
         showMissingCredentialsToast();
@@ -198,7 +199,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
         currency: localStorage.getItem('currency') || '1',
       });
 
-      if (cardPrices.error && cardPrices.error.includes('HTTP 429')) {
+      if (cardPrices.error?.includes('HTTP 429')) {
         showPriceFetchRateLimitToast();
         logEvent(`[Error] in (fetchCardPrices): Rate limited when fetching price for card ${hash}`);
         return { success: false, rateLimited: true };
@@ -377,7 +378,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
 
   const handleSellSelectedCards = async (): Promise<void> => {
     try {
-      const credentials = userSettings.cardFarming.credentials;
+      const { credentials } = userSettings.cardFarming;
       const sellDelay = userSettings?.tradingCards?.sellDelay || 5;
 
       if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast();
@@ -430,7 +431,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
       const cardsForBulkListing = validCards.map(assetId => [
         assetId,
         (changedCardPrices[assetId] + priceAdjustment).toString(),
-      ]) as [string, string][];
+      ]);
 
       setLoadingListButton(true);
       showPrimaryToast(t('toast.tradingCards.processing'));
@@ -512,15 +513,18 @@ export default function useTradingCardsList(): UseTradingCardsList {
         if (isCardLocked(card.id)) {
           skippedCards.push(card.assetid);
           logEvent(`[Info] Skipped locked card ${card.assetid}`);
+          // eslint-disable-next-line no-continue
           continue;
         }
 
         if (!card.market_hash_name) {
           logEvent(`[Error] Card ${card.assetid} doesn't have a market hash name - skipping`);
+          // eslint-disable-next-line no-continue
           continue;
         }
 
         try {
+          // eslint-disable-next-line no-await-in-loop
           const priceResult = await fetchCardPrices(card.market_hash_name);
 
           // If rate limited, stop processing further cards
@@ -529,24 +533,26 @@ export default function useTradingCardsList(): UseTradingCardsList {
               `[Error] in (handleSellAllCards): Rate limited when fetching price for card ${card.assetid} (${card.market_hash_name}) (Increasing the 'sell delay' in 'settings > trading card manager' can help prevent this issue) - stopping`,
             );
             return;
-          } else {
-            // Other errors fetching price - skip this card
-            if (!priceResult.success) {
-              logEvent(
-                `[Error] in (handleSellAllCards): Failed to fetch price for card ${card.assetid} (${card.market_hash_name}) - skipping`,
-              );
-              continue;
-            }
+          }
+          // Other errors fetching price - skip this card
+          if (!priceResult.success) {
+            logEvent(
+              `[Error] in (handleSellAllCards): Failed to fetch price for card ${card.assetid} (${card.market_hash_name}) - skipping`,
+            );
+            // eslint-disable-next-line no-continue
+            continue;
           }
 
           if (!priceResult.price) {
             logEvent(
               `[Error] in (handleSellAllCards): Couldn't determine price for card ${card.assetid} (${card.market_hash_name}) - skipping`,
             );
+            // eslint-disable-next-line no-continue
             continue;
           }
 
           // Wait before processing to avoid rate limiting
+          // eslint-disable-next-line no-await-in-loop
           await new Promise(resolve => setTimeout(resolve, sellDelay * 1000));
 
           if (!shouldContinue) break;
@@ -560,11 +566,13 @@ export default function useTradingCardsList(): UseTradingCardsList {
             logEvent(
               `[Info] in (handleSellAllCards): Skipped card ${card.assetid} (${card.market_hash_name}) - price ${finalPrice} outside sell limits`,
             );
+            // eslint-disable-next-line no-continue
             continue;
           }
 
           const cardForListing: [string, string] = [card.assetid, finalPrice.toString()];
 
+          // eslint-disable-next-line no-await-in-loop
           const response = await invoke<InvokeListCards>('list_trading_cards', {
             sid: decrypt(credentials.sid),
             sls: decrypt(credentials.sls),
@@ -580,7 +588,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
             } else {
               failedCards.push({ assetid: card.assetid, message: result.message });
 
-              if (result.message && result.message.toLowerCase().includes('rate limit')) {
+              if (result.message?.toLowerCase().includes('rate limit')) {
                 showPriceFetchRateLimitToast();
                 logEvent(
                   `[Error] in (handleSellAllCards): Rate limited when listing card ${card.assetid} (${card.market_hash_name}) - stopping (Increasing the 'sell delay' in 'settings > trading card manager' can help prevent this issue)`,
@@ -591,6 +599,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
             }
           }
 
+          // eslint-disable-next-line no-await-in-loop
           await new Promise(resolve => setTimeout(resolve, sellDelay * 1000)); // Wait between listings to avoid rate limiting
         } catch (error) {
           failedCards.push({ assetid: card.assetid, message: String(error) });
@@ -630,7 +639,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
 
   const handleRemoveActiveListings = async (): Promise<void> => {
     try {
-      const credentials = userSettings.cardFarming.credentials;
+      const { credentials } = userSettings.cardFarming;
 
       if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast();
 

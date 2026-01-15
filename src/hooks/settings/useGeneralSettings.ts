@@ -36,12 +36,12 @@ export const useGeneralSettings = (): GeneralSettingsHook => {
 
   useEffect(() => {
     // Load Steam web API key from localStorage
-    const apiKey = userSettings.general.apiKey;
+    const { apiKey } = userSettings.general;
     if (apiKey && apiKey.length > 0) {
       setHasKey(true);
       setKeyValue(apiKey);
     }
-  }, [userSettings.general.apiKey]);
+  }, [userSettings.general, userSettings.general.apiKey]);
 
   return {
     startupState,

@@ -80,22 +80,21 @@ export const useAchievementUnlocker = async (
           if (nextTask.task && nextTask.task === 'cardFarming') {
             await startCardFarming();
             logEvent(
-              '[Achievement Unlocker] No games left - moving to next task: ' + nextTask.task,
+              `[Achievement Unlocker] No games left - moving to next task: ${nextTask.task}`,
             );
           }
 
           if (nextTask.task && nextTask.task === 'autoIdle') {
             await startAutoIdleGames();
             logEvent(
-              '[Achievement Unlocker] No games left - moving to next task: ' + nextTask.task,
+              `[Achievement Unlocker] No games left - moving to next task: ${nextTask.task}`,
             );
           }
 
           return setIsComplete(true);
-        } else {
-          logEvent('[Achievement Unlocker] No games left - stopping');
-          return setIsComplete(true);
         }
+        logEvent('[Achievement Unlocker] No games left - stopping');
+        return setIsComplete(true);
       }
 
       // Fetch achievements for the current game
@@ -147,7 +146,7 @@ const fetchAchievements = async (
   const response = await invoke<InvokeSettings>('get_user_settings', {
     steamId: userSummary?.steamId,
   });
-  const hidden = response.settings.achievementUnlocker.hidden;
+  const { hidden } = response.settings.achievementUnlocker;
 
   try {
     const achievementResponse = await invoke<InvokeAchievementData | string>(
@@ -176,7 +175,7 @@ const fetchAchievements = async (
     }
 
     // Handle games with protected achievements
-    if (rawAchievements.some(achievement => achievement.protected_achievement === true)) {
+    if (rawAchievements.some(achievement => achievement.protected_achievement)) {
       logEvent(
         `[Error] [Achievement Unlocker] ${game.name} (${game.appid}) contains protected achievements`,
       );
@@ -207,7 +206,7 @@ const fetchAchievements = async (
 
         // Filter and map achievements
         orderedAchievements = rawAchievements
-          .filter(achievement => !achievement.achieved && (!hidden || achievement.hidden === false))
+          .filter(achievement => !achievement.achieved && (!hidden || !achievement.hidden))
           .map(achievement => {
             // Get skip and delayNextUnlock from custom order if it exists
             const customAchievement = customOrder.achievement_order!.achievements.find(
@@ -228,18 +227,19 @@ const fetchAchievements = async (
           .filter(achievement => achievement.skip !== true)
           // Sort based on custom order if achievement is in the order, otherwise put at end and sort by percentage
           .sort((a, b) => {
-            const orderA = customOrderMap.get(a.name!);
-            const orderB = customOrderMap.get(b.name!);
+            const orderA = customOrderMap.get(a.name);
+            const orderB = customOrderMap.get(b.name);
 
             if (orderA !== undefined && orderB !== undefined) {
               return orderA - orderB;
-            } else if (orderA !== undefined) {
-              return -1;
-            } else if (orderB !== undefined) {
-              return 1;
-            } else {
-              return b.percentage - a.percentage;
             }
+            if (orderA !== undefined) {
+              return -1;
+            }
+            if (orderB !== undefined) {
+              return 1;
+            }
+            return b.percentage - a.percentage;
           });
       } else {
         // No custom order, use default percentage-based sorting
@@ -248,7 +248,7 @@ const fetchAchievements = async (
         );
 
         orderedAchievements = rawAchievements
-          .filter(achievement => !achievement.achieved && (!hidden || achievement.hidden === false))
+          .filter(achievement => !achievement.achieved && (!hidden || !achievement.hidden))
           .map(achievement => ({
             appId: game.appid,
             id: achievement.id,
@@ -264,7 +264,7 @@ const fetchAchievements = async (
       logEvent(`Error getting custom achievement order: ${error}`);
 
       orderedAchievements = rawAchievements
-        .filter(achievement => !achievement.achieved && (!hidden || achievement.hidden === false))
+        .filter(achievement => !achievement.achieved && (!hidden || !achievement.hidden))
         .map(achievement => ({
           appId: game.appid,
           id: achievement.id,
@@ -313,9 +313,11 @@ const unlockAchievements = async (
         // Wait until within schedule if necessary
         if (schedule && !isWithinSchedule(scheduleFrom, scheduleTo)) {
           if (game && isGameIdling) {
+            // eslint-disable-next-line no-await-in-loop
             await stopIdle(game.appid, game.name);
             isGameIdling = false;
           }
+          // eslint-disable-next-line no-await-in-loop
           await waitUntilInSchedule(
             scheduleFrom,
             scheduleTo,
@@ -324,6 +326,7 @@ const unlockAchievements = async (
             abortControllerRef,
           );
         } else if (!isGameIdling && idle) {
+          // eslint-disable-next-line no-await-in-loop
           await startIdle(game.appid, game.name, false);
           isGameIdling = true;
         }
@@ -332,14 +335,16 @@ const unlockAchievements = async (
 
         // Skip hidden achievements if necessary
         if (hidden && achievement.hidden) {
-          achievementsRemaining--;
+          achievementsRemaining -= 1;
           setAchievementCount(prevCount => Math.max(prevCount - 1, 0));
+          // eslint-disable-next-line no-continue
           continue;
         }
 
         // Unlock the achievement
+        // eslint-disable-next-line no-await-in-loop
         await unlockAchievement(userSummary?.steamId, game.appid, achievement.id, game.name);
-        achievementsRemaining--;
+        achievementsRemaining -= 1;
         logEvent(`[Achievement Unlocker] Unlocked ${achievement.name} for ${game.name}`);
         setAchievementCount(prevCount => Math.max(prevCount - 1, 0));
 
@@ -349,7 +354,9 @@ const unlockAchievements = async (
           (maxAchievementUnlocks &&
             achievementsRemaining <= achievements.length - maxAchievementUnlocks)
         ) {
+          // eslint-disable-next-line no-await-in-loop
           await stopIdle(game.appid, game.name);
+          // eslint-disable-next-line no-await-in-loop
           await removeGameFromUnlockerList(game.appid);
           logEvent(
             `[Achievement Unlocker] Unlocked ${maxAchievementUnlocks !== null ? achievements.length - maxAchievementUnlocks : achievements.length}/${achievements.length} achievements for ${game.name} - removed`,
@@ -359,7 +366,9 @@ const unlockAchievements = async (
 
         // Stop idling and remove game from list if all achievements are unlocked
         if (achievementsRemaining === 0) {
+          // eslint-disable-next-line no-await-in-loop
           await stopIdle(game.appid, game.name);
+          // eslint-disable-next-line no-await-in-loop
           await removeGameFromUnlockerList(game.appid);
           break;
         }
@@ -373,6 +382,7 @@ const unlockAchievements = async (
           delayMs = getRandomDelay(interval[0], interval[1]);
         }
         startCountdown(delayMs / 60000, setCountdownTimer);
+        // eslint-disable-next-line no-await-in-loop
         await delay(delayMs, isMountedRef, abortControllerRef);
       }
     }
@@ -467,6 +477,8 @@ const waitUntilInSchedule = async (
         setIsWaitingForSchedule(false);
         return;
       }
+
+      // eslint-disable-next-line no-await-in-loop
       await new Promise<void>((resolve, reject) => {
         const timeoutId = setTimeout(() => {
           if (!isMountedRef.current) {

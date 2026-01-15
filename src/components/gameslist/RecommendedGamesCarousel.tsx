@@ -35,14 +35,12 @@ export default function RecommendedGamesCarousel({ gamesContext }: Props) {
         } else {
           newScroll = maxScroll;
         }
+      } else if (currentScroll + scrollAmount < maxScroll) {
+        newScroll = currentScroll + scrollAmount;
+      } else if (currentScroll < maxScroll) {
+        newScroll = maxScroll;
       } else {
-        if (currentScroll + scrollAmount < maxScroll) {
-          newScroll = currentScroll + scrollAmount;
-        } else if (currentScroll < maxScroll) {
-          newScroll = maxScroll;
-        } else {
-          newScroll = 0;
-        }
+        newScroll = 0;
       }
 
       container.scrollTo({
@@ -139,7 +137,7 @@ export default function RecommendedGamesCarousel({ gamesContext }: Props) {
 
       <div ref={scrollContainerRef} className="flex gap-5 pb-2 overflow-x-hidden">
         {gamesContext.unplayedGames.map(game => (
-          <div key={game.appid} className="shrink-0 w-[440px]">
+          <div key={game.appid} className="shrink-0 w-110">
             <GameCard item={game} />
           </div>
         ))}

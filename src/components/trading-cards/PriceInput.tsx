@@ -32,7 +32,7 @@ export default function PriceInput({ item, tradingCardContext }: Props) {
           maximumFractionDigits: 2,
         }}
         aria-label="statistic value"
-        className="w-[85px]"
+        className="w-21.25"
         classNames={{
           inputWrapper: cn(
             'bg-input data-[hover=true]:!bg-inputhover border-none',

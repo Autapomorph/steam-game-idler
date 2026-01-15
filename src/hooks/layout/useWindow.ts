@@ -86,7 +86,7 @@ export default function useWindow(): void {
     const storedZoom = localStorage.getItem('zoomLevel');
     if (storedZoom) {
       const parsedZoom = parseFloat(storedZoom);
-      if (!isNaN(parsedZoom)) {
+      if (!Number.isNaN(parsedZoom)) {
         setZoom(parsedZoom);
         invoke('set_zoom', { scaleFactor: parsedZoom });
       }
@@ -164,7 +164,7 @@ export default function useWindow(): void {
 
       try {
         const hasSelection = !!window.getSelection()?.toString();
-        const activeElement = document.activeElement;
+        const { activeElement } = document;
         const canPaste =
           activeElement instanceof HTMLInputElement || activeElement instanceof HTMLTextAreaElement;
 
@@ -195,7 +195,7 @@ export default function useWindow(): void {
                   const text = await readText();
                   if (text) {
                     // Insert text at cursor pos of input/textarea
-                    const activeElement = document.activeElement;
+                    const { activeElement } = document;
                     if (
                       activeElement instanceof HTMLInputElement ||
                       activeElement instanceof HTMLTextAreaElement
@@ -217,8 +217,8 @@ export default function useWindow(): void {
                       }
 
                       // Set cursor pos
-                      activeElement.selectionStart = activeElement.selectionEnd =
-                        start + text.length;
+                      activeElement.selectionStart = start + text.length;
+                      activeElement.selectionEnd = start + text.length;
 
                       // Trigger both input chaneg events
                       const inputEvent = new Event('input', { bubbles: true });
@@ -285,7 +285,7 @@ export default function useWindow(): void {
       if (!isDev) {
         document.addEventListener('contextmenu', event => event.preventDefault());
 
-        document.addEventListener('keydown', function (event) {
+        document.addEventListener('keydown', event => {
           if (event.key === 'F5') {
             event.preventDefault();
           }
@@ -299,7 +299,7 @@ export default function useWindow(): void {
           }
 
           if (event.ctrlKey && event.altKey && event.shiftKey && event.key === 'F5') {
-            this.location.reload();
+            global.location.reload();
           }
         });
       }
@@ -438,11 +438,12 @@ export default function useWindow(): void {
       // Create a unique key for the current free games list
       const ids = freeGamesList
         .map(g => g.appid)
-        .sort()
+        .sort((a, b) => a - b)
         .join(',');
       if (lastRedeemedIdsRef.current === ids) return; // Already redeemed this set
 
       lastRedeemedIdsRef.current = ids;
+
       autoRedeemFreeGames(freeGamesList, setFreeGamesList, userSummary, gamesContext);
     }
   }, [
@@ -466,6 +467,7 @@ export default function useWindow(): void {
     }, 500);
 
     // Start idling games in auto idle list
+
     startAutoIdleGames();
   }, [setUserSummary, setLoadingUserSummary]);
 
@@ -497,9 +499,9 @@ export const checkForFreeGames = async (
     const response = await invoke<InvokeSettings>('get_user_settings', {
       steamId: userSummary?.steamId,
     });
-    const settings = response.settings;
+    const { settings } = response;
 
-    const freeGameNotifications = settings.general.freeGameNotifications;
+    const { freeGameNotifications } = settings.general;
     const freeGamesList = await getFreeGames();
 
     if (!freeGamesList) return;
@@ -555,6 +557,7 @@ export const autoRedeemFreeGames = async (
     const redeemedAppIds: number[] = [];
 
     for (const game of freeGamesList) {
+      // eslint-disable-next-line no-await-in-loop
       const result = await invoke<InvokeRedeemFreeGame>('redeem_free_game', { appId: game.appid });
       if (result.success) {
         showSuccessToast(t('toast.autoRedeem.success', { appName: game.name }));
@@ -663,6 +666,7 @@ export async function startAutoIdleGamesImpl(steamId: string, manual?: boolean):
 
       while (remainingGames.length > 0 && retryCount < maxRetries) {
         // Start the remaining games concurrently
+        // eslint-disable-next-line no-await-in-loop
         await Promise.all(
           remainingGames.map(async appid => {
             const game = autoIdleGames.find(g => g.appid === appid);
@@ -673,9 +677,11 @@ export async function startAutoIdleGamesImpl(steamId: string, manual?: boolean):
         );
 
         // Wait a moment for games to start
+        // eslint-disable-next-line no-await-in-loop
         await new Promise(resolve => setTimeout(resolve, 2000));
 
         // Check which games actually started
+        // eslint-disable-next-line no-await-in-loop
         const updatedResponse = await invoke<InvokeRunningProcess>('get_running_processes');
         const updatedProcesses = updatedResponse?.processes || [];
         const currentlyRunning = updatedProcesses.map(p => p.appid);
@@ -684,8 +690,9 @@ export async function startAutoIdleGamesImpl(steamId: string, manual?: boolean):
         remainingGames = remainingGames.filter(appid => !currentlyRunning.includes(appid));
 
         if (remainingGames.length > 0) {
-          retryCount++;
+          retryCount += 1;
           if (retryCount < maxRetries) {
+            // eslint-disable-next-line no-await-in-loop
             await new Promise(resolve => setTimeout(resolve, 5000));
           }
         }

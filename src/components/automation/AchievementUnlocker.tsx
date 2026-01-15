@@ -70,6 +70,7 @@ export default function AchievementUnlocker({ activePage }: Props) {
   }, [isAchievementUnlocker, currentGame, achievementCount, t]);
 
   const handleImageError = (event: SyntheticEvent<HTMLImageElement, Event>): void => {
+    // eslint-disable-next-line no-param-reassign
     (event.target as HTMLImageElement).src = '/fallback.webp';
   };
 
@@ -88,7 +89,7 @@ export default function AchievementUnlocker({ activePage }: Props) {
       <div
         className={cn(
           'relative w-[calc(100vw-227px)] pl-6 pt-2 pr-12 mt-9 ease-in-out',
-          sidebarCollapsed ? 'ml-14' : 'ml-[250px]',
+          sidebarCollapsed ? 'ml-14' : 'ml-62.5',
         )}
         style={{
           transitionDuration,
@@ -171,9 +172,9 @@ export default function AchievementUnlocker({ activePage }: Props) {
                   width={230}
                   height={115}
                   alt={`${currentGame?.name} image`}
-                  priority={true}
+                  priority
                   onError={handleImageError}
-                  className="w-[230px] h-[115px] object-cover rounded-lg duration-150 my-4"
+                  className="w-57.5 h-28.75 object-cover rounded-lg duration-150 my-4"
                 />
 
                 <p>

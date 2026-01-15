@@ -137,7 +137,7 @@ export default function CustomList({ type }: CustomListProps) {
 
         setIsLoadingDrops(true);
 
-        const credentials = cachedUserSettings.settings.cardFarming.credentials;
+        const { credentials } = cachedUserSettings.settings.cardFarming;
 
         if (!credentials?.sid || !credentials?.sls) {
           setIsLoadingDrops(false);
@@ -152,7 +152,7 @@ export default function CustomList({ type }: CustomListProps) {
         )) as unknown as GameWithDropsData[];
 
         const parsedGamesData: Game[] = gamesWithDropsData.map((game: GameWithDropsData) => ({
-          appid: parseInt(game.id),
+          appid: Number.parseInt(game.id, 10),
           name: game.name,
           playtime_forever: 0,
           img_icon_url: '',
@@ -263,7 +263,7 @@ export default function CustomList({ type }: CustomListProps) {
                       isDisabled={isCardFarming || isAchievementUnlocker}
                       onPress={() => {
                         setPreviousActivePage(
-                          ('customlists/' + listType.settingsButtonLink) as ActivePageType,
+                          `customlists/${listType.settingsButtonLink}` as ActivePageType,
                         );
                         setActivePage('settings');
                         if (listType.settingsButtonLink) {
@@ -291,16 +291,16 @@ export default function CustomList({ type }: CustomListProps) {
                       onPress={
                         listType.startButton === 'startCardFarming'
                           ? () => {
-                              void startCardFarming();
+                              startCardFarming();
                             }
                           : listType.startButton === 'startAchievementUnlocker'
                             ? () => {
-                                void startAchievementUnlocker();
+                                startAchievementUnlocker();
                               }
                             : listType.startButton === 'startAutoIdleGamesImpl'
                               ? () => {
                                   if (userSummary?.steamId)
-                                    void startAutoIdleGamesImpl(userSummary.steamId, true);
+                                    startAutoIdleGamesImpl(userSummary.steamId, true);
                                 }
                               : undefined
                       }
@@ -351,17 +351,14 @@ export default function CustomList({ type }: CustomListProps) {
                 columnCount === 12 ? 'grid-cols-12' : '',
               )}
             >
-              {list &&
-                list
-                  .slice(0, visibleGames)
-                  .map(item => (
-                    <SortableGameCard
-                      key={item.appid}
-                      item={item}
-                      type={type}
-                      onOpen={() => handleGameClick(item)}
-                    />
-                  ))}
+              {list?.slice(0, visibleGames).map(item => (
+                <SortableGameCard
+                  key={item.appid}
+                  item={item}
+                  type={type}
+                  onOpen={() => handleGameClick(item)}
+                />
+              ))}
             </div>
           </SortableContext>
         </DndContext>

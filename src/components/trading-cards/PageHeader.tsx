@@ -10,7 +10,7 @@ import {
 } from 'react-icons/tb';
 import { useTranslation } from 'react-i18next';
 
-import type { cardSortOption } from '@/types';
+import type { CardSortOption } from '@/types';
 import { useNavigationStore } from '@/stores/navigationStore';
 import { useSearchStore } from '@/stores/searchStore';
 import { useStateStore } from '@/stores/stateStore';
@@ -73,7 +73,7 @@ export default function PageHeader({
     tradingCardContext.setCardSortStyle?.(key);
   };
 
-  const cardSortOptions: cardSortOption[] = [
+  const cardSortOptions: CardSortOption[] = [
     { key: 'a-z', label: t('tradingCards.sort.cardNameAsc') },
     { key: 'z-a', label: t('tradingCards.sort.cardNameDesc') },
     { key: 'aa-zz', label: t('tradingCards.sort.gameNameAsc') },

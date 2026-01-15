@@ -1,9 +1,10 @@
-interface Platforms {
-  [key: string]: {
+type Platforms = Record<
+  string,
+  {
     signature: string;
     url: string;
-  };
-}
+  }
+>;
 
 export interface LatestData {
   version: string;

@@ -12,6 +12,7 @@ interface Props {
   sortStyle: string;
   setSortStyle: Dispatch<SetStateAction<string>>;
   filteredGames: Game[];
+  // eslint-disable-next-line react/no-unused-prop-types
   visibleGames: Game[];
   setRefreshKey: Dispatch<SetStateAction<number>>;
 }

@@ -77,7 +77,7 @@ export default function FeaturesSection() {
 
         {/* Features grid */}
         <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-          {features.map((feature, index) => (
+          {features.map(feature => (
             <article
               key={feature.title}
               className={`group block relative overflow-hidden bg-white border-2 ${feature.borderColor} rounded-3xl p-8 hover:shadow-lg transition-all duration-200 transform hover:-translate-y-1 hover:scale-[1.01]`}

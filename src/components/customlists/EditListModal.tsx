@@ -54,6 +54,7 @@ const Row = memo(({ index, style, data }: RowProps) => {
   const item = filteredGamesList[index];
 
   const handleImageError = (event: SyntheticEvent<HTMLImageElement, Event>): void => {
+    // eslint-disable-next-line no-param-reassign
     (event.target as HTMLImageElement).src = '/fallback.webp';
   };
 
@@ -78,7 +79,7 @@ const Row = memo(({ index, style, data }: RowProps) => {
               'min-w-6 h-6',
               blacklist.includes(item.appid) ? 'bg-danger/20 text-danger' : 'mr-3.5',
             )}
-            onPress={e => {
+            onPress={() => {
               handleBlacklistGame(item);
             }}
           >
@@ -93,7 +94,7 @@ const Row = memo(({ index, style, data }: RowProps) => {
           width={62}
           height={29}
           alt={`${item.name} image`}
-          priority={true}
+          priority
           onError={handleImageError}
         />
         <p className="text-sm truncate mr-8">{item.name}</p>

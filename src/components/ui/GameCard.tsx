@@ -15,7 +15,7 @@ import { useStateStore } from '@/stores/stateStore';
 import CardMenu from '@/components/gameslist/CardMenu';
 import ExtLink from '@/components/ui/ExtLink';
 import IdleTimer from '@/components/ui/IdleTimer';
-import { handleIdle, handleStopIdle, viewAchievments } from '@/hooks/ui/useGameCard';
+import { handleIdle, handleStopIdle, viewAchievements } from '@/hooks/ui/useGameCard';
 
 interface Props {
   item: Game;
@@ -40,6 +40,7 @@ const GameCard = memo(function GameCard({
   const isIdling = idlingGame !== undefined;
 
   const handleImageError = (event: SyntheticEvent<HTMLImageElement, Event>): void => {
+    // eslint-disable-next-line no-param-reassign
     (event.target as HTMLImageElement).src = '/fallback.webp';
   };
 
@@ -53,7 +54,7 @@ const GameCard = memo(function GameCard({
               width={460}
               height={215}
               alt={`${item.name} image`}
-              priority={true}
+              priority
               onError={handleImageError}
               className="w-full h-full object-cover rounded-lg duration-150"
             />
@@ -90,7 +91,7 @@ const GameCard = memo(function GameCard({
             width={460}
             height={215}
             alt={`${item.name} image`}
-            priority={true}
+            priority
             onError={handleImageError}
             className="w-full h-full object-cover rounded-lg duration-150"
           />
@@ -122,7 +123,7 @@ const GameCard = memo(function GameCard({
               size="sm"
               radius="full"
               className="bg-transparent hover:bg-item-hover text-altwhite hover:text-content transition-colors duration-150"
-              onPress={() => viewAchievments(item, setAppId, setAppName, setShowAchievements)}
+              onPress={() => viewAchievements(item, setAppId, setAppName, setShowAchievements)}
             >
               <TbAwardFilled size={18} />
             </Button>

@@ -61,14 +61,14 @@ export const handleStopIdle = async (
 };
 
 // Handle viewing achievements for a game
-export const viewAchievments = async (
+export const viewAchievements = async (
   item: Game,
   setAppId: Dispatch<SetStateAction<number | null>>,
   setAppName: Dispatch<SetStateAction<string | null>>,
   setShowAchievements: Dispatch<SetStateAction<boolean>>,
 ): Promise<void> => {
   // Make sure Steam client is running
-  const isSteamRunning = checkSteamStatus(true);
+  const isSteamRunning = await checkSteamStatus(true);
   if (!isSteamRunning) return;
 
   setAppId(item.appid);

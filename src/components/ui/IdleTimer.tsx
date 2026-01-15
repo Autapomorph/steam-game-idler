@@ -18,7 +18,7 @@ export default function IdleTimer({ startTime }: Props) {
         return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
       }
       // When hours reach 100+ show 3 digits
-      else if (hours >= 100) {
+      if (hours >= 100) {
         return `${String(hours).padStart(3, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
       }
       // For 1-9 hours show 1 digit

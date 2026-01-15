@@ -1,5 +1,5 @@
 import { addToast } from '@heroui/react';
-import { i18next, type TOptions } from 'i18next';
+import i18next, { type TOptions } from 'i18next';
 
 import ErrorToast from '@/components/ui/ErrorToast';
 

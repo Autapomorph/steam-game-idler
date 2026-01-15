@@ -105,7 +105,7 @@ export default function SideBar() {
   ];
 
   // Section headers and their corresponding first item indices
-  const sectionHeaders: { [index: number]: string } = {
+  const sectionHeaders: Record<number, string> = {
     0: t('sidebar.section.games'),
     4: t('sidebar.section.automation'),
     7: t('sidebar.section.misc'),
@@ -136,7 +136,7 @@ export default function SideBar() {
     const isCurrentPage = activePage === item.page;
     const isFreeGames = item.id === 'free-games';
     const hasFreeGames = freeGamesList.length > 0;
-    const isBeta = item.isBeta;
+    const { isBeta } = item;
 
     return (
       <div key={item.id}>

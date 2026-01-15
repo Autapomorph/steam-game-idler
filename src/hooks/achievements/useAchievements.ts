@@ -33,7 +33,7 @@ export default function useAchievements(
       try {
         setIsLoading(true);
         // Make sure Steam client is running
-        const isSteamRunning = checkSteamStatus(true);
+        const isSteamRunning = await checkSteamStatus(true);
         if (!isSteamRunning) return setIsLoading(false);
 
         // Fetch achievement data
@@ -59,7 +59,7 @@ export default function useAchievements(
         if (achievementData?.achievement_data?.achievements) {
           // Check if any achievements are marked as protected
           const hasProtectedAchievements = achievementData.achievement_data.achievements.some(
-            achievement => achievement.protected_achievement === true,
+            achievement => achievement.protected_achievement,
           );
           if (hasProtectedAchievements) setProtectedAchievements(true);
 
@@ -74,7 +74,7 @@ export default function useAchievements(
         if (achievementData?.achievement_data?.stats) {
           // Check if any statistics are marked as protected
           const hasProtectedStatistics = achievementData.achievement_data.stats.some(
-            achievement => achievement.protected_stat === true,
+            achievement => achievement.protected_stat,
           );
           if (hasProtectedStatistics) setProtectedStatistics(true);
 
