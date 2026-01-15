@@ -287,7 +287,7 @@ jobs:
 
       - name: Create PR for version changes
         id: create-pr
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ steps.generate-token.outputs.token }}
           commit-message: "chore(version): bump to ${{ github.event.inputs.version }}"
