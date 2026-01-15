@@ -361,7 +361,7 @@ export default function SteamCredentials() {
         }}
         title={
           <div className="flex justify-between items-center">
-            <p className="truncate capitalize">{t('settings.cardFarming.gamesWithDrops')}</p>
+            <p className="truncate">{t('settings.cardFarming.gamesWithDrops')}</p>
           </div>
         }
         body={

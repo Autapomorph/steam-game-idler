@@ -36,7 +36,6 @@ Refer to the **[documentation](https://steamgameidler.com/docs/)** for a detaile
 * **Fully Open Source**: Rest assured that what you're downloading and running is safe
 
 # License
-Copyright © 2024-2025 zevnda — **[MIT License](./LICENSE)**
 Copyright © 2026 Autapomorph — **[MIT License](./LICENSE)**
 
 [downloads]: https://img.shields.io/github/downloads/Autapomorph/steam-game-idler/total?style=flat-square&color=%23e86827
