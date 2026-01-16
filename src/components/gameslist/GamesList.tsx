@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { cn, Spinner } from '@heroui/react';
 import { useTranslation } from 'react-i18next';
 import { VariableSizeList as List } from 'react-window';
@@ -6,12 +6,10 @@ import { VariableSizeList as List } from 'react-window';
 import type { Game } from '@/types';
 import { useStateStore } from '@/stores/stateStore';
 import { useUserStore } from '@/stores/userStore';
-import PageHeader from '@/components/gameslist/PageHeader';
-import Private from '@/components/gameslist/Private';
-import RecentGamesCarousel from '@/components/gameslist/RecentGamesCarousel';
-import RecommendedGamesCarousel from '@/components/gameslist/RecommendedGamesCarousel';
-import GameCard from '@/components/ui/GameCard';
-import useGamesList, { type GamesListHook } from '@/hooks/gameslist/useGamesList';
+import { PageHeader } from '@/components/gameslist/PageHeader';
+import { Private } from '@/components/gameslist/Private';
+import { GamesListRow } from '@/components/gameslist/GamesListRow';
+import { useGamesList, type GamesListHook } from '@/hooks/gameslist/useGamesList';
 
 interface RowData {
   rows: ('recommended' | 'recent' | 'header' | number)[];
@@ -21,59 +19,7 @@ interface RowData {
   t: (key: string) => string;
 }
 
-interface RowProps {
-  index: number;
-  style: CSSProperties;
-  data: RowData;
-}
-
-const Row = memo(({ index, style, data }: RowProps) => {
-  const { rows, games, columnCount, gamesContext, t } = data;
-
-  const rowType = rows[index];
-  if (rowType === 'recommended') {
-    return (
-      <div style={style}>
-        <RecommendedGamesCarousel gamesContext={gamesContext} />
-      </div>
-    );
-  }
-  if (rowType === 'recent') {
-    return (
-      <div style={style}>
-        <RecentGamesCarousel gamesContext={gamesContext} />
-      </div>
-    );
-  }
-  if (rowType === 'header') {
-    return (
-      <div style={style}>
-        <p className="text-lg font-black px-6">{t('gamesList.allGames')}</p>
-      </div>
-    );
-  }
-  if (typeof rowType === 'number') {
-    return (
-      <div
-        style={style}
-        className={cn(
-          'grid gap-x-5 gap-y-4 px-6',
-          columnCount === 7 ? 'grid-cols-7' : 'grid-cols-5',
-          columnCount === 8 ? 'grid-cols-8' : '',
-          columnCount === 10 ? 'grid-cols-10' : '',
-          columnCount === 12 ? 'grid-cols-12' : '',
-        )}
-      >
-        {games.slice(rowType * columnCount, (rowType + 1) * columnCount).map(item => (
-          <GameCard key={item.appid} item={item} />
-        ))}
-      </div>
-    );
-  }
-  return null;
-});
-
-export default function GamesList() {
+export const GamesList = () => {
   const gamesContext = useGamesList();
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed);
   const transitionDuration = useStateStore(state => state.transitionDuration);
@@ -234,7 +180,7 @@ export default function GamesList() {
           ref={listRef}
           itemData={itemData}
         >
-          {Row}
+          {GamesListRow}
         </List>
       ) : (
         <div className="flex justify-center items-center w-calc h-[calc(100vh-168px)]">
@@ -243,4 +189,4 @@ export default function GamesList() {
       )}
     </div>
   );
-}
+};

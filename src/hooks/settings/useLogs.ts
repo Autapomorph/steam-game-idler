@@ -25,6 +25,7 @@ export const useLogs = (): LogsHook => {
           logContents = await readTextFile(logFilePath);
         } catch (fileError) {
           // Create log file if not exists
+          // eslint-disable-next-line no-console
           console.error('Error in (fetchLogs) - file had to be created:', fileError);
           await logEvent('No log file found so one was created');
           // Try to read again
@@ -32,6 +33,7 @@ export const useLogs = (): LogsHook => {
             logContents = await readTextFile(logFilePath);
           } catch (retryError) {
             // Still failed, set empty logs
+            // eslint-disable-next-line no-console
             console.error('Error in (fetchLogs) - unable to create file:', retryError);
             setLogs([]);
             return;
@@ -49,6 +51,7 @@ export const useLogs = (): LogsHook => {
         setLogs(logEntries);
       } catch (error) {
         showDangerToast(t('common.error'));
+        // eslint-disable-next-line no-console
         console.error('Error in (fetchLogs):', error);
         logEvent(`[Error] in (fetchLogs): ${error}`);
       }
@@ -69,6 +72,7 @@ export const handleOpenLogFile = async (): Promise<void> => {
     await invoke('open_file_explorer', { path: 'log.txt' });
   } catch (error) {
     showDangerToast(t('common.error'));
+    // eslint-disable-next-line no-console
     console.error('Error in (handleOpenLogFile):', error);
     logEvent(`[Error] in (handleOpenLogFile): ${error}`);
   }
@@ -85,6 +89,7 @@ export const handleClearLogs = async (log = true): Promise<void> => {
     }
   } catch (error) {
     showDangerToast(t('common.error'));
+    // eslint-disable-next-line no-console
     console.error('Error in (handleClearLogs):', error);
     logEvent(`[Error] in (handleClearLogs): ${error}`);
   }

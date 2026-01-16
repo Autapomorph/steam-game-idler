@@ -14,6 +14,7 @@ interface AchievementSettingsHook {
 }
 
 export const useAchievementSettings = (): AchievementSettingsHook => {
+  // eslint-disable-next-line @typescript-eslint/no-shadow
   const { t } = useTranslation();
   const userSettings = useUserStore(state => state.userSettings);
   const [sliderLabel, setSliderLabel] = useState('');
@@ -48,6 +49,7 @@ export const handleSliderChange = async (
     logEvent(`[Settings - Achievement Unlocker] Changed 'interval' to '${String(newInterval)}'`);
   } catch (error) {
     showDangerToast(t('common.error'));
+    // eslint-disable-next-line no-console
     console.error('Error in (handleSliderChange - Achievement Unlocker):', error);
     logEvent(`[Error] in (handleSliderChange - Achievement Unlocker): ${error}`);
   }
@@ -70,6 +72,7 @@ export const handleScheduleChange = async (
     logEvent(`[Settings - Achievement Unlocker] Changed '${type}' to '${String(value)}'`);
   } catch (error) {
     showDangerToast(t('common.error'));
+    // eslint-disable-next-line no-console
     console.error('Error in (handleScheduleChange):', error);
     logEvent(`[Error] in (handleScheduleChange): ${error}`);
   }

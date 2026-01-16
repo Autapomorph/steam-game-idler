@@ -21,13 +21,13 @@ interface StatisticButtonHook {
   handleResetAll: (onClose: () => void) => Promise<void>;
 }
 
-export default function useStatisticButtons(
+export const useStatisticButtons = (
   statistics: Statistic[],
   setStatistics: Dispatch<SetStateAction<Statistic[]>>,
   changedStats: ChangedStats,
   setChangedStats: Dispatch<SetStateAction<ChangedStats>>,
   setAchievements: Dispatch<SetStateAction<Achievement[]>>,
-): StatisticButtonHook {
+): StatisticButtonHook => {
   const { t } = useTranslation();
   const userSummary = useUserStore(state => state.userSummary);
   const appId = useStateStore(state => state.appId);
@@ -43,6 +43,7 @@ export default function useStatisticButtons(
     const changedKeys = Object.keys(changedStats);
 
     if (changedKeys.length === 0) {
+      // eslint-disable-next-line consistent-return
       return showWarningToast(t('toast.updateAll.noChanges'));
     }
 
@@ -115,4 +116,4 @@ export default function useStatisticButtons(
   };
 
   return { handleUpdateAllStats, handleResetAll };
-}
+};

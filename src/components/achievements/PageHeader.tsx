@@ -8,8 +8,8 @@ import { useNavigationStore } from '@/stores/navigationStore';
 import { useSearchStore } from '@/stores/searchStore';
 import { useStateStore } from '@/stores/stateStore';
 import { useUserStore } from '@/stores/userStore';
-import CustomTooltip from '@/components/ui/CustomTooltip';
-import ExtLink from '@/components/ui/ExtLink';
+import { CustomTooltip } from '@/components/ui/CustomTooltip';
+import { ExtLink } from '@/components/ui/ExtLink';
 import { logEvent } from '@/utils/tasks';
 import { showDangerToast } from '@/utils/toasts';
 
@@ -18,7 +18,7 @@ interface Props {
   protectedStatistics: boolean;
 }
 
-export default function PageHeader({ protectedAchievements, protectedStatistics }: Props) {
+export const PageHeader = ({ protectedAchievements, protectedStatistics }: Props) => {
   const { t } = useTranslation();
   const userSummary = useUserStore(state => state.userSummary);
   const setAchievementsUnavailable = useUserStore(state => state.setAchievementsUnavailable);
@@ -45,6 +45,7 @@ export default function PageHeader({ protectedAchievements, protectedStatistics 
       await invoke('open_file_explorer', { path: filePath });
     } catch (error) {
       showDangerToast(t('common.error'));
+      // eslint-disable-next-line no-console
       console.error('Error in (handleOpenAchievementFile):', error);
       logEvent(`[Error] in (handleOpenAchievementFile): ${error}`);
     }
@@ -88,12 +89,13 @@ export default function PageHeader({ protectedAchievements, protectedStatistics 
 
           <CustomTooltip content={t('achievementManager.file')} placement="top">
             <div>
-              <div
+              <button
+                type="button"
                 className="bg-btn-achievement-header hover:bg-btn-achievement-header-hover rounded-full p-2 cursor-pointer duration-200"
                 onClick={handleOpenAchievementFile}
               >
                 <TbFoldersFilled fontSize={18} />
-              </div>
+              </button>
             </div>
           </CustomTooltip>
         </div>
@@ -129,4 +131,4 @@ export default function PageHeader({ protectedAchievements, protectedStatistics 
       )}
     </div>
   );
-}
+};

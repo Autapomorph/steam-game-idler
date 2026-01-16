@@ -7,7 +7,7 @@ import { useUserStore } from '@/stores/userStore';
 import { logEvent } from '@/utils/tasks';
 import { showDangerToast } from '@/utils/toasts';
 
-export default function OpenSettings() {
+export const OpenSettings = () => {
   const { t } = useTranslation();
   const userSummary = useUserStore(state => state.userSummary);
 
@@ -18,6 +18,7 @@ export default function OpenSettings() {
       await invoke('open_file_explorer', { path: filePath });
     } catch (error) {
       showDangerToast(t('common.error'));
+      // eslint-disable-next-line no-console
       console.error('Error in (handleOpenSettingsFile):', error);
       logEvent(`[Error] in (handleOpenSettingsFile): ${error}`);
     }
@@ -34,4 +35,4 @@ export default function OpenSettings() {
       {t('settings.debug.viewSettingsFile')}
     </Button>
   );
-}
+};

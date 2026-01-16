@@ -13,13 +13,13 @@ interface UseAchievementsProps {
   setRefreshKey: Dispatch<SetStateAction<number>>;
 }
 
-export default function useAchievements(
+export const useAchievements = (
   setIsLoading: Dispatch<SetStateAction<boolean>>,
   setAchievements: Dispatch<SetStateAction<Achievement[]>>,
   setStatistics: Dispatch<SetStateAction<Statistic[]>>,
   setProtectedAchievements: Dispatch<SetStateAction<boolean>>,
   setProtectedStatistics: Dispatch<SetStateAction<boolean>>,
-): UseAchievementsProps {
+): UseAchievementsProps => {
   const { t } = useTranslation();
   const appId = useStateStore(state => state.appId);
   const userSummary = useUserStore(state => state.userSummary);
@@ -29,6 +29,7 @@ export default function useAchievements(
   const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
+    // eslint-disable-next-line consistent-return
     const getAchievementData = async (): Promise<void> => {
       try {
         setIsLoading(true);
@@ -51,6 +52,7 @@ export default function useAchievements(
           setStatisticsUnavailable(true);
           showAccountMismatchToast('danger');
           logEvent(`Error in (getAchievementData): ${response}`);
+          // eslint-disable-next-line consistent-return
           return;
         }
 
@@ -90,6 +92,7 @@ export default function useAchievements(
         setAchievementsUnavailable(true);
         setStatisticsUnavailable(true);
         showDangerToast(t('toast.achievementData.error'));
+        // eslint-disable-next-line no-console
         console.error('Error in (getAchievementData):', error);
         logEvent(`Error in (getAchievementData): ${error}`);
       }
@@ -122,4 +125,4 @@ export default function useAchievements(
   }, []);
 
   return { windowInnerHeight, setRefreshKey };
-}
+};

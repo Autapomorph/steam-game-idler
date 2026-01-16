@@ -7,7 +7,7 @@ const inter = Inter({
   variable: '--font-inter',
 });
 
-export default function Layout({ children }: PropsWithChildren) {
+export const Layout = ({ children }: PropsWithChildren) => {
   return (
     <>
       <Head>
@@ -19,4 +19,4 @@ export default function Layout({ children }: PropsWithChildren) {
       </main>
     </>
   );
-}
+};

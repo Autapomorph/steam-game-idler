@@ -17,12 +17,7 @@ interface Props {
   setRefreshKey: Dispatch<SetStateAction<number>>;
 }
 
-export default function PageHeader({
-  sortStyle,
-  setSortStyle,
-  filteredGames,
-  setRefreshKey,
-}: Props) {
+export const PageHeader = ({ sortStyle, setSortStyle, filteredGames, setRefreshKey }: Props) => {
   const { t } = useTranslation();
   const userSummary = useUserStore(state => state.userSummary);
   const gameQueryValue = useSearchStore(state => state.gameQueryValue);
@@ -87,12 +82,13 @@ export default function PageHeader({
                   <p className="text-sm text-altwhite font-bold">Search</p>
                   <div className="flex items-center gap-2 text-sm text-altwhite p-2 bg-item-active rounded-full max-w-64">
                     <p className="text-content truncate">{gameQueryValue}</p>
-                    <div
+                    <button
+                      type="button"
                       className="flex items-center justify-center cursor-pointer bg-item-hover hover:bg-item-hover/80 rounded-full p-1 duration-150"
                       onClick={() => setGameQueryValue('')}
                     >
                       <TbX />
-                    </div>
+                    </button>
                   </div>
                 </div>
               )}
@@ -102,4 +98,4 @@ export default function PageHeader({
       </div>
     </div>
   );
-}
+};

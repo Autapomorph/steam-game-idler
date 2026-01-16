@@ -12,11 +12,7 @@ interface Props {
   isLoading: boolean;
 }
 
-export default function RecommendedCardDropsCarousel({
-  gamesWithDrops,
-  onAddGame,
-  isLoading,
-}: Props) {
+export const RecommendedCardDropsCarousel = ({ gamesWithDrops, onAddGame, isLoading }: Props) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [isAutoScrolling, setIsAutoScrolling] = useState(true);
   const autoScrollIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -202,7 +198,7 @@ export default function RecommendedCardDropsCarousel({
 
                   <div className="flex items-center gap-2 shrink-0">
                     <span className="text-xs bg-white text-black font-semibold px-2 py-1 rounded-full">
-                      {t('customLists.cardFarming.drops', { count: game.remaining || 0 })}
+                      {t('customLists.cardFarming.drops', { count: game.remaining ?? 0 })}
                     </span>
                     <Button
                       isIconOnly
@@ -222,4 +218,4 @@ export default function RecommendedCardDropsCarousel({
       </div>
     </div>
   );
-}
+};

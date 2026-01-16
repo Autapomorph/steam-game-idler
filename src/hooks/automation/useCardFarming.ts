@@ -60,6 +60,7 @@ export const useCardFarming = async (
     try {
       if (!isMountedRef.current) return;
 
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       const { totalDrops, gamesSet } = await checkGamesForDrops();
 
       if (!isMountedRef.current) return;
@@ -68,12 +69,15 @@ export const useCardFarming = async (
       setGamesWithDrops(gamesSet);
 
       if (isMountedRef.current && gamesSet.size > 0) {
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         const success = await beginFarmingCycle(gamesSet, isMountedRef, abortControllerRef);
         if (!success) {
           logEvent('[Card Farming] An error occurred (this error can often be ignored) - stopping');
+          // eslint-disable-next-line consistent-return
           return setIsComplete(true);
         }
       } else {
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         const nextTask = await checkForNextTask();
 
         if (nextTask.shouldStartNextTask) {
@@ -91,9 +95,11 @@ export const useCardFarming = async (
             logEvent(`[Card Farming] No drops remaining - moving to next task: ${nextTask.task}`);
           }
 
+          // eslint-disable-next-line consistent-return
           return setIsComplete(true);
         }
         logEvent('[Card Farming] No games left - stopping');
+        // eslint-disable-next-line consistent-return
         return setIsComplete(true);
       }
 
@@ -101,11 +107,13 @@ export const useCardFarming = async (
         await startCardFarming();
       }
     } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       handleError('startCardFarming', error);
     }
   };
 
   if (isMountedRef.current) {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     startCardFarming().catch(error => handleError('useCardFarming', error));
   }
 
@@ -114,16 +122,16 @@ export const useCardFarming = async (
 
 // Check games for drops and return total drops and games set
 const checkGamesForDrops = async (): Promise<DropsCheckResult> => {
-  const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary;
+  const userSummary = JSON.parse(localStorage.getItem('userSummary') ?? '{}') as UserSummary;
 
   const response = await invoke<InvokeSettings>('get_user_settings', {
     steamId: userSummary?.steamId,
   });
 
-  const gameSettings = response.settings.gameSettings || {};
+  const gameSettings = response.settings.gameSettings ?? {};
   const { credentials } = response.settings.cardFarming;
   const { allGames } = response.settings.cardFarming;
-  const blacklist = response.settings.cardFarming.blacklist || [];
+  const blacklist = response.settings.cardFarming.blacklist ?? [];
   const skipNoPlaytime = response.settings.cardFarming.skipNoPlaytime || false;
 
   const cardFarmingList = await invoke<InvokeCustomList>('get_custom_lists', {
@@ -143,6 +151,7 @@ const checkGamesForDrops = async (): Promise<DropsCheckResult> => {
         credentials?.sma,
       );
 
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       totalDrops = processGamesWithDrops(
         gamesWithDrops,
         gamesSet,
@@ -151,6 +160,7 @@ const checkGamesForDrops = async (): Promise<DropsCheckResult> => {
         skipNoPlaytime,
       );
     } else {
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       totalDrops = await processIndividualGames(
         cardFarmingList.list_data,
         gamesSet,
@@ -161,6 +171,7 @@ const checkGamesForDrops = async (): Promise<DropsCheckResult> => {
       );
     }
   } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     handleError('checkGamesForDrops', error);
   }
 
@@ -289,9 +300,11 @@ const processIndividualGames = async (
         logEvent(
           `[Card Farming] ${dropsRemaining} drops remaining for ${gameData.name} - removed from list`,
         );
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         removeGameFromFarmingList(gameData.appid);
       }
     } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       handleError('checkGame', error);
     }
   };
@@ -338,11 +351,11 @@ export const beginFarmingCycle = async (
       const success = await step.action(gamesSet);
 
       if (success) {
-        // eslint-disable-next-line no-await-in-loop
+        // eslint-disable-next-line no-await-in-loop, @typescript-eslint/no-use-before-define
         await delay(step.delay, isMountedRef, abortControllerRef);
 
         if (step.action === stopFarmIdle) {
-          // eslint-disable-next-line no-await-in-loop, no-param-reassign
+          // eslint-disable-next-line no-await-in-loop, no-param-reassign, @typescript-eslint/no-use-before-define
           gamesSet = await checkDropsRemaining(gamesSet);
 
           // Check if we should add more games to the list
@@ -363,6 +376,7 @@ export const beginFarmingCycle = async (
     }
     return true;
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Error in (beginFarmingCycle) - "undefined" can be ignored', error);
     await stopFarmIdle(gamesSet);
     return false;
@@ -371,7 +385,7 @@ export const beginFarmingCycle = async (
 
 // Periodically check if there are still drops remaining for each game
 const checkDropsRemaining = async (gameSet: Set<GameWithDrops>): Promise<Set<GameWithDrops>> => {
-  const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary;
+  const userSummary = JSON.parse(localStorage.getItem('userSummary') ?? '{}') as UserSummary;
 
   const updatedGameSet = new Set<GameWithDrops>();
   const gameArray = Array.from(gameSet);
@@ -392,9 +406,11 @@ const checkDropsRemaining = async (gameSet: Set<GameWithDrops>): Promise<Set<Gam
       );
 
       if (dropsRemaining <= 0) {
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         removeGameFromFarmingList(Number(game.appid));
         logEvent(`[Card Farming] Farmed all drops for ${game.name} - removed from list`);
       } else if (game.initialDrops - dropsRemaining >= game.dropsToCount) {
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         removeGameFromFarmingList(Number(game.appid));
         logEvent(
           `[Card Farming- maxCardDrops] Farmed ${game.initialDrops - dropsRemaining}/${dropsRemaining} cards for ${game.name} - removed from list`,
@@ -403,6 +419,7 @@ const checkDropsRemaining = async (gameSet: Set<GameWithDrops>): Promise<Set<Gam
         updatedGameSet.add(game);
       }
     } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       handleError('checkDropsRemaining', error);
       updatedGameSet.add(game); // Keep the game in the set if there was an error checking
     }
@@ -416,7 +433,7 @@ const checkDropsRemaining = async (gameSet: Set<GameWithDrops>): Promise<Set<Gam
 // Remove game from farming list
 const removeGameFromFarmingList = async (gameId: number): Promise<void> => {
   try {
-    const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary;
+    const userSummary = JSON.parse(localStorage.getItem('userSummary') ?? '{}') as UserSummary;
 
     const cardFarmingList = await invoke<InvokeCustomList>('get_custom_lists', {
       steamId: userSummary?.steamId,
@@ -431,6 +448,7 @@ const removeGameFromFarmingList = async (gameId: number): Promise<void> => {
       newList: updatedCardFarming,
     });
   } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     handleError('removeGameFromFarmingList', error);
   }
 };
@@ -441,7 +459,7 @@ const checkForNextTask = async (): Promise<{
   task: string | null;
 }> => {
   try {
-    const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary;
+    const userSummary = JSON.parse(localStorage.getItem('userSummary') ?? '{}') as UserSummary;
 
     const response = await invoke<InvokeSettings>('get_user_settings', {
       steamId: userSummary?.steamId,
@@ -462,6 +480,7 @@ const checkForNextTask = async (): Promise<{
       task,
     };
   } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     handleError('checkForNextTask', error);
     return { shouldStartNextTask: false, task: null };
   }
@@ -520,6 +539,7 @@ export const handleCancel = async (
   try {
     await stopFarmIdle(gamesWithDrops);
   } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     handleError('handleCancel', error);
   } finally {
     // eslint-disable-next-line no-param-reassign
@@ -531,6 +551,7 @@ export const handleCancel = async (
 // Handle errors
 const handleError = (functionName: string, error: unknown): void => {
   if (!error) return;
+  // eslint-disable-next-line no-console
   console.error(`Error in (${functionName}):`, error);
   logEvent(`[Error] in (${functionName}) ${error}`);
 };

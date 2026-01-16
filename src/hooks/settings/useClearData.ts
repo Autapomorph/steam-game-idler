@@ -11,7 +11,7 @@ interface ClearDataHook {
   handleClearData: (onClose: () => void) => void;
 }
 
-const useClearData = (): ClearDataHook => {
+export const useClearData = (): ClearDataHook => {
   const setUserSummary = useUserStore(state => state.setUserSummary);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -31,5 +31,3 @@ const useClearData = (): ClearDataHook => {
     handleClearData,
   };
 };
-
-export default useClearData;

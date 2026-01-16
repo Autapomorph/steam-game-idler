@@ -1,7 +1,7 @@
 import { addToast } from '@heroui/react';
 import i18next, { type TOptions } from 'i18next';
 
-import ErrorToast from '@/components/ui/ErrorToast';
+import { ErrorToast } from '@/components/ui/ErrorToast';
 
 export const t = (key: string, options?: TOptions): string => i18next.t(key, options);
 

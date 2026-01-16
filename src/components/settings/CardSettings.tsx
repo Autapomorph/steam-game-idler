@@ -3,10 +3,10 @@ import { TbChevronRight } from 'react-icons/tb';
 import { useTranslation } from 'react-i18next';
 
 import { useUserStore } from '@/stores/userStore';
-import SettingsSwitch from '@/components/settings/SettingsSwitch';
+import { SettingsSwitch } from '@/components/settings/SettingsSwitch';
 import { handleNextTaskChange, useCardSettings } from '@/hooks/settings/useCardSettings';
 
-export default function CardSettings() {
+export const CardSettings = () => {
   const { t } = useTranslation();
   const userSummary = useUserStore(state => state.userSummary);
   const userSettings = useUserStore(state => state.userSettings);
@@ -139,4 +139,4 @@ export default function CardSettings() {
       </div>
     </div>
   );
-}
+};

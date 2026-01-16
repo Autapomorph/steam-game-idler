@@ -3,13 +3,13 @@ import { invoke } from '@tauri-apps/api/core';
 import { Alert, Button, cn, useDisclosure } from '@heroui/react';
 import { TbAward, TbCards, TbEdit, TbHeart, TbHourglassLow, TbSettings } from 'react-icons/tb';
 import { DndContext, type DragEndEvent } from '@dnd-kit/core';
-import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+import { arrayMove, SortableContext } from '@dnd-kit/sortable';
 import { useTranslation } from 'react-i18next';
 
 import type {
   ActivePageType,
   CurrentSettingsTabType,
+  CustomListType,
   Game,
   InvokeSettings,
   UserSummary,
@@ -17,25 +17,15 @@ import type {
 import { useNavigationStore } from '@/stores/navigationStore';
 import { useStateStore } from '@/stores/stateStore';
 import { useUserStore } from '@/stores/userStore';
-import AchievementOrderModal from '@/components/customlists/AchievementOrderModal';
-import EditListModal from '@/components/customlists/EditListModal';
-import ManualAdd from '@/components/customlists/ManualAdd';
-import RecommendedCardDropsCarousel from '@/components/customlists/RecommendedCardDropsCarousel';
-import GameCard from '@/components/ui/GameCard';
+import { AchievementOrderModal } from '@/components/customlists/AchievementOrderModal';
+import { EditListModal } from '@/components/customlists/EditListModal';
+import { ManualAdd } from '@/components/customlists/ManualAdd';
+import { RecommendedCardDropsCarousel } from '@/components/customlists/RecommendedCardDropsCarousel';
+import { SortableGameCard } from '@/components/customlists/SortableGameCard';
 import { useAutomate } from '@/hooks/automation/useAutomateButtons';
-import useCustomList from '@/hooks/customlists/useCustomList';
+import { useCustomList } from '@/hooks/customlists/useCustomList';
 import { startAutoIdleGamesImpl } from '@/hooks/layout/useWindow';
 import { getAllGamesWithDrops } from '@/utils/automation';
-
-type CustomListType =
-  | 'cardFarmingList'
-  | 'achievementUnlockerList'
-  | 'autoIdleList'
-  | 'favoritesList';
-
-interface CustomListProps {
-  type: CustomListType;
-}
 
 interface GameWithDropsData {
   id: string;
@@ -54,7 +44,11 @@ interface ListTypeConfig {
   switches?: boolean;
 }
 
-export default function CustomList({ type }: CustomListProps) {
+interface Props {
+  type: CustomListType;
+}
+
+export const CustomList = ({ type }: Props) => {
   const { t } = useTranslation();
   const {
     list,
@@ -129,7 +123,8 @@ export default function CustomList({ type }: CustomListProps) {
   useEffect(() => {
     const getGamesWithDrops = async (): Promise<void> => {
       if (type === 'cardFarmingList' && userSettings?.general?.showCardDropsCarousel) {
-        const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary;
+        // eslint-disable-next-line @typescript-eslint/no-shadow
+        const userSummary = JSON.parse(localStorage.getItem('userSummary') ?? '{}') as UserSummary;
 
         const cachedUserSettings = await invoke<InvokeSettings>('get_user_settings', {
           steamId: userSummary?.steamId,
@@ -289,6 +284,7 @@ export default function CustomList({ type }: CustomListProps) {
                       radius="full"
                       startContent={listType.icon}
                       onPress={
+                        /* eslint-disable no-nested-ternary */
                         listType.startButton === 'startCardFarming'
                           ? () => {
                               startCardFarming();
@@ -303,6 +299,7 @@ export default function CustomList({ type }: CustomListProps) {
                                     startAutoIdleGamesImpl(userSummary.steamId, true);
                                 }
                               : undefined
+                        /* eslint-enable no-nested-ternary */
                       }
                     >
                       {listType.buttonLabel}
@@ -391,34 +388,8 @@ export default function CustomList({ type }: CustomListProps) {
         handleRemoveGame={handleRemoveGame}
         handleClearList={handleClearList}
         handleBlacklistGame={handleBlacklistGame}
-        blacklist={userSettings.cardFarming.blacklist || []}
+        blacklist={userSettings.cardFarming.blacklist ?? []}
       />
     </>
   );
-}
-
-interface SortableGameCardProps {
-  item: Game;
-  type: CustomListType;
-  onOpen: () => void;
-}
-
-function SortableGameCard({ item, type, onOpen }: SortableGameCardProps) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
-    id: item.appid,
-  });
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
-
-  return (
-    <div className="cursor-grab" ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <GameCard
-        item={item}
-        isAchievementUnlocker={type === 'achievementUnlockerList'}
-        onOpen={onOpen}
-      />
-    </div>
-  );
-}
+};

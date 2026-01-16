@@ -48,11 +48,12 @@ export const useAchievementUnlocker = async (
 ): Promise<void> => {
   let hasInitialDelayOccurred = !isInitialDelay;
 
+  // eslint-disable-next-line consistent-return
   const startAchievementUnlocker = async (): Promise<void> => {
     try {
       let currentGame: Game | null = null as Game | null;
 
-      const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary;
+      const userSummary = JSON.parse(localStorage.getItem('userSummary') ?? '{}') as UserSummary;
 
       // Retrieve achievement unlocker games
       const achievementUnlockerList = await invoke<InvokeCustomList>('get_custom_lists', {
@@ -62,7 +63,9 @@ export const useAchievementUnlocker = async (
 
       // Delay for 10 seconds before starting
       if (!hasInitialDelayOccurred) {
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         startCountdown(10000 / 60000, setCountdownTimer);
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         await delay(10000, isMountedRef, abortControllerRef);
         setIsInitialDelay(false);
         hasInitialDelayOccurred = true;
@@ -74,6 +77,7 @@ export const useAchievementUnlocker = async (
           await stopIdle(currentGame?.appid, currentGame.name);
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         const nextTask = await checkForNextTask();
 
         if (nextTask.shouldStartNextTask) {
@@ -99,6 +103,7 @@ export const useAchievementUnlocker = async (
 
       // Fetch achievements for the current game
       const achievementUnlockerGame = achievementUnlockerList.list_data[0];
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       const { achievements, game } = await fetchAchievements(
         achievementUnlockerGame,
         setAchievementCount,
@@ -109,6 +114,7 @@ export const useAchievementUnlocker = async (
 
       // If there are achievements available, begin unlocking them
       if (achievements?.length > 0) {
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         await unlockAchievements(
           achievements,
           game,
@@ -119,6 +125,7 @@ export const useAchievementUnlocker = async (
           abortControllerRef,
         );
       } else {
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         await removeGameFromUnlockerList(game.appid);
         logEvent(
           `[Achievement Unlocker] ${game.name} (${game.appid}) has no achievements remaining - removed`,
@@ -128,6 +135,7 @@ export const useAchievementUnlocker = async (
       // Rerun if component is still mounted - needed check if user stops feature during loop
       if (isMountedRef.current) startAchievementUnlocker();
     } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       handleError('startAchievementUnlocker', error);
     }
   };
@@ -140,7 +148,8 @@ const fetchAchievements = async (
   game: Game,
   setAchievementCount: Dispatch<SetStateAction<number>>,
 ): Promise<GameWithAchievements> => {
-  const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary;
+  const userSummary = JSON.parse(localStorage.getItem('userSummary') ?? '{}') as UserSummary;
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
   const maxAchievementUnlocks = await getMaxAchievementUnlocks(userSummary?.steamId, game.appid);
 
   const response = await invoke<InvokeSettings>('get_user_settings', {
@@ -163,6 +172,7 @@ const fetchAchievements = async (
       achievementResponse.includes('Failed to initialize Steam API')
     ) {
       showAccountMismatchToast('danger');
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       handleError('fetchAchievements', 'Account mismatch between Steam and SGI');
       return { achievements: [], game };
     }
@@ -276,10 +286,11 @@ const fetchAchievements = async (
         .sort((a, b) => b.percentage - a.percentage);
     }
 
-    setAchievementCount(maxAchievementUnlocks || orderedAchievements.length);
+    setAchievementCount(maxAchievementUnlocks ?? orderedAchievements.length);
 
     return { achievements: orderedAchievements, game };
   } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     handleError('fetchAchievements', error);
     return { achievements: [], game };
   }
@@ -295,7 +306,7 @@ const unlockAchievements = async (
   abortControllerRef: RefObject<AbortController>,
 ): Promise<void> => {
   try {
-    const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary;
+    const userSummary = JSON.parse(localStorage.getItem('userSummary') ?? '{}') as UserSummary;
 
     const response = await invoke<InvokeSettings>('get_user_settings', {
       steamId: userSummary?.steamId,
@@ -306,6 +317,7 @@ const unlockAchievements = async (
     let isGameIdling = false;
 
     let achievementsRemaining = achievements.length;
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     const maxAchievementUnlocks = await getMaxAchievementUnlocks(userSummary?.steamId, game.appid);
 
     for (const achievement of achievements) {
@@ -317,7 +329,7 @@ const unlockAchievements = async (
             await stopIdle(game.appid, game.name);
             isGameIdling = false;
           }
-          // eslint-disable-next-line no-await-in-loop
+          // eslint-disable-next-line no-await-in-loop, @typescript-eslint/no-use-before-define
           await waitUntilInSchedule(
             scheduleFrom,
             scheduleTo,
@@ -356,7 +368,7 @@ const unlockAchievements = async (
         ) {
           // eslint-disable-next-line no-await-in-loop
           await stopIdle(game.appid, game.name);
-          // eslint-disable-next-line no-await-in-loop
+          // eslint-disable-next-line no-await-in-loop, @typescript-eslint/no-use-before-define
           await removeGameFromUnlockerList(game.appid);
           logEvent(
             `[Achievement Unlocker] Unlocked ${maxAchievementUnlocks !== null ? achievements.length - maxAchievementUnlocks : achievements.length}/${achievements.length} achievements for ${game.name} - removed`,
@@ -368,7 +380,7 @@ const unlockAchievements = async (
         if (achievementsRemaining === 0) {
           // eslint-disable-next-line no-await-in-loop
           await stopIdle(game.appid, game.name);
-          // eslint-disable-next-line no-await-in-loop
+          // eslint-disable-next-line no-await-in-loop, @typescript-eslint/no-use-before-define
           await removeGameFromUnlockerList(game.appid);
           break;
         }
@@ -381,12 +393,14 @@ const unlockAchievements = async (
         } else {
           delayMs = getRandomDelay(interval[0], interval[1]);
         }
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         startCountdown(delayMs / 60000, setCountdownTimer);
-        // eslint-disable-next-line no-await-in-loop
+        // eslint-disable-next-line no-await-in-loop, @typescript-eslint/no-use-before-define
         await delay(delayMs, isMountedRef, abortControllerRef);
       }
     }
   } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     handleError('unlockAchievements', error);
   }
 };
@@ -399,17 +413,18 @@ const getMaxAchievementUnlocks = async (
     const response = await invoke<InvokeSettings>('get_user_settings', {
       steamId,
     });
-    const gameSettings = response.settings.gameSettings || {};
+    const gameSettings = response.settings.gameSettings ?? {};
     const perGameSetting = gameSettings[appId];
     if (
       typeof perGameSetting === 'object' &&
       perGameSetting !== null &&
       !Array.isArray(perGameSetting)
     ) {
-      return perGameSetting.maxAchievementUnlocks || null;
+      return perGameSetting.maxAchievementUnlocks ?? null;
     }
     return null;
   } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     handleError('getMaxAchievementUnlocks', error);
     return null;
   }
@@ -418,7 +433,7 @@ const getMaxAchievementUnlocks = async (
 // Remove a game from the unlocker list
 const removeGameFromUnlockerList = async (gameId: number): Promise<void> => {
   try {
-    const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary;
+    const userSummary = JSON.parse(localStorage.getItem('userSummary') ?? '{}') as UserSummary;
 
     const achievementUnlockerList = await invoke<InvokeCustomList>('get_custom_lists', {
       steamId: userSummary?.steamId,
@@ -435,6 +450,7 @@ const removeGameFromUnlockerList = async (gameId: number): Promise<void> => {
       newList: updatedAchievementUnlocker,
     });
   } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     handleError('removeGameFromUnlockerList', error);
   }
 };
@@ -458,6 +474,7 @@ const startCountdown = (
       remainingTime -= 1000;
     }, 1000);
   } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     handleError('startCountdown', error);
   }
 };
@@ -496,6 +513,7 @@ const waitUntilInSchedule = async (
     }
     setIsWaitingForSchedule(false);
   } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     handleError('waitUntilInSchedule', error);
   }
 };
@@ -506,7 +524,7 @@ const checkForNextTask = async (): Promise<{
   task: string | null;
 }> => {
   try {
-    const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary;
+    const userSummary = JSON.parse(localStorage.getItem('userSummary') ?? '{}') as UserSummary;
 
     const response = await invoke<InvokeSettings>('get_user_settings', {
       steamId: userSummary?.steamId,
@@ -527,6 +545,7 @@ const checkForNextTask = async (): Promise<{
       task,
     };
   } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     handleError('checkForNextTask', error);
     return { shouldStartNextTask: false, task: null };
   }
@@ -560,6 +579,7 @@ const delay = (
       });
     });
   } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     handleError('delay', error);
     return Promise.reject(error);
   }
@@ -581,6 +601,7 @@ export function formatTime(ms: number): string {
 // Handle errors
 const handleError = (functionName: string, error: unknown): void => {
   if (!error) return;
+  // eslint-disable-next-line no-console
   console.error(`Error in (${functionName}):`, error);
   logEvent(`[Error] in (${functionName}) ${error}`);
 };

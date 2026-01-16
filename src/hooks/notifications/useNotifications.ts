@@ -34,8 +34,10 @@ export const useNotifications = (): NotificationHook => {
 
   useEffect(() => {
     // Fetch notifications
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     fetchNotifications(setNotifications, setUnseenNotifications);
     const interval = setInterval(
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       () => fetchNotifications(setNotifications, setUnseenNotifications),
       60 * 60 * 1000,
     );
@@ -81,6 +83,7 @@ export const fetchNotifications = async (
       ? JSON.parse(cachedNotificationsStr)
       : [];
     setNotifications(cachedNotifications);
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     await checkUnseenNotifications(cachedNotifications, setUnseenNotifications);
     return;
   }
@@ -93,11 +96,13 @@ export const fetchNotifications = async (
     const data: Notification[] = await response.json();
     const LimitNotifications = data.slice(0, 10);
     setNotifications(LimitNotifications);
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     await checkUnseenNotifications(LimitNotifications, setUnseenNotifications);
     // Cache notifications and set cooldown timestamp
     localStorage.setItem('cachedNotifications', JSON.stringify(LimitNotifications));
     localStorage.setItem('notificationsCooldown', String(now + 30 * 60 * 1000));
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Error fetching notifications:', error);
   }
 };
@@ -158,6 +163,7 @@ export const handleOpenUrl = async (
   try {
     await open(url);
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Failed to open link:', error);
   }
 };

@@ -13,9 +13,10 @@ export default function StatsSection() {
       try {
         const response = await fetch('https://api.github.com/repos/zevnda/steam-game-idler');
         const data = await response.json();
-        setGithubStars(data.stargazers_count || 999);
+        setGithubStars(data.stargazers_count ?? 999);
       } catch (error) {
         setGithubStars(999);
+        // eslint-disable-next-line no-console
         console.error('Failed to fetch GitHub stars:', error);
       } finally {
         setIsLoading(false);

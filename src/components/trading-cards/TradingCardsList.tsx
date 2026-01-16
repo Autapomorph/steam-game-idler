@@ -10,14 +10,14 @@ import type { TradingCard } from '@/types';
 import { useSearchStore } from '@/stores/searchStore';
 import { useStateStore } from '@/stores/stateStore';
 import { useUserStore } from '@/stores/userStore';
-import PageHeader from '@/components/trading-cards/PageHeader';
-import PriceData from '@/components/trading-cards/PriceData';
-import PriceInput from '@/components/trading-cards/PriceInput';
-import CustomTooltip from '@/components/ui/CustomTooltip';
-import ExtLink from '@/components/ui/ExtLink';
-import useTradingCardsList from '@/hooks/trading-cards/useTradingCardsList';
+import { PageHeader } from '@/components/trading-cards/PageHeader';
+import { PriceData } from '@/components/trading-cards/PriceData';
+import { PriceInput } from '@/components/trading-cards/PriceInput';
+import { CustomTooltip } from '@/components/ui/CustomTooltip';
+import { ExtLink } from '@/components/ui/ExtLink';
+import { useTradingCardsList } from '@/hooks/trading-cards/useTradingCardsList';
 
-export default function TradingCardsList() {
+export const TradingCardsList = () => {
   const { t } = useTranslation();
   const tradingCardQueryValue = useSearchStore(state => state.tradingCardQueryValue);
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed);
@@ -118,7 +118,8 @@ export default function TradingCardsList() {
 
           <div className="flex items-center gap-1">
             <CustomTooltip content={t('tradingCards.lockCard')} placement="top">
-              <div
+              <button
+                type="button"
                 className="hover:bg-item-hover rounded-full p-1 cursor-pointer duration-200"
                 onClick={() => handleLockCard(item.id)}
               >
@@ -127,7 +128,7 @@ export default function TradingCardsList() {
                 ) : (
                   <TbLockOpen fontSize={14} />
                 )}
-              </div>
+              </button>
             </CustomTooltip>
 
             <CustomTooltip content={t('tradingCards.cardExchange')} placement="top">
@@ -261,4 +262,4 @@ export default function TradingCardsList() {
       )}
     </div>
   );
-}
+};

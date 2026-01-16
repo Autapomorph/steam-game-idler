@@ -4,7 +4,7 @@ interface Props {
   className?: string;
 }
 
-export default function Beta({ className }: Props) {
+export const Beta = ({ className }: Props) => {
   return (
     <span
       className={cn(
@@ -16,4 +16,4 @@ export default function Beta({ className }: Props) {
       beta
     </span>
   );
-}
+};

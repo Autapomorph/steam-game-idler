@@ -5,7 +5,7 @@ import { TbBell } from 'react-icons/tb';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
-import CustomTooltip from '@/components/ui/CustomTooltip';
+import { CustomTooltip } from '@/components/ui/CustomTooltip';
 import {
   handleOpenUrl,
   markAllAsSeen,
@@ -13,7 +13,7 @@ import {
   useNotifications,
 } from '@/hooks/notifications/useNotifications';
 
-export default function Notifications() {
+export const Notifications = () => {
   const { t } = useTranslation();
   const {
     notifications,
@@ -40,7 +40,8 @@ export default function Notifications() {
   return (
     <div className="relative">
       <CustomTooltip content={t('common.notifications')}>
-        <div
+        <button
+          type="button"
           className={cn(
             'flex items-center justify-center hover:text-content/80 hover:bg-header-hover/10 h-9 w-12',
             'cursor-pointer active:scale-95 relative duration-150',
@@ -59,8 +60,9 @@ export default function Notifications() {
               {unseenNotifications.length}
             </span>
           )}
-        </div>
+        </button>
       </CustomTooltip>
+
       <AnimatePresence>
         {showNotifications && (
           <>
@@ -129,7 +131,8 @@ export default function Notifications() {
                   </div>
                 ) : (
                   notifications.map(notification => (
-                    <div
+                    <button
+                      type="button"
                       key={notification.id}
                       className={cn(
                         'flex items-start gap-3 w-full border-b last:border-none border-border px-6 py-4 cursor-pointer duration-150',
@@ -171,7 +174,7 @@ export default function Notifications() {
                           {notification.message}
                         </span>
                       </div>
-                    </div>
+                    </button>
                   ))
                 )}
               </div>
@@ -188,4 +191,4 @@ export default function Notifications() {
       </AnimatePresence>
     </div>
   );
-}
+};

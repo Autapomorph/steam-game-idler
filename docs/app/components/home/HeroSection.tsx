@@ -21,6 +21,7 @@ export default function HeroSection() {
           }
         });
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Error fetching latest version:', error);
     }
   }, []);
@@ -35,6 +36,7 @@ export default function HeroSection() {
           }
         });
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Error fetching GitHub stars:', error);
     }
   }, []);

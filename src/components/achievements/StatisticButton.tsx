@@ -4,8 +4,8 @@ import { TbRotateClockwise, TbUpload } from 'react-icons/tb';
 import { Trans, useTranslation } from 'react-i18next';
 
 import type { Achievement, ChangedStats, Statistic } from '@/types';
-import CustomModal from '@/components/ui/CustomModal';
-import useStatisticButtons from '@/hooks/achievements/useStatisticButtons';
+import { CustomModal } from '@/components/ui/CustomModal';
+import { useStatisticButtons } from '@/hooks/achievements/useStatisticButtons';
 
 interface Props {
   statistics: Statistic[];
@@ -16,14 +16,14 @@ interface Props {
   setRefreshKey?: Dispatch<SetStateAction<number>>;
 }
 
-export default function StatisticButtons({
+export const StatisticButton = ({
   statistics,
   setStatistics,
   changedStats,
   setChangedStats,
   setAchievements,
   setRefreshKey,
-}: Props) {
+}: Props) => {
   const { t } = useTranslation();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { handleUpdateAllStats, handleResetAll } = useStatisticButtons(
@@ -105,4 +105,4 @@ export default function StatisticButtons({
       />
     </div>
   );
-}
+};

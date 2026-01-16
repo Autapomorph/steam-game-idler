@@ -10,13 +10,13 @@ interface Props extends PropsWithChildren {
   important?: boolean;
 }
 
-export default function CustomTooltip({
+export const CustomTooltip = ({
   children,
   content,
   placement = 'bottom',
   className,
   important = false,
-}: Props) {
+}: Props) => {
   const userSettings = useUserStore(state => state.userSettings);
 
   if (!important && userSettings.general.disableTooltips) {
@@ -39,4 +39,4 @@ export default function CustomTooltip({
       {children}
     </Tooltip>
   );
-}
+};

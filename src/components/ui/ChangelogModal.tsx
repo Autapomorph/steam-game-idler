@@ -17,7 +17,7 @@ import { handleOpenExtLink } from '@/utils/tasks';
 
 import 'github-markdown-css/github-markdown-light.css';
 
-export default function ChangelogModal() {
+export const ChangelogModal = () => {
   const { t } = useTranslation();
   const showChangelog = useUpdateStore(state => state.showChangelog);
   const setShowChangelog = useUpdateStore(state => state.setShowChangelog);
@@ -39,6 +39,7 @@ export default function ChangelogModal() {
         setAppVersion(version);
         setIsVersionLoaded(true);
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error('Failed to get app version:', error);
         setAppVersion('latest');
         setIsVersionLoaded(true);
@@ -112,4 +113,4 @@ export default function ChangelogModal() {
       </ModalContent>
     </Modal>
   );
-}
+};

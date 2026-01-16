@@ -19,10 +19,10 @@ interface SideBarHook {
   handleLogout: (onClose: () => void) => Promise<void>;
 }
 
-export default function useSideBar(
+export const useSideBar = (
   activePage: ActivePageType,
   setActivePage: Dispatch<SetStateAction<ActivePageType>>,
-): SideBarHook {
+): SideBarHook => {
   const { t } = useTranslation();
   const setGameQueryValue = useSearchStore(state => state.setGameQueryValue);
   const setAchievementQueryValue = useSearchStore(state => state.setAchievementQueryValue);
@@ -40,11 +40,13 @@ export default function useSideBar(
     try {
       onClose();
       setUserSummary(null);
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       clearLocalStorageData();
       await invoke('kill_all_steamutil_processes');
       logEvent(`[System] Logged out of ${userSummary?.personaName}`);
     } catch (error) {
       showDangerToast(t('common.error'));
+      // eslint-disable-next-line no-console
       console.error('Error in (handleLogout):', error);
       logEvent(`[Error] in (handleLogout): ${error}`);
     }
@@ -62,6 +64,7 @@ export default function useSideBar(
       localStorage.removeItem('userSummary');
     } catch (error) {
       showDangerToast(t('common.error'));
+      // eslint-disable-next-line no-console
       console.error('Error in (clearLocalStorageData):', error);
       logEvent(`[Error] in (clearLocalStorageData): ${error}`);
     }
@@ -75,4 +78,4 @@ export default function useSideBar(
     openConfirmation,
     handleLogout,
   };
-}
+};

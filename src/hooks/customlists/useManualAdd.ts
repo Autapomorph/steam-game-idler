@@ -18,10 +18,10 @@ interface ManualAddHook {
   handleAdd: (onClose: () => void) => Promise<void>;
 }
 
-export default function useManualAdd(
+export const useManualAdd = (
   listName: string,
   setList: Dispatch<SetStateAction<Game[]>>,
-): ManualAddHook {
+): ManualAddHook => {
   const { t } = useTranslation();
   const userSummary = useUserStore(state => state.userSummary);
   const [appNameValue, setAppNameValue] = useState('');
@@ -50,6 +50,7 @@ export default function useManualAdd(
     } catch (error) {
       setIsLoading(false);
       showDangerToast(t('common.error'));
+      // eslint-disable-next-line no-console
       console.error('Error in (handleAdd):', error);
       logEvent(`[Error] in (handleAdd): ${error}`);
     }
@@ -60,6 +61,7 @@ export default function useManualAdd(
       setAppNameValue(e.target.value || '');
     } catch (error) {
       showDangerToast(t('common.error'));
+      // eslint-disable-next-line no-console
       console.error('Error in (handleNameChange):', error);
       logEvent(`[Error] in (handleNameChange): ${error}`);
     }
@@ -77,6 +79,7 @@ export default function useManualAdd(
       }
     } catch (error) {
       showDangerToast(t('common.error'));
+      // eslint-disable-next-line no-console
       console.error('Error in (handleIdChange):', error);
       logEvent(`[Error] in (handleIdChange): ${error}`);
     }
@@ -92,4 +95,4 @@ export default function useManualAdd(
     handleIdChange,
     handleAdd,
   };
-}
+};

@@ -4,7 +4,7 @@ import { TbChevronLeft, TbChevronRight } from 'react-icons/tb';
 import { useTranslation } from 'react-i18next';
 
 import type { Game } from '@/types';
-import GameCard from '@/components/ui/GameCard';
+import { GameCard } from '@/components/ui/GameCard';
 
 interface Props {
   gamesContext: {
@@ -12,7 +12,7 @@ interface Props {
   };
 }
 
-export default function RecommendedGamesCarousel({ gamesContext }: Props) {
+export const RecommendedGamesCarousel = ({ gamesContext }: Props) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [isAutoScrolling, setIsAutoScrolling] = useState(true);
   const autoScrollIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -144,4 +144,4 @@ export default function RecommendedGamesCarousel({ gamesContext }: Props) {
       </div>
     </div>
   );
-}
+};

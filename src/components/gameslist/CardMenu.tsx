@@ -12,16 +12,18 @@ interface Props {
   item: Game;
 }
 
-export default function CardMenu({ item }: Props) {
+export const CardMenu = ({ item }: Props) => {
   const { t } = useTranslation();
   const setAppId = useStateStore(state => state.setAppId);
   const setAppName = useStateStore(state => state.setAppName);
   const setShowAchievements = useStateStore(state => state.setShowAchievements);
 
+  // eslint-disable-next-line @typescript-eslint/no-shadow
   const viewStorePage = async (item: Game): Promise<void> => {
     try {
       await open(`https://store.steampowered.com/app/${item.appid}`);
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Failed to open link:', error);
     }
   };
@@ -74,4 +76,4 @@ export default function CardMenu({ item }: Props) {
       </DropdownMenu>
     </Dropdown>
   );
-}
+};
