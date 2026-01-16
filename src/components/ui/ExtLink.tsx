@@ -6,12 +6,13 @@ interface Props extends PropsWithChildren {
   className?: string;
 }
 
-export default function ExtLink({ children, href, className = '' }: Props) {
+export const ExtLink = ({ children, href, className = '' }: Props) => {
   const handleClick = async (e: MouseEvent<HTMLAnchorElement>): Promise<void> => {
     e.preventDefault();
     try {
       await open(href);
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Failed to open link:', error);
     }
   };
@@ -21,4 +22,4 @@ export default function ExtLink({ children, href, className = '' }: Props) {
       {children}
     </a>
   );
-}
+};

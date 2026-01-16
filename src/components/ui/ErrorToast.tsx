@@ -1,13 +1,13 @@
 import { useTranslation } from 'react-i18next';
 
-import WebviewWindow from '@/components/ui/WebviewWindow';
+import { WebviewWindow } from '@/components/ui/WebviewWindow';
 
 interface Props {
   message: string;
   href: string;
 }
 
-export default function ErrorToast({ message, href }: Props) {
+export const ErrorToast = ({ message, href }: Props) => {
   const { t } = useTranslation();
 
   return (
@@ -18,4 +18,4 @@ export default function ErrorToast({ message, href }: Props) {
       </WebviewWindow>
     </div>
   );
-}
+};

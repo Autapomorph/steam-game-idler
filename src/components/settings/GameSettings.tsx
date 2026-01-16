@@ -1,5 +1,4 @@
-import { memo, useEffect, useMemo, useState, type CSSProperties, type SyntheticEvent } from 'react';
-import Image from 'next/image';
+import { useEffect, useMemo, useState } from 'react';
 import { cn, Divider, Input, NumberInput } from '@heroui/react';
 import { RiSearchLine } from 'react-icons/ri';
 import { TbChevronRight } from 'react-icons/tb';
@@ -10,59 +9,9 @@ import type { Game } from '@/types';
 import { useUserStore } from '@/stores/userStore';
 import { useGameSettings } from '@/hooks/settings/useGameSettings';
 
-interface RowData {
-  filteredGamesList: Game[];
-  selectedGame: Game | null;
-  onGameSelect: (game: Game) => void;
-}
+import { GameSettingsRow } from './GameSettingsRow';
 
-interface RowProps {
-  index: number;
-  style: CSSProperties;
-  data: RowData;
-}
-
-const Row = memo(({ index, style, data }: RowProps) => {
-  const { filteredGamesList, selectedGame, onGameSelect } = data;
-  const item = filteredGamesList[index];
-
-  const handleImageError = (event: SyntheticEvent<HTMLImageElement, Event>): void => {
-    // eslint-disable-next-line no-param-reassign
-    (event.target as HTMLImageElement).src = '/fallback.webp';
-  };
-
-  const isSelected = selectedGame?.appid === item.appid;
-
-  return (
-    <div
-      style={style}
-      className={cn(
-        'flex justify-between items-center gap-2',
-        'hover:bg-item-hover cursor-pointer px-3 py-1',
-        'duration-150 select-none',
-        isSelected && 'bg-item-hover border-l-2 border-blue-500',
-      )}
-      onClick={() => onGameSelect(item)}
-    >
-      <div className="flex items-center gap-3 max-w-[90%]">
-        <Image
-          src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${item.appid}/header.jpg`}
-          className="aspect-62/29 rounded-sm"
-          width={62}
-          height={29}
-          alt={`${item.name} image`}
-          priority
-          onError={handleImageError}
-        />
-        <p className="text-sm truncate mr-8">{item.name}</p>
-      </div>
-    </div>
-  );
-});
-
-Row.displayName = 'Row';
-
-export default function GameSettings() {
+export const GameSettings = () => {
   const { t } = useTranslation();
   const gamesList = useUserStore(state => state.gamesList);
   const [searchTerm, setSearchTerm] = useState('');
@@ -140,7 +89,7 @@ export default function GameSettings() {
             width="100%"
             itemData={itemData}
           >
-            {Row}
+            {GameSettingsRow}
           </List>
         </div>
 
@@ -285,4 +234,4 @@ export default function GameSettings() {
       </div>
     </div>
   );
-}
+};

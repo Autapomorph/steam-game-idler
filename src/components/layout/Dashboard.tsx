@@ -3,20 +3,20 @@ import { useEffect } from 'react';
 import type { ActivePageType, CustomListType } from '@/types';
 import { useNavigationStore } from '@/stores/navigationStore';
 import { useStateStore } from '@/stores/stateStore';
-import Achievements from '@/components/achievements/Achievements';
-import AchievementUnlocker from '@/components/automation/AchievementUnlocker';
-import CardFarming from '@/components/automation/CardFarming';
-import CustomList from '@/components/customlists/CustomList';
-import FreeGamesList from '@/components/gameslist/FreeGamesList';
-import GamesList from '@/components/gameslist/GamesList';
-import IdlingGamesList from '@/components/gameslist/IdlingGamesList';
-import Settings from '@/components/settings/Settings';
-import TradingCardsList from '@/components/trading-cards/TradingCardsList';
-import Header from '@/components/ui/header/Header';
-import SideBar from '@/components/ui/SideBar';
+import { Achievements } from '@/components/achievements/Achievements';
+import { AchievementUnlocker } from '@/components/automation/AchievementUnlocker';
+import { CardFarming } from '@/components/automation/CardFarming';
+import { CustomList } from '@/components/customlists/CustomList';
+import { FreeGamesList } from '@/components/gameslist/FreeGamesList';
+import { GamesList } from '@/components/gameslist/GamesList';
+import { IdlingGamesList } from '@/components/gameslist/IdlingGamesList';
+import { Settings } from '@/components/settings/Settings';
+import { TradingCardsList } from '@/components/trading-cards/TradingCardsList';
+import { Header } from '@/components/ui/header/Header';
+import { SideBar } from '@/components/ui/SideBar';
 import { antiAwayStatus } from '@/utils/tasks';
 
-export default function Dashboard() {
+export const Dashboard = () => {
   const showAchievements = useStateStore(state => state.showAchievements);
   const isCardFarming = useStateStore(state => state.isCardFarming);
   const isAchievementUnlocker = useStateStore(state => state.isAchievementUnlocker);
@@ -74,4 +74,4 @@ export default function Dashboard() {
       {isAchievementUnlocker && <AchievementUnlocker activePage={activePage} />}
     </>
   );
-}
+};

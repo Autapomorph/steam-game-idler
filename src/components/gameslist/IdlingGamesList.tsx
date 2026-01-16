@@ -7,11 +7,11 @@ import { useTranslation } from 'react-i18next';
 import type { InvokeKillProcess } from '@/types';
 import { useIdleStore } from '@/stores/idleStore';
 import { useStateStore } from '@/stores/stateStore';
-import GameCard from '@/components/ui/GameCard';
+import { GameCard } from '@/components/ui/GameCard';
 import { logEvent } from '@/utils/tasks';
 import { showDangerToast, showSuccessToast } from '@/utils/toasts';
 
-export default function IdlingGamesList() {
+export const IdlingGamesList = () => {
   const { t } = useTranslation();
   const idleGamesList = useIdleStore(state => state.idleGamesList);
   const setIdleGamesList = useIdleStore(state => state.setIdleGamesList);
@@ -58,6 +58,7 @@ export default function IdlingGamesList() {
       }
     } catch (error) {
       showDangerToast(t('common.error'));
+      // eslint-disable-next-line no-console
       console.error('Error in handleStopIdleAll:', error);
       logEvent(`Error in (handleStopIdleAll): ${error}`);
     }
@@ -115,4 +116,4 @@ export default function IdlingGamesList() {
       </div>
     </div>
   );
-}
+};

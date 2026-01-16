@@ -14,7 +14,7 @@ interface Props {
   name: string;
 }
 
-export default function SettingsSwitch({ type, name }: Props) {
+export const SettingsSwitch = ({ type, name }: Props) => {
   const userSummary = useUserStore(state => state.userSummary);
   const userSettings = useUserStore(state => state.userSettings);
   const setUserSettings = useUserStore(state => state.setUserSettings);
@@ -60,7 +60,7 @@ export default function SettingsSwitch({ type, name }: Props) {
       <Switch
         size="sm"
         name={name}
-        isSelected={startupState || false}
+        isSelected={startupState ?? false}
         classNames={{
           wrapper: cn('group-data-[selected=true]:!bg-dynamic !bg-switch'),
         }}
@@ -88,4 +88,4 @@ export default function SettingsSwitch({ type, name }: Props) {
       }}
     />
   );
-}
+};

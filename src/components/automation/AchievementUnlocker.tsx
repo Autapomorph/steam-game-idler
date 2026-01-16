@@ -15,7 +15,7 @@ interface Props {
   activePage: ActivePageType;
 }
 
-export default function AchievementUnlocker({ activePage }: Props) {
+export const AchievementUnlocker = ({ activePage }: Props) => {
   const { t } = useTranslation();
   const isAchievementUnlocker = useStateStore(state => state.isAchievementUnlocker);
   const setIsAchievementUnlocker = useStateStore(state => state.setIsAchievementUnlocker);
@@ -207,4 +207,4 @@ export default function AchievementUnlocker({ activePage }: Props) {
       </div>
     </div>
   );
-}
+};

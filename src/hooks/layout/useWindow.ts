@@ -35,7 +35,7 @@ import { useIdleStore } from '@/stores/idleStore';
 import { useStateStore } from '@/stores/stateStore';
 import { useUpdateStore } from '@/stores/updateStore';
 import { useUserStore } from '@/stores/userStore';
-import useGamesList from '@/hooks/gameslist/useGamesList';
+import { useGamesList } from '@/hooks/gameslist/useGamesList';
 import { handleRefetch } from '@/hooks/gameslist/usePageHeader';
 import { startIdle } from '@/utils/idle';
 import {
@@ -47,7 +47,8 @@ import {
 } from '@/utils/tasks';
 import { showDangerToast, showNoGamesToast, showSuccessToast, t } from '@/utils/toasts';
 
-export default function useWindow(): void {
+export const useWindow = () => {
+  // eslint-disable-next-line @typescript-eslint/no-shadow
   const { t } = useTranslation();
   const { setTheme } = useTheme();
   const gamesContext = useGamesList();
@@ -70,6 +71,7 @@ export default function useWindow(): void {
 
   const lastRedeemedIdsRef = useRef<string>('');
 
+  // eslint-disable-next-line no-console
   console.debug('Monitor for rerenders');
 
   useEffect(() => {
@@ -119,6 +121,7 @@ export default function useWindow(): void {
         }
       } catch (error) {
         showDangerToast(t('common.error'));
+        // eslint-disable-next-line no-console
         console.error('Error in (handleZoomControls):', error);
         logEvent(`[Error] in (handleZoomControls): ${error}`);
       }
@@ -140,6 +143,7 @@ export default function useWindow(): void {
         }
       } catch (error) {
         showDangerToast(t('common.error'));
+        // eslint-disable-next-line no-console
         console.error('Error in (handleWheelZoom):', error);
         logEvent(`[Error] in (handleWheelZoom): ${error}`);
       }
@@ -182,6 +186,7 @@ export default function useWindow(): void {
                     await writeText(selectedText);
                   }
                 } catch (error) {
+                  // eslint-disable-next-line no-console
                   console.error('Copy failed:', error);
                 }
               },
@@ -195,13 +200,14 @@ export default function useWindow(): void {
                   const text = await readText();
                   if (text) {
                     // Insert text at cursor pos of input/textarea
+                    // eslint-disable-next-line @typescript-eslint/no-shadow
                     const { activeElement } = document;
                     if (
                       activeElement instanceof HTMLInputElement ||
                       activeElement instanceof HTMLTextAreaElement
                     ) {
-                      const start = activeElement.selectionStart || 0;
-                      const end = activeElement.selectionEnd || 0;
+                      const start = activeElement.selectionStart ?? 0;
+                      const end = activeElement.selectionEnd ?? 0;
                       const currentValue = activeElement.value;
                       const newValue =
                         currentValue.substring(0, start) + text + currentValue.substring(end);
@@ -228,6 +234,7 @@ export default function useWindow(): void {
                     }
                   }
                 } catch (error) {
+                  // eslint-disable-next-line no-console
                   console.error('Paste failed:', error);
                 }
               },
@@ -237,6 +244,7 @@ export default function useWindow(): void {
 
         await menu.popup();
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error('Error showing context menu:', error);
       }
     };
@@ -261,7 +269,7 @@ export default function useWindow(): void {
         const cachedUserSettings = await invoke<InvokeSettings>('get_user_settings', {
           steamId: userSummary.steamId,
         });
-        userTheme = cachedUserSettings.settings.general.theme || 'dark';
+        userTheme = cachedUserSettings.settings.general.theme ?? 'dark';
 
         // Always reset classes and apply the correct one
         html.className = '';
@@ -270,6 +278,7 @@ export default function useWindow(): void {
         setTheme(userTheme);
       } catch (error) {
         showDangerToast(t('common.error'));
+        // eslint-disable-next-line no-console
         console.error('Error in (applyThemeForUser):', error);
         logEvent(`[Error] in (applyThemeForUser): ${error}`);
       }
@@ -345,6 +354,7 @@ export default function useWindow(): void {
         }
       } catch (error) {
         showDangerToast(t('toast.checkUpdate.error'));
+        // eslint-disable-next-line no-console
         console.error('Error in (checkForUpdates):', error);
         logEvent(`Error in (checkForUpdates): ${error}`);
       }
@@ -395,7 +405,7 @@ export default function useWindow(): void {
             return {
               ...process,
               // Track start time for idle timer
-              startTime: existingGame?.startTime || Date.now(),
+              startTime: existingGame?.startTime ?? Date.now(),
             };
           });
         }
@@ -421,6 +431,7 @@ export default function useWindow(): void {
   }, [setIdleGamesList]);
 
   const freeGamesCheck = useCallback(() => {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     checkForFreeGames(setFreeGamesList, gamesList);
   }, [setFreeGamesList, gamesList]);
 
@@ -444,6 +455,7 @@ export default function useWindow(): void {
 
       lastRedeemedIdsRef.current = ids;
 
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       autoRedeemFreeGames(freeGamesList, setFreeGamesList, userSummary, gamesContext);
     }
   }, [
@@ -456,7 +468,8 @@ export default function useWindow(): void {
 
   useEffect(() => {
     // Set user summary data
-    const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary;
+    // eslint-disable-next-line @typescript-eslint/no-shadow
+    const userSummary = JSON.parse(localStorage.getItem('userSummary') ?? '{}') as UserSummary;
 
     if (userSummary?.steamId) {
       setUserSummary(userSummary);
@@ -468,6 +481,7 @@ export default function useWindow(): void {
 
     // Start idling games in auto idle list
 
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     startAutoIdleGames();
   }, [setUserSummary, setLoadingUserSummary]);
 
@@ -479,12 +493,13 @@ export default function useWindow(): void {
           await webview?.close();
         }, 5000);
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error('Error in (closeWebview):', error);
       }
     };
     closeWebview();
   }, []);
-}
+};
 
 // Check for free games
 export const checkForFreeGames = async (
@@ -493,7 +508,7 @@ export const checkForFreeGames = async (
 ): Promise<void> => {
   try {
     // Wait for user summary and games list to be available
-    const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary;
+    const userSummary = JSON.parse(localStorage.getItem('userSummary') ?? '{}') as UserSummary;
     if (!userSummary?.steamId || gamesList.length === 0) return;
 
     const response = await invoke<InvokeSettings>('get_user_settings', {
@@ -541,6 +556,7 @@ export const checkForFreeGames = async (
     }
   } catch (error) {
     showDangerToast(t('common.error'));
+    // eslint-disable-next-line no-console
     console.error('Error in (checkForFreeGames):', error);
     logEvent(`[Error] in (checkForFreeGames): ${error}`);
   }
@@ -585,6 +601,7 @@ export const autoRedeemFreeGames = async (
     }
   } catch (error) {
     showDangerToast(t('common.error'));
+    // eslint-disable-next-line no-console
     console.error('Error in (autoRedeemFreeGames):', error);
     logEvent(`[Error] in (autoRedeemFreeGames): ${error}`);
   }
@@ -593,7 +610,7 @@ export const autoRedeemFreeGames = async (
 // Start idling games in auto idle list
 export const startAutoIdleGames = async (): Promise<void> => {
   try {
-    const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary;
+    const userSummary = JSON.parse(localStorage.getItem('userSummary') ?? '{}') as UserSummary;
     if (!userSummary?.steamId) return;
 
     // Check if Steam is running, if not, wait until it is
@@ -627,6 +644,7 @@ export const startAutoIdleGames = async (): Promise<void> => {
     await startAutoIdleGamesImpl(userSummary.steamId);
   } catch (error) {
     showDangerToast(t('common.error'));
+    // eslint-disable-next-line no-console
     console.error('Error in (startAutoIdleGames):', error);
     logEvent(`[Error] in (startAutoIdleGames): ${error}`);
   }
@@ -706,6 +724,7 @@ export async function startAutoIdleGamesImpl(steamId: string, manual?: boolean):
     }
   } catch (error) {
     showDangerToast(t('common.error'));
+    // eslint-disable-next-line no-console
     console.error('Error in (startAutoIdleGamesImpl):', error);
     logEvent(`[Error] in (startAutoIdleGamesImpl): ${error}`);
   }
@@ -717,6 +736,7 @@ async function getFreeGames(): Promise<InvokeFreeGames | null> {
     const response = await invoke<InvokeFreeGames>('get_free_games');
     return response || null;
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Error in (getFreeGames):', error);
     logEvent(`[Error] in (getFreeGames): ${error}`);
     return null;
@@ -739,6 +759,7 @@ async function sendNativeNotification(title: string, body: string): Promise<void
     }
   } catch (error) {
     showDangerToast(t('common.error'));
+    // eslint-disable-next-line no-console
     console.error('Error in (sendNativeNotification):', error);
     logEvent(`[Error] in (sendNativeNotification): ${error}`);
   }

@@ -5,14 +5,14 @@ import { GeistMono } from 'geist/font/mono';
 import { useTranslation } from 'react-i18next';
 
 import type { LogEntry } from '@/types';
-import ClearData from '@/components/settings/ClearData';
-import ExportSettings from '@/components/settings/ExportSettings';
-import OpenSettings from '@/components/settings/OpenSettings';
-import ResetSettings from '@/components/settings/ResetSettings';
+import { ClearData } from '@/components/settings/ClearData';
+import { ExportSettings } from '@/components/settings/ExportSettings';
+import { OpenSettings } from '@/components/settings/OpenSettings';
+import { ResetSettings } from '@/components/settings/ResetSettings';
 import { handleClearLogs, handleOpenLogFile, useLogs } from '@/hooks/settings/useLogs';
-import useSettings from '@/hooks/settings/useSettings';
+import { useSettings } from '@/hooks/settings/useSettings';
 
-export default function Logs() {
+export const Logs = () => {
   const { t } = useTranslation();
   const { logs }: { logs: LogEntry[] } = useLogs();
   const { setRefreshKey } = useSettings();
@@ -116,4 +116,4 @@ export default function Logs() {
       </div>
     </div>
   );
-}
+};

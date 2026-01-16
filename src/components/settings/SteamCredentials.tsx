@@ -7,9 +7,9 @@ import { Trans, useTranslation } from 'react-i18next';
 
 import type { InvokeSteamCredentials } from '@/types';
 import { useUserStore } from '@/stores/userStore';
-import CustomModal from '@/components/ui/CustomModal';
-import ExtLink from '@/components/ui/ExtLink';
-import WebviewWindow from '@/components/ui/WebviewWindow';
+import { CustomModal } from '@/components/ui/CustomModal';
+import { ExtLink } from '@/components/ui/ExtLink';
+import { WebviewWindow } from '@/components/ui/WebviewWindow';
 import {
   fetchGamesWithDropsData,
   handleCredentialsClear,
@@ -19,7 +19,7 @@ import {
 import { logEvent } from '@/utils/tasks';
 import { showDangerToast } from '@/utils/toasts';
 
-export default function SteamCredentials() {
+export const SteamCredentials = () => {
   const { t } = useTranslation();
   const userSummary = useUserStore(state => state.userSummary);
   const userSettings = useUserStore(state => state.userSettings);
@@ -32,7 +32,7 @@ export default function SteamCredentials() {
 
     if (!result?.success) {
       showDangerToast(t('common.error'));
-      logEvent(`[Error] in (handleShowSteamLoginWindow): ${result?.message || 'Unknown error'}`);
+      logEvent(`[Error] in (handleShowSteamLoginWindow): ${result?.message ?? 'Unknown error'}`);
       return;
     }
 
@@ -58,7 +58,7 @@ export default function SteamCredentials() {
     if (!result?.success) {
       showDangerToast(t('common.error'));
       logEvent(
-        `[Error] in (handleSignOutCurrentUser) this error can occur if you are not already signed in: ${result?.message || 'Unknown error'}`,
+        `[Error] in (handleSignOutCurrentUser) this error can occur if you are not already signed in: ${result?.message ?? 'Unknown error'}`,
       );
       return;
     }
@@ -169,7 +169,7 @@ export default function SteamCredentials() {
                   <div className="flex-col">
                     <div className="flex justify-center items-center gap-3">
                       <Image
-                        src={userSummary?.avatar || ''}
+                        src={userSummary?.avatar ?? ''}
                         height={38}
                         width={38}
                         alt="user avatar"
@@ -366,6 +366,7 @@ export default function SteamCredentials() {
         }
         body={
           <div className="overflow-x-hidden overflow-y-auto relative">
+            {/* eslint-disable-next-line no-nested-ternary */}
             {cardSettings.isCFDataLoading ? (
               <div className="flex justify-center items-center w-full p-4">
                 <Spinner />
@@ -422,4 +423,4 @@ export default function SteamCredentials() {
       />
     </div>
   );
-}
+};

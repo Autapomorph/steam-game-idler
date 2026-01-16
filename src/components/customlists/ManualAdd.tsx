@@ -4,15 +4,15 @@ import { TbPlus } from 'react-icons/tb';
 import { useTranslation } from 'react-i18next';
 
 import type { Game } from '@/types';
-import CustomModal from '@/components/ui/CustomModal';
-import useManualAdd from '@/hooks/customlists/useManualAdd';
+import { CustomModal } from '@/components/ui/CustomModal';
+import { useManualAdd } from '@/hooks/customlists/useManualAdd';
 
 interface Props {
   listName: string;
   setList: Dispatch<SetStateAction<Game[]>>;
 }
 
-export default function ManualAdd({ listName, setList }: Props) {
+export const ManualAdd = ({ listName, setList }: Props) => {
   const { t } = useTranslation();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const manualAdd = useManualAdd(listName, setList);
@@ -111,4 +111,4 @@ export default function ManualAdd({ listName, setList }: Props) {
       />
     </>
   );
-}
+};

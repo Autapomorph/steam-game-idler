@@ -1,7 +1,7 @@
 import { Component, type ErrorInfo, type ReactNode, type PropsWithChildren } from 'react';
 import { Button, cn } from '@heroui/react';
 
-import ExtLink from '@/components/ui/ExtLink';
+import { ExtLink } from '@/components/ui/ExtLink';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface Props extends PropsWithChildren {}
@@ -12,7 +12,7 @@ interface State {
   errorInfo: ErrorInfo | null;
 }
 
-class ErrorBoundary extends Component<Props, State> {
+export class ErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -32,6 +32,7 @@ class ErrorBoundary extends Component<Props, State> {
       errorInfo,
     });
 
+    // eslint-disable-next-line no-console
     console.error('Client side error caught by ErrorBoundary:', error, errorInfo);
   }
 
@@ -51,7 +52,7 @@ class ErrorBoundary extends Component<Props, State> {
 \`\`\`
 ${errorInfo?.componentStack}
 \`\`\``;
-      const encodedTitle = encodeURIComponent(issueTitle || 'Error in Steam Game Idler');
+      const encodedTitle = encodeURIComponent(issueTitle ?? 'Error in Steam Game Idler');
       const encodedBody = encodeURIComponent(issueBody);
 
       return (
@@ -120,5 +121,3 @@ ${errorInfo?.componentStack}
     return this.props.children;
   }
 }
-
-export default ErrorBoundary;

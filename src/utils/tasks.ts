@@ -13,6 +13,7 @@ import type {
   UserSettings,
   UserSummary,
 } from '@/types';
+// eslint-disable-next-line import-x/no-cycle
 import { fetchUserSummary } from '@/hooks/settings/useCardSettings';
 import {
   showAccountMismatchToast,
@@ -28,6 +29,7 @@ export async function checkSteamStatus(showToast = false): Promise<boolean> {
     if (!isSteamRunning && showToast) showSteamNotRunningToast();
     return isSteamRunning;
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Error in (isSteamRunning):', error);
     logEvent(`[Error] in (isSteamRunning): ${error}`);
     return false;
@@ -43,6 +45,7 @@ export async function fetchLatest(): Promise<LatestData | null> {
     const data = await res.json();
     return data as LatestData;
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Error in (fetchLatest):', error);
     logEvent(`[Error] in (fetchLatest): ${error}`);
     return null;
@@ -56,7 +59,7 @@ export async function antiAwayStatus(active: boolean | null = null): Promise<voi
     const steamRunning = await invoke('is_steam_running');
     if (!steamRunning) return;
 
-    const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary;
+    const userSummary = JSON.parse(localStorage.getItem('userSummary') ?? '{}') as UserSummary;
 
     const response = await invoke<InvokeSettings>('get_user_settings', {
       steamId: userSummary?.steamId,
@@ -66,23 +69,22 @@ export async function antiAwayStatus(active: boolean | null = null): Promise<voi
 
     const { antiAway } = settings?.general || {};
 
-    const shouldRun = active !== null ? active : antiAway;
+    const shouldRun = active ?? antiAway;
 
     if (shouldRun) {
       await invoke('anti_away');
-      if (!antiAwayInterval) {
-        antiAwayInterval = setInterval(
-          async () => {
-            await invoke('anti_away');
-          },
-          3 * 60 * 1000,
-        );
-      }
+      antiAwayInterval ??= setInterval(
+        async () => {
+          await invoke('anti_away');
+        },
+        3 * 60 * 1000,
+      );
     } else if (antiAwayInterval) {
       clearInterval(antiAwayInterval);
       antiAwayInterval = null;
     }
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Error in (antiAwayStatus):', error);
     logEvent(`[Error] in (antiAwayStatus): ${error}`);
   }
@@ -97,12 +99,12 @@ export async function autoRevalidateSteamCredentials(
 
     if (!result?.success) {
       showDangerToast(t('common.error'));
-      logEvent(`[Error] in (handleShowSteamLoginWindow): ${result?.message || 'Unknown error'}`);
+      logEvent(`[Error] in (handleShowSteamLoginWindow): ${result?.message ?? 'Unknown error'}`);
       return;
     }
 
     if (result.success && result.sessionid.length > 0 && result.steamLoginSecure.length > 0) {
-      const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary;
+      const userSummary = JSON.parse(localStorage.getItem('userSummary') ?? '{}') as UserSummary;
 
       const cachedUserSettings = await invoke<InvokeSettings>('get_user_settings', {
         steamId: userSummary?.steamId,
@@ -112,7 +114,7 @@ export async function autoRevalidateSteamCredentials(
       const validate = await invoke<InvokeValidateSession>('validate_session', {
         sid: result.sessionid,
         sls: result.steamLoginSecure,
-        sma: result.steamMachineAuth || result.steamParental || undefined,
+        sma: result.steamMachineAuth ?? result.steamParental ?? undefined,
         steamid: userSummary?.steamId,
       });
 
@@ -126,6 +128,7 @@ export async function autoRevalidateSteamCredentials(
         // Make sure user isn't trying to farm cards with different account than they're logged in with
         if (cardFarmingUser.steamId !== userSummary?.steamId) {
           showAccountMismatchToast('danger');
+          // eslint-disable-next-line consistent-return
           return await logEvent('[Error] in (handleSave) Account mismatch between Steam and SGI');
         }
 
@@ -153,6 +156,7 @@ export async function autoRevalidateSteamCredentials(
           `[Auto Revalidate] Steam credentials were automatically revalidated for ${validate.user}`,
         );
 
+        // eslint-disable-next-line consistent-return
         return {
           credentials: updatedUserSettings.settings.cardFarming.credentials,
         };
@@ -162,6 +166,7 @@ export async function autoRevalidateSteamCredentials(
     }
   } catch (error) {
     showDangerToast(t('common.error'));
+    // eslint-disable-next-line no-console
     console.error('Error in (autoRevalidateSteamCredentials):', error);
     logEvent(`[Error] in (autoRevalidateSteamCredentials): ${error}`);
   }
@@ -197,18 +202,21 @@ export const preserveKeysAndClearData = async (): Promise<void> => {
     });
   } catch (error) {
     showDangerToast(t('common.error'));
+    // eslint-disable-next-line no-console
     console.error('Error in (preserveKeysAndClearData):', error);
     logEvent(`[Error] in (preserveKeysAndClearData): ${error}`);
   }
 };
 
 // Get the app version
+// eslint-disable-next-line consistent-return
 export const getAppVersion = async (): Promise<string | undefined> => {
   try {
     const appVersion = await getVersion();
     return appVersion;
   } catch (error) {
     showDangerToast(t('common.error'));
+    // eslint-disable-next-line no-console
     console.error('Error in (getAppVersion):', error);
     logEvent(`[Error] in (getAppVersion): ${error}`);
   }
@@ -220,6 +228,7 @@ export async function logEvent(message: string): Promise<void> {
     const version = await getVersion();
     await invoke('log_event', { message: `[v${version}] ${message}` });
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Error in logEvent util: ', error);
   }
 }
@@ -233,6 +242,7 @@ export function encrypt(string: string): string {
     const authTag = cipher.getAuthTag();
     return `${iv.toString('hex')}:${authTag.toString('hex')}:${encrypted}`;
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Error in encrypt function:', error);
     return '';
   }
@@ -250,6 +260,7 @@ export function decrypt(string: string): string {
     decrypted += decipher.final('utf8');
     return decrypted;
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Error in decrypt function:', error);
     return '';
   }
@@ -277,6 +288,7 @@ export async function updateTrayIcon(tooltip?: string, runningStatus?: boolean):
       }
     }
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Error in updateTrayIcon:', error);
     logEvent(`[Error] in updateTrayIcon: ${error}`);
   }
@@ -287,6 +299,7 @@ export async function isPortableCheck(): Promise<boolean> {
     const portable = await invoke<boolean>('is_portable');
     return portable;
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Error in isPortable:', error);
     logEvent(`[Error] in isPortable: ${error}`);
     return false;
@@ -297,6 +310,7 @@ export const handleOpenExtLink = async (href: string): Promise<void> => {
   try {
     await open(href);
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Failed to open link:', error);
   }
 };

@@ -3,6 +3,7 @@ import type { TimeInputValue } from '@heroui/react';
 import { Time } from '@internationalized/date';
 
 import type { GameWithRemainingDrops, InvokeDropsRemaining, InvokeGamesWithDrops } from '@/types';
+// eslint-disable-next-line import-x/no-cycle
 import { decrypt, logEvent } from '@/utils/tasks';
 import { showMissingCredentialsToast } from '@/utils/toasts';
 
@@ -33,6 +34,7 @@ export async function checkDrops(
     }
     return 0;
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Error in checkDrops util: ', error);
     logEvent(`[Error] in (checkDrops) util: ${error}`);
     return 0;
@@ -64,6 +66,7 @@ export async function getAllGamesWithDrops(
     }
     return [];
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Error in getAllGamesWithDrops util: ', error);
     logEvent(`[Error] in (getAllGamesWithDrops) util: ${error}`);
     return [];

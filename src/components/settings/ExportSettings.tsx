@@ -96,6 +96,7 @@ const processLocalStorageItem = (key: string, value: string | null): string | nu
       }
       return parsedValue as object;
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error(`Error parsing JSON for key "${key}":`, error);
       return value;
     }
@@ -141,7 +142,7 @@ const getExportData = async (userSettings: UserSettings) => {
   return allSettings;
 };
 
-export default function ExportSettings() {
+export const ExportSettings = () => {
   const { t } = useTranslation();
   const userSettings = useUserStore(state => state.userSettings);
 
@@ -154,6 +155,7 @@ export default function ExportSettings() {
       showSuccessToast(t('toast.exportData.success'));
     } catch (error) {
       showDangerToast(t('toast.exportData.error'));
+      // eslint-disable-next-line no-console
       console.error('Export settings error:', error);
     }
   };
@@ -169,4 +171,4 @@ export default function ExportSettings() {
       {t('settings.exportData')}
     </Button>
   );
-}
+};

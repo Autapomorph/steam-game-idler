@@ -8,7 +8,7 @@ import type { InvokeSettings, UserSettings, UserSummary } from '@/types';
 import { useUserStore } from '@/stores/userStore';
 import { useCardSettings } from '@/hooks/settings/useCardSettings';
 
-export default function TradingCardManagerSettings() {
+export const TradingCardManagerSettings = () => {
   const { t } = useTranslation();
   const userSummary = useUserStore(state => state.userSummary);
   const userSettings = useUserStore(state => state.userSettings);
@@ -43,7 +43,9 @@ export default function TradingCardManagerSettings() {
 
   const handleSellOptionChange = async (
     key: string,
+    // eslint-disable-next-line @typescript-eslint/no-shadow
     userSummary: UserSummary,
+    // eslint-disable-next-line @typescript-eslint/no-shadow
     setUserSettings: Dispatch<SetStateAction<UserSettings>>,
   ): Promise<void> => {
     const updateResponse = await invoke<InvokeSettings>('update_user_settings', {
@@ -330,4 +332,4 @@ export default function TradingCardManagerSettings() {
       </div>
     </div>
   );
-}
+};

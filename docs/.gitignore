@@ -1,30 +1,73 @@
-# deps
+# Dependencies
 /node_modules
-
-# generated content
-.source
-
-# test & build
-/coverage
-/.next/
-/out/
-/build
-*.tsbuildinfo
-
-# misc
-.DS_Store
-*.pem
-.pnp
+/.pnp
 .pnp.js
+
+# env files
+.env
+.env.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.production
+.env.production.local
+
+# Tests
+/coverage
+/.nyc_output
+
+# Production
+.next/
+out/
+build/
+
+# Generated content
+.source/
+
+# OS
+.DS_Store
+
+# Logs
+logs
+*.log
 npm-debug.log*
+pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+lerna-debug.log*
 
-# others
-.env*l
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.vs/
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Vercel
 .vercel/
 
-# sitemap
+# Tauri
+src-tauri/target
+src-tauri/libs
+src-tauri/gen
+.window-state.json
+
+# Sitemap
 _pagefind/
-public/sitemap.xml
+public/sitemap*.xml
 public/robots.txt

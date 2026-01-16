@@ -3,15 +3,15 @@ import { TbPackageExport } from 'react-icons/tb';
 import { useTranslation } from 'react-i18next';
 
 import type { TradingCard } from '@/types';
-import type useTradingCardsList from '@/hooks/trading-cards/useTradingCardsList';
-import CustomTooltip from '@/components/ui/CustomTooltip';
+import { type useTradingCardsList } from '@/hooks/trading-cards/useTradingCardsList';
+import { CustomTooltip } from '@/components/ui/CustomTooltip';
 
 interface Props {
   item: TradingCard;
   tradingCardContext: ReturnType<typeof useTradingCardsList>;
 }
 
-export default function PriceInput({ item, tradingCardContext }: Props) {
+export const PriceInput = ({ item, tradingCardContext }: Props) => {
   const { t } = useTranslation();
 
   return (
@@ -70,4 +70,4 @@ export default function PriceInput({ item, tradingCardContext }: Props) {
       </CustomTooltip>
     </div>
   );
-}
+};

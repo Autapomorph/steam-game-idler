@@ -14,8 +14,8 @@ import type { CardSortOption } from '@/types';
 import { useNavigationStore } from '@/stores/navigationStore';
 import { useSearchStore } from '@/stores/searchStore';
 import { useStateStore } from '@/stores/stateStore';
-import CustomModal from '@/components/ui/CustomModal';
-import type useTradingCardsList from '@/hooks/trading-cards/useTradingCardsList';
+import { CustomModal } from '@/components/ui/CustomModal';
+import { type useTradingCardsList } from '@/hooks/trading-cards/useTradingCardsList';
 
 // Helper function to format seconds to HH:MM:SS
 const formatTime = (seconds: number): string => {
@@ -38,13 +38,13 @@ interface Props {
   onPageChange: (page: number) => void;
 }
 
-export default function PageHeader({
+export const PageHeader = ({
   selectedCardsWithPrice,
   tradingCardContext,
   currentPage,
   totalPages,
   onPageChange,
-}: Props) {
+}: Props) => {
   const { t } = useTranslation();
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed);
   const transitionDuration = useStateStore(state => state.transitionDuration);
@@ -197,12 +197,13 @@ export default function PageHeader({
                       <p className="text-sm text-altwhite font-bold">{t('common.search')}</p>
                       <div className="flex items-center gap-2 text-sm text-altwhite p-2 bg-item-active rounded-full max-w-44">
                         <p className="text-content truncate">{tradingCardQueryValue}</p>
-                        <div
+                        <button
+                          type="button"
                           className="flex items-center justify-center cursor-pointer bg-item-hover hover:bg-item-hover/80 rounded-full p-1 duration-150"
                           onClick={() => setTradingCardQueryValue('')}
                         >
                           <TbX />
-                        </div>
+                        </button>
                       </div>
                     </div>
                   )}
@@ -358,4 +359,4 @@ export default function PageHeader({
       />
     </>
   );
-}
+};

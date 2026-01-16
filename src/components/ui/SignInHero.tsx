@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { Trans, useTranslation } from 'react-i18next';
 
-export default function SignInHero() {
+export const SignInHero = () => {
   const { t } = useTranslation();
 
   const uniqueItems = [
@@ -91,4 +91,4 @@ export default function SignInHero() {
       </div>
     </div>
   );
-}
+};

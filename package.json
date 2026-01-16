@@ -17,15 +17,17 @@
     "build:all": "run-s build build:docs",
     "start": "next start",
     "start:docs": "npm run start -w steam-game-idler-docs",
-    "lint": "eslint .",
+    "lint": "run-s -c typecheck lint:js",
+    "lint:js": "eslint",
     "lint:docs": "npm run lint -w steam-game-idler-docs",
-    "lint:all": "run-s lint lint:docs",
+    "lint:all": "run-s -c lint lint:docs",
+    "lint:staged": "lint-staged --relative",
+    "typecheck": "tsc --noEmit",
     "tauri": "tauri",
     "tauri:dev": "tauri dev",
     "tauri:build": "tauri build",
-    "prepare": "husky",
     "prettier": "prettier --write .",
-    "main": "git checkout main && git pull && git fetch -p"
+    "prepare": "husky || true"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

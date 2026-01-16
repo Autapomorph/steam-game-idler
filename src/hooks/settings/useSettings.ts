@@ -11,21 +11,22 @@ interface SettingsHook {
   setRefreshKey: Dispatch<SetStateAction<number>>;
 }
 
-export default function useSettings(): SettingsHook {
+export const useSettings = (): SettingsHook => {
   const [version, setVersion] = useState('0.0.0');
   const [refreshKey, setRefreshKey] = useState(0);
 
   // Get the app version
   useEffect(() => {
     const getAndSetVersion = async (): Promise<void> => {
+      // eslint-disable-next-line @typescript-eslint/no-shadow
       const version = await getAppVersion();
-      setVersion(version || '0.0.0');
+      setVersion(version ?? '0.0.0');
     };
     getAndSetVersion();
   }, []);
 
   return { version, refreshKey, setRefreshKey };
-}
+};
 
 interface CheckboxEvent {
   target: {
@@ -56,6 +57,7 @@ export const handleCheckboxChange = async (
         // If this checkbox is checked, uncheck the other one
         const otherCheckboxName = name === 'listGames' ? 'allGames' : 'listGames';
 
+        // eslint-disable-next-line @typescript-eslint/no-shadow
         const response = await invoke<InvokeSettings>('update_user_settings', {
           steamId,
           key: `cardFarming.${otherCheckboxName}`,
@@ -71,6 +73,7 @@ export const handleCheckboxChange = async (
             otherCheckboxName as keyof typeof response.settings.cardFarming
           ]
         ) {
+          // eslint-disable-next-line @typescript-eslint/no-shadow
           const response = await invoke<InvokeSettings>('update_user_settings', {
             steamId,
             key: `cardFarming.${otherCheckboxName}`,
@@ -86,6 +89,7 @@ export const handleCheckboxChange = async (
     logEvent(`[Settings - ${key}] Changed '${name}' to '${checked}'`);
   } catch (error) {
     showDangerToast(t('common.error'));
+    // eslint-disable-next-line no-console
     console.error('Error in (handleCheckboxChange):', error);
     logEvent(`[Error] in (handleCheckboxChange): ${error}`);
   }

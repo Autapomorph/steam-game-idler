@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { cn, Select, SelectItem } from '@heroui/react';
 import { TbCurrencyDollar } from 'react-icons/tb';
 
-export default function CurrencySwitch() {
+export const CurrencySwitch = () => {
   const [mounted, setMounted] = useState(false);
-  const [currentCurrency, setCurrentCurrency] = useState(localStorage.getItem('currency') || '1');
+  const [currentCurrency, setCurrentCurrency] = useState(localStorage.getItem('currency') ?? '1');
 
   const currencies = [
     { key: '32', label: 'AED' },
@@ -84,8 +84,8 @@ export default function CurrencySwitch() {
       defaultSelectedKeys={[currentCurrency]}
       onSelectionChange={e => {
         const selectedCurrency = e.currentKey;
-        setCurrentCurrency(selectedCurrency || 'USD');
-        localStorage.setItem('currency', selectedCurrency || 'USD');
+        setCurrentCurrency(selectedCurrency ?? 'USD');
+        localStorage.setItem('currency', selectedCurrency ?? 'USD');
       }}
     >
       {currency => (
@@ -100,4 +100,4 @@ export default function CurrencySwitch() {
       )}
     </Select>
   );
-}
+};

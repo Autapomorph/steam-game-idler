@@ -1,9 +1,9 @@
 import { cn } from '@heroui/react';
 
 import { useStateStore } from '@/stores/stateStore';
-import Logo from '@/components/ui/header/Logo';
+import { Logo } from '@/components/ui/header/Logo';
 
-export default function HeaderTitle() {
+export const HeaderTitle = () => {
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed);
 
   return (
@@ -30,4 +30,4 @@ export default function HeaderTitle() {
       )}
     </div>
   );
-}
+};

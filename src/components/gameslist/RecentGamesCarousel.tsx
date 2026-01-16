@@ -4,7 +4,7 @@ import { TbChevronLeft, TbChevronRight } from 'react-icons/tb';
 import { useTranslation } from 'react-i18next';
 
 import type { Game } from '@/types';
-import GameCard from '@/components/ui/GameCard';
+import { GameCard } from '@/components/ui/GameCard';
 
 interface Props {
   gamesContext: {
@@ -14,7 +14,7 @@ interface Props {
   };
 }
 
-export default function RecentGamesCarousel({ gamesContext }: Props) {
+export const RecentGamesCarousel = ({ gamesContext }: Props) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
 
@@ -95,4 +95,4 @@ export default function RecentGamesCarousel({ gamesContext }: Props) {
       </div>
     </div>
   );
-}
+};

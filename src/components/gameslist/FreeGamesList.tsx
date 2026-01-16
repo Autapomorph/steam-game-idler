@@ -5,9 +5,9 @@ import { useTranslation } from 'react-i18next';
 import type { Game } from '@/types';
 import { useStateStore } from '@/stores/stateStore';
 import { useUserStore } from '@/stores/userStore';
-import GameCard from '@/components/ui/GameCard';
+import { GameCard } from '@/components/ui/GameCard';
 
-export default function FreeGamesList() {
+export const FreeGamesList = () => {
   const { t } = useTranslation();
   const freeGamesList = useUserStore(state => state.freeGamesList);
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed);
@@ -79,4 +79,4 @@ export default function FreeGamesList() {
       </div>
     </div>
   );
-}
+};

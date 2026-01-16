@@ -19,4 +19,4 @@ case "$branch" in
     ;;
 esac
 
-npx lint-staged
+npm run lint:staged

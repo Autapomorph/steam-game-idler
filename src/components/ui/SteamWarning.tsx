@@ -5,10 +5,10 @@ import { useTranslation } from 'react-i18next';
 
 import { useStateStore } from '@/stores/stateStore';
 import { useUserStore } from '@/stores/userStore';
-import CustomModal from '@/components/ui/CustomModal';
+import { CustomModal } from '@/components/ui/CustomModal';
 import { checkSteamStatus } from '@/utils/tasks';
 
-export default function SteamWarning() {
+export const SteamWarning = () => {
   const { t } = useTranslation();
   const showSteamWarning = useStateStore(state => state.showSteamWarning);
   const setShowSteamWarning = useStateStore(state => state.setShowSteamWarning);
@@ -56,4 +56,4 @@ export default function SteamWarning() {
       }
     />
   );
-}
+};

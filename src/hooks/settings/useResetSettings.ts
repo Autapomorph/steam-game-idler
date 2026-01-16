@@ -18,7 +18,7 @@ interface ResetSettingsHook {
   onOpenChange: () => void;
 }
 
-export default function useResetSettings(): ResetSettingsHook {
+export const useResetSettings = (): ResetSettingsHook => {
   const { t } = useTranslation();
   const userSummary = useUserStore(state => state.userSummary);
   const setUserSettings = useUserStore(state => state.setUserSettings);
@@ -40,10 +40,11 @@ export default function useResetSettings(): ResetSettingsHook {
       onClose();
     } catch (error) {
       showDangerToast(t('common.error'));
+      // eslint-disable-next-line no-console
       console.error('Error in (handleResetSettings):', error);
       logEvent(`[Error] in (handleResetSettings): ${error}`);
     }
   };
 
   return { handleResetSettings, isOpen, onOpen, onOpenChange };
-}
+};

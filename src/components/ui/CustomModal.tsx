@@ -20,7 +20,7 @@ interface Props {
   hideCloseButton?: boolean;
 }
 
-export default function CustomModal({
+export const CustomModal = ({
   isOpen,
   onOpenChange,
   className,
@@ -29,7 +29,7 @@ export default function CustomModal({
   body,
   buttons,
   hideCloseButton = false,
-}: Props) {
+}: Props) => {
   return (
     <Modal
       isOpen={isOpen}
@@ -56,4 +56,4 @@ export default function CustomModal({
       </ModalContent>
     </Modal>
   );
-}
+};

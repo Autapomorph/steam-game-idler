@@ -15,7 +15,7 @@ interface Props {
   activePage: ActivePageType;
 }
 
-export default function CardFarming({ activePage }: Props) {
+export const CardFarming = ({ activePage }: Props) => {
   const { t } = useTranslation();
   const isCardFarming = useStateStore(state => state.isCardFarming);
   const setIsCardFarming = useStateStore(state => state.setIsCardFarming);
@@ -203,4 +203,4 @@ export default function CardFarming({ activePage }: Props) {
       </div>
     </div>
   );
-}
+};

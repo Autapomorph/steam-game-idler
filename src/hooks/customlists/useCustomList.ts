@@ -34,7 +34,7 @@ interface CustomListHook {
   handleBlacklistGame: (game: Game) => Promise<void>;
 }
 
-export default function useCustomList(listName: string): CustomListHook {
+export const useCustomList = (listName: string): CustomListHook => {
   const isAchievementUnlocker = useStateStore(state => state.isAchievementUnlocker);
   const isCardFarming = useStateStore(state => state.isCardFarming);
   const userSummary = useUserStore(state => state.userSummary);
@@ -74,12 +74,15 @@ export default function useCustomList(listName: string): CustomListHook {
     setVisibleGames(50);
   }, [searchTerm]);
 
+  // eslint-disable-next-line consistent-return
   useEffect(() => {
     // Setup infinite scroll
     const container = containerRef.current;
     if (container) {
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       container.addEventListener('scroll', handleScroll);
       return () => {
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         container.removeEventListener('scroll', handleScroll);
       };
     }
@@ -177,7 +180,7 @@ export default function useCustomList(listName: string): CustomListHook {
       steamId: userSummary?.steamId,
     });
 
-    const currentBlacklist: number[] = cachedUserSummary.settings.cardFarming.blacklist || [];
+    const currentBlacklist: number[] = cachedUserSummary.settings.cardFarming.blacklist ?? [];
 
     // if already in blacklist, remove it
     const updatedBlacklist = currentBlacklist.includes(game.appid)
@@ -253,4 +256,4 @@ export default function useCustomList(listName: string): CustomListHook {
     handleClearList,
     handleBlacklistGame,
   };
-}
+};

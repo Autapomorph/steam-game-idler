@@ -6,13 +6,13 @@ import { VscChromeClose, VscChromeMaximize, VscChromeMinimize } from 'react-icon
 import { useNavigationStore } from '@/stores/navigationStore';
 import { useStateStore } from '@/stores/stateStore';
 import { useUpdateStore } from '@/stores/updateStore';
-import Notifications from '@/components/notifications/Notifications';
-import HeaderMenu from '@/components/ui/header/HeaderMenu';
-import UpdateButton from '@/components/ui/UpdateButton';
-import useHeader from '@/hooks/ui/useHeader';
+import { Notifications } from '@/components/notifications/Notifications';
+import { HeaderMenu } from '@/components/ui/header/HeaderMenu';
+import { UpdateButton } from '@/components/ui/UpdateButton';
+import { useHeader } from '@/hooks/ui/useHeader';
 import { isPortableCheck } from '@/utils/tasks';
 
-export default function Header() {
+export const Header = () => {
   const { windowMinimize, windowToggleMaximize, windowClose } = useHeader();
   const updateAvailable = useUpdateStore(state => state.updateAvailable);
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed);
@@ -33,6 +33,7 @@ export default function Header() {
     <div
       className={cn(
         'absolute top-0 right-0 select-none pr-0 h-9 z-48 ease-in-out',
+        // eslint-disable-next-line no-nested-ternary
         sidebarCollapsed ? 'w-[calc(100vw-56px)]' : activePage === 'setup' ? 'w-full' : 'w-calc',
       )}
       style={{
@@ -43,7 +44,8 @@ export default function Header() {
     >
       <div className="flex justify-between gap-1.5 h-9 w-full" data-tauri-drag-region>
         {activePage !== 'setup' && activePage !== 'settings' && (
-          <div
+          <button
+            type="button"
             className={cn(
               'flex justify-center items-center p-2 cursor-pointer group',
               'text-content hover:bg-sidebar/40 hover:text-content/80 h-9 w-12',
@@ -68,7 +70,7 @@ export default function Header() {
             ) : (
               <TbLayoutSidebar fontSize={18} />
             )}
-          </div>
+          </button>
         )}
 
         <div className="flex justify-end items-center h-full w-full" data-tauri-drag-region>
@@ -83,7 +85,8 @@ export default function Header() {
 
           <div className="flex justify-center items-center">
             <div className="flex justify-center items-center">
-              <div
+              <button
+                type="button"
                 className={cn(
                   'flex justify-center items-center',
                   'hover:bg-header-hover/10 h-9 w-12 px-2 duration-150 cursor-pointer',
@@ -92,11 +95,12 @@ export default function Header() {
                 onClick={windowMinimize}
               >
                 <VscChromeMinimize fontSize={16} className="text-content" />
-              </div>
+              </button>
             </div>
 
             <div className="flex justify-center items-center">
-              <div
+              <button
+                type="button"
                 className={cn(
                   'flex justify-center items-center',
                   'hover:bg-header-hover/10 h-9 w-12 px-2.5 duration-150 cursor-pointer',
@@ -105,11 +109,12 @@ export default function Header() {
                 onClick={windowToggleMaximize}
               >
                 <VscChromeMaximize fontSize={16} className="text-content" />
-              </div>
+              </button>
             </div>
 
             <div className="flex justify-center items-center">
-              <div
+              <button
+                type="button"
                 className={cn(
                   'flex justify-center items-center',
                   'hover:bg-danger/90 h-9 w-12 px-2 duration-150 cursor-pointer',
@@ -118,11 +123,11 @@ export default function Header() {
                 onClick={windowClose}
               >
                 <VscChromeClose fontSize={16} className="text-content" />
-              </div>
+              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
   );
-}
+};

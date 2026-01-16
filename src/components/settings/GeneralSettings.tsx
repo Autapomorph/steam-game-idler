@@ -4,18 +4,18 @@ import { TbChevronRight, TbEraser, TbUpload } from 'react-icons/tb';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { useUserStore } from '@/stores/userStore';
-import SettingsSwitch from '@/components/settings/SettingsSwitch';
-import ExtLink from '@/components/ui/ExtLink';
-import CurrencySwitch from '@/components/ui/i18n/CurrencySwitch';
-import LanguageSwitch from '@/components/ui/i18n/LanguageSwitch';
-import WebviewWindow from '@/components/ui/WebviewWindow';
+import { SettingsSwitch } from '@/components/settings/SettingsSwitch';
+import { ExtLink } from '@/components/ui/ExtLink';
+import { CurrencySwitch } from '@/components/ui/i18n/CurrencySwitch';
+import { LanguageSwitch } from '@/components/ui/i18n/LanguageSwitch';
+import { WebviewWindow } from '@/components/ui/WebviewWindow';
 import {
   handleClear,
   handleKeySave,
   useGeneralSettings,
 } from '@/hooks/settings/useGeneralSettings';
 
-export default function GeneralSettings() {
+export const GeneralSettings = () => {
   const { t } = useTranslation();
   const userSummary = useUserStore(state => state.userSummary);
   const setUserSettings = useUserStore(state => state.setUserSettings);
@@ -36,7 +36,7 @@ export default function GeneralSettings() {
       <div className="flex flex-col gap-3 mt-4">
         <div className="flex items-end gap-4 w-fit group">
           <Image
-            src={userSummary?.avatar || ''}
+            src={userSummary?.avatar ?? ''}
             height={64}
             width={64}
             alt="user avatar"
@@ -206,4 +206,4 @@ export default function GeneralSettings() {
       </div>
     </div>
   );
-}
+};

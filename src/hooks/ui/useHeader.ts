@@ -14,7 +14,7 @@ interface HeaderActions {
   windowClose: () => Promise<void>;
 }
 
-export default function useHeader(): HeaderActions {
+export const useHeader = (): HeaderActions => {
   const userSettings = useUserStore(state => state.userSettings);
 
   const windowMinimize = async (): Promise<void> => {
@@ -34,7 +34,7 @@ export default function useHeader(): HeaderActions {
 
     await getCurrentWindow().hide();
 
-    const minToTrayNotified = localStorage.getItem('minToTrayNotified') || 'false';
+    const minToTrayNotified = localStorage.getItem('minToTrayNotified') ?? 'false';
     let permissionGranted = await isPermissionGranted();
     if (minToTrayNotified !== 'true') {
       if (!permissionGranted) {
@@ -56,4 +56,4 @@ export default function useHeader(): HeaderActions {
     windowToggleMaximize,
     windowClose,
   };
-}
+};

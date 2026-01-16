@@ -7,7 +7,7 @@ import { TbBookFilled, TbDownload, TbListCheck, TbSquareRoundedChevronDown } fro
 import { useTranslation } from 'react-i18next';
 
 import { useUpdateStore } from '@/stores/updateStore';
-import CustomTooltip from '@/components/ui/CustomTooltip';
+import { CustomTooltip } from '@/components/ui/CustomTooltip';
 import {
   fetchLatest,
   handleOpenExtLink,
@@ -17,7 +17,7 @@ import {
 } from '@/utils/tasks';
 import { showDangerToast, showPrimaryToast } from '@/utils/toasts';
 
-export default function HeaderMenu() {
+export const HeaderMenu = () => {
   const { t } = useTranslation();
   const setShowChangelog = useUpdateStore(state => state.setShowChangelog);
   const [showMenu, setShowMenu] = useState(false);
@@ -47,6 +47,7 @@ export default function HeaderMenu() {
       }
     } catch (error) {
       showDangerToast(t('toast.checkUpdate.error'));
+      // eslint-disable-next-line no-console
       console.error('Error in (handleUpdate):', error);
       logEvent(`Error in (handleUpdate): ${error}`);
     }
@@ -124,4 +125,4 @@ export default function HeaderMenu() {
       </div>
     </CustomTooltip>
   );
-}
+};

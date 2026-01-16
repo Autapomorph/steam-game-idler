@@ -22,13 +22,13 @@ import { useNavigationStore } from '@/stores/navigationStore';
 import { useSearchStore } from '@/stores/searchStore';
 import { useStateStore } from '@/stores/stateStore';
 import { useUserStore } from '@/stores/userStore';
-import Beta from '@/components/ui/Beta';
-import CustomModal from '@/components/ui/CustomModal';
-import HeaderTitle from '@/components/ui/header/HeaderTitle';
-import SearchBar from '@/components/ui/SearchBar';
-import useSideBar from '@/hooks/ui/useSideBar';
+import { Beta } from '@/components/ui/Beta';
+import { CustomModal } from '@/components/ui/CustomModal';
+import { HeaderTitle } from '@/components/ui/header/HeaderTitle';
+import { SearchBar } from '@/components/ui/SearchBar';
+import { useSideBar } from '@/hooks/ui/useSideBar';
 
-export default function SideBar() {
+export const SideBar = () => {
   const { t } = useTranslation();
   const [showSearchModal, setShowSearchModal] = useState(false);
   const activePage = useNavigationStore(state => state.activePage);
@@ -154,9 +154,11 @@ export default function SideBar() {
               aria-hidden
             />
           )}
-          <div
+          <button
+            type="button"
             className={cn(
               'px-1.5 py-1.5 rounded-lg duration-150 cursor-pointer active:scale-95 w-full overflow-hidden',
+              // eslint-disable-next-line no-nested-ternary
               isCurrentPage
                 ? sidebarCollapsed
                   ? 'bg-dynamic/10 text-dynamic'
@@ -195,7 +197,7 @@ export default function SideBar() {
                 </div>
               )}
             </div>
-          </div>
+          </button>
         </div>
       </div>
     );
@@ -254,6 +256,7 @@ export default function SideBar() {
               )}
             />
             {!sidebarCollapsed && (
+              /* eslint-disable no-nested-ternary */
               <div>
                 {searchContent.gameQueryValue ? (
                   <p className="text-sm text-dynamic font-bold">{searchContent.gameQueryValue}</p>
@@ -273,6 +276,7 @@ export default function SideBar() {
                   <p className="text-sm font-bold">{t('common.search')}</p>
                 )}
               </div>
+              /* eslint-enable no-nested-ternary */
             )}
           </Button>
         </div>
@@ -301,8 +305,8 @@ export default function SideBar() {
           >
             <div className={cn('relative shrink-0', sidebarCollapsed ? 'w-7 h-7' : 'w-8 h-8')}>
               <Image
-                src={userSummary?.avatar || ''}
-                alt={userSummary?.personaName || 'User Avatar'}
+                src={userSummary?.avatar ?? ''}
+                alt={userSummary?.personaName ?? 'User Avatar'}
                 width={sidebarCollapsed ? 28 : 32}
                 height={sidebarCollapsed ? 28 : 32}
                 className="rounded-full bg-white"
@@ -320,7 +324,8 @@ export default function SideBar() {
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div
+                  <button
+                    type="button"
                     className={cn(
                       'text-altwhite hover:bg-white/7 rounded-full p-1.5 duration-150',
                       isCardFarming || isAchievementUnlocker
@@ -337,8 +342,9 @@ export default function SideBar() {
                     }
                   >
                     <TbSettings fontSize={20} />
-                  </div>
-                  <div
+                  </button>
+                  <button
+                    type="button"
                     className={cn(
                       'text-altwhite rounded-full p-1.5 duration-150',
                       isCardFarming || isAchievementUnlocker
@@ -350,13 +356,14 @@ export default function SideBar() {
                     }
                   >
                     <FiLogOut fontSize={18} />
-                  </div>
+                  </button>
                 </div>
               </div>
             )}
             {sidebarCollapsed && (
               <div className="flex flex-col items-center gap-2">
-                <div
+                <button
+                  type="button"
                   className={cn(
                     'text-altwhite hover:bg-white/7 rounded-full p-1.5 duration-150',
                     isCardFarming || isAchievementUnlocker
@@ -373,8 +380,9 @@ export default function SideBar() {
                   }
                 >
                   <TbSettings fontSize={20} />
-                </div>
-                <div
+                </button>
+                <button
+                  type="button"
                   className={cn(
                     'text-altwhite rounded-full p-1.5 duration-150',
                     isCardFarming || isAchievementUnlocker
@@ -384,7 +392,7 @@ export default function SideBar() {
                   onClick={!(isCardFarming || isAchievementUnlocker) ? openConfirmation : undefined}
                 >
                   <FiLogOut fontSize={18} />
-                </div>
+                </button>
               </div>
             )}
           </div>
@@ -426,4 +434,4 @@ export default function SideBar() {
       />
     </>
   );
-}
+};

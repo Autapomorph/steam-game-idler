@@ -45,7 +45,7 @@ interface UseTradingCardsList {
   setCardSortStyle: (style: string) => void;
 }
 
-export default function useTradingCardsList(): UseTradingCardsList {
+export const useTradingCardsList = (): UseTradingCardsList => {
   const { t } = useTranslation();
   const userSummary = useUserStore(state => state.userSummary);
   const userSettings = useUserStore(state => state.userSettings);
@@ -130,6 +130,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
             steamid: userSummary?.steamId,
           });
 
+          // eslint-disable-next-line consistent-return
           if (!validate.user) return showIncorrectCredentialsToast();
 
           const response = await invoke<InvokeCardData>('get_trading_cards', {
@@ -152,6 +153,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
           }
         }
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error('Error in getTradingCards:', error);
         logEvent(`[Error] in getTradingCards: ${error}`);
       } finally {
@@ -196,7 +198,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
 
       const cardPrices = await invoke<InvokeCardPrice>('get_card_price', {
         marketHashName: hash,
-        currency: localStorage.getItem('currency') || '1',
+        currency: localStorage.getItem('currency') ?? '1',
       });
 
       if (cardPrices.error?.includes('HTTP 429')) {
@@ -240,6 +242,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
 
       return { success: true, price };
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Error fetching card prices:', error);
       logEvent(`[Error] in fetchCardPrices: ${error}`);
       return { success: false };
@@ -309,6 +312,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
 
       const credentials = userSettings?.cardFarming.credentials;
 
+      // eslint-disable-next-line consistent-return
       if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast();
 
       const priceAdjustment = userSettings?.tradingCards?.priceAdjustment || 0.0;
@@ -367,6 +371,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
       logEvent(`Complete listing result: ${JSON.stringify(response)}`);
     } catch (error) {
       showDangerToast(t('common.error'));
+      // eslint-disable-next-line no-console
       console.error('Error in handleSellSingleCard:', error);
       logEvent(`[Error] in handleSellSingleCard: ${error}`);
     } finally {
@@ -376,6 +381,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
     }
   };
 
+  // eslint-disable-next-line consistent-return
   const handleSellSelectedCards = async (): Promise<void> => {
     try {
       const { credentials } = userSettings.cardFarming;
@@ -387,6 +393,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
       const cardsToSell = selectedAssetIds.filter(assetId => changedCardPrices[assetId] > 0);
 
       if (cardsToSell.length === 0) {
+        // eslint-disable-next-line consistent-return
         return;
       }
 
@@ -405,6 +412,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
 
       if (unlockedCards.length === 0) {
         showDangerToast(t('toast.tradingCards.allCardsLocked'));
+        // eslint-disable-next-line consistent-return
         return;
       }
 
@@ -420,6 +428,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
 
       if (validCards.length === 0) {
         showDangerToast(t('toast.tradingCards.allCardsOutOfRange'));
+        // eslint-disable-next-line consistent-return
         return;
       }
 
@@ -481,6 +490,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
       logEvent(`Complete listing results: ${JSON.stringify(response)}`);
     } catch (error) {
       showDangerToast(t('common.error'));
+      // eslint-disable-next-line no-console
       console.error('Error in handleSellSelectedCards:', error);
       logEvent(`[Error] in handleSellSelectedCards: ${error}`);
     } finally {
@@ -490,6 +500,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
     }
   };
 
+  // eslint-disable-next-line consistent-return
   const handleSellAllCards = async (): Promise<void> => {
     try {
       const credentials = userSettings?.cardFarming.credentials;
@@ -532,6 +543,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
             logEvent(
               `[Error] in (handleSellAllCards): Rate limited when fetching price for card ${card.assetid} (${card.market_hash_name}) (Increasing the 'sell delay' in 'settings > trading card manager' can help prevent this issue) - stopping`,
             );
+            // eslint-disable-next-line consistent-return
             return;
           }
           // Other errors fetching price - skip this card
@@ -603,6 +615,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
           await new Promise(resolve => setTimeout(resolve, sellDelay * 1000)); // Wait between listings to avoid rate limiting
         } catch (error) {
           failedCards.push({ assetid: card.assetid, message: String(error) });
+          // eslint-disable-next-line no-console
           console.error(`Error processing card ${card.assetid}:`, error);
           logEvent(
             `[Error] in (handleSellAllCards): processing card ${card.assetid} (${card.market_hash_name}): ${error}`,
@@ -630,6 +643,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
       }
     } catch (error) {
       showDangerToast(t('common.error'));
+      // eslint-disable-next-line no-console
       console.error('Error in handleSellAllCards:', error);
       logEvent(`[Error] in (handleSellAllCards): ${error}`);
     } finally {
@@ -637,6 +651,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
     }
   };
 
+  // eslint-disable-next-line consistent-return
   const handleRemoveActiveListings = async (): Promise<void> => {
     try {
       const { credentials } = userSettings.cardFarming;
@@ -672,6 +687,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
         );
 
         // Refresh the trading cards list after removing listings
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         await handleRefresh();
       } else if (response.processed_listings === 0) {
         showPrimaryToast(t('toast.tradingCards.noListings'));
@@ -682,6 +698,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
       logEvent(`Remove listings result: ${JSON.stringify(response)}`);
     } catch (error) {
       showDangerToast(t('common.error'));
+      // eslint-disable-next-line no-console
       console.error('Error in handleRemoveActiveListings:', error);
       logEvent(`[Error] in handleRemoveActiveListings: ${error}`);
     } finally {
@@ -702,6 +719,7 @@ export default function useTradingCardsList(): UseTradingCardsList {
       setRefreshKey(prev => prev + 1);
     } catch (error) {
       showDangerToast(t('common.error'));
+      // eslint-disable-next-line no-console
       console.error('Error in handleRefresh:', error);
       logEvent(`[Error] in handleRefresh: ${error}`);
     }
@@ -728,4 +746,4 @@ export default function useTradingCardsList(): UseTradingCardsList {
     cardSortStyle,
     setCardSortStyle,
   };
-}
+};

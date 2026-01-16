@@ -6,11 +6,11 @@ import { Spinner } from '@heroui/react';
 import { TbCircleArrowDown } from 'react-icons/tb';
 import { useTranslation } from 'react-i18next';
 
-import CustomTooltip from '@/components/ui/CustomTooltip';
+import { CustomTooltip } from '@/components/ui/CustomTooltip';
 import { logEvent } from '@/utils/tasks';
 import { showDangerToast } from '@/utils/toasts';
 
-export default function UpdateButton() {
+export const UpdateButton = () => {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -29,6 +29,7 @@ export default function UpdateButton() {
     } catch (error) {
       setIsLoading(false);
       showDangerToast(t('toast.checkUpdate.error'));
+      // eslint-disable-next-line no-console
       console.error('Error in (handleUpdate):', error);
       logEvent(`Error in (handleUpdate): ${error}`);
     }
@@ -42,13 +43,17 @@ export default function UpdateButton() {
         </div>
       ) : (
         <CustomTooltip content="Update Ready!">
-          <div className="flex justify-center items-center cursor-pointer" onClick={handleUpdate}>
+          <button
+            type="button"
+            className="flex justify-center items-center cursor-pointer"
+            onClick={handleUpdate}
+          >
             <div className="flex items-center px-1 py-1.5 text-success hover:text-success/80 duration-150">
               <TbCircleArrowDown fontSize={20} />
             </div>
-          </div>
+          </button>
         </CustomTooltip>
       )}
     </div>
   );
-}
+};

@@ -5,13 +5,13 @@ import { useTranslation } from 'react-i18next';
 
 import type { InvokeSettings, InvokeSteamCredentials } from '@/types';
 import { useUserStore } from '@/stores/userStore';
-import SettingsSwitch from '@/components/settings/SettingsSwitch';
-import Beta from '@/components/ui/Beta';
-import WebviewWindow from '@/components/ui/WebviewWindow';
+import { SettingsSwitch } from '@/components/settings/SettingsSwitch';
+import { Beta } from '@/components/ui/Beta';
+import { WebviewWindow } from '@/components/ui/WebviewWindow';
 import { logEvent } from '@/utils/tasks';
 import { showDangerToast } from '@/utils/toasts';
 
-export default function FreeGamesSettings() {
+export const FreeGamesSettings = () => {
   const { t } = useTranslation();
   const userSummary = useUserStore(state => state.userSummary);
   const userSettings = useUserStore(state => state.userSettings);
@@ -22,7 +22,7 @@ export default function FreeGamesSettings() {
 
     if (!result?.success) {
       showDangerToast(t('common.error'));
-      logEvent(`[Error] in (handleShowStoreLoginWindow): ${result?.message || 'Unknown error'}`);
+      logEvent(`[Error] in (handleShowStoreLoginWindow): ${result?.message ?? 'Unknown error'}`);
       return;
     }
 
@@ -41,7 +41,7 @@ export default function FreeGamesSettings() {
     if (!result?.success) {
       showDangerToast(t('common.error'));
       logEvent(
-        `[Error] in (handleSignOutCurrentStoreUser) this error can occur if you are not already signed in: ${result?.message || 'Unknown error'}`,
+        `[Error] in (handleSignOutCurrentStoreUser) this error can occur if you are not already signed in: ${result?.message ?? 'Unknown error'}`,
       );
       return;
     }
@@ -126,4 +126,4 @@ export default function FreeGamesSettings() {
       </div>
     </div>
   );
-}
+};

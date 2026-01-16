@@ -6,7 +6,7 @@ interface Props {
   startTime: number;
 }
 
-export default function IdleTimer({ startTime }: Props) {
+export const IdleTimer = ({ startTime }: Props) => {
   const formatTime = (elapsed: number): string => {
     const hours = Math.floor(elapsed / (1000 * 60 * 60));
     const minutes = Math.floor((elapsed % (1000 * 60 * 60)) / (1000 * 60));
@@ -54,4 +54,4 @@ export default function IdleTimer({ startTime }: Props) {
       {displayTime}
     </div>
   );
-}
+};

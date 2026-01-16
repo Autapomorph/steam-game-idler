@@ -41,6 +41,7 @@ export async function unlockAchievement(
     );
     return false;
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Error in unlockAchievement util: ', error);
     logEvent(`[Error] in (unlockAchievement) util: ${error}`);
     return false;
@@ -82,6 +83,7 @@ export async function toggleAchievement(
     );
     return false;
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Error in toggleAchievement util: ', error);
     logEvent(`[Error] in (toggleAchievement) util: ${error}`);
     return false;
@@ -117,6 +119,7 @@ export async function unlockAllAchievements(
     );
     return false;
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Error in unlockAllAchievements util: ', error);
     logEvent(`[Error] in (unlockAllAchievements) util: ${error}`);
     return false;
@@ -152,6 +155,7 @@ export async function lockAllAchievements(
     );
     return false;
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Error in lockAllAchievements util: ', error);
     logEvent(`[Error] in (lockAllAchievements) util: ${error}`);
     return false;
@@ -191,6 +195,7 @@ export async function updateStats(
     logEvent(`[Error] [Statistics Manager] Failed to update stats for ${appName} (${appId})`);
     return false;
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Error in updateStats util: ', error);
     logEvent(`[Error] in (updateStats) util: ${error}`);
     return false;

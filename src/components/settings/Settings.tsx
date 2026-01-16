@@ -5,19 +5,19 @@ import { useTranslation } from 'react-i18next';
 
 import type { CurrentSettingsTabType } from '@/types';
 import { useNavigationStore } from '@/stores/navigationStore';
-import AchievementSettings from '@/components/settings/AchievementSettings';
-import CardSettings from '@/components/settings/CardSettings';
-import CustomizationSettings from '@/components/settings/CustomizationSettings';
-import FreeGamesSettings from '@/components/settings/FreeGamesSettings';
-import GameSettings from '@/components/settings/GameSettings';
-import GeneralSettings from '@/components/settings/GeneralSettings';
-import Logs from '@/components/settings/Logs';
-import SocialButtons from '@/components/settings/SocialButtons';
-import SteamCredentials from '@/components/settings/SteamCredentials';
-import TradingCardManagerSettings from '@/components/settings/TradingCardManagerSettings';
-import useSettings from '@/hooks/settings/useSettings';
+import { AchievementSettings } from '@/components/settings/AchievementSettings';
+import { CardSettings } from '@/components/settings/CardSettings';
+import { CustomizationSettings } from '@/components/settings/CustomizationSettings';
+import { FreeGamesSettings } from '@/components/settings/FreeGamesSettings';
+import { GameSettings } from '@/components/settings/GameSettings';
+import { GeneralSettings } from '@/components/settings/GeneralSettings';
+import { Logs } from '@/components/settings/Logs';
+import { SocialButtons } from '@/components/settings/SocialButtons';
+import { SteamCredentials } from '@/components/settings/SteamCredentials';
+import { TradingCardManagerSettings } from '@/components/settings/TradingCardManagerSettings';
+import { useSettings } from '@/hooks/settings/useSettings';
 
-export default function Settings() {
+export const Settings = () => {
   const { t } = useTranslation();
   const { version, refreshKey } = useSettings();
   const setActivePage = useNavigationStore(state => state.setActivePage);
@@ -95,4 +95,4 @@ export default function Settings() {
       </Tabs>
     </div>
   );
-}
+};

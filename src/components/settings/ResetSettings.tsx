@@ -3,14 +3,14 @@ import { Button } from '@heroui/react';
 import { TbRotateClockwise } from 'react-icons/tb';
 import { useTranslation } from 'react-i18next';
 
-import CustomModal from '@/components/ui/CustomModal';
-import useResetSettings from '@/hooks/settings/useResetSettings';
+import { CustomModal } from '@/components/ui/CustomModal';
+import { useResetSettings } from '@/hooks/settings/useResetSettings';
 
 interface Props {
   setRefreshKey: Dispatch<SetStateAction<number>>;
 }
 
-export default function ResetSettings({ setRefreshKey }: Props) {
+export const ResetSettings = ({ setRefreshKey }: Props) => {
   const { t } = useTranslation();
   const { handleResetSettings, isOpen, onOpen, onOpenChange } = useResetSettings();
 
@@ -57,4 +57,4 @@ export default function ResetSettings({ setRefreshKey }: Props) {
       />
     </>
   );
-}
+};
