@@ -5,7 +5,7 @@ interface Props {
   styles?: string;
 }
 
-export default function Loader({ label, styles }: Props) {
+export const Loader = ({ label, styles }: Props) => {
   return (
     <div className={`flex justify-center items-center w-calc h-calc ${styles}`}>
       <Spinner
@@ -17,4 +17,4 @@ export default function Loader({ label, styles }: Props) {
       />
     </div>
   );
-}
+};

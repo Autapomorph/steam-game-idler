@@ -8,7 +8,7 @@ interface Props {
   className?: string;
 }
 
-export default function WebviewWindow({ children, href, className = '' }: Props) {
+export const WebviewWindow = ({ children, href, className = '' }: Props) => {
   const handleClick = async (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     try {
@@ -43,6 +43,7 @@ export default function WebviewWindow({ children, href, className = '' }: Props)
         });
       });
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Failed to open link:', error);
     }
   };
@@ -52,4 +53,4 @@ export default function WebviewWindow({ children, href, className = '' }: Props)
       {children}
     </a>
   );
-}
+};

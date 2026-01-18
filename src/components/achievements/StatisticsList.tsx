@@ -1,129 +1,13 @@
-import {
-  memo,
-  useMemo,
-  useState,
-  type ChangeEvent,
-  type CSSProperties,
-  type Dispatch,
-  type SetStateAction,
-} from 'react';
-import { cn, NumberInput } from '@heroui/react';
+import { useMemo, useState, type ChangeEvent, type Dispatch, type SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FixedSizeList as List } from 'react-window';
+import { List } from 'react-window';
 
 import type { Achievement, ChangedStats, Statistic } from '@/types';
 import { useSearchStore } from '@/stores/searchStore';
-import StatisticButtons from '@/components/achievements/StatisticButtons';
+import { StatisticButton } from '@/components/achievements/StatisticButton';
+import { StatisticsListRow, type RowData } from '@/components/achievements/StatisticsListRow';
 
-interface RowData {
-  filteredStatistics: Statistic[];
-  updateStatistic: (id: string, e: number | ChangeEvent<HTMLInputElement>) => void;
-  t: (key: string) => string;
-}
-
-interface RowProps {
-  index: number;
-  style: CSSProperties;
-  data: RowData;
-}
-
-const Row = memo(({ index, style, data }: RowProps) => {
-  const { filteredStatistics, updateStatistic, t } = data;
-  const item1 = filteredStatistics[index * 2];
-  const item2 = filteredStatistics[index * 2 + 1];
-
-  if (!item1 && !item2) return null;
-
-  const protectedStatisticOne = item1?.protected_stat || false;
-  const protectedStatisticTwo = item2?.protected_stat || false;
-
-  return (
-    <div style={style} className="grid grid-cols-2 gap-3 pr-6">
-      {item1 && (
-        <div key={item1.id} className="flex flex-col gap-4">
-          <div
-            className={cn(
-              'flex justify-between items-center max-h-12',
-              'bg-achievement-main p-2 rounded-lg',
-            )}
-          >
-            <div className="flex flex-col">
-              <p className="text-sm font-bold w-full truncate">{item1.id}</p>
-              <p
-                className={`text-[10px] ${protectedStatisticOne ? 'text-warning' : 'text-altwhite'}`}
-              >
-                {t('achievementManager.statistics.flags')}: {item1.flags}
-              </p>
-            </div>
-            <NumberInput
-              hideStepper
-              isDisabled={protectedStatisticOne}
-              size="sm"
-              value={item1.value}
-              maxValue={99999}
-              formatOptions={{ useGrouping: false }}
-              onChange={e => updateStatistic(item1.id, e)}
-              aria-label="statistic value"
-              className="w-30"
-              classNames={{
-                inputWrapper: cn(
-                  'bg-stats-input data-[hover=true]:!bg-stats-inputhover',
-                  'group-data-[focus-visible=true]:ring-transparent',
-                  'group-data-[focus-visible=true]:ring-offset-transparent',
-                  'group-data-[focus-within=true]:!bg-stats-inputhover h-8',
-                ),
-                input: ['text-sm !text-content'],
-              }}
-            />
-          </div>
-        </div>
-      )}
-      {item2 && (
-        <div key={item2.id} className="flex flex-col gap-4">
-          <div
-            className={cn(
-              'flex justify-between items-center max-h-12',
-              'bg-achievement-main p-2 rounded-lg',
-            )}
-          >
-            <div className="flex flex-col">
-              <p className="text-sm font-bold w-full truncate">{item2.id}</p>
-              <p
-                className={`text-[10px] ${protectedStatisticTwo ? 'text-warning' : 'text-altwhite'}`}
-              >
-                {t('achievementManager.statistics.flags')}: {item2.flags}
-              </p>
-            </div>
-            <NumberInput
-              hideStepper
-              isDisabled={protectedStatisticTwo}
-              size="sm"
-              value={item2.value}
-              maxValue={99999}
-              formatOptions={{ useGrouping: false }}
-              onChange={e => updateStatistic(item2.id, e)}
-              aria-label="statistic value"
-              className="w-30"
-              classNames={{
-                inputWrapper: cn(
-                  'bg-stats-input data-[hover=true]:!bg-stats-inputhover',
-                  'group-data-[focus-visible=true]:ring-transparent',
-                  'group-data-[focus-visible=true]:ring-offset-transparent',
-                  'group-data-[focus-within=true]:!bg-stats-inputhover h-8',
-                ),
-                input: ['text-sm !text-content'],
-              }}
-            />
-          </div>
-        </div>
-      )}
-    </div>
-  );
-});
-
-Row.displayName = 'Row';
-
-interface StatisticsListProps {
+interface Props {
   statistics: Statistic[];
   setStatistics: Dispatch<SetStateAction<Statistic[]>>;
   setAchievements: Dispatch<SetStateAction<Achievement[]>>;
@@ -131,13 +15,13 @@ interface StatisticsListProps {
   setRefreshKey?: Dispatch<SetStateAction<number>>;
 }
 
-export default function StatisticsList({
+export const StatisticsList = ({
   statistics,
   setStatistics,
   setAchievements,
   windowInnerHeight,
   setRefreshKey,
-}: StatisticsListProps) {
+}: Props) => {
   const { t } = useTranslation();
   const statisticQueryValue = useSearchStore(state => state.statisticQueryValue);
   const [changedStats, setChangedStats] = useState<ChangedStats>({});
@@ -162,6 +46,7 @@ export default function StatisticsList({
         });
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-shadow
       return prevStatistics.map(stat =>
         stat.id === id ? { ...stat, value: newValue || 0 } : stat,
       );
@@ -176,13 +61,13 @@ export default function StatisticsList({
     [statistics, statisticQueryValue],
   );
 
-  const itemData: RowData = { filteredStatistics, updateStatistic, t };
+  const rowData: RowData = { filteredStatistics, updateStatistic, t };
 
   return (
     <div className="flex flex-col gap-2 w-full scroll-smooth">
       {statistics.length > 0 ? (
         <>
-          <StatisticButtons
+          <StatisticButton
             statistics={statistics}
             setStatistics={setStatistics}
             changedStats={changedStats}
@@ -192,14 +77,17 @@ export default function StatisticsList({
           />
 
           <List
-            height={windowInnerHeight - 196}
-            itemCount={Math.ceil(filteredStatistics.length / 2)}
-            itemSize={62}
-            width="100%"
-            itemData={itemData}
-          >
-            {Row}
-          </List>
+            rowComponent={StatisticsListRow}
+            rowCount={Math.ceil(filteredStatistics.length / 2)}
+            rowHeight={62}
+            style={{
+              width: '100%',
+              height: windowInnerHeight - 196,
+            }}
+            rowProps={{
+              data: rowData,
+            }}
+          />
         </>
       ) : (
         <div className="flex flex-col gap-2 justify-center items-center my-2 bg-tab-panel rounded-lg p-4 mr-10">
@@ -208,4 +96,4 @@ export default function StatisticsList({
       )}
     </div>
   );
-}
+};

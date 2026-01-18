@@ -1,5 +1,4 @@
 {
-  "setup.welcome": "Добро пожаловать",
   "setup.chooseAccount": "Выберите учетную запись",
   "setup.refresh": "Обновить",
   "setup.help": "Нужна помощь?",
@@ -77,7 +76,6 @@
   "tradingCards.bulk": "Продать все ({{count}})",
   "tradingCards.list": "Продать выбранные",
   "tradingCards.remove": "Снять с продажи все",
-  "tradingCards.confirmSingle": "Вы уверены, что хотите выставить на продажу эту карточку?",
   "tradingCards.confirm": "Вы уверены, что хотите выставить на продажу выбранные карточки?\n\nПриблизительное время для {{count}} карточек составляет {{time}}\n\nНе выключайте SGI до завершения процесса",
   "tradingCards.confirmBulk": "Вы уверены, что хотите выставить на продажу все карточки?\n\nПриблизительное время на для {{count}} карточек составляет {{time}}\n\nНе выключайте SGI до завершения процесса",
   "tradingCards.confirmRemove": "Вы действительно хотите снять с продажи все активные лоты?",
@@ -217,7 +215,6 @@
   "settings.resetSettings.button": "Сбросить настройки",
   "settings.clearData.button": "Очистить данные",
   "settings.exportData": "Экспорт данных",
-  "settings.documentation": "Посмотреть документацию",
   "confirmation.logout": "Вы уверены, что хотите выйти?",
   "confirmation.resetStatistics": "Вы уверены, что хотите <1>сбросить</1> всю статистику?",
   "confirmation.resetSettings": "Вы уверены, что хотите сбросить настройки до значений по умолчанию?",
@@ -307,8 +304,5 @@
   "common.continue": "Продолжить",
   "common.minutes": "минут",
   "common.viewList": "Список",
-  "changelog.title": "Изменения в {{version}}",
-  "changelog.star": "Star on GitHub",
-  "changelog.report": "Сообщить о проблеме на GitHub",
-  "changelog.release": "Посмотреть на GitHub"
+  "changelog.star": "Star on GitHub"
 }

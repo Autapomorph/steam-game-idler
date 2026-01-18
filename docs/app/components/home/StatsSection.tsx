@@ -11,11 +11,12 @@ export default function StatsSection() {
   useEffect(() => {
     const loadGitHubStars = async (): Promise<void> => {
       try {
-        const response = await fetch('https://api.github.com/repos/zevnda/steam-game-idler');
+        const response = await fetch('https://api.github.com/repos/Autapomorph/steam-game-idler');
         const data = await response.json();
-        setGithubStars(data.stargazers_count || 999);
+        setGithubStars(data.stargazers_count ?? 999);
       } catch (error) {
         setGithubStars(999);
+        // eslint-disable-next-line no-console
         console.error('Failed to fetch GitHub stars:', error);
       } finally {
         setIsLoading(false);
@@ -26,13 +27,13 @@ export default function StatsSection() {
 
   const stats = [
     {
-      value: '16K+',
+      value: '70K+',
       label: 'Downloads',
       icon: <FiDownload className="w-6 h-6" />,
       description: 'Active installations worldwide',
     },
     {
-      value: '42',
+      value: '30',
       label: 'Languages',
       icon: <FiGlobe className="w-6 h-6" />,
       description: 'Localization support',
@@ -80,7 +81,7 @@ export default function StatsSection() {
             <p className="text-base sm:text-lg text-gray-700 leading-relaxed">
               Steam Game Idler is the go-to choice for users looking to automate their Steam
               experience. Our Steam card farmer is trusted by thousands of users worldwide, with
-              support for 42 languages.
+              support for 30 languages.
             </p>
           </div>
         </header>

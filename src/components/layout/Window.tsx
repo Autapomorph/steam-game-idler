@@ -2,13 +2,13 @@ import { Spinner } from '@heroui/react';
 
 import { useStateStore } from '@/stores/stateStore';
 import { useUserStore } from '@/stores/userStore';
-import Dashboard from '@/components/layout/Dashboard';
-import SignIn from '@/components/layout/SignIn';
-import ChangelogModal from '@/components/ui/ChangelogModal';
-import SteamWarning from '@/components/ui/SteamWarning';
-import useWindow from '@/hooks/layout/useWindow';
+import { Dashboard } from '@/components/layout/Dashboard';
+import { SignIn } from '@/components/layout/SignIn';
+import { ChangelogModal } from '@/components/ui/ChangelogModal';
+import { SteamWarning } from '@/components/ui/SteamWarning';
+import { useWindow } from '@/hooks/layout/useWindow';
 
-export default function Window() {
+export const Window = () => {
   const userSummary = useUserStore(state => state.userSummary);
   const loadingUserSummary = useStateStore(state => state.loadingUserSummary);
 
@@ -36,4 +36,4 @@ export default function Window() {
       <ChangelogModal />
     </div>
   );
-}
+};

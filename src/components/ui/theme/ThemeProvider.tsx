@@ -5,8 +5,8 @@ import {
   type ThemeProviderProps as NextThemesProviderProps,
 } from 'next-themes';
 
-type ThemeProviderProps = PropsWithChildren & Omit<NextThemesProviderProps, 'children'>;
+type Props = PropsWithChildren & Omit<NextThemesProviderProps, 'children'>;
 
-export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
+export const ThemeProvider = ({ children, ...props }: Props) => {
   return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
-}
+};

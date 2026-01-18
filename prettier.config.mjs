@@ -13,6 +13,7 @@ export default {
   trailingComma: 'all',
   bracketSpacing: true,
   bracketSameLine: false,
+  objectWrap: 'preserve',
   arrowParens: 'avoid',
   vueIndentScriptAndStyle: true,
   endOfLine: 'lf',

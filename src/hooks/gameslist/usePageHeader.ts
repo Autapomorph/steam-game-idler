@@ -24,6 +24,7 @@ export const usePageHeader = (
       setSortStyle(currentKey);
     } catch (error) {
       showDangerToast(t('common.error'));
+      // eslint-disable-next-line no-console
       console.error('Error in (handleSorting):', error);
       logEvent(`[Error] in (handleSorting): ${error}`);
     }
@@ -37,6 +38,7 @@ export const handleRefetch = async (
   steamId: string | undefined,
   setRefreshKey: Dispatch<SetStateAction<number>>,
   manual = true,
+  // eslint-disable-next-line consistent-return
 ): Promise<void> => {
   try {
     const devAccounts = JSON.parse(process.env.STEAM_DEV_ACCOUNTS ?? '[]') as string[];
@@ -63,6 +65,7 @@ export const handleRefetch = async (
     setRefreshKey(prevKey => prevKey + 1);
   } catch (error) {
     showDangerToast(t('common.error'));
+    // eslint-disable-next-line no-console
     console.error('Error in (handleRefetch):', error);
     logEvent(`[Error] in (handleRefetch): ${error}`);
   }

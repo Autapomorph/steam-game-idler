@@ -3,7 +3,7 @@ import { TbChevronRight } from 'react-icons/tb';
 import { useTranslation } from 'react-i18next';
 
 import { useUserStore } from '@/stores/userStore';
-import SettingsSwitch from '@/components/settings/SettingsSwitch';
+import { SettingsSwitch } from '@/components/settings/SettingsSwitch';
 import {
   handleNextTaskChange,
   handleScheduleChange,
@@ -11,7 +11,7 @@ import {
   useAchievementSettings,
 } from '@/hooks/settings/useAchievementSettings';
 
-export default function AchievementSettings() {
+export const AchievementSettings = () => {
   const { t } = useTranslation();
   const userSummary = useUserStore(state => state.userSummary);
   const userSettings = useUserStore(state => state.userSettings);
@@ -215,4 +215,4 @@ export default function AchievementSettings() {
       </div>
     </div>
   );
-}
+};

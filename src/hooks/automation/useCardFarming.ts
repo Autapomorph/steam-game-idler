@@ -14,6 +14,8 @@ import { startAutoIdleGames } from '@/hooks/layout/useWindow';
 import { checkDrops, getAllGamesWithDrops } from '@/utils/automation';
 import { startFarmIdle, stopFarmIdle } from '@/utils/idle';
 import { logEvent } from '@/utils/tasks';
+import { handleError } from '@/utils/error';
+import { delay } from '@/utils/delay';
 
 export interface GameForFarming {
   appid: number;
@@ -60,6 +62,7 @@ export const useCardFarming = async (
     try {
       if (!isMountedRef.current) return;
 
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       const { totalDrops, gamesSet } = await checkGamesForDrops();
 
       if (!isMountedRef.current) return;
@@ -68,12 +71,15 @@ export const useCardFarming = async (
       setGamesWithDrops(gamesSet);
 
       if (isMountedRef.current && gamesSet.size > 0) {
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         const success = await beginFarmingCycle(gamesSet, isMountedRef, abortControllerRef);
         if (!success) {
           logEvent('[Card Farming] An error occurred (this error can often be ignored) - stopping');
+          // eslint-disable-next-line consistent-return
           return setIsComplete(true);
         }
       } else {
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         const nextTask = await checkForNextTask();
 
         if (nextTask.shouldStartNextTask) {
@@ -91,9 +97,11 @@ export const useCardFarming = async (
             logEvent(`[Card Farming] No drops remaining - moving to next task: ${nextTask.task}`);
           }
 
+          // eslint-disable-next-line consistent-return
           return setIsComplete(true);
         }
         logEvent('[Card Farming] No games left - stopping');
+        // eslint-disable-next-line consistent-return
         return setIsComplete(true);
       }
 
@@ -114,16 +122,16 @@ export const useCardFarming = async (
 
 // Check games for drops and return total drops and games set
 const checkGamesForDrops = async (): Promise<DropsCheckResult> => {
-  const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary;
+  const userSummary = JSON.parse(localStorage.getItem('userSummary') ?? '{}') as UserSummary;
 
   const response = await invoke<InvokeSettings>('get_user_settings', {
     steamId: userSummary?.steamId,
   });
 
-  const gameSettings = response.settings.gameSettings || {};
+  const gameSettings = response.settings.gameSettings ?? {};
   const { credentials } = response.settings.cardFarming;
   const { allGames } = response.settings.cardFarming;
-  const blacklist = response.settings.cardFarming.blacklist || [];
+  const blacklist = response.settings.cardFarming.blacklist ?? [];
   const skipNoPlaytime = response.settings.cardFarming.skipNoPlaytime || false;
 
   const cardFarmingList = await invoke<InvokeCustomList>('get_custom_lists', {
@@ -143,6 +151,7 @@ const checkGamesForDrops = async (): Promise<DropsCheckResult> => {
         credentials?.sma,
       );
 
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       totalDrops = processGamesWithDrops(
         gamesWithDrops,
         gamesSet,
@@ -151,6 +160,7 @@ const checkGamesForDrops = async (): Promise<DropsCheckResult> => {
         skipNoPlaytime,
       );
     } else {
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       totalDrops = await processIndividualGames(
         cardFarmingList.list_data,
         gamesSet,
@@ -289,6 +299,7 @@ const processIndividualGames = async (
         logEvent(
           `[Card Farming] ${dropsRemaining} drops remaining for ${gameData.name} - removed from list`,
         );
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         removeGameFromFarmingList(gameData.appid);
       }
     } catch (error) {
@@ -339,10 +350,10 @@ export const beginFarmingCycle = async (
 
       if (success) {
         // eslint-disable-next-line no-await-in-loop
-        await delay(step.delay, isMountedRef, abortControllerRef);
+        await delay(step.delay, abortControllerRef.current);
 
         if (step.action === stopFarmIdle) {
-          // eslint-disable-next-line no-await-in-loop, no-param-reassign
+          // eslint-disable-next-line no-await-in-loop, no-param-reassign, @typescript-eslint/no-use-before-define
           gamesSet = await checkDropsRemaining(gamesSet);
 
           // Check if we should add more games to the list
@@ -363,6 +374,7 @@ export const beginFarmingCycle = async (
     }
     return true;
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Error in (beginFarmingCycle) - "undefined" can be ignored', error);
     await stopFarmIdle(gamesSet);
     return false;
@@ -371,7 +383,7 @@ export const beginFarmingCycle = async (
 
 // Periodically check if there are still drops remaining for each game
 const checkDropsRemaining = async (gameSet: Set<GameWithDrops>): Promise<Set<GameWithDrops>> => {
-  const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary;
+  const userSummary = JSON.parse(localStorage.getItem('userSummary') ?? '{}') as UserSummary;
 
   const updatedGameSet = new Set<GameWithDrops>();
   const gameArray = Array.from(gameSet);
@@ -392,9 +404,11 @@ const checkDropsRemaining = async (gameSet: Set<GameWithDrops>): Promise<Set<Gam
       );
 
       if (dropsRemaining <= 0) {
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         removeGameFromFarmingList(Number(game.appid));
         logEvent(`[Card Farming] Farmed all drops for ${game.name} - removed from list`);
       } else if (game.initialDrops - dropsRemaining >= game.dropsToCount) {
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         removeGameFromFarmingList(Number(game.appid));
         logEvent(
           `[Card Farming- maxCardDrops] Farmed ${game.initialDrops - dropsRemaining}/${dropsRemaining} cards for ${game.name} - removed from list`,
@@ -416,7 +430,7 @@ const checkDropsRemaining = async (gameSet: Set<GameWithDrops>): Promise<Set<Gam
 // Remove game from farming list
 const removeGameFromFarmingList = async (gameId: number): Promise<void> => {
   try {
-    const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary;
+    const userSummary = JSON.parse(localStorage.getItem('userSummary') ?? '{}') as UserSummary;
 
     const cardFarmingList = await invoke<InvokeCustomList>('get_custom_lists', {
       steamId: userSummary?.steamId,
@@ -441,7 +455,7 @@ const checkForNextTask = async (): Promise<{
   task: string | null;
 }> => {
   try {
-    const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary;
+    const userSummary = JSON.parse(localStorage.getItem('userSummary') ?? '{}') as UserSummary;
 
     const response = await invoke<InvokeSettings>('get_user_settings', {
       steamId: userSummary?.steamId,
@@ -467,50 +481,6 @@ const checkForNextTask = async (): Promise<{
   }
 };
 
-// Delay function
-const delay = (
-  ms: number,
-  isMountedRef: RefObject<boolean>,
-  abortControllerRef: RefObject<AbortController>,
-): Promise<void> => {
-  return new Promise<void>((resolve, reject) => {
-    if (!isMountedRef.current) {
-      return reject();
-    }
-
-    const checkInterval = 1000;
-    let elapsedTime = 0;
-    const intervalId = setInterval(() => {
-      if (!isMountedRef.current) {
-        clearInterval(intervalId);
-        reject();
-      } else if (elapsedTime >= ms) {
-        clearInterval(intervalId);
-        resolve();
-      }
-      elapsedTime += checkInterval;
-    }, checkInterval);
-
-    const abortHandler = (): void => {
-      clearInterval(intervalId);
-      reject();
-    };
-
-    const timeoutId = setTimeout(() => {
-      clearInterval(intervalId);
-      resolve();
-    }, ms);
-
-    abortControllerRef.current.signal.addEventListener('abort', abortHandler);
-
-    return () => {
-      clearInterval(intervalId);
-      clearTimeout(timeoutId);
-      abortControllerRef.current.signal.removeEventListener('abort', abortHandler);
-    };
-  });
-};
-
 // Handle cancel action
 export const handleCancel = async (
   gamesWithDrops: Set<GameWithDrops>,
@@ -526,11 +496,4 @@ export const handleCancel = async (
     isMountedRef.current = false;
     abortControllerRef.current.abort();
   }
-};
-
-// Handle errors
-const handleError = (functionName: string, error: unknown): void => {
-  if (!error) return;
-  console.error(`Error in (${functionName}):`, error);
-  logEvent(`[Error] in (${functionName}) ${error}`);
 };

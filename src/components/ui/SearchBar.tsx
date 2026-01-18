@@ -15,14 +15,14 @@ import { useNavigationStore } from '@/stores/navigationStore';
 import { useSearchStore } from '@/stores/searchStore';
 import { useStateStore } from '@/stores/stateStore';
 import { useUserStore } from '@/stores/userStore';
-import useHeader from '@/hooks/ui/useHeader';
+import { useHeader } from '@/hooks/ui/useHeader';
 
 interface Props {
   isModalOpen?: boolean;
   onModalClose?: () => void;
 }
 
-export default function SearchBar({ isModalOpen = false, onModalClose }: Props) {
+export const SearchBar = ({ isModalOpen = false, onModalClose }: Props) => {
   const { t } = useTranslation();
   const [inputValue, setInputValue] = useState<string>('');
   const searchContext = useSearchStore();
@@ -219,7 +219,8 @@ export default function SearchBar({ isModalOpen = false, onModalClose }: Props) 
                   .reverse()
                   .map(query => (
                     <div className="flex items-center justify-between gap-2" key={query}>
-                      <div
+                      <button
+                        type="button"
                         key={query}
                         className={cn(
                           'flex justify-between items-center px-4 py-1 rounded-lg cursor-pointer w-full',
@@ -228,14 +229,15 @@ export default function SearchBar({ isModalOpen = false, onModalClose }: Props) 
                         onClick={() => handleRecentSearchClick(query)}
                       >
                         <p className="text-lg font-medium text-content truncate">{query}</p>
-                      </div>
+                      </button>
 
-                      <div
+                      <button
+                        type="button"
                         className="flex items-center justify-center cursor-pointer bg-item-hover hover:bg-item-hover/80 rounded-full p-1 duration-150"
                         onClick={() => searchContext.removeRecentSearch(query)}
                       >
                         <TbX className="text-content" />
-                      </div>
+                      </button>
                     </div>
                   ))}
               </div>
@@ -252,4 +254,4 @@ export default function SearchBar({ isModalOpen = false, onModalClose }: Props) 
       </ModalContent>
     </Modal>
   );
-}
+};

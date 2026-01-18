@@ -17,7 +17,7 @@ interface SetupHook {
   getRandomAvatarUrl: () => string;
 }
 
-export default function useSignIn(refreshKey: number): SetupHook {
+export const useSignIn = (refreshKey: number): SetupHook => {
   const { t } = useTranslation();
   const userSettings = useUserStore(state => state.userSettings);
   const setUserSummary = useUserStore(state => state.setUserSummary);
@@ -76,6 +76,7 @@ export default function useSignIn(refreshKey: number): SetupHook {
             // Check for cached user summaries first
             const cachedUserSummaries = await invoke<InvokeUserSummary[]>('get_user_summary_cache');
 
+            // eslint-disable-next-line @typescript-eslint/no-shadow
             const steamUsers: UserSummary[] = [];
             const uncachedUsers: UserSummary[] = [];
 
@@ -120,12 +121,14 @@ export default function useSignIn(refreshKey: number): SetupHook {
             setUserSummaries(steamUsers);
             setIsLoading(false);
           } catch (error) {
+            // eslint-disable-next-line no-console
             console.error('Error fetching user summaries:', error);
 
             // Fallback: create basic user summaries without API data
+            // eslint-disable-next-line @typescript-eslint/no-shadow
             const steamUsers = validUsers.map(user => ({
               steamId: String(user?.steamId),
-              personaName: user?.personaName || 'Unknown User',
+              personaName: user?.personaName ?? 'Unknown User',
               avatar: '',
               mostRecent: user?.mostRecent ?? 0,
             }));
@@ -140,6 +143,7 @@ export default function useSignIn(refreshKey: number): SetupHook {
           setUserSummaries([]);
         }
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error('Error in getSteamUsers:', error);
         setSteamUsers([]);
         setUserSummaries([]);
@@ -177,6 +181,7 @@ export default function useSignIn(refreshKey: number): SetupHook {
     } catch (error) {
       setIsLoading(false);
       showDangerToast(t('common.error'));
+      // eslint-disable-next-line no-console
       console.error('Error in (handleLogin):', error);
       logEvent(`[Error] in (handleLogin): ${error}`);
     }
@@ -197,4 +202,4 @@ export default function useSignIn(refreshKey: number): SetupHook {
     setSelectedUser,
     getRandomAvatarUrl,
   };
-}
+};

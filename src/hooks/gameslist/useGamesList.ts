@@ -26,7 +26,7 @@ export interface GamesListHook {
   setRefreshKey: Dispatch<SetStateAction<number>>;
 }
 
-export default function useGamesList(): GamesListHook {
+export const useGamesList = (): GamesListHook => {
   const { t } = useTranslation();
   const userSummary = useUserStore(state => state.userSummary);
   const userSettings = useUserStore(state => state.userSettings);
@@ -50,21 +50,24 @@ export default function useGamesList(): GamesListHook {
     const getGamesList = async (): Promise<void> => {
       try {
         setIsLoading(true);
+        // eslint-disable-next-line @typescript-eslint/no-shadow
         const sortStyle = localStorage.getItem('sortStyle');
         if (sortStyle) setSortStyle(sortStyle);
 
         // Fetch games data, either from cache or API
+        // eslint-disable-next-line @typescript-eslint/no-shadow, @typescript-eslint/no-use-before-define
         const { gamesList, recentGamesList } = await fetchGamesList(
           userSummary?.steamId,
           refreshKey,
           previousRefreshKeyRef.current,
-          userSettings.general?.apiKey || undefined,
+          userSettings.general?.apiKey ?? undefined,
         );
         setGamesList(gamesList);
         setRecentGames(recentGamesList);
 
         // Get random unplayed games
         const unplayed = gamesList.filter(game => (game.playtime_forever ?? 0) === 0);
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         const randomUnplayed = getRandomGames(unplayed, 10);
         setUnplayedGames(randomUnplayed);
 
@@ -73,6 +76,7 @@ export default function useGamesList(): GamesListHook {
       } catch (error) {
         setIsLoading(false);
         showDangerToast(t('common.error'));
+        // eslint-disable-next-line no-console
         console.error('Error in (getGamesList):', error);
         logEvent(`[Error] in (getGamesList): ${error}`);
       }
@@ -88,7 +92,8 @@ export default function useGamesList(): GamesListHook {
   }, [userSummary?.steamId, userSettings.general?.apiKey, refreshKey, setGamesList, t]);
 
   const sortedAndFilteredGames = useMemo(
-    () => sortAndFilterGames(gamesList, recentGames || [], sortStyle, isQuery, gameQueryValue),
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    () => sortAndFilterGames(gamesList, recentGames ?? [], sortStyle, isQuery, gameQueryValue),
     [gamesList, recentGames, sortStyle, isQuery, gameQueryValue],
   );
 
@@ -98,6 +103,7 @@ export default function useGamesList(): GamesListHook {
   );
 
   const randomUnplayedGames = useMemo(
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     () => getRandomGames(unplayedGamesMemo, 10),
     [unplayedGamesMemo],
   );
@@ -119,7 +125,7 @@ export default function useGamesList(): GamesListHook {
   return {
     isLoading,
     gamesList,
-    recentGames: recentGames || [],
+    recentGames: recentGames ?? [],
     unplayedGames,
     filteredGames,
     visibleGames,
@@ -128,7 +134,7 @@ export default function useGamesList(): GamesListHook {
     refreshKey,
     setRefreshKey,
   };
-}
+};
 
 // Fetch the games list and recent games from cache or API
 export const fetchGamesList = async (

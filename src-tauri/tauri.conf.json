@@ -14,7 +14,7 @@
     "active": true,
     "category": "Utility",
     "copyright": "Copyright © 2026 Autapomorph",
-    "targets": "all",
+    "targets": ["nsis"],
     "externalBin": [],
     "icon": ["icons/icon.ico"],
     "windows": {

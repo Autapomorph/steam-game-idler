@@ -49,10 +49,10 @@ export function useGameSettings({ appId }: UseGameSettingsProps = {}): UseGameSe
       ) {
         gameSettings = userSettings.gameSettings[appId];
       }
-      setMaxIdleTime(gameSettings.maxIdleTime || 0);
-      setMaxCardDrops(gameSettings.maxCardDrops || 0);
-      setMaxAchievementUnlocks(gameSettings.maxAchievementUnlocks || 0);
-      setGlobalMaxIdleTime(userSettings.gameSettings?.globalMaxIdleTime || 0);
+      setMaxIdleTime(gameSettings.maxIdleTime ?? 0);
+      setMaxCardDrops(gameSettings.maxCardDrops ?? 0);
+      setMaxAchievementUnlocks(gameSettings.maxAchievementUnlocks ?? 0);
+      setGlobalMaxIdleTime(userSettings.gameSettings?.globalMaxIdleTime ?? 0);
       isInitializedRef.current = true;
     };
     isInitializedRef.current = false;
@@ -63,6 +63,7 @@ export function useGameSettings({ appId }: UseGameSettingsProps = {}): UseGameSe
     const newValue = value || 0;
     setMaxIdleTime(newValue);
     if (isInitializedRef.current && appId) {
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       saveWithValues(newValue, maxCardDrops, maxAchievementUnlocks);
     }
   };
@@ -71,6 +72,7 @@ export function useGameSettings({ appId }: UseGameSettingsProps = {}): UseGameSe
     const newValue = value || 0;
     setMaxAchievementUnlocks(newValue);
     if (isInitializedRef.current && appId) {
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       saveWithValues(maxIdleTime, maxCardDrops, newValue);
     }
   };
@@ -79,6 +81,7 @@ export function useGameSettings({ appId }: UseGameSettingsProps = {}): UseGameSe
     const newValue = value || 0;
     setMaxCardDrops(newValue);
     if (isInitializedRef.current && appId) {
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       saveWithValues(maxIdleTime, newValue, maxAchievementUnlocks);
     }
   };
@@ -90,7 +93,7 @@ export function useGameSettings({ appId }: UseGameSettingsProps = {}): UseGameSe
   ): Promise<void> => {
     if (!appId) return;
 
-    const gameSettings = userSettings.gameSettings || {};
+    const gameSettings = userSettings.gameSettings ?? {};
 
     // Only assign to appId if not globalMaxIdleTime
     if (appId !== 'globalMaxIdleTime') {
@@ -112,7 +115,7 @@ export function useGameSettings({ appId }: UseGameSettingsProps = {}): UseGameSe
   };
 
   const saveGlobalMaxIdleTime = async (value: number): Promise<void> => {
-    const gameSettings = { ...(userSettings.gameSettings || {}) };
+    const gameSettings = { ...(userSettings.gameSettings ?? {}) };
     (gameSettings as GameSettings).globalMaxIdleTime = value;
 
     const updateResponse = await invoke<InvokeSettings>('update_user_settings', {
@@ -142,9 +145,9 @@ export function useGameSettings({ appId }: UseGameSettingsProps = {}): UseGameSe
     if (userSettings.gameSettings && isGameSpecificSettings(userSettings.gameSettings[appId])) {
       gameSettings = userSettings.gameSettings[appId];
     }
-    setMaxIdleTime(gameSettings.maxIdleTime || 0);
-    setMaxCardDrops(gameSettings.maxCardDrops || 0);
-    setMaxAchievementUnlocks(gameSettings.maxAchievementUnlocks || 0);
+    setMaxIdleTime(gameSettings.maxIdleTime ?? 0);
+    setMaxCardDrops(gameSettings.maxCardDrops ?? 0);
+    setMaxAchievementUnlocks(gameSettings.maxAchievementUnlocks ?? 0);
   };
 
   return {

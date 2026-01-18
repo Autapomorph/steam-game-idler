@@ -12,9 +12,9 @@ import {
 import type { Game } from '@/types';
 import { useIdleStore } from '@/stores/idleStore';
 import { useStateStore } from '@/stores/stateStore';
-import CardMenu from '@/components/gameslist/CardMenu';
-import ExtLink from '@/components/ui/ExtLink';
-import IdleTimer from '@/components/ui/IdleTimer';
+import { CardMenu } from '@/components/gameslist/CardMenu';
+import { ExtLink } from '@/components/ui/ExtLink';
+import { IdleTimer } from '@/components/ui/IdleTimer';
 import { handleIdle, handleStopIdle, viewAchievements } from '@/hooks/ui/useGameCard';
 
 interface Props {
@@ -24,7 +24,7 @@ interface Props {
   onOpen?: () => void;
 }
 
-const GameCard = memo(function GameCard({
+export const GameCard = memo(function GameCard({
   item,
   isFreeGame = false,
   isAchievementUnlocker = false,
@@ -151,5 +151,3 @@ const GameCard = memo(function GameCard({
     </div>
   );
 });
-
-export default GameCard;

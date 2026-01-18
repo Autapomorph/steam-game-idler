@@ -8,21 +8,28 @@ import { showDangerToast, showSuccessToast, t } from '@/utils/toasts';
 
 // Handle starting idling for a game
 export const handleIdle = async (item: Game): Promise<void> => {
-  const success = await startIdle(item.appid, item.name, true);
-  if (success) {
-    showSuccessToast(
-      t('toast.startIdle.success', {
-        appName: item.name,
-        appId: item.appid,
-      }),
-    );
-  } else {
-    showDangerToast(
-      t('toast.startIdle.error', {
-        appName: item.name,
-        appId: item.appid,
-      }),
-    );
+  try {
+    const success = await startIdle(item.appid, item.name, true);
+    if (success) {
+      showSuccessToast(
+        t('toast.startIdle.success', {
+          appName: item.name,
+          appId: item.appid,
+        }),
+      );
+    } else {
+      showDangerToast(
+        t('toast.startIdle.error', {
+          appName: item.name,
+          appId: item.appid,
+        }),
+      );
+    }
+  } catch (error) {
+    showDangerToast(t('common.error'));
+    // eslint-disable-next-line no-console
+    console.error('Error in handleIdle:', error);
+    logEvent(`Error in (handleIdle): ${error}`);
   }
 };
 
@@ -32,6 +39,7 @@ export const handleStopIdle = async (
   idleGamesList: Game[],
   setIdleGamesList: Dispatch<SetStateAction<Game[]>>,
 ): Promise<void> => {
+  // eslint-disable-next-line @typescript-eslint/no-shadow
   const game = idleGamesList.find(game => game.appid === item.appid);
   try {
     const response = await invoke<InvokeKillProcess>('kill_process_by_pid', {
@@ -55,6 +63,7 @@ export const handleStopIdle = async (
     }
   } catch (error) {
     showDangerToast(t('common.error'));
+    // eslint-disable-next-line no-console
     console.error('Error in handleStopIdle:', error);
     logEvent(`Error in (handleStopIdle): ${error}`);
   }

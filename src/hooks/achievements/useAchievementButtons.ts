@@ -26,16 +26,17 @@ interface AchievementButtonsHook {
   ) => Promise<void>;
 }
 
-export default function useAchievementButtons(
+export const useAchievementButtons = (
   userSummary: UserSummary,
   setAchievements: Dispatch<SetStateAction<Achievement[]>>,
-): AchievementButtonsHook {
+): AchievementButtonsHook => {
   const { t } = useTranslation();
 
   // Handle change in sorting option
   const handleChange = (
     currentKey: string | undefined,
     achievements: Achievement[],
+    // eslint-disable-next-line @typescript-eslint/no-shadow
     setAchievements: Dispatch<SetStateAction<Achievement[]>>,
   ): void => {
     if (!currentKey) return;
@@ -55,11 +56,31 @@ export default function useAchievementButtons(
         break;
       case 'unlocked':
         // Show unlocked achievements first
-        sortedAchievements.sort((b, a) => (a.achieved === b.achieved ? 0 : a.achieved ? 1 : -1));
+        sortedAchievements.sort((b, a) => {
+          if (a.achieved === b.achieved) {
+            return 0;
+          }
+
+          if (a.achieved) {
+            return 1;
+          }
+
+          return -1;
+        });
         break;
       case 'locked':
         // Show locked achievements first
-        sortedAchievements.sort((a, b) => (a.achieved === b.achieved ? 0 : a.achieved ? 1 : -1));
+        sortedAchievements.sort((a, b) => {
+          if (a.achieved === b.achieved) {
+            return 0;
+          }
+
+          if (a.achieved) {
+            return 1;
+          }
+
+          return -1;
+        });
         break;
       case 'protected':
         // Show protected achievements first
@@ -127,6 +148,7 @@ export default function useAchievementButtons(
       }
     } catch (error) {
       showDangerToast(t('common.error'));
+      // eslint-disable-next-line no-console
       console.error('Error in handleUnlockAll:', error);
       logEvent(`[Error] in (handleUnlockAll): ${error}`);
     }
@@ -169,10 +191,11 @@ export default function useAchievementButtons(
       }
     } catch (error) {
       showDangerToast(t('common.error'));
+      // eslint-disable-next-line no-console
       console.error('Error in handleLockAll:', error);
       logEvent(`[Error] in handleLockAll: ${error}`);
     }
   };
 
   return { handleChange, handleUnlockAll, handleLockAll };
-}
+};

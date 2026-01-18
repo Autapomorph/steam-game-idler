@@ -19,12 +19,11 @@ const mono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default:
-      'Steam Game Idler – The best alternative to ArchiSteamFarm, Steam Achievement Manager, and Idle Master',
-    template: '%s | Steam Game Idler',
+    default: 'Steam Game Idler - Farm Cards, Unlock Achievements & Idle Games',
+    template: 'Steam Game Idler - %s',
   },
   description:
-    'The best Steam idle tool featuring a trading card farmer, achievement unlocker, and game idler. Free alternative to ArchiSteamFarm, Steam Achievement Manager, Idle Master.',
+    'Free Steam automation tool to farm trading cards, unlock achievements, boost playtime, and idle games. Modern alternative to SAM, ASF, and Idle Master.',
   metadataBase: new URL('https://steamgameidler.com/'),
   keywords: [
     'Steam Game Idler',
@@ -41,8 +40,8 @@ export const metadata: Metadata = {
     'Steam Achievement Manager Alternative',
     'Idle Master Alternative',
   ],
-  authors: [{ name: 'zevnda', url: 'https://github.com/zevnda' }],
-  creator: 'zevnda',
+  authors: [{ name: 'Autapomorph', url: 'https://github.com/Autapomorph' }],
+  creator: 'Autapomorph',
   generator: 'Next.js',
   applicationName: 'Steam Game Idler',
   appleWebApp: {

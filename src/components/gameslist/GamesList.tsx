@@ -1,79 +1,16 @@
-import { memo, useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { cn, Spinner } from '@heroui/react';
 import { useTranslation } from 'react-i18next';
-import { VariableSizeList as List } from 'react-window';
+import { List } from 'react-window';
 
-import type { Game } from '@/types';
 import { useStateStore } from '@/stores/stateStore';
 import { useUserStore } from '@/stores/userStore';
-import PageHeader from '@/components/gameslist/PageHeader';
-import Private from '@/components/gameslist/Private';
-import RecentGamesCarousel from '@/components/gameslist/RecentGamesCarousel';
-import RecommendedGamesCarousel from '@/components/gameslist/RecommendedGamesCarousel';
-import GameCard from '@/components/ui/GameCard';
-import useGamesList, { type GamesListHook } from '@/hooks/gameslist/useGamesList';
+import { PageHeader } from '@/components/gameslist/PageHeader';
+import { Private } from '@/components/gameslist/Private';
+import { GamesListRow, type RowData } from '@/components/gameslist/GamesListRow';
+import { useGamesList } from '@/hooks/gameslist/useGamesList';
 
-interface RowData {
-  rows: ('recommended' | 'recent' | 'header' | number)[];
-  games: Game[];
-  columnCount: number;
-  gamesContext: GamesListHook;
-  t: (key: string) => string;
-}
-
-interface RowProps {
-  index: number;
-  style: CSSProperties;
-  data: RowData;
-}
-
-const Row = memo(({ index, style, data }: RowProps) => {
-  const { rows, games, columnCount, gamesContext, t } = data;
-
-  const rowType = rows[index];
-  if (rowType === 'recommended') {
-    return (
-      <div style={style}>
-        <RecommendedGamesCarousel gamesContext={gamesContext} />
-      </div>
-    );
-  }
-  if (rowType === 'recent') {
-    return (
-      <div style={style}>
-        <RecentGamesCarousel gamesContext={gamesContext} />
-      </div>
-    );
-  }
-  if (rowType === 'header') {
-    return (
-      <div style={style}>
-        <p className="text-lg font-black px-6">{t('gamesList.allGames')}</p>
-      </div>
-    );
-  }
-  if (typeof rowType === 'number') {
-    return (
-      <div
-        style={style}
-        className={cn(
-          'grid gap-x-5 gap-y-4 px-6',
-          columnCount === 7 ? 'grid-cols-7' : 'grid-cols-5',
-          columnCount === 8 ? 'grid-cols-8' : '',
-          columnCount === 10 ? 'grid-cols-10' : '',
-          columnCount === 12 ? 'grid-cols-12' : '',
-        )}
-      >
-        {games.slice(rowType * columnCount, (rowType + 1) * columnCount).map(item => (
-          <GameCard key={item.appid} item={item} />
-        ))}
-      </div>
-    );
-  }
-  return null;
-});
-
-export default function GamesList() {
+export const GamesList = () => {
   const gamesContext = useGamesList();
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed);
   const transitionDuration = useStateStore(state => state.transitionDuration);
@@ -82,7 +19,6 @@ export default function GamesList() {
   const { t } = useTranslation();
 
   const [columnCount, setColumnCount] = useState(5);
-  const listRef = useRef<List>(null);
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
@@ -100,9 +36,6 @@ export default function GamesList() {
       setColumnCount(7);
     } else {
       setColumnCount(5);
-    }
-    if (listRef.current) {
-      listRef.current.resetAfterIndex(0, true);
     }
   }, []);
 
@@ -152,41 +85,52 @@ export default function GamesList() {
 
   const rows = useMemo((): ('recommended' | 'recent' | 'header' | number)[] => {
     const r: ('recommended' | 'recent' | 'header' | number)[] = [];
-    if (hasRecommended) r.push('recommended');
-    if (hasRecent) r.push('recent');
+
+    if (hasRecommended) {
+      r.push('recommended');
+    }
+
+    if (hasRecent) {
+      r.push('recent');
+    }
+
     r.push('header');
-    for (let i = 0; i < gameRowCount; i += 1) r.push(i);
+
+    for (let i = 0; i < gameRowCount; i += 1) {
+      r.push(i);
+    }
+
     return r;
   }, [hasRecommended, hasRecent, gameRowCount]);
-
-  // Reset list measurements when rows structure changes
-  useEffect(() => {
-    if (listRef.current) {
-      listRef.current.resetAfterIndex(0, true);
-    }
-  }, [rows]);
 
   const getRowHeight = useCallback(
     (index: number): number => {
       const rowType = rows[index];
-      if (rowType === 'recommended') return recommendedHeight;
-      if (rowType === 'recent') return recentsHeight;
-      if (rowType === 'header') return headerHeight;
+
+      if (rowType === 'recommended') {
+        return recommendedHeight;
+      }
+
+      if (rowType === 'recent') {
+        return recentsHeight;
+      }
+
+      if (rowType === 'header') {
+        return headerHeight;
+      }
+
       return getDynamicRowHeight();
     },
     [rows, getDynamicRowHeight],
   );
 
-  const itemData = useMemo<RowData>(
-    () => ({
-      rows,
-      games,
-      columnCount,
-      gamesContext,
-      t,
-    }),
-    [rows, games, columnCount, gamesContext, t],
-  );
+  const rowData: RowData = {
+    rows,
+    games,
+    columnCount,
+    gamesContext,
+    t,
+  };
 
   if (!gamesContext.isLoading && gamesContext.gamesList.length === 0)
     return (
@@ -224,18 +168,18 @@ export default function GamesList() {
               ? `collapsed-${windowSize.width}x${windowSize.height}`
               : `expanded-${windowSize.width}x${windowSize.height}`
           }
-          height={windowSize.height - 168}
-          itemCount={rows.length}
-          itemSize={getRowHeight}
-          width="100%"
+          rowComponent={GamesListRow}
+          rowCount={rows.length}
+          rowHeight={getRowHeight}
           style={{
             overflowX: 'hidden',
+            width: '100%',
+            height: windowSize.height - 168,
           }}
-          ref={listRef}
-          itemData={itemData}
-        >
-          {Row}
-        </List>
+          rowProps={{
+            data: rowData,
+          }}
+        />
       ) : (
         <div className="flex justify-center items-center w-calc h-[calc(100vh-168px)]">
           <Spinner variant="simple" />
@@ -243,4 +187,4 @@ export default function GamesList() {
       )}
     </div>
   );
-}
+};

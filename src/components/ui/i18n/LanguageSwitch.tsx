@@ -8,7 +8,7 @@ interface Props {
   classNames?: Record<string, string[]>;
 }
 
-export default function LanguageSwitch({ className, classNames }: Props) {
+export const LanguageSwitch = ({ className, classNames }: Props) => {
   const { i18n } = useTranslation();
   const [mounted, setMounted] = useState(false);
 
@@ -34,7 +34,7 @@ export default function LanguageSwitch({ className, classNames }: Props) {
       radius="none"
       startContent={<TbLanguage />}
       items={languages}
-      className={cn('w-[250px]', className)}
+      className={cn('w-62.5', className)}
       classNames={{
         listbox: 'p-0',
         value: 'text-sm !text-content',
@@ -60,4 +60,4 @@ export default function LanguageSwitch({ className, classNames }: Props) {
       )}
     </Select>
   );
-}
+};

@@ -11,6 +11,7 @@ import type {
   UserSummary,
 } from '@/types';
 import { useUserStore } from '@/stores/userStore';
+// eslint-disable-next-line import-x/no-cycle
 import { getAllGamesWithDrops } from '@/utils/automation';
 import { decrypt, encrypt, logEvent } from '@/utils/tasks';
 import {
@@ -57,6 +58,7 @@ export const useCardSettings = (): CardSettingsHook => {
 
   // Get stored cookies to set their input values
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     getStoredSettings(
       userSettings,
       setHasCookies,
@@ -127,7 +129,7 @@ const getStoredSettings = async (
       setHasCookies(true);
       setSidValue(credentials.sid);
       setSlsValue(credentials.sls);
-      setSmaValue(credentials?.sma || '');
+      setSmaValue(credentials?.sma ?? '');
     }
     if (cardFarmingUser?.steamId) {
       setCardFarmingUser(cardFarmingUser);
@@ -138,6 +140,7 @@ const getStoredSettings = async (
     }
   } catch (error) {
     showDangerToast(t('common.error'));
+    // eslint-disable-next-line no-console
     console.error('Error in (getStoredSettings):', error);
     logEvent(`[Error] in (getStoredSettings): ${error}`);
   }
@@ -148,6 +151,7 @@ export const fetchGamesWithDropsData = async (
   setIsCFDataLoading: Dispatch<SetStateAction<boolean>>,
   setUserSettings: Dispatch<SetStateAction<UserSettings>>,
   setGamesWithDropsData: Dispatch<SetStateAction<GameWithRemainingDrops[]>>,
+  // eslint-disable-next-line consistent-return
 ): Promise<void> => {
   try {
     setIsCFDataLoading(true);
@@ -223,6 +227,7 @@ export const fetchGamesWithDropsData = async (
   } catch (error) {
     setIsCFDataLoading(false);
     showDangerToast(t('common.error'));
+    // eslint-disable-next-line no-console
     console.error('Error in (fetchGamesWithDropsData):', error);
     logEvent(`[Error] in (fetchGamesWithDropsData): ${error}`);
   }
@@ -239,6 +244,7 @@ export const handleCredentialsSave = async (
   setUserSettings: Dispatch<SetStateAction<UserSettings>>,
   setIsCFDataLoading: Dispatch<SetStateAction<boolean>>,
   setGamesWithDropsData: Dispatch<SetStateAction<GameWithRemainingDrops[]>>,
+  // eslint-disable-next-line consistent-return
 ): Promise<void> => {
   try {
     if (sidValue.length > 0 && slsValue.length > 0) {
@@ -297,6 +303,7 @@ export const handleCredentialsSave = async (
     }
   } catch (error) {
     showDangerToast(t('common.error'));
+    // eslint-disable-next-line no-console
     console.error('Error in (handleSave):', error);
     logEvent(`[Error] in (handleSave): ${error}`);
   }
@@ -353,6 +360,7 @@ export const handleCredentialsClear = async (
     logEvent('[Settings - Card Farming] Logged out');
   } catch (error) {
     showDangerToast(t('common.error'));
+    // eslint-disable-next-line no-console
     console.error('Error in (handleCredentialsClear):', error);
     logEvent(`[Error] in (handleCredentialsClear): ${error}`);
   }

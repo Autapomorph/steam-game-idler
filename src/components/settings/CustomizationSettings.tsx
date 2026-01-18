@@ -8,14 +8,14 @@ import { useTranslation } from 'react-i18next';
 
 import type { InvokeSettings } from '@/types';
 import { useUserStore } from '@/stores/userStore';
-import SettingsSwitch from '@/components/settings/SettingsSwitch';
+import { SettingsSwitch } from '@/components/settings/SettingsSwitch';
 
 interface Theme {
   key: string;
   label: string;
 }
 
-export default function CustomizationSettings() {
+export const CustomizationSettings = () => {
   const { t } = useTranslation();
   const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -165,4 +165,4 @@ export default function CustomizationSettings() {
       </div>
     </div>
   );
-}
+};

@@ -69,6 +69,7 @@ export const handleRunAtStartupChange = async (
     setStartupState(!isEnabledState);
   } catch (error) {
     showDangerToast(t('common.error'));
+    // eslint-disable-next-line no-console
     console.error('Error in (handleRunAtStartupChange):', error);
     logEvent(`[Error] in (handleRunAtStartupChange): ${error}`);
   }
@@ -106,6 +107,7 @@ export const handleKeySave = async (
     }
   } catch (error) {
     showDangerToast(t('common.error'));
+    // eslint-disable-next-line no-console
     console.error('Error in (handleKeySave):', error);
     logEvent(`[Error] in (handleKeySave): ${error}`);
   }
@@ -131,6 +133,7 @@ export const handleClear = async (
     logEvent('[Settings - General] Steam web API key cleared');
   } catch (error) {
     showDangerToast(t('common.error'));
+    // eslint-disable-next-line no-console
     console.error('Error in (handleClear):', error);
     logEvent(`[Error] in (handleClear): ${error}`);
   }

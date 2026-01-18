@@ -3,8 +3,8 @@ import { TbArrowRight } from 'react-icons/tb';
 import { useTranslation } from 'react-i18next';
 
 import type { TradingCard } from '@/types';
-import type useTradingCardsList from '@/hooks/trading-cards/useTradingCardsList';
-import CustomModal from '@/components/ui/CustomModal';
+import { type useTradingCardsList } from '@/hooks/trading-cards/useTradingCardsList';
+import { CustomModal } from '@/components/ui/CustomModal';
 import { logEvent } from '@/utils/tasks';
 import { showPriceFetchCooldownToast } from '@/utils/toasts';
 
@@ -13,10 +13,11 @@ interface Props {
   tradingCardContext: ReturnType<typeof useTradingCardsList>;
 }
 
-export default function PriceData({ item, tradingCardContext }: Props) {
+export const PriceData = ({ item, tradingCardContext }: Props) => {
   const { t } = useTranslation();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
+  // eslint-disable-next-line @typescript-eslint/no-shadow
   const handleFetchPrice = async (item: TradingCard): Promise<void> => {
     try {
       const cooldownKey = 'tcPriceFetchCooldown';
@@ -41,6 +42,7 @@ export default function PriceData({ item, tradingCardContext }: Props) {
       onOpen();
       await tradingCardContext.fetchCardPrices(item.market_hash_name);
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Error fetching price data:', error);
       logEvent(`[Error] in handleFetchPrice: ${error}`);
     }
@@ -48,13 +50,14 @@ export default function PriceData({ item, tradingCardContext }: Props) {
 
   return (
     <div className="flex justify-center items-center h-full mt-2">
-      <div
+      <button
+        type="button"
         className="flex justify-center items-center gap-2 text-xs text-content cursor-pointer hover:opacity-80 group w-36"
         onClick={() => handleFetchPrice(item)}
       >
         <p className="truncate">{t('tradingCards.fetchPrice')}</p>
         <TbArrowRight className="group-hover:translate-x-1 duration-200" />
-      </div>
+      </button>
 
       <CustomModal
         isOpen={isOpen}
@@ -176,4 +179,4 @@ export default function PriceData({ item, tradingCardContext }: Props) {
       />
     </div>
   );
-}
+};

@@ -1,13 +1,24 @@
 import type { PropsWithChildren } from 'react';
 import Head from 'next/head';
-import { Inter } from 'next/font/google';
+import localFont from 'next/font/local';
 
-const inter = Inter({
-  subsets: ['latin'],
+const inter = localFont({
+  src: [
+    {
+      path: '../../fonts/inter/Inter-VariableFont_opsz,wght.ttf',
+      weight: '100 900',
+      style: 'normal',
+    },
+    {
+      path: '../../fonts/inter/Inter-Italic-VariableFont_opsz,wght.ttf',
+      weight: '100 900',
+      style: 'italic',
+    },
+  ],
   variable: '--font-inter',
 });
 
-export default function Layout({ children }: PropsWithChildren) {
+export const Layout = ({ children }: PropsWithChildren) => {
   return (
     <>
       <Head>
@@ -19,4 +30,4 @@ export default function Layout({ children }: PropsWithChildren) {
       </main>
     </>
   );
-}
+};

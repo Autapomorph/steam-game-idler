@@ -1,12 +1,10 @@
 import { invoke } from '@tauri-apps/api/core';
 
 import type { InvokeIdle, InvokeRunningProcess, InvokeSettings, UserSummary } from '@/types';
-import type { GameForFarming } from '@/hooks/automation/useCardFarming';
 import { checkSteamStatus, logEvent } from '@/utils/tasks';
 import { showAccountMismatchToast, showWarningToast, t } from '@/utils/toasts';
-
-const idleTimeouts: Record<number, ReturnType<typeof setTimeout>> = {};
-const idleIntervals: Record<number, ReturnType<typeof setTimeout>> = {};
+import { idleTimeouts, idleIntervals } from './timeouts';
+import { stopIdle } from './stopIdle';
 
 // Start idling a game
 export async function startIdle(appId: number, appName: string, manual = true): Promise<boolean> {
@@ -15,13 +13,13 @@ export async function startIdle(appId: number, appName: string, manual = true): 
     const isSteamRunning = await checkSteamStatus(true);
     if (!isSteamRunning) return false;
 
-    const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary;
+    const userSummary = JSON.parse(localStorage.getItem('userSummary') ?? '{}') as UserSummary;
 
     const settingsResponse = await invoke<InvokeSettings>('get_user_settings', {
       steamId: userSummary?.steamId,
     });
 
-    const gameSettings = settingsResponse.settings.gameSettings || {};
+    const gameSettings = settingsResponse.settings.gameSettings ?? {};
     let maxIdleTime = 0;
     // Check for globalMaxIdleTime first
     const globalMaxIdleTime =
@@ -35,7 +33,7 @@ export async function startIdle(appId: number, appName: string, manual = true): 
         perGameSetting !== null &&
         !Array.isArray(perGameSetting)
       ) {
-        maxIdleTime = perGameSetting.maxIdleTime || 0;
+        maxIdleTime = perGameSetting.maxIdleTime ?? 0;
       }
     }
 
@@ -72,9 +70,12 @@ export async function startIdle(appId: number, appName: string, manual = true): 
         }, maxIdleTime * 60000);
 
         idleIntervals[appId] = setInterval(async () => {
+          // eslint-disable-next-line @typescript-eslint/no-shadow
           const response = await invoke<InvokeRunningProcess>('get_running_processes');
 
+          // eslint-disable-next-line @typescript-eslint/no-shadow
           const processes = response?.processes;
+          // eslint-disable-next-line @typescript-eslint/no-shadow
           const runningIdlers = processes.map(p => p.appid);
 
           // If the game is no longer being idled, clear the timeout and interval
@@ -90,84 +91,14 @@ export async function startIdle(appId: number, appName: string, manual = true): 
       return true;
     }
     showAccountMismatchToast('danger');
+    // eslint-disable-next-line no-console
     console.error(`Error starting idler for ${appName} (${appId}): ${idleResponse.error}`);
     logEvent(`[Error] [Idle] Failed to idle ${appName} (${appId}) - account mismatch`);
     return false;
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Error in startIdle util: ', error);
     logEvent(`[Error] in (startIdle) util: ${error}`);
-    return false;
-  }
-}
-
-// Stop idling a game
-export async function stopIdle(
-  appId: number | undefined,
-  appName: string | undefined,
-): Promise<boolean> {
-  try {
-    if (!appId || !appName) {
-      return false;
-    }
-
-    if (idleTimeouts[appId]) {
-      clearTimeout(idleTimeouts[appId]);
-      delete idleTimeouts[appId];
-    }
-    if (idleIntervals[appId]) {
-      clearInterval(idleIntervals[appId]);
-      delete idleIntervals[appId];
-    }
-    const response = await invoke<InvokeIdle>('stop_idle', {
-      appId: Number(appId),
-    });
-    if (response.success) {
-      logEvent(`[Idle] Stopped idling ${appName} (${appId})`);
-      return true;
-    }
-    return false;
-  } catch (error) {
-    console.error('Error in stopIdle util (these errors can often be ignored): ', error);
-    return false;
-  }
-}
-
-// Start farming idle
-export async function startFarmIdle(gamesSet: Set<GameForFarming>): Promise<boolean> {
-  try {
-    // Make sure Steam client is running
-    const isSteamRunning = await checkSteamStatus(true);
-    if (!isSteamRunning) return false;
-
-    const gamesList = Array.from(gamesSet).map(game => ({
-      app_id: Number(game.appid),
-      name: game.name,
-    }));
-
-    const response = await invoke<InvokeIdle>('start_farm_idle', { gamesList });
-    if (response.success) {
-      logEvent(`[Card Farming] Started idling ${gamesSet.size} games`);
-      return true;
-    }
-    showAccountMismatchToast('danger');
-    console.error('Error starting farm idle: ', response.error);
-    logEvent('[Error] [Card Farming] Failed to idle one or more games - possible account mismatch');
-    return false;
-  } catch (error) {
-    console.error('Error in startFarmIdle util: ', error);
-    logEvent(`[Error] in (startFarmIdle) util: ${error}`);
-    return false;
-  }
-}
-
-// Stop farming idle
-export async function stopFarmIdle(gamesSet: Set<GameForFarming>): Promise<boolean> {
-  try {
-    await invoke('stop_farm_idle');
-    logEvent(`[Card Farming] Stopped idling ${gamesSet.size} games`);
-    return true;
-  } catch (error) {
-    console.error('Error in stopFarmIdle util (these errors can often be ignored): ', error);
     return false;
   }
 }

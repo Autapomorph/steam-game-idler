@@ -13,8 +13,12 @@ export default async function Page(props: PageProps<'/changelog/[slug]'>) {
   const params = await props.params;
   const page = blog.getPage([params.slug]);
 
-  if (!page) notFound();
+  if (!page) {
+    notFound();
+  }
+
   const { body: Mdx } = await page.data.load();
+
   const data = page.data as {
     title: string;
     date: string | Date;
@@ -47,6 +51,7 @@ export default async function Page(props: PageProps<'/changelog/[slug]'>) {
                   <span
                     key={tag}
                     className={`text-xs px-2.5 py-1 rounded-md font-medium ${
+                      /* eslint-disable no-nested-ternary */
                       tag === 'New'
                         ? 'bg-green-500/15 text-green-400'
                         : tag === 'Improved'
@@ -54,6 +59,7 @@ export default async function Page(props: PageProps<'/changelog/[slug]'>) {
                           : tag === 'Fixed'
                             ? 'bg-cyan-500/15 text-cyan-400'
                             : 'bg-gray-700 text-gray-300'
+                      /* eslint-enable no-nested-ternary */
                     }`}
                   >
                     {tag}

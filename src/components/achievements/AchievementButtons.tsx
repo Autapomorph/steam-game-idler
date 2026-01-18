@@ -6,8 +6,8 @@ import { Trans, useTranslation } from 'react-i18next';
 import type { Achievement, SortOption } from '@/types';
 import { useStateStore } from '@/stores/stateStore';
 import { useUserStore } from '@/stores/userStore';
-import CustomModal from '@/components/ui/CustomModal';
-import useAchievementButtons from '@/hooks/achievements/useAchievementButtons';
+import { CustomModal } from '@/components/ui/CustomModal';
+import { useAchievementButtons } from '@/hooks/achievements/useAchievementButtons';
 
 interface Props {
   achievements: Achievement[];
@@ -16,12 +16,12 @@ interface Props {
   setRefreshKey?: Dispatch<SetStateAction<number>>;
 }
 
-export default function AchievementButtons({
+export const AchievementButtons = ({
   achievements,
   setAchievements,
   protectedAchievements,
   setRefreshKey,
-}: Props) {
+}: Props) => {
   const { t } = useTranslation();
   const userSummary = useUserStore(state => state.userSummary);
   const appId = useStateStore(state => state.appId);
@@ -63,12 +63,14 @@ export default function AchievementButtons({
   const unAchieved = achievements.filter(achievement => !achievement.achieved);
   const achieved = achievements.filter(achievement => achievement.achieved);
 
+  // eslint-disable-next-line @typescript-eslint/no-shadow
   const getTranslatedState = (state: string): string => {
     if (state === 'unlock') return t('achievementManager.achievements.unlock');
     if (state === 'lock') return t('achievementManager.achievements.lock');
     return state;
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-shadow
   const handleShowModal = (onOpen: () => void, state: string): void => {
     setState(state);
     onOpen();
@@ -188,4 +190,4 @@ export default function AchievementButtons({
       />
     </div>
   );
-}
+};

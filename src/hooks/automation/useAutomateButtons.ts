@@ -43,6 +43,7 @@ export const useAutomate = (): AutomateButtonsHook => {
         credentials = autoRevalidateResult.credentials;
       }
 
+      // eslint-disable-next-line consistent-return
       if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast();
 
       // Validate Steam session
@@ -60,6 +61,7 @@ export const useAutomate = (): AutomateButtonsHook => {
           value: null,
         });
 
+        // eslint-disable-next-line @typescript-eslint/no-shadow
         const response = await invoke<InvokeSettings>('update_user_settings', {
           steamId: userSummary?.steamId,
           key: 'cardFarming.userSummary',
@@ -67,6 +69,7 @@ export const useAutomate = (): AutomateButtonsHook => {
         });
 
         setUserSettings(response.settings);
+        // eslint-disable-next-line consistent-return
         return showOutdatedCredentialsToast();
       }
       // Retrieve card farming list
@@ -76,11 +79,13 @@ export const useAutomate = (): AutomateButtonsHook => {
       });
 
       if (!userSettings.cardFarming.allGames && cardFarmingList.list_data.length === 0)
+        // eslint-disable-next-line consistent-return
         return showEnableAllGamesToast();
 
       setIsCardFarming(true);
     } catch (error) {
       showDangerToast(t('common.error'));
+      // eslint-disable-next-line no-console
       console.error('Error in (startCardFarming):', error);
       logEvent(`[Error] in (startCardFarming): ${error}`);
     }
@@ -99,11 +104,13 @@ export const useAutomate = (): AutomateButtonsHook => {
         list: 'achievementUnlockerList',
       });
 
+      // eslint-disable-next-line consistent-return
       if (achievementUnlockerList.list_data.length === 0) return showNoGamesToast();
 
       setIsAchievementUnlocker(true);
     } catch (error) {
       showDangerToast(t('common.error'));
+      // eslint-disable-next-line no-console
       console.error('Error in (startAchievementUnlocker):', error);
       logEvent(`[Error] in (startAchievementUnlocker): ${error}`);
     }
