@@ -3,13 +3,12 @@ import { cn, Divider, Input, NumberInput } from '@heroui/react';
 import { RiSearchLine } from 'react-icons/ri';
 import { TbChevronRight } from 'react-icons/tb';
 import { Trans, useTranslation } from 'react-i18next';
-import { FixedSizeList as List } from 'react-window';
+import { List } from 'react-window';
 
 import type { Game } from '@/types';
 import { useUserStore } from '@/stores/userStore';
 import { useGameSettings } from '@/hooks/settings/useGameSettings';
-
-import { GameSettingsRow } from './GameSettingsRow';
+import { GameSettingsRow, type RowData } from '@/components/settings/GameSettingsRow';
 
 export const GameSettings = () => {
   const { t } = useTranslation();
@@ -34,7 +33,7 @@ export const GameSettings = () => {
     return gamesList.filter(game => game.name.toLowerCase().includes(searchTerm.toLowerCase()));
   }, [gamesList, searchTerm]);
 
-  const itemData = {
+  const rowData: RowData = {
     filteredGamesList,
     selectedGame,
     onGameSelect: setSelectedGame,
@@ -83,14 +82,17 @@ export const GameSettings = () => {
 
         <div className="border border-border/70 rounded-lg mb-2 overflow-hidden bg-popover/80">
           <List
-            height={windowInnerHeight - 610}
-            itemCount={filteredGamesList.length}
-            itemSize={37}
-            width="100%"
-            itemData={itemData}
-          >
-            {GameSettingsRow}
-          </List>
+            rowComponent={GameSettingsRow}
+            rowCount={filteredGamesList.length}
+            rowHeight={37}
+            style={{
+              width: '100%',
+              height: windowInnerHeight - 610,
+            }}
+            rowProps={{
+              data: rowData,
+            }}
+          />
         </div>
 
         <Divider className="bg-border/70 my-4" />

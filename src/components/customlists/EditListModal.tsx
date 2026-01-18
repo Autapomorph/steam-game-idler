@@ -11,10 +11,10 @@ import {
 } from '@heroui/react';
 import { RiSearchLine } from 'react-icons/ri';
 import { useTranslation } from 'react-i18next';
-import { FixedSizeList as List } from 'react-window';
+import { List } from 'react-window';
 
 import type { Game } from '@/types';
-import { EditListRow } from '@/components/customlists/EditListRow';
+import { EditListRow, type RowData } from '@/components/customlists/EditListRow';
 
 interface Props {
   type?: string;
@@ -60,7 +60,7 @@ export const EditListModal = ({
   blacklist,
 }: Props) => {
   const { t } = useTranslation();
-  const itemData = {
+  const rowData: RowData = {
     t,
     filteredGamesList,
     list,
@@ -121,17 +121,20 @@ export const EditListModal = ({
             </ModalHeader>
             <ModalBody className="relative p-0 gap-0 overflow-y-auto">
               <List
-                height={window.innerHeight - 225}
-                itemCount={displayList.length}
-                itemSize={37}
-                width="100%"
-                itemData={{
-                  ...itemData,
-                  filteredGamesList: displayList,
+                rowComponent={EditListRow}
+                rowCount={displayList.length}
+                rowHeight={37}
+                style={{
+                  width: '100%',
+                  height: window.innerHeight - 225,
                 }}
-              >
-                {EditListRow}
-              </List>
+                rowProps={{
+                  data: {
+                    ...rowData,
+                    filteredGamesList: displayList,
+                  },
+                }}
+              />
             </ModalBody>
             <ModalFooter className="border-t border-border/40 p-3">
               <Button

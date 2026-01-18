@@ -1,7 +1,7 @@
-import { memo, type CSSProperties } from 'react';
 import Image from 'next/image';
 import { Button, cn } from '@heroui/react';
 import { TbCancel, TbLock, TbLockOpen } from 'react-icons/tb';
+import { type RowComponentProps } from 'react-window';
 
 import type { Achievement, UserSummary } from '@/types';
 import { CustomTooltip } from '@/components/ui/CustomTooltip';
@@ -17,17 +17,15 @@ export interface RowData {
   t: (key: string) => string;
 }
 
-interface Props {
-  index: number;
-  style: CSSProperties;
-  data: RowData;
-}
+type Props = RowComponentProps<{ data: RowData }>;
 
-export const AchievementsListRow = memo(({ index, style, data }: Props) => {
+export const AchievementsListRow = ({ index, style, data }: Props) => {
   const { userSummary, appId, appName, filteredAchievements, updateAchievement, t } = data;
   const item = filteredAchievements[index];
 
-  if (!item) return null;
+  if (!item) {
+    return null;
+  }
 
   const achieved = item.achieved || false;
   const protectedAchievement = item.protected_achievement || false;
@@ -140,4 +138,4 @@ export const AchievementsListRow = memo(({ index, style, data }: Props) => {
       </div>
     </div>
   );
-});
+};

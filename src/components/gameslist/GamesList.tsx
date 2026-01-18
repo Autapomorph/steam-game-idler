@@ -1,23 +1,14 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { cn, Spinner } from '@heroui/react';
 import { useTranslation } from 'react-i18next';
-import { VariableSizeList as List } from 'react-window';
+import { List } from 'react-window';
 
-import type { Game } from '@/types';
 import { useStateStore } from '@/stores/stateStore';
 import { useUserStore } from '@/stores/userStore';
 import { PageHeader } from '@/components/gameslist/PageHeader';
 import { Private } from '@/components/gameslist/Private';
-import { GamesListRow } from '@/components/gameslist/GamesListRow';
-import { useGamesList, type GamesListHook } from '@/hooks/gameslist/useGamesList';
-
-interface RowData {
-  rows: ('recommended' | 'recent' | 'header' | number)[];
-  games: Game[];
-  columnCount: number;
-  gamesContext: GamesListHook;
-  t: (key: string) => string;
-}
+import { GamesListRow, type RowData } from '@/components/gameslist/GamesListRow';
+import { useGamesList } from '@/hooks/gameslist/useGamesList';
 
 export const GamesList = () => {
   const gamesContext = useGamesList();
@@ -28,7 +19,6 @@ export const GamesList = () => {
   const { t } = useTranslation();
 
   const [columnCount, setColumnCount] = useState(5);
-  const listRef = useRef<List>(null);
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
@@ -46,9 +36,6 @@ export const GamesList = () => {
       setColumnCount(7);
     } else {
       setColumnCount(5);
-    }
-    if (listRef.current) {
-      listRef.current.resetAfterIndex(0, true);
     }
   }, []);
 
@@ -98,41 +85,52 @@ export const GamesList = () => {
 
   const rows = useMemo((): ('recommended' | 'recent' | 'header' | number)[] => {
     const r: ('recommended' | 'recent' | 'header' | number)[] = [];
-    if (hasRecommended) r.push('recommended');
-    if (hasRecent) r.push('recent');
+
+    if (hasRecommended) {
+      r.push('recommended');
+    }
+
+    if (hasRecent) {
+      r.push('recent');
+    }
+
     r.push('header');
-    for (let i = 0; i < gameRowCount; i += 1) r.push(i);
+
+    for (let i = 0; i < gameRowCount; i += 1) {
+      r.push(i);
+    }
+
     return r;
   }, [hasRecommended, hasRecent, gameRowCount]);
-
-  // Reset list measurements when rows structure changes
-  useEffect(() => {
-    if (listRef.current) {
-      listRef.current.resetAfterIndex(0, true);
-    }
-  }, [rows]);
 
   const getRowHeight = useCallback(
     (index: number): number => {
       const rowType = rows[index];
-      if (rowType === 'recommended') return recommendedHeight;
-      if (rowType === 'recent') return recentsHeight;
-      if (rowType === 'header') return headerHeight;
+
+      if (rowType === 'recommended') {
+        return recommendedHeight;
+      }
+
+      if (rowType === 'recent') {
+        return recentsHeight;
+      }
+
+      if (rowType === 'header') {
+        return headerHeight;
+      }
+
       return getDynamicRowHeight();
     },
     [rows, getDynamicRowHeight],
   );
 
-  const itemData = useMemo<RowData>(
-    () => ({
-      rows,
-      games,
-      columnCount,
-      gamesContext,
-      t,
-    }),
-    [rows, games, columnCount, gamesContext, t],
-  );
+  const rowData: RowData = {
+    rows,
+    games,
+    columnCount,
+    gamesContext,
+    t,
+  };
 
   if (!gamesContext.isLoading && gamesContext.gamesList.length === 0)
     return (
@@ -170,18 +168,18 @@ export const GamesList = () => {
               ? `collapsed-${windowSize.width}x${windowSize.height}`
               : `expanded-${windowSize.width}x${windowSize.height}`
           }
-          height={windowSize.height - 168}
-          itemCount={rows.length}
-          itemSize={getRowHeight}
-          width="100%"
+          rowComponent={GamesListRow}
+          rowCount={rows.length}
+          rowHeight={getRowHeight}
           style={{
             overflowX: 'hidden',
+            width: '100%',
+            height: windowSize.height - 168,
           }}
-          ref={listRef}
-          itemData={itemData}
-        >
-          {GamesListRow}
-        </List>
+          rowProps={{
+            data: rowData,
+          }}
+        />
       ) : (
         <div className="flex justify-center items-center w-calc h-[calc(100vh-168px)]">
           <Spinner variant="simple" />

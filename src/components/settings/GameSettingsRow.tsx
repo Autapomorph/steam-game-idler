@@ -1,22 +1,19 @@
-import { memo, type CSSProperties, type SyntheticEvent } from 'react';
+import { type SyntheticEvent } from 'react';
 import Image from 'next/image';
 import { cn } from '@heroui/react';
+import { type RowComponentProps } from 'react-window';
 
 import type { Game } from '@/types';
 
-interface RowData {
+export interface RowData {
   filteredGamesList: Game[];
   selectedGame: Game | null;
   onGameSelect: (game: Game) => void;
 }
 
-interface Props {
-  index: number;
-  style: CSSProperties;
-  data: RowData;
-}
+type Props = RowComponentProps<{ data: RowData }>;
 
-export const GameSettingsRow = memo(({ index, style, data }: Props) => {
+export const GameSettingsRow = ({ index, style, data }: Props) => {
   const { filteredGamesList, selectedGame, onGameSelect } = data;
   const item = filteredGamesList[index];
 
@@ -53,4 +50,4 @@ export const GameSettingsRow = memo(({ index, style, data }: Props) => {
       </div>
     </button>
   );
-});
+};

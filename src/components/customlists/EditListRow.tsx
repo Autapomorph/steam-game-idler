@@ -1,11 +1,12 @@
-import { memo, type CSSProperties, type SyntheticEvent } from 'react';
+import { type SyntheticEvent } from 'react';
 import Image from 'next/image';
 import { Button, cn } from '@heroui/react';
 import { TbCheck } from 'react-icons/tb';
+import { type RowComponentProps } from 'react-window';
 
 import type { Game } from '@/types';
 
-interface RowData {
+export interface RowData {
   t: (key: string) => string;
   filteredGamesList: Game[];
   list: Game[];
@@ -16,13 +17,9 @@ interface RowData {
   blacklist: number[];
 }
 
-interface Props {
-  index: number;
-  style: CSSProperties;
-  data: RowData;
-}
+type Props = RowComponentProps<{ data: RowData }>;
 
-export const EditListRow = memo(({ index, style, data }: Props) => {
+export const EditListRow = ({ index, style, data }: Props) => {
   const {
     t,
     filteredGamesList,
@@ -89,4 +86,4 @@ export const EditListRow = memo(({ index, style, data }: Props) => {
       </div>
     </button>
   );
-});
+};

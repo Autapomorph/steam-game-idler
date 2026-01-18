@@ -1,5 +1,5 @@
-import { memo, type CSSProperties } from 'react';
 import { cn, NumberInput } from '@heroui/react';
+import { type RowComponentProps } from 'react-window';
 
 import type { Statistic } from '@/types';
 
@@ -9,18 +9,16 @@ export interface RowData {
   t: (key: string) => string;
 }
 
-interface Props {
-  index: number;
-  style: CSSProperties;
-  data: RowData;
-}
+type Props = RowComponentProps<{ data: RowData }>;
 
-export const StatisticsListRow = memo(({ index, style, data }: Props) => {
+export const StatisticsListRow = ({ index, style, data }: Props) => {
   const { filteredStatistics, updateStatistic, t } = data;
   const item1 = filteredStatistics[index * 2];
   const item2 = filteredStatistics[index * 2 + 1];
 
-  if (!item1 && !item2) return null;
+  if (!item1 && !item2) {
+    return null;
+  }
 
   const protectedStatisticOne = item1?.protected_stat || false;
   const protectedStatisticTwo = item2?.protected_stat || false;
@@ -107,4 +105,4 @@ export const StatisticsListRow = memo(({ index, style, data }: Props) => {
       )}
     </div>
   );
-});
+};

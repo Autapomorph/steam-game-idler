@@ -1,6 +1,6 @@
 import { useMemo, useState, type ChangeEvent, type Dispatch, type SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FixedSizeList as List } from 'react-window';
+import { List } from 'react-window';
 
 import type { Achievement, ChangedStats, Statistic } from '@/types';
 import { useSearchStore } from '@/stores/searchStore';
@@ -61,7 +61,7 @@ export const StatisticsList = ({
     [statistics, statisticQueryValue],
   );
 
-  const itemData: RowData = { filteredStatistics, updateStatistic, t };
+  const rowData: RowData = { filteredStatistics, updateStatistic, t };
 
   return (
     <div className="flex flex-col gap-2 w-full scroll-smooth">
@@ -77,14 +77,17 @@ export const StatisticsList = ({
           />
 
           <List
-            height={windowInnerHeight - 196}
-            itemCount={Math.ceil(filteredStatistics.length / 2)}
-            itemSize={62}
-            width="100%"
-            itemData={itemData}
-          >
-            {StatisticsListRow}
-          </List>
+            rowComponent={StatisticsListRow}
+            rowCount={Math.ceil(filteredStatistics.length / 2)}
+            rowHeight={62}
+            style={{
+              width: '100%',
+              height: windowInnerHeight - 196,
+            }}
+            rowProps={{
+              data: rowData,
+            }}
+          />
         </>
       ) : (
         <div className="flex flex-col gap-2 justify-center items-center my-2 bg-tab-panel rounded-lg p-4 mr-10">

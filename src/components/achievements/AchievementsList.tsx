@@ -1,6 +1,6 @@
 import { useMemo, type Dispatch, type SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FixedSizeList as List } from 'react-window';
+import { List } from 'react-window';
 
 import type { Achievement } from '@/types';
 import { useSearchStore } from '@/stores/searchStore';
@@ -48,7 +48,7 @@ export const AchievementsList = ({
     [achievements, achievementQueryValue],
   );
 
-  const itemData: RowData = {
+  const rowData: RowData = {
     userSummary,
     appId: appId as number,
     appName: appName as string,
@@ -69,14 +69,18 @@ export const AchievementsList = ({
           />
 
           <List
-            height={windowInnerHeight - 196}
-            itemCount={filteredAchievements.length}
-            itemSize={110}
-            width="100%"
-            itemData={itemData}
-          >
-            {AchievementsListRow}
-          </List>
+            rowComponent={AchievementsListRow}
+            defaultHeight={windowInnerHeight - 196}
+            rowCount={filteredAchievements.length}
+            rowHeight={110}
+            style={{
+              width: '100%',
+              height: windowInnerHeight - 196,
+            }}
+            rowProps={{
+              data: rowData,
+            }}
+          />
         </>
       ) : (
         <div className="flex flex-col gap-2 justify-center items-center my-2 bg-tab-panel rounded-lg p-4 mr-10">

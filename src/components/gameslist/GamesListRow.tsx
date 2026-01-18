@@ -1,5 +1,5 @@
-import { memo, type CSSProperties } from 'react';
 import { cn } from '@heroui/react';
+import { type RowComponentProps } from 'react-window';
 
 import type { Game } from '@/types';
 import { RecommendedGamesCarousel } from '@/components/gameslist/RecommendedGamesCarousel';
@@ -7,7 +7,7 @@ import { RecentGamesCarousel } from '@/components/gameslist/RecentGamesCarousel'
 import { GameCard } from '@/components/ui/GameCard';
 import { type GamesListHook } from '@/hooks/gameslist/useGamesList';
 
-interface RowData {
+export interface RowData {
   rows: ('recommended' | 'recent' | 'header' | number)[];
   games: Game[];
   columnCount: number;
@@ -15,16 +15,12 @@ interface RowData {
   t: (key: string) => string;
 }
 
-interface Props {
-  index: number;
-  style: CSSProperties;
-  data: RowData;
-}
+type Props = RowComponentProps<{ data: RowData }>;
 
-export const GamesListRow = memo(({ index, style, data }: Props) => {
+export const GamesListRow = ({ index, style, data }: Props) => {
   const { rows, games, columnCount, gamesContext, t } = data;
-
   const rowType = rows[index];
+
   if (rowType === 'recommended') {
     return (
       <div style={style}>
@@ -32,6 +28,7 @@ export const GamesListRow = memo(({ index, style, data }: Props) => {
       </div>
     );
   }
+
   if (rowType === 'recent') {
     return (
       <div style={style}>
@@ -39,6 +36,7 @@ export const GamesListRow = memo(({ index, style, data }: Props) => {
       </div>
     );
   }
+
   if (rowType === 'header') {
     return (
       <div style={style}>
@@ -46,6 +44,7 @@ export const GamesListRow = memo(({ index, style, data }: Props) => {
       </div>
     );
   }
+
   if (typeof rowType === 'number') {
     return (
       <div
@@ -64,5 +63,6 @@ export const GamesListRow = memo(({ index, style, data }: Props) => {
       </div>
     );
   }
+
   return null;
-});
+};
