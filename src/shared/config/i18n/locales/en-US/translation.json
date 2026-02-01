@@ -1,0 +1,19 @@
+{
+  "sample": "Sample Text",
+
+  "app": {
+    "title": "Steam Game Idler"
+  },
+
+  "error_boundary": {
+    "title": "Something went wrong.",
+    "description": "An error occurred while rendering the application.",
+    "stack_trace": "Stack Trace",
+    "no_stack_trace": "No stack trace available.",
+    "report_on_github": "Report on GitHub"
+  },
+  "common": {
+    "reload_button": "Reload",
+    "error": "Error"
+  }
+}

@@ -1,13 +1,14 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import globals from 'globals';
-import js from '@eslint/js';
-import { defineConfig, globalIgnores } from 'eslint/config';
+
 import { includeIgnoreFile } from '@eslint/compat';
+import js from '@eslint/js';
 import { configs, plugins, rules } from 'eslint-config-airbnb-extended';
-import reactRefreshPlugin from 'eslint-plugin-react-refresh';
-import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import { createTypeScriptImportResolver } from 'eslint-import-resolver-typescript';
+import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
+import reactRefreshPlugin from 'eslint-plugin-react-refresh';
+import { defineConfig, globalIgnores } from 'eslint/config';
+import globals from 'globals';
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -15,7 +16,7 @@ export const projectRoot = path.resolve(dirname);
 export const gitignorePath = path.resolve(projectRoot, '.gitignore');
 
 export default defineConfig([
-  globalIgnores(['']),
+  globalIgnores(['docs/**']),
   includeIgnoreFile(gitignorePath),
   {
     name: 'js/config',
@@ -28,16 +29,14 @@ export default defineConfig([
   plugins.react,
   plugins.reactHooks,
   plugins.reactA11y,
-  plugins.next,
-  ...configs.next.recommended,
+  ...configs.react.recommended,
 
   plugins.typescriptEslint,
   ...configs.base.typescript,
   ...configs.react.typescript,
-  ...configs.next.typescript,
   rules.typescript.typescriptEslintStrict,
 
-  reactRefreshPlugin.configs.next,
+  reactRefreshPlugin.configs.vite,
 
   eslintPluginPrettierRecommended,
 
@@ -57,7 +56,7 @@ export default defineConfig([
     settings: {
       'import-x/resolver-next': [
         createTypeScriptImportResolver({
-          project: ['./tsconfig.json', './docs/tsconfig.json'],
+          project: ['./tsconfig.json'],
         }),
       ],
     },
