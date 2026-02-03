@@ -1,21 +1,13 @@
-import { Suspense } from 'react';
-import { createBrowserRouter, Outlet, ScrollRestoration } from 'react-router';
+import { createBrowserRouter } from 'react-router';
 
-import { FullScreenLoader } from '@/shared/ui';
+import { MainLayout } from '@/shared/ui';
 import { notFoundRoute } from './routes/not-found';
 import { requireAuthRoute } from './routes/require-auth';
 import { unauthenticatedRoute } from './routes/unauthenticated';
 
 export const router = createBrowserRouter([
   {
-    element: (
-      <>
-        <ScrollRestoration />
-        <Suspense fallback={<FullScreenLoader />}>
-          <Outlet />
-        </Suspense>
-      </>
-    ),
+    element: <MainLayout />,
     children: [unauthenticatedRoute, requireAuthRoute, notFoundRoute],
   },
 ]);

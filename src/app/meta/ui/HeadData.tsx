@@ -12,12 +12,12 @@ export const HeadData = () => {
     titleTemplate: '%s %separator %siteName',
     templateParams: {
       separator: '—',
-      siteName: t('app.title'),
+      siteName: t($ => $.app_name),
     },
     meta: [
       {
         name: 'description',
-        content: t('app.title'),
+        content: t($ => $.app_name),
       },
     ],
   });

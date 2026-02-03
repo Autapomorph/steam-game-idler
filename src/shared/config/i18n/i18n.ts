@@ -6,14 +6,13 @@ import { config } from '../env';
 import translationENUS from './locales/en-US/translation.json';
 import translationRU from './locales/ru/translation.json';
 
-const resources = {
-  'en-US': { translation: translationENUS },
-  ru: { translation: translationRU },
-};
-
 export const ns = ['translation'] as const;
-
 export const defaultNS = 'translation' as const;
+
+export const resources = {
+  'en-US': { translation: translationENUS },
+  'ru-RU': { translation: translationRU },
+} as const;
 
 export const initI18n = () => {
   i18n
@@ -21,16 +20,20 @@ export const initI18n = () => {
     .use(initReactI18next)
     .init({
       debug: config.isDev,
-      resources,
+
       ns,
       defaultNS,
+      resources,
+
       partialBundledLanguages: true,
 
       fallbackLng: {
-        be: ['ru'],
-        uk: ['ru'],
-        kk: ['ru'],
         default: ['en-US'],
+        en: ['en-US'],
+        ru: ['ru-RU'],
+        be: ['ru-RU'],
+        uk: ['ru-RU'],
+        kk: ['ru-RU'],
       },
 
       detection: {

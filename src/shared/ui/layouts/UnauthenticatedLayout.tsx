@@ -1,29 +1,20 @@
 import { Navigate, Outlet } from 'react-router';
 
+import { useUserStore } from '@/shared/stores';
 import { FullScreenLoader } from '../loaders/FullScreenLoader';
 
 export const UnauthenticatedLayout = () => {
-  // const { isAuthenticated, isLoading, error } = useAuth()
-  // Example (change localstorage items for test)
-  const isAuthenticated = localStorage.getItem('auth/isAuthenticated');
-  const isLoading = localStorage.getItem('auth/isLoading');
+  const userSummary = useUserStore(s => s.userSummary);
+  const isLoading = useUserStore(s => s.isLoading);
 
-  // if (error) {
-  //   throw error
-  // }
-
-  if (isAuthenticated) {
+  if (userSummary) {
     return <Navigate to="/" replace />;
   }
 
-  if (isLoading) {
-    return <FullScreenLoader />;
-  }
-
   return (
-    <div>
-      <p>Example unauthenticated layout</p>
+    <>
       <Outlet />
-    </div>
+      {isLoading && <FullScreenLoader />}
+    </>
   );
 };
