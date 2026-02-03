@@ -1,18 +1,14 @@
-import { useEffect } from 'react';
-import { RouterProvider } from 'react-router/dom';
-import { emit } from '@tauri-apps/api/event';
+import { RouterProvider } from 'react-router';
 
-import { HeadData } from './meta';
+import { useAppInit } from './init';
 import { Providers } from './providers';
+import { HeadData } from './meta';
 import { router } from './router';
 
 import './styles/globals.css';
 
 export const App = () => {
-  // Emits the 'ready' event to Tauri backend when the component is mounted
-  useEffect(() => {
-    emit('ready');
-  }, []);
+  useAppInit();
 
   return (
     <Providers>

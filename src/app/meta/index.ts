@@ -1,1 +1,2 @@
-export { HeadData } from './ui/HeadData';
+export { head } from './head';
+export { HeadData } from './HeadData';
