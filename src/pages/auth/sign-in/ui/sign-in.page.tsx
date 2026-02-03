@@ -1,7 +1,5 @@
+import { SignIn } from '@/features/auth';
+
 export const SignInPage = () => {
-  return (
-    <div className="bg-black h-screen w-screen">
-      <p>Sign In Page</p>
-    </div>
-  );
+  return <SignIn />;
 };

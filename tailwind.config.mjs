@@ -10,6 +10,11 @@ const config = {
   safelist: ['break-inside-avoid'],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['"Inter Variable"', 'system-ui', 'sans-serif'],
+        inter: ['"Inter Variable"', 'system-ui', 'sans-serif'],
+        unbounded: ['"Unbounded Variable"', 'system-ui', 'sans-serif'],
+      },
       backgroundImage: {
         'gradient-bg': 'var(--gradient-bg)',
         'gradient-alt': 'var(--gradient-alt)',

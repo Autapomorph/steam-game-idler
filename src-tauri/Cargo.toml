@@ -44,13 +44,13 @@ winapi = { version = "0.3.9", features = [
   "winnt",
 ] }
 tauri = { version = "2.9.1", features = ["tray-icon", "image-png", "unstable"] }
-tauri-plugin-shell = "2.3.3"
 tauri-plugin-notification = "2.3.3"
 tauri-plugin-process = "2.3.1"
 tauri-plugin-dialog = "2.6.0"
 tauri-plugin-fs = "2.4.5"
 tauri-plugin-os = "2.3.2"
 tauri-plugin-clipboard-manager = "2.3.2"
+tauri-plugin-opener = "2"
 aes = "0.8"
 
 [features]
