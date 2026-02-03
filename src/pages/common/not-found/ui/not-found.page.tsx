@@ -7,7 +7,7 @@ export const NotFoundPage = () => {
   // const { t } = useTranslation()
 
   // useHead({
-  // title: t('pages.common.notFound.title'),
+  // title: t($ => $['pages.common.notFound.title']),
   // })
 
   // TODO: create actual layout

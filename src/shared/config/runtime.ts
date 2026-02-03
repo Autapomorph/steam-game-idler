@@ -1,6 +1,9 @@
-import { isPortableInstall } from './isPortableInstall';
+import { getVersion } from '@tauri-apps/api/app';
+
+import { isPortableInstall } from '../lib/isPortableInstall';
 
 export interface RuntimeConfig {
+  appVersion: string;
   isPortable: boolean;
 }
 
@@ -8,9 +11,10 @@ let runtimeConfig: RuntimeConfig | null = null;
 let initPromise: Promise<RuntimeConfig> | null = null;
 
 async function init(): Promise<RuntimeConfig> {
-  const isPortable = await isPortableInstall();
+  const [appVersion, isPortable] = await Promise.all([getVersion(), isPortableInstall()]);
 
   return {
+    appVersion,
     isPortable,
   };
 }

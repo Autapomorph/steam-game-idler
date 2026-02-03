@@ -1,4 +1,4 @@
-import { Button, cn, type ButtonProps } from '@heroui/react';
+import { type ButtonProps, Button, cn } from '@heroui/react';
 
 export function PrimaryButton({ className, ...props }: ButtonProps) {
   return (

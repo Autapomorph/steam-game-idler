@@ -70,3 +70,6 @@ public/robots.txt
 
 # Keys
 *.pem
+
+# heroui-agents-md
+.heroui-docs/

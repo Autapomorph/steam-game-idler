@@ -13,6 +13,8 @@
   "bundle": {
     "active": true,
     "category": "Utility",
+    "publisher": "Autapomorph",
+    "homepage": "https://github.com/Autapomorph/steam-game-idler",
     "copyright": "Copyright © 2026 Autapomorph",
     "targets": ["nsis"],
     "externalBin": [],
@@ -23,7 +25,9 @@
       "timestampUrl": "",
       "nsis": {
         "installerIcon": "icons/icon.ico",
-        "installMode": "perMachine"
+        "installMode": "perMachine",
+        "displayLanguageSelector": true,
+        "languages": ["English", "Russian"]
       }
     },
     "longDescription": "Idle any game in your Steam library",

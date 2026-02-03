@@ -1,10 +1,11 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { includeIgnoreFile } from '@eslint/compat';
+import { includeIgnoreFile } from '@eslint/config-helpers';
 import js from '@eslint/js';
 import { configs, plugins, rules } from 'eslint-config-airbnb-extended';
 import { createTypeScriptImportResolver } from 'eslint-import-resolver-typescript';
+import perfectionist from 'eslint-plugin-perfectionist';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import reactRefreshPlugin from 'eslint-plugin-react-refresh';
 import { defineConfig, globalIgnores } from 'eslint/config';
@@ -16,7 +17,7 @@ export const projectRoot = path.resolve(dirname);
 export const gitignorePath = path.resolve(projectRoot, '.gitignore');
 
 export default defineConfig([
-  globalIgnores(['docs/**']),
+  globalIgnores(['docs/**', '.agents/**', '.claude/**', '.continue/**']),
   includeIgnoreFile(gitignorePath),
   {
     name: 'js/config',
@@ -79,6 +80,7 @@ export default defineConfig([
         },
       ],
 
+      'import-x/order': 'off',
       'import-x/extensions': 'off',
       'import-x/no-unresolved': 'error',
       'import-x/no-named-as-default': 'off',
@@ -108,6 +110,7 @@ export default defineConfig([
       ],
     },
   },
+
   {
     files: plugins.typescriptEslint.files,
     rules: {
@@ -129,6 +132,169 @@ export default defineConfig([
         'error',
         {
           functions: false,
+        },
+      ],
+    },
+  },
+
+  {
+    plugins: {
+      perfectionist,
+    },
+    rules: {
+      'perfectionist/sort-named-exports': [
+        'error',
+        {
+          type: 'natural',
+          order: 'asc',
+          groups: ['type-export', 'value-export', 'unknown'],
+        },
+      ],
+      'perfectionist/sort-named-imports': [
+        'error',
+        {
+          type: 'natural',
+          order: 'asc',
+          groups: ['type-import', 'value-import', 'unknown'],
+        },
+      ],
+      'perfectionist/sort-imports': [
+        'error',
+        {
+          type: 'natural',
+          order: 'asc',
+          newlinesBetween: 0,
+          fallbackSort: {
+            type: 'type-import-first',
+            order: 'asc',
+          },
+          tsconfig: {
+            rootDir: '.',
+            filename: 'tsconfig.app.json',
+          },
+          groups: [
+            // Builtins
+            'builtin',
+            { newlinesBetween: 1 },
+            // Externals
+            'vite',
+            'vitejs',
+            'vite-plugin',
+            'react',
+            'tauri',
+            'react-router',
+            'zustand',
+            'unhead',
+            'i18n',
+            'tailwindcss',
+            'next-themes',
+            'heroui',
+            'react-icons',
+            'external',
+            { newlinesBetween: 1 },
+            // Internals
+            'tsconfig-path',
+            'subpath',
+            // FSD-related
+            'fsd-app',
+            'fsd-pages',
+            'fsd-widgets',
+            'fsd-features',
+            'fsd-entities',
+            'fsd-shared',
+            // Other internals
+            'internal',
+            'index',
+            'sibling',
+            'parent',
+            { newlinesBetween: 1 },
+            // Styles
+            'side-effect-style',
+            'style',
+            { newlinesBetween: 1 },
+            // Unknown
+            'unknown',
+          ],
+          customGroups: [
+            {
+              groupName: 'vite',
+              elementNamePattern: '^vite$',
+            },
+            {
+              groupName: 'vitejs',
+              elementNamePattern: '^@vitejs.*',
+            },
+            {
+              groupName: 'vite-plugin',
+              elementNamePattern: '^vite-plugin.*',
+            },
+            {
+              groupName: 'react',
+              elementNamePattern: '^react(-dom)?$',
+            },
+            {
+              groupName: 'tauri',
+              elementNamePattern: '^@tauri-apps.*',
+            },
+            {
+              groupName: 'react-router',
+              elementNamePattern: '^react-router(-dom)?$',
+            },
+            {
+              groupName: 'zustand',
+              elementNamePattern: '^zustand.*',
+            },
+            {
+              groupName: 'unhead',
+              elementNamePattern: '^@unhead.*',
+            },
+            {
+              groupName: 'i18n',
+              elementNamePattern: '^(react-)?i18next$',
+            },
+            {
+              groupName: 'tailwindcss',
+              elementNamePattern: '^@tailwindcss.*',
+            },
+            {
+              groupName: 'next-themes',
+              elementNamePattern: '^next-themes$',
+            },
+            {
+              groupName: 'heroui',
+              elementNamePattern: '^@heroui.*',
+            },
+            {
+              groupName: 'react-icons',
+              elementNamePattern: '^react-icons.*',
+            },
+
+            // FSD-related
+            {
+              groupName: 'fsd-app',
+              elementNamePattern: '^@/app(/.*)?$',
+            },
+            {
+              groupName: 'fsd-pages',
+              elementNamePattern: '^@/pages(/.*)?$',
+            },
+            {
+              groupName: 'fsd-widgets',
+              elementNamePattern: '^@/widgets(/.*)?$',
+            },
+            {
+              groupName: 'fsd-features',
+              elementNamePattern: '^@/features(/.*)?$',
+            },
+            {
+              groupName: 'fsd-entities',
+              elementNamePattern: '^@/entities(/.*)?$',
+            },
+            {
+              groupName: 'fsd-shared',
+              elementNamePattern: '^@/shared(/.*)?$',
+            },
+          ],
         },
       ],
     },

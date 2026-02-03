@@ -7,7 +7,7 @@ export const ErrorPage = () => {
   // const { t } = useTranslation()
 
   // useHead({
-  //   title: t('pages.common.error.title'),
+  //   title: t($ => $['pages.common.error.title']),
   // })
 
   // TODO: create actual error layout

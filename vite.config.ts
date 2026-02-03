@@ -1,41 +1,43 @@
-import tailwindcss from '@tailwindcss/vite';
-import UnheadVite from '@unhead/addons/vite';
+import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vite';
 import checker from 'vite-plugin-checker';
-import tsconfigPaths from 'vite-tsconfig-paths';
-
-const host = process.env.TAURI_DEV_HOST;
+import svgr from 'vite-plugin-svgr';
+import { Unhead } from '@unhead/react/vite';
+import tailwindcss from '@tailwindcss/vite';
 
 // https://vitejs.dev/config/
-export default defineConfig(() => {
+export default defineConfig(async ({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '');
+
+  const host = env.TAURI_DEV_HOST;
+  const hmrHost = env.TAURI_DEV_HMR_HOST;
+  const hmrPort = Number(env.TAURI_DEV_HMR_PORT);
+
   return {
     clearScreen: false,
     server: {
       port: 3000,
       strictPort: true,
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-      host: host || false,
-      hmr: host
+      host: host || true,
+      hmr: hmrHost
         ? {
             protocol: 'ws',
-            host,
-            port: 3001,
+            host: hmrHost,
+            port: hmrPort || 3001,
           }
         : undefined,
       watch: {
         ignored: ['**/src-tauri/**'],
       },
     },
+    resolve: {
+      tsconfigPaths: true,
+    },
     plugins: [
-      tsconfigPaths(),
-      react({
-        babel: {
-          plugins: [['babel-plugin-react-compiler']],
-        },
-      }),
+      react(),
       tailwindcss(),
-      UnheadVite(),
+      Unhead(),
+      svgr(),
       checker({
         typescript: true,
         eslint: {
