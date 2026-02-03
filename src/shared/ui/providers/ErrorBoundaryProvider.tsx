@@ -1,9 +1,8 @@
-import type { PropsWithChildren } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
 import { GlobalErrorFallback } from '../error-boundaries/GlobalErrorFallback';
 
-type Props = PropsWithChildren;
+type Props = React.PropsWithChildren;
 
 interface ErrorInfo {
   componentStack?: string | null;

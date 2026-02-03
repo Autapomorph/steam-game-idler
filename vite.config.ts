@@ -1,9 +1,8 @@
 import tailwindcss from '@tailwindcss/vite';
-import UnheadVite from '@unhead/addons/vite';
+import { Unhead } from '@unhead/react/vite';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import checker from 'vite-plugin-checker';
-import tsconfigPaths from 'vite-tsconfig-paths';
 
 const host = process.env.TAURI_DEV_HOST;
 
@@ -27,15 +26,13 @@ export default defineConfig(() => {
         ignored: ['**/src-tauri/**'],
       },
     },
+    resolve: {
+      tsconfigPaths: true,
+    },
     plugins: [
-      tsconfigPaths(),
-      react({
-        babel: {
-          plugins: [['babel-plugin-react-compiler']],
-        },
-      }),
+      react(),
       tailwindcss(),
-      UnheadVite(),
+      Unhead(),
       checker({
         typescript: true,
         eslint: {

@@ -1,15 +1,10 @@
-import { ns, defaultNS } from '@/shared/config';
-
-import translation from '../shared/config/i18n/locales/en-US/translation.json';
-
-const resources = {
-  translation,
-};
+import { ns, defaultNS, resources } from '@/shared/config/i18n';
 
 declare module 'i18next' {
   interface CustomTypeOptions {
-    resources: typeof resources;
+    resources: typeof resources['en-US'];
     ns: typeof ns;
     defaultNS: typeof defaultNS;
+    enableSelector: true;
   }
 }

@@ -6,6 +6,11 @@ on:
       version:
         description: "New Version"
         required: true
+      force_version:
+        description: "Force specified version"
+        required: false
+        type: boolean
+        default: false
       is_major:
         description: "Major update"
         required: false
@@ -32,51 +37,57 @@ on:
         type: boolean
         default: false
 
-run-name: Build release v${{ github.event.inputs.version }}
+run-name: Build release ${{ github.event.inputs.version }}
 
 permissions:
   contents: write
   pull-requests: write
 
 jobs:
-  fetch_previous_version:
+  validate_version:
     runs-on: ubuntu-latest
     outputs:
-      previous_version: ${{ steps.get_version.outputs.previous_version }}
+      new_version: ${{ steps.normalize_new_version.outputs.new_version }}
+      previous_version: ${{ steps.get_previous_version.outputs.previous_version }}
     steps:
       - name: Get latest release version
-        id: get_version
+        id: get_previous_version
         run: |
           PREVIOUS_VERSION=$(curl -s https://api.github.com/repos/${{ github.repository }}/releases/latest | jq -r .tag_name)
           echo "Found previous version: $PREVIOUS_VERSION"
           echo "previous_version=$PREVIOUS_VERSION" >> $GITHUB_OUTPUT
 
-  validate_version:
-    runs-on: ubuntu-latest
-    needs: fetch_previous_version
-    steps:
+      - name: Normalize new version
+        id: normalize_new_version
+        run: |
+          RAW_VERSION="${{ github.event.inputs.version }}"
+          NORMALIZED_VERSION="${RAW_VERSION#v}"
+          echo "new_version=$NORMALIZED_VERSION" >> $GITHUB_OUTPUT
+
       - name: Validate semantic version format
         id: validate_format
         uses: matt-usurp/validate-semver@v2
         with:
-          version: ${{ github.event.inputs.version }}
-      
+          version: ${{ steps.normalize_new_version.outputs.new_version }}
+
       - name: Validate version increment
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
-            const prev = '${{ needs.fetch_previous_version.outputs.previous_version }}'.replace(/^v/, '');
-            const next = '${{ github.event.inputs.version }}'.replace(/^v/, '');
+            const prevVersion = '${{ steps.get_previous_version.outputs.previous_version }}'.replace(/^v/, '');
+            const newVersion = '${{ steps.normalize_new_version.outputs.new_version }}';
             
-            const [prevMajor, prevMinor, prevPatch] = prev.split('.').map(Number);
-            const [nextMajor, nextMinor, nextPatch] = next.split('.').map(Number);
+            const [prevMajor, prevMinor, prevPatch] = prevVersion.split('.').map(Number);
+            const [newMajor, newMinor, newPatch] = newVersion.split('.').map(Number);
             
             // Check if it's a valid increment
-            const isMajor = nextMajor > prevMajor && nextMinor === 0 && nextPatch === 0;
-            const isMinor = nextMajor === prevMajor && nextMinor > prevMinor && nextPatch === 0;
-            const isPatch = nextMajor === prevMajor && nextMinor === prevMinor && nextPatch === prevPatch + 1;
+            const isMajor = newMajor > prevMajor && newMinor === 0 && newPatch === 0;
+            const isMinor = newMajor === prevMajor && newMinor > prevMinor && newPatch === 0;
+            const isPatch = newMajor === prevMajor && newMinor === prevMinor && newPatch === prevPatch + 1;
             
-            if (!isMajor && !isMinor && !isPatch) {
+            const forceVersion = '${{ github.event.inputs.force_version }}' === 'true';
+
+            if (!forceVersion && !isMajor && !isMinor && !isPatch) {
               const validOptions = [
                 `${prevMajor}.${prevMinor}.${prevPatch + 1} (patch)`,
                 `${prevMajor}.${prevMinor + 1}.0 (minor)`,
@@ -85,21 +96,25 @@ jobs:
               
               core.setFailed(
                 `❌ Invalid version increment!\n\n` +
-                `Current: ${prev}\n` +
-                `Attempted: ${next}\n\n` +
+                `Current: ${prevVersion}\n` +
+                `Attempted: ${newVersion}\n\n` +
                 `Valid options:\n${validOptions.map(v => `  • ${v}`).join('\n')}`
               );
             }
             
-            console.log(`✅ Valid version increment: ${prev} → ${next}`);
+            if (forceVersion) {
+              console.log(`⚠️ Force version enabled: skipping increment validation`);
+            } else {
+              console.log(`✅ Valid version increment: ${prevVersion} → ${newVersion}`);
+            }
 
   build_dotnet_libs:
     runs-on: windows-latest
-    needs: [fetch_previous_version, validate_version]
+    needs: validate_version
     timeout-minutes: 15
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: recursive
 
@@ -110,13 +125,14 @@ jobs:
         run: |
           # Create directory if it doesn't exist
           mkdir -Force "C:\Users\runneradmin\.nuget\packages"
+
           # Get and report actual NuGet packages location
           dotnet nuget locals global-packages --list
         shell: pwsh
 
       - name: Setup NuGet cache
         id: cache-msbuild
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             C:\Users\runneradmin\.nuget\packages
@@ -126,7 +142,7 @@ jobs:
 
       - name: Setup .NET cache
         id: cache-dotnet
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: src-tauri/libs/
           key: ${{ runner.os }}-dotnet-${{ hashFiles('libs/**/*.cs', 'libs/**/*.csproj') }}
@@ -139,58 +155,48 @@ jobs:
         shell: pwsh
 
       - name: Upload built .NET libraries
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: dotnet-libs
           path: src-tauri/libs/
           retention-days: 1
 
   build_release_bundle:
-    needs: [build_dotnet_libs, fetch_previous_version, validate_version]
+    needs: [build_dotnet_libs, validate_version]
     timeout-minutes: 30
     runs-on: windows-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           submodules: recursive
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.x"
+          node-version: 24
+          cache: "npm"
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Setup npm cache
-        id: cache-npm
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.npm
-            node_modules
-          key: ${{ runner.OS }}-npm-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.OS }}-npm-${{ hashFiles('**/package-lock.json') }}-
+      - name: Force clean npm cache
+        if: github.event.inputs.force_npm_install == 'true'
+        run: |
+          echo "Forcing fresh npm install"
+          npm cache clean --force
 
       - name: Install dependencies (npm)
-        if: steps.cache-npm.outputs.cache-hit != 'true' || github.event.inputs.force_npm_install == 'true'
         run: npm ci --prefer-offline --no-audit --progress=false
 
       - name: Setup Next.js cache
         id: cache-nextjs
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .next/cache
-          key: ${{ runner.OS }}-nextjs-${{ hashFiles('**.[jt]sx', '**.[jt]s', 'package.json') }}
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**.[jt]sx', '**.[jt]s', 'package.json') }}
           restore-keys: |
-            ${{ runner.OS }}-nextjs-
+            ${{ runner.os }}-nextjs-
 
       - name: Clean Next.js cache
         if: steps.cache-nextjs.outputs.cache-hit != 'true' || github.event.inputs.force_nextjs_build == 'true'
@@ -213,30 +219,37 @@ jobs:
         if: steps.cache-rust.outputs.cache-hit != 'true' || github.event.inputs.force_cargo_clean == 'true'
         run: cargo clean
         working-directory: ./src-tauri
-
+        
       - name: Update version numbers
         id: update-versions
         run: |
-          $previousVersion = "${{ needs.fetch_previous_version.outputs.previous_version }}"
-          $newVersion = "${{ github.event.inputs.version }}"
+          $previousVersion = "${{ needs.validate_version.outputs.previous_version }}"
+          $newVersion = "${{ needs.validate_version.outputs.new_version }}"
 
-          $tauriConf = Get-Content src-tauri/tauri.conf.json
-          $updatedTauriConf = $tauriConf -replace $previousVersion, $newVersion
-          $updatedTauriConf | Set-Content src-tauri/tauri.conf.json
+          # update tauri.conf.json version
+          $tauriConfJson = Get-Content src-tauri/tauri.conf.json | ConvertFrom-Json
+          $tauriConfJson.version = $newVersion
+          $tauriConfJson | ConvertTo-Json -Depth 10 | Set-Content src-tauri/tauri.conf.json
 
-          $latest = Get-Content latest.json
-          $updatedLatest = $latest -replace $previousVersion, $newVersion
-          $updatedLatest | Set-Content latest.json
+          # update latest.json version & url
+          $latestJson = Get-Content latest.json | ConvertFrom-Json
+          $latestJson.version = $newVersion
+          $latestJson.platforms.'windows-x86_64'.url = $latestJson.platforms.'windows-x86_64'.url -replace [regex]::Escape($previousVersion), $newVersion
+          $latestJson | ConvertTo-Json -Depth 10 | Set-Content latest.json
 
       - name: Create .env.production file
         run: |
-          echo "KEY=${{ secrets.KEY }}" > .env.production
-          echo "STEAM_DEV_ACCOUNTS=${{ secrets.STEAM_DEV_ACCOUNTS }}" >> .env.production
+          @"
+          KEY=$env:KEY
+          STEAM_DEV_ACCOUNTS=$env:STEAM_DEV_ACCOUNTS
+          "@ | Set-Content .env.production
         shell: pwsh
-        working-directory: ${{ github.workspace }}
+        env:
+          KEY: ${{ secrets.KEY }}
+          STEAM_DEV_ACCOUNTS: ${{ secrets.STEAM_DEV_ACCOUNTS }}
 
       - name: Download built .NET libraries
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: dotnet-libs
           path: src-tauri/libs/
@@ -244,42 +257,43 @@ jobs:
       - name: Build and package Tauri app
         if: steps.update-versions.outcome == 'success'
         run: |
-          $env:NEXT_TELEMETRY_DISABLED = "1"
-          $env:TAURI_CI = "1"
           npm run tauri build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+          TAURI_CI: "1"
+          NEXT_TELEMETRY_DISABLED: "1"
+
         shell: pwsh
 
       - name: Update latest.json with signature
-        run: |
-          python -c "
-          import base64
-          import json
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
 
-          nsis_signature_path = './src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.exe.sig'
-          latest_json_path = './latest.json'
+            const newVersion = process.env.NEW_VERSION;
+            const isMajorInput = process.env.IS_MAJOR;
 
-          with open(nsis_signature_path, 'r') as sig_file:
-              new_signature = sig_file.read().strip()
+            const sigPath = path.resolve(`./src-tauri/target/release/bundle/nsis/Steam Game Idler_${newVersion}_x64-setup.exe.sig`);
+            const latestJsonPath = path.resolve('./latest.json');
 
-          with open(latest_json_path, 'r') as json_file:
-              latest_json = json.load(json_file)
+            const newSignature = fs.readFileSync(sigPath, 'utf-8').trim();
+            const latestJson = JSON.parse(fs.readFileSync(latestJsonPath, 'utf-8'));
 
-          latest_json['platforms']['windows-x86_64']['signature'] = new_signature
+            latestJson.platforms['windows-x86_64'].signature = newSignature;
+            latestJson.major = isMajorInput === 'true';
 
-          is_major = True if '${{ github.event.inputs.is_major }}' == 'true' else False
-          latest_json['major'] = is_major
+            fs.writeFileSync(latestJsonPath, JSON.stringify(latestJson, null, 2));
 
-          with open(latest_json_path, 'w') as json_file:
-              json.dump(latest_json, json_file, indent=2)
+            console.log('Updated latest.json with new signature');
+        env:
+          NEW_VERSION: ${{ needs.validate_version.outputs.new_version }}
+          IS_MAJOR: ${{ github.event.inputs.is_major }}
 
-          print('Updated latest.json with new signature')
-          "
-
-      - uses: actions/create-github-app-token@v1
+      - uses: actions/create-github-app-token@v2
         id: generate-token
         with:
           app-id: ${{ secrets.APP_ID }}
@@ -290,15 +304,15 @@ jobs:
         uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ steps.generate-token.outputs.token }}
-          commit-message: "chore(version): bump to ${{ github.event.inputs.version }}"
-          title: "chore(version): bump to ${{ github.event.inputs.version }}"
+          commit-message: "chore(version): bump to ${{ needs.validate_version.outputs.new_version }}"
+          title: "chore(version): bump to ${{ needs.validate_version.outputs.new_version }}"
           body: |
-            Automated version bump for release [v${{ github.event.inputs.version }}](https://github.com/Autapomorph/steam-game-idler/releases/tag/${{ github.event.inputs.version }})
+            Automated version bump for release [v${{ needs.validate_version.outputs.new_version }}](https://github.com/Autapomorph/steam-game-idler/releases/tag/${{ needs.validate_version.outputs.new_version }})
 
             Generated by workflow run [${{ github.run_id }}](https://github.com/Autapomorph/steam-game-idler/actions/runs/${{ github.run_id }})
 
             Merging this PR allows the release to be distributed through Tauri Updater for auto-updates
-          branch: "version-bump-${{ github.event.inputs.version }}-${{ github.run_id }}"
+          branch: "version-bump-${{ needs.validate_version.outputs.new_version }}-${{ github.run_id }}"
           base: "main"
           add-paths: |
             src-tauri/tauri.conf.json
@@ -307,38 +321,44 @@ jobs:
 
       - name: Generate release notes
         id: generate_notes
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
-            const { data } = await github.rest.repos.generateReleaseNotes({
+            const fs = require('fs');
+
+            const releaseNotes = await github.rest.repos.generateReleaseNotes({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              tag_name: '${{ github.event.inputs.version }}',
-              previous_tag_name: '${{ needs.fetch_previous_version.outputs.previous_version }}'
+              tag_name: '${{ needs.validate_version.outputs.new_version }}',
+              previous_tag_name: '${{ needs.validate_version.outputs.previous_version }}'
             });
             
             // Remove lines for version bumps, docs, ci, and chore(ci)
-            let body = data.body;
-            const lines = body.split('\n');
-            const filtered = lines.filter(line => {
-              const trimmed = line.trim();
-              if (trimmed.startsWith('* chore(version): bump to')) return false;
-              if (trimmed.startsWith('* docs:')) return false;
-              if (trimmed.startsWith('* ci:')) return false;
-              if (trimmed.startsWith('* chore(ci):')) return false;
-              return true;
+            const excludedKeywords = [
+              '* chore: update changelog',
+              '* chore(version): bump to',
+              '* chore: push notification',
+              '* chore(i18n): pull translations from crowdin',
+              '* chore(ci):',
+              '* ci:',
+              '* docs:'
+            ];
+
+            const releaseNotesLines = releaseNotes.data.body.split('\n');
+            
+            const newReleaseNotesLines = releaseNotesLines.filter(line => {
+              const sanitizedLine = line.trim().toLowerCase();
+              return !excludedKeywords.some(keyword => sanitizedLine.includes(keyword));
             });
             
-            const cleanedBody = filtered.join('\n');
+            const newReleaseNotesBody = newReleaseNotesLines.join('\n');
             
-            // Save to file
-            const fs = require('fs');
-            fs.writeFileSync('./release_notes.md', cleanedBody);
+            fs.writeFileSync('./release_notes.md', newReleaseNotesBody);
             
             console.log('Generated release notes:');
-            console.log(cleanedBody);
+            console.log(newReleaseNotesBody);
             
-            return cleanedBody;
+            return newReleaseNotesBody;
 
       - name: Prepare portable executable
         run: |
@@ -356,24 +376,24 @@ jobs:
           Copy-Item "./LICENSE" -Destination "$portableDir/LICENSE" -Force
           
           # Create the portable zip
-          Compress-Archive -Path "$portableDir/*" -DestinationPath "./src-tauri/target/release/Steam Game Idler_${{ github.event.inputs.version }}_x64-portable.zip" -Force
+          Compress-Archive -Path "$portableDir/*" -DestinationPath "./src-tauri/target/release/Steam Game Idler_${{ needs.validate_version.outputs.new_version }}_x64-portable.zip" -Force
           
           # Clean up temporary directory
           Remove-Item -Recurse -Force $portableDir
         shell: pwsh
 
       - name: Create release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.event.inputs.version }}
-          name: Steam Game Idler v${{ github.event.inputs.version }}
+          tag_name: ${{ needs.validate_version.outputs.new_version }}
+          name: v${{ needs.validate_version.outputs.new_version }}
           body_path: ./release_notes.md
           files: |
-            ./src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.exe
-            ./src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ github.event.inputs.version }}_x64-setup.exe.sig
-            ./src-tauri/target/release/Steam Game Idler_${{ github.event.inputs.version }}_x64-portable.zip
+            ./src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ needs.validate_version.outputs.new_version }}_x64-setup.exe
+            ./src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ needs.validate_version.outputs.new_version }}_x64-setup.exe.sig
+            ./src-tauri/target/release/Steam Game Idler_${{ needs.validate_version.outputs.new_version }}_x64-portable.zip
 
       - name: Cleanup artifacts
         if: always()

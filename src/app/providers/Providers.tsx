@@ -1,24 +1,22 @@
-import { type PropsWithChildren } from 'react';
 import { HeroUIProvider } from '@heroui/react';
-import { createHead, UnheadProvider } from '@unhead/react/client';
-import { TemplateParamsPlugin } from '@unhead/react/plugins';
+import { UnheadProvider } from '@unhead/react/client';
 
-import { ErrorBoundaryProvider, ThemeProvider } from '@/shared/ui';
+import { head } from '@/app/meta';
+import { ErrorBoundaryProvider } from '@/shared/ui';
+import { ThemeProvider } from './ThemeProvider';
+import { ToastProvider } from './ToastProvider';
 
-type Props = PropsWithChildren;
-
-const head = createHead({
-  plugins: [TemplateParamsPlugin],
-});
+type Props = React.PropsWithChildren;
 
 export const Providers = ({ children }: Props) => {
   return (
-    <ThemeProvider>
-      <HeroUIProvider>
-        <ErrorBoundaryProvider>
-          <UnheadProvider head={head}>{children}</UnheadProvider>
-        </ErrorBoundaryProvider>
-      </HeroUIProvider>
-    </ThemeProvider>
+    <UnheadProvider head={head}>
+      <ThemeProvider>
+        <HeroUIProvider className="font-sans">
+          <ToastProvider />
+          <ErrorBoundaryProvider>{children}</ErrorBoundaryProvider>
+        </HeroUIProvider>
+      </ThemeProvider>
+    </UnheadProvider>
   );
 };

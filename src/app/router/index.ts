@@ -1,1 +1,1 @@
-export { router } from './model/router';
+export { router } from './router';
