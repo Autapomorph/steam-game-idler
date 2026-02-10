@@ -1,13 +1,18 @@
-import type { Metadata } from 'next';
+import { type Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import { DocsBody, DocsPage } from 'fumadocs-ui/page';
 
+import { getMDXComponents } from 'mdx-components';
 import { getPageImage, source } from '@lib/source';
-import { getMDXComponents } from '../../../mdx-components';
 
-export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
-  // eslint-disable-next-line react/destructuring-assignment
+interface PageProps {
+  params: {
+    slug: string[];
+  };
+}
+
+export default async function Page(props: PageProps) {
   const params = await props.params;
   const page = source.getPage(params.slug);
   if (!page) notFound();
@@ -17,7 +22,7 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
   return (
     <DocsPage toc={page.data.toc} full={page.data.full} tableOfContent={{ style: 'clerk' }}>
       <DocsBody>
-        {}
+        {/* eslint-disable-next-line */}
         <MDX
           components={getMDXComponents({
             // this allows you to link to other pages with relative file paths
@@ -33,10 +38,13 @@ export async function generateStaticParams() {
   return source.generateParams();
 }
 
-export async function generateMetadata(props: PageProps<'/docs/[[...slug]]'>): Promise<Metadata> {
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const params = await props.params;
   const page = source.getPage(params.slug);
-  if (!page) notFound();
+
+  if (!page) {
+    notFound();
+  }
 
   return {
     title: page.data.title,

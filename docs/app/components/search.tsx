@@ -1,6 +1,7 @@
 'use client';
 
 import type { SharedProps } from 'fumadocs-ui/components/dialog/search';
+import { create } from '@orama/orama';
 import { useDocsSearch } from 'fumadocs-core/search/client';
 import {
   SearchDialog,
@@ -13,7 +14,6 @@ import {
   SearchDialogOverlay,
 } from 'fumadocs-ui/components/dialog/search';
 import { useI18n } from 'fumadocs-ui/contexts/i18n';
-import { create } from '@orama/orama';
 
 function initOrama() {
   return create({

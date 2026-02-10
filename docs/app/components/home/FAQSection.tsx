@@ -106,7 +106,7 @@ function AccordionItem({ question, answer, open, onToggle }: Props) {
 
 export default function FAQSection() {
   // State: { [section]: openQuestion }
-  const [openItems, setOpenItems] = useState<Record<string, string | null>>({});
+  const [openItems, setOpenItems] = useState<{ [section: string]: string | null }>({});
 
   // Helper to render accordions for a section
   function renderAccordionItems(section: string, items: { question: string; answer: string }[]) {
@@ -216,7 +216,7 @@ export default function FAQSection() {
       {/* Bottom transition overlay */}
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-b from-transparent to-emerald-50/50" />
 
-      <div className="container relative z-10 px-4 sm:px-6 md:px-8">
+      <div className="container mx-auto relative z-10 px-4 sm:px-6 md:px-8">
         {/* Header */}
         <header className="max-w-3xl mx-auto text-center mb-12 sm:mb-16 lg:mb-20">
           <h2

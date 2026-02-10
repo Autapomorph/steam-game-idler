@@ -1,9 +1,11 @@
-import type { Metadata } from 'next';
+import { type PropsWithChildren } from 'react';
+import { type Metadata } from 'next';
 import Script from 'next/script';
 import { Geist, Geist_Mono } from 'next/font/google';
-
-import DefaultSearchDialog from '@docs/components/search';
 import { RootProvider } from 'fumadocs-ui/provider/next';
+
+import StoreLoader from '@docs/components/StoreLoader';
+import SearchDialog from '@docs/components/search';
 
 import './globals.css';
 
@@ -120,7 +122,7 @@ const schemaData = [
   },
 ];
 
-export default function Layout({ children }: LayoutProps<'/'>) {
+export default function Layout({ children }: PropsWithChildren) {
   return (
     <html lang="en" className={`${geist.variable} ${mono.variable}`} suppressHydrationWarning>
       <head>
@@ -134,11 +136,13 @@ export default function Layout({ children }: LayoutProps<'/'>) {
       <body className="flex flex-col min-h-screen">
         <RootProvider
           search={{
-            SearchDialog: DefaultSearchDialog,
+            SearchDialog,
           }}
         >
           {children}
         </RootProvider>
+
+        <StoreLoader />
       </body>
     </html>
   );

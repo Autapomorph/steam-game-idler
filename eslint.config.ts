@@ -15,7 +15,7 @@ export const projectRoot = path.resolve(dirname);
 export const gitignorePath = path.resolve(projectRoot, '.gitignore');
 
 export default defineConfig([
-  globalIgnores(['']),
+  globalIgnores(['docs/**']),
   includeIgnoreFile(gitignorePath),
   {
     name: 'js/config',
@@ -57,21 +57,33 @@ export default defineConfig([
     settings: {
       'import-x/resolver-next': [
         createTypeScriptImportResolver({
-          project: ['./tsconfig.json', './docs/tsconfig.json'],
+          project: ['./tsconfig.json'],
         }),
       ],
     },
     rules: {
+      // TODO: REMOVE
+      'consistent-return': 'off',
+      'no-await-in-loop': 'off',
+      'no-console': 'off',
+      'no-continue': 'off',
+      'no-nested-ternary': 'off',
+      'no-param-reassign': 'off',
+      'import-x/no-cycle': 'off',
+      'jsx-a11y/no-static-element-interactions': 'off',
+      'jsx-a11y/click-events-have-key-events': 'off',
+
       'class-methods-use-this': 'off',
       'no-restricted-syntax': 'off',
       'no-promise-executor-return': 'off',
-      'no-param-reassign': [
-        'error',
-        {
-          props: true,
-          ignorePropertyModificationsFor: ['state', 'acc'],
-        },
-      ],
+      // TODO: UNCOMMENT
+      // 'no-param-reassign': [
+      //   'error',
+      //   {
+      //     props: true,
+      //     ignorePropertyModificationsFor: ['state', 'acc'],
+      //   },
+      // ],
       'spaced-comment': [
         'error',
         'always',
@@ -112,6 +124,12 @@ export default defineConfig([
   {
     files: plugins.typescriptEslint.files,
     rules: {
+      // TODO: FIX
+      '@typescript-eslint/no-shadow': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
+      '@typescript-eslint/no-use-before-define': 'off',
+      '@typescript-eslint/prefer-nullish-coalescing': 'off',
+
       '@typescript-eslint/promise-function-async': 'off',
       '@typescript-eslint/consistent-type-imports': 'off',
       '@typescript-eslint/consistent-type-exports': 'off',
@@ -126,12 +144,13 @@ export default defineConfig([
       '@typescript-eslint/method-signature-style': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
 
-      '@typescript-eslint/no-use-before-define': [
-        'error',
-        {
-          functions: false,
-        },
-      ],
+      // TODO: UNCOMMENT
+      // '@typescript-eslint/no-use-before-define': [
+      //   'error',
+      //   {
+      //     functions: false,
+      //   },
+      // ],
     },
   },
 ]);

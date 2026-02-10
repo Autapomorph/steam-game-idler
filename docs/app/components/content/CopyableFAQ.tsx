@@ -1,34 +1,31 @@
 'use client';
 
-import type { ReactNode } from 'react';
-
-import { useRef } from 'react';
+import { useRef, type PropsWithChildren } from 'react';
 import { Accordion } from 'fumadocs-ui/components/accordion';
 import { MdOutlineContentCopy } from 'react-icons/md';
 
 import { faqData } from '../../../content/docs/faqData';
 
-interface Props {
+interface Props extends PropsWithChildren {
   id: string;
   question: string;
-  children: ReactNode;
   value?: string;
 }
 
 export default function CopyableFAQ({ id, question, children, value }: Props) {
   const answerRef = useRef<HTMLDivElement>(null);
 
-  const copyToClipboard = (text: string): void => {
+  const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
   };
 
-  function handleCopy(): void {
+  function handleCopy() {
     // Find the entry by question string
     const entry = faqData.find(
       (e): e is { question: string; markdown: string } =>
         'question' in e && e.question === question,
     );
-    const makeAbsolute = (markdown: string): string =>
+    const makeAbsolute = (markdown: string) =>
       markdown.replace(
         /(\]\()\/([^)\s]+)\)/g,
         (_match, prefix, path) => `${prefix}https://steamgameidler.com/${path})`,
@@ -38,6 +35,7 @@ export default function CopyableFAQ({ id, question, children, value }: Props) {
       copyToClipboard(makeAbsolute(entry.markdown));
       return;
     }
+
     // fallback: copy as before
     let answer = '';
     if (answerRef.current) {
@@ -68,7 +66,7 @@ export default function CopyableFAQ({ id, question, children, value }: Props) {
           <div className="flex items-center gap-2 w-full cursor-pointer hover:bg-icon-dark/10 dark:hover:bg-icon-light/5 rounded duration-100 px-2 py-1">
             <h3 className="flex-1">{question}</h3>
           </div>
-          {/* eslint-disable-next-line */}
+
           <div
             className="text-icon-light/50 dark:text-icon-dark/50 hover:bg-icon-dark/10 hover:dark:bg-icon-light/10 hover:text-icon-light/70 dark:hover:text-icon-dark/70 p-1.5 rounded-md cursor-pointer duration-100 h-7.5 w-7.5"
             onClick={e => {
