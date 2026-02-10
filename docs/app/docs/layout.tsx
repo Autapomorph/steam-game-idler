@@ -1,11 +1,12 @@
+import { type PropsWithChildren } from 'react';
 import Image from 'next/image';
 import { DocsLayout } from 'fumadocs-ui/layouts/docs';
 import { FaGithub } from 'react-icons/fa6';
 
-import { baseOptions } from '@lib/layout.shared';
 import { source } from '@lib/source';
+import { baseOptions } from '@lib/layout.shared';
 
-export default function Layout({ children }: LayoutProps<'/docs'>) {
+export default function Layout({ children }: PropsWithChildren) {
   const base = baseOptions();
 
   return (

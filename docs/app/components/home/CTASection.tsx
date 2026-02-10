@@ -1,29 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { FaWindows } from 'react-icons/fa6';
 
-export default function CTASection() {
-  const [installerUrl, setInstallerUrl] = useState<string>('');
+import { useGlobalStore } from '@docs/stores/globalStore';
 
-  useEffect(() => {
-    try {
-      fetch('https://api.github.com/repos/Autapomorph/steam-game-idler/releases/latest')
-        .then(response => response.json())
-        .then(data => {
-          const installer = data.assets?.find((asset: { name: string }) =>
-            asset.name.endsWith('_x64-setup.exe'),
-          );
-          if (installer) {
-            setInstallerUrl(installer.browser_download_url);
-          }
-        });
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('Error fetching latest release:', error);
-    }
-  }, []);
+export default function CTASection() {
+  const { downloadUrl } = useGlobalStore(state => state);
 
   return (
     <section
@@ -40,7 +23,7 @@ export default function CTASection() {
       {/* Bottom transition to footer */}
       <div className="absolute bottom-0 left-0 right-0 h-16 bg-linear-to-b from-transparent to-gray-100/20" />
 
-      <div className="container relative z-10 px-4 sm:px-6 md:px-8">
+      <div className="container mx-auto relative z-10 px-4 sm:px-6 md:px-8">
         <div className="text-center max-w-4xl mx-auto">
           <h2
             id="cta-heading"
@@ -61,9 +44,7 @@ export default function CTASection() {
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center mb-12 sm:mb-16 px-4 sm:px-0">
             <Link
               prefetch={false}
-              href={
-                installerUrl || 'https://github.com/Autapomorph/steam-game-idler/releases/latest'
-              }
+              href={downloadUrl}
               className="group inline-flex items-center justify-center px-8 sm:px-10 py-4 sm:py-5 bg-white text-indigo-700 font-black text-base sm:text-lg rounded-xl hover:bg-cyan-100 transform hover:scale-105 transition-all duration-200 shadow-2xl"
             >
               <FaWindows className="w-4 h-4 md:w-5 md:h-5 mr-2 md:mr-3" />

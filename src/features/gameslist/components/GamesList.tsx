@@ -1,0 +1,163 @@
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { cn, Spinner } from '@heroui/react';
+import { List } from 'react-window';
+
+import { useStateStore, useUserStore } from '@/shared/stores';
+import { PageHeader } from './PageHeader';
+import { GamesListRow, type RowData } from './GamesListRow';
+import { Private } from './Private';
+import { useGamesList } from '../hooks/useGamesList';
+
+export const GamesList = () => {
+  const gamesContext = useGamesList();
+  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed);
+  const transitionDuration = useStateStore(state => state.transitionDuration);
+  const showAchievements = useStateStore(state => state.showAchievements);
+  const userSettings = useUserStore(state => state.userSettings);
+
+  const [columnCount, setColumnCount] = useState(5);
+  const [windowSize, setWindowSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+
+  const handleResize = useCallback(() => {
+    setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+    if (window.innerWidth >= 3200) {
+      setColumnCount(12);
+    } else if (window.innerWidth >= 2300) {
+      setColumnCount(10);
+    } else if (window.innerWidth >= 2000) {
+      setColumnCount(8);
+    } else if (window.innerWidth >= 1500) {
+      setColumnCount(7);
+    } else {
+      setColumnCount(5);
+    }
+  }, []);
+
+  useEffect(() => {
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [handleResize]);
+
+  const recommendedHeight = 335;
+  const recentsHeight = 210;
+  const headerHeight = 40;
+  const getDynamicRowHeight = useCallback(
+    (): number => (sidebarCollapsed ? 175 : 160),
+    [sidebarCollapsed],
+  );
+
+  const games = useMemo(() => gamesContext.filteredGames || [], [gamesContext.filteredGames]);
+  const gameRowCount = useMemo(
+    () => Math.ceil(games.length / columnCount),
+    [games.length, columnCount],
+  );
+
+  const hasRecommended = useMemo(
+    () =>
+      !gamesContext.isLoading &&
+      gamesContext.unplayedGames.length > 0 &&
+      userSettings?.general?.showRecommendedCarousel,
+    [
+      gamesContext.isLoading,
+      gamesContext.unplayedGames.length,
+      userSettings?.general?.showRecommendedCarousel,
+    ],
+  );
+
+  const hasRecent = useMemo(
+    () =>
+      !gamesContext.isLoading &&
+      gamesContext.recentGames.length > 0 &&
+      userSettings?.general?.showRecentCarousel,
+    [
+      gamesContext.isLoading,
+      gamesContext.recentGames.length,
+      userSettings?.general?.showRecentCarousel,
+    ],
+  );
+
+  const rows = useMemo((): ('recommended' | 'recent' | 'header' | number)[] => {
+    const r: ('recommended' | 'recent' | 'header' | number)[] = [];
+    if (hasRecommended) r.push('recommended');
+    if (hasRecent) r.push('recent');
+    r.push('header');
+    for (let i = 0; i < gameRowCount; i += 1) r.push(i);
+    return r;
+  }, [hasRecommended, hasRecent, gameRowCount]);
+
+  const getRowHeight = useCallback(
+    (index: number): number => {
+      const rowType = rows[index];
+      if (rowType === 'recommended') return recommendedHeight;
+      if (rowType === 'recent') return recentsHeight;
+      if (rowType === 'header') return headerHeight;
+      return getDynamicRowHeight();
+    },
+    [rows, getDynamicRowHeight],
+  );
+
+  const rowData: RowData = {
+    rows,
+    games,
+    columnCount,
+  };
+
+  if (!gamesContext.isLoading && gamesContext.gamesList.length === 0)
+    return (
+      <div className={cn('w-calc min-h-calc max-h-calc overflow-x-hidden')}>
+        <Private setRefreshKey={gamesContext.setRefreshKey} />
+      </div>
+    );
+
+  return (
+    <div
+      key={gamesContext.refreshKey}
+      className={cn(
+        'mt-9 ease-in-out',
+        sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
+      )}
+      style={{
+        transitionDuration,
+        transitionProperty: 'width',
+      }}
+    >
+      {!showAchievements && (
+        <PageHeader
+          sortStyle={gamesContext.sortStyle}
+          setSortStyle={gamesContext.setSortStyle}
+          filteredGames={gamesContext.filteredGames}
+          setRefreshKey={gamesContext.setRefreshKey}
+        />
+      )}
+
+      {!gamesContext.isLoading ? (
+        <List
+          key={
+            sidebarCollapsed
+              ? `collapsed-${windowSize.width}x${windowSize.height}`
+              : `expanded-${windowSize.width}x${windowSize.height}`
+          }
+          rowComponent={GamesListRow}
+          rowCount={rows.length}
+          rowHeight={getRowHeight}
+          style={{
+            overflowX: 'hidden',
+            width: '100%',
+            height: windowSize.height - 168,
+          }}
+          rowProps={{
+            data: rowData,
+          }}
+        />
+      ) : (
+        <div className="flex justify-center items-center w-calc h-[calc(100vh-168px)]">
+          <Spinner variant="simple" />
+        </div>
+      )}
+    </div>
+  );
+};

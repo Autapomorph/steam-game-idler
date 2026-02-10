@@ -1,15 +1,19 @@
 import path from 'node:path';
 import { notFound } from 'next/navigation';
-import { getMDXComponents } from 'mdx-components';
 
 import { blog } from '@lib/source';
+import { getMDXComponents } from 'mdx-components';
+interface PageProps {
+  params: {
+    slug: string;
+  };
+}
 
 function getName(p: string) {
   return path.basename(p, path.extname(p));
 }
 
-export default async function Page(props: PageProps<'/changelog/[slug]'>) {
-  // eslint-disable-next-line react/destructuring-assignment
+export default async function Page(props: PageProps) {
   const params = await props.params;
   const page = blog.getPage([params.slug]);
 
@@ -51,7 +55,6 @@ export default async function Page(props: PageProps<'/changelog/[slug]'>) {
                   <span
                     key={tag}
                     className={`text-xs px-2.5 py-1 rounded-md font-medium ${
-                      /* eslint-disable no-nested-ternary */
                       tag === 'New'
                         ? 'bg-green-500/15 text-green-400'
                         : tag === 'Improved'
@@ -59,7 +62,6 @@ export default async function Page(props: PageProps<'/changelog/[slug]'>) {
                           : tag === 'Fixed'
                             ? 'bg-cyan-500/15 text-cyan-400'
                             : 'bg-gray-700 text-gray-300'
-                      /* eslint-enable no-nested-ternary */
                     }`}
                   >
                     {tag}
@@ -86,7 +88,7 @@ export default async function Page(props: PageProps<'/changelog/[slug]'>) {
   );
 }
 
-export function generateStaticParams(): { slug: string }[] {
+export function generateStaticParams() {
   return blog.getPages().map(page => ({
     slug: page.slugs[0],
   }));

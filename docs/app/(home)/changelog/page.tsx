@@ -91,7 +91,6 @@ export default async function Page() {
                       <span
                         key={tag}
                         className={`text-xs px-2.5 py-1 rounded-md font-medium ${
-                          /* eslint-disable no-nested-ternary */
                           tag === 'New'
                             ? 'bg-green-500/15 text-green-400'
                             : tag === 'Improved'
@@ -99,7 +98,6 @@ export default async function Page() {
                               : tag === 'Fixed'
                                 ? 'bg-cyan-500/15 text-cyan-400'
                                 : 'bg-gray-700 text-gray-300'
-                          /* eslint-enable no-nested-ternary */
                         }`}
                       >
                         {tag}

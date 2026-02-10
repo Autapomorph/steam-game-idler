@@ -36,7 +36,6 @@ export default function ChangelogClient({ children, totalPosts }: Props) {
       observerRef.current.observe(sentinelRef.current);
     }
 
-    // eslint-disable-next-line consistent-return
     return () => {
       if (observerRef.current) {
         observerRef.current.disconnect();

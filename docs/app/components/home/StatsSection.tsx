@@ -9,14 +9,13 @@ export default function StatsSection() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const loadGitHubStars = async (): Promise<void> => {
+    const loadGitHubStars = async () => {
       try {
-        const response = await fetch('https://api.github.com/repos/Autapomorph/steam-game-idler');
+        const response = await fetch('https://api.github.com/repos/zevnda/steam-game-idler');
         const data = await response.json();
-        setGithubStars(data.stargazers_count ?? 999);
+        setGithubStars(data.stargazers_count || 999);
       } catch (error) {
         setGithubStars(999);
-        // eslint-disable-next-line no-console
         console.error('Failed to fetch GitHub stars:', error);
       } finally {
         setIsLoading(false);
@@ -33,10 +32,10 @@ export default function StatsSection() {
       description: 'Active installations worldwide',
     },
     {
-      value: '30',
-      label: 'Languages',
+      value: '150K+',
+      label: 'Supported Games',
       icon: <FiGlobe className="w-6 h-6" />,
-      description: 'Localization support',
+      description: 'Game compatibility',
     },
     {
       value: isLoading ? '...' : githubStars.toString(),
@@ -63,7 +62,7 @@ export default function StatsSection() {
       {/* Bottom transition overlay */}
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-b from-transparent to-purple-100/50" />
 
-      <div className="container relative z-10 px-4 sm:px-6 md:px-8">
+      <div className="container mx-auto relative z-10 px-4 sm:px-6 md:px-8">
         {/* Header with side-by-side layout */}
         <header className="grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-center mb-12 sm:mb-16 lg:mb-20">
           <div>
@@ -81,14 +80,14 @@ export default function StatsSection() {
             <p className="text-base sm:text-lg text-gray-700 leading-relaxed">
               Steam Game Idler is the go-to choice for users looking to automate their Steam
               experience. Our Steam card farmer is trusted by thousands of users worldwide, with
-              support for 30 languages.
+              support for 150,000+ Steam games.
             </p>
           </div>
         </header>
 
         {/* Stats in horizontal cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          {stats.map(stat => (
+          {stats.map((stat, index) => (
             <article key={stat.label} className="group">
               <div className="bg-white border-2 border-indigo-200 p-6 sm:p-8 hover:border-indigo-400 hover:bg-white/90 transition-all duration-200 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-2">
                 <div className="flex items-start justify-between mb-4 sm:mb-6">
