@@ -17,7 +17,7 @@ const App = ({ Component, pageProps }: AppProps) => {
       <I18nProvider>
         <ThemeProvider
           attribute="class"
-          themes={['dark', 'blue', 'red', 'purple', 'gold', 'black']}
+          themes={['dark', 'black']}
           enableSystem
           defaultTheme="dark"
           disableTransitionOnChange
