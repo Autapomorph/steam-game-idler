@@ -13,38 +13,38 @@ const App = ({ Component, pageProps }: AppProps) => {
   const { loaderFadeOut } = useLoaderStore();
 
   return (
-    <ErrorBoundaryProvider>
-      <I18nProvider>
-        <ThemeProvider
-          attribute="class"
-          themes={['dark', 'black']}
-          enableSystem
-          defaultTheme="dark"
-          disableTransitionOnChange
-        >
-          <HeroUIProvider>
-            <ToastProvider
-              toastProps={{
-                radius: 'sm',
-                variant: 'flat',
-                timeout: 3000,
-                shouldShowTimeoutProgress: true,
-                closeIcon: <TbX size={16} className="text-content" />,
-                classNames: {
-                  base: ['bg-sidebar border-none cursor-default'],
-                  description: ['text-content text-sm font-medium'],
-                  closeButton: ['opacity-100 absolute right-1 top-1 hover:bg-item-hover'],
-                },
-              }}
-            />
+    <I18nProvider>
+      <ThemeProvider
+        attribute="class"
+        themes={['dark', 'black']}
+        enableSystem
+        defaultTheme="dark"
+        disableTransitionOnChange
+      >
+        <HeroUIProvider>
+          <ToastProvider
+            toastProps={{
+              radius: 'sm',
+              variant: 'flat',
+              timeout: 3000,
+              shouldShowTimeoutProgress: true,
+              closeIcon: <TbX size={16} className="text-content" />,
+              classNames: {
+                base: ['bg-sidebar border-none cursor-default'],
+                description: ['text-content text-sm font-medium'],
+                closeButton: ['opacity-100 absolute right-1 top-1 hover:bg-item-hover'],
+              },
+            }}
+          />
+          <ErrorBoundaryProvider>
             {loadingUserSummary && <FullscreenLoader loaderFadeOut={loaderFadeOut} />}
             <Layout>
               <Component {...pageProps} />
             </Layout>
-          </HeroUIProvider>
-        </ThemeProvider>
-      </I18nProvider>
-    </ErrorBoundaryProvider>
+          </ErrorBoundaryProvider>
+        </HeroUIProvider>
+      </ThemeProvider>
+    </I18nProvider>
   );
 };
 
