@@ -33,7 +33,7 @@ export const handleUnlockAllAchievements = async (
       });
 
       showSuccessToast(
-        i18next.t('toast.unlockAll.success', {
+        i18next.t($ => $['toast.unlockAll.success'], {
           count: achievements.length,
           appName,
         }),
@@ -43,7 +43,7 @@ export const handleUnlockAllAchievements = async (
       showAccountMismatchToast('danger');
     }
   } catch (error) {
-    showDangerToast(i18next.t('common.error'));
+    showDangerToast(i18next.t($ => $['common.error']));
     console.error('Error in handleUnlockAll:', error);
     logEvent(`[Error] in (handleUnlockAll): ${error}`);
   }

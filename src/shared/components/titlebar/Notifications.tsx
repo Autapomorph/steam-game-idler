@@ -33,7 +33,7 @@ export const Notifications = () => {
 
   return (
     <div className="relative">
-      <CustomTooltip content={t('common.notifications')}>
+      <CustomTooltip content={t($ => $['common.notifications'])}>
         <div
           className={cn(
             'flex items-center justify-center hover:bg-header-hover/10 h-9 w-12',
@@ -109,7 +109,7 @@ export const Notifications = () => {
                       )}
                       onClick={() => markAllAsSeen(notifications, setUnseenNotifications)}
                     >
-                      {t('notifications.markAllRead')}
+                      {t($ => $['notifications.markAllRead'])}
                     </button>
                   )}
                 </div>
@@ -119,7 +119,7 @@ export const Notifications = () => {
                 {notifications.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-16 text-center text-altwhite/85 bg-item-hover/50">
                     <TbBell size={48} className="mb-2 opacity-30" />
-                    <p className="text-sm">{t('notifications.empty')}</p>
+                    <p className="text-sm">{t($ => $['notifications.empty'])}</p>
                   </div>
                 ) : (
                   notifications.map(notification => (

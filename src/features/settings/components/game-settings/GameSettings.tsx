@@ -54,18 +54,18 @@ export const GameSettings = () => {
     <div className="relative flex flex-col gap-4 mt-9 w-4/5">
       <div className="flex flex-col gap-0 select-none">
         <p className="flex items-center text-xs text-altwhite font-bold">
-          {t('settings.title')}
+          {t($ => $['settings.title'])}
           <span>
             <TbChevronRight size={12} />
           </span>
         </p>
-        <p className="text-3xl font-black">{t('common.gameSettings')}</p>
+        <p className="text-3xl font-black">{t($ => $['common.gameSettings'])}</p>
       </div>
 
       <div className="flex flex-col gap-3 mt-4">
         <Input
           isClearable
-          placeholder={t('common.search')}
+          placeholder={t($ => $['common.search'])}
           startContent={<RiSearchLine size={24} className="text-content/60" />}
           classNames={{
             inputWrapper: cn(
@@ -99,8 +99,10 @@ export const GameSettings = () => {
 
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
-            <p className="text-sm text-content font-bold">{t('gameSettings.globalMaxIdle')}</p>
-            <p className="text-xs text-altwhite">{t('gameSettings.globalMaxIdleSub')}</p>
+            <p className="text-sm text-content font-bold">
+              {t($ => $['gameSettings.globalMaxIdle'])}
+            </p>
+            <p className="text-xs text-altwhite">{t($ => $['gameSettings.globalMaxIdleSub'])}</p>
           </div>
           <NumberInput
             size="sm"
@@ -131,8 +133,8 @@ export const GameSettings = () => {
 
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
-            <p className="text-sm text-content font-bold">{t('gameSettings.idle')}</p>
-            <p className="text-xs text-altwhite">{t('gameSettings.idleSub')}</p>
+            <p className="text-sm text-content font-bold">{t($ => $['gameSettings.idle'])}</p>
+            <p className="text-xs text-altwhite">{t($ => $['gameSettings.idleSub'])}</p>
           </div>
           <NumberInput
             size="sm"
@@ -164,8 +166,8 @@ export const GameSettings = () => {
 
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
-            <p className="text-sm text-content font-bold">{t('gameSettings.drops')}</p>
-            <p className="text-xs text-altwhite">{t('gameSettings.dropsSub')}</p>
+            <p className="text-sm text-content font-bold">{t($ => $['gameSettings.drops'])}</p>
+            <p className="text-xs text-altwhite">{t($ => $['gameSettings.dropsSub'])}</p>
           </div>
           <NumberInput
             size="sm"
@@ -197,8 +199,10 @@ export const GameSettings = () => {
 
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
-            <p className="text-sm text-content font-bold">{t('gameSettings.achievements')}</p>
-            <p className="text-xs text-altwhite">{t('gameSettings.achievementsSub')}</p>
+            <p className="text-sm text-content font-bold">
+              {t($ => $['gameSettings.achievements'])}
+            </p>
+            <p className="text-xs text-altwhite">{t($ => $['gameSettings.achievementsSub'])}</p>
           </div>
           <NumberInput
             size="sm"

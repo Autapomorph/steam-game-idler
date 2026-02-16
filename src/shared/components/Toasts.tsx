@@ -23,7 +23,7 @@ export function showSteamNotRunningToast() {
     title: (
       <div className="grow">
         <ErrorToast
-          message={i18next.t('toast.steam')}
+          message={i18next.t($ => $['toast.steam'])}
           href="https://steamgameidler.com/docs/faq#error-messages:~:text=Steam%20is%20not%20running"
         />
       </div>
@@ -36,7 +36,7 @@ export function showAccountMismatchToast(color: 'danger' | 'warning') {
   addToast({
     title: (
       <ErrorToast
-        message={i18next.t('toast.mismatch')}
+        message={i18next.t($ => $['toast.mismatch'])}
         href="https://steamgameidler.com/docs/faq#error-messages:~:text=Account%20mismatch%20between%20Steam%20and%20SGI"
       />
     ),
@@ -48,7 +48,7 @@ export function showMissingCredentialsToast() {
   addToast({
     title: (
       <ErrorToast
-        message={i18next.t('toast.missingCredentials')}
+        message={i18next.t($ => $['toast.missingCredentials'])}
         href="https://steamgameidler.com/docs/faq#error-messages:~:text=Missing%20card%20farming%20credentials%20in%20%E2%80%9Csettings%20%3E%20card%20farming%22"
       />
     ),
@@ -60,7 +60,7 @@ export function showOutdatedCredentialsToast() {
   addToast({
     title: (
       <ErrorToast
-        message={i18next.t('toast.outdatedCredentials')}
+        message={i18next.t($ => $['toast.outdatedCredentials'])}
         href="https://steamgameidler.com/docs/faq#error-messages:~:text=Card%20farming%20credentials%20need%20to%20be%20updated%20in%20%E2%80%9Csettings%20%3E%20general%22"
       />
     ),
@@ -72,7 +72,7 @@ export function showEnableAllGamesToast() {
   addToast({
     title: (
       <ErrorToast
-        message={i18next.t('toast.enableAllGames')}
+        message={i18next.t($ => $['toast.enableAllGames'])}
         href="https://steamgameidler.com/docs/faq#error-messages:~:text=Add%20some%20games%20to%20your%20card%20farming%20list%20or%20enable%20%E2%80%9Call%20games%E2%80%9D%20in%20%E2%80%9Csettings%20%3E%20card%20farming%22"
       />
     ),
@@ -84,7 +84,7 @@ export function showIncorrectCredentialsToast() {
   addToast({
     title: (
       <ErrorToast
-        message={i18next.t('toast.incorrectCredentials')}
+        message={i18next.t($ => $['toast.incorrectCredentials'])}
         href="https://steamgameidler.com/docs/faq#error-messages:~:text=Incorrect%20card%20farming%20credentials"
       />
     ),
@@ -96,7 +96,7 @@ export function showNoGamesToast() {
   addToast({
     title: (
       <ErrorToast
-        message={i18next.t('toast.noGames')}
+        message={i18next.t($ => $['toast.noGames'])}
         href="https://steamgameidler.com/docs/faq#:~:text=There%20are%20no%20games%20in%20your%20list"
       />
     ),
@@ -108,7 +108,7 @@ export function showPriceFetchCooldownToast(cooldown: number) {
   addToast({
     title: (
       <ErrorToast
-        message={i18next.t('toast.tradingCards.cooldown', { cooldown })}
+        message={i18next.t($ => $['toast.tradingCards.cooldown'], { cooldown })}
         href="https://steamgameidler.com/docs/faq#error-messages:~:text=Please%20wait%20X%20seconds%20before%20fetching%20more%20card%20prices"
       />
     ),
@@ -120,7 +120,7 @@ export function showPriceFetchRateLimitToast() {
   addToast({
     title: (
       <ErrorToast
-        message={i18next.t('toast.tradingCards.rateLimit')}
+        message={i18next.t($ => $['toast.tradingCards.rateLimit'])}
         href="https://steamgameidler.com/docs/faq#:~:text=Rate%20limited%20when%20fetching%20card%20prices"
       />
     ),

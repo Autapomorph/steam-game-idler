@@ -66,12 +66,14 @@ export async function toggleAchievement(
     const status = JSON.parse(String(response)) as InvokeAchievementUnlock;
 
     if (status.success) {
-      showSuccessToast(i18next.t('toast.toggle.success', { type, achievementName, appName }));
+      showSuccessToast(
+        i18next.t($ => $['toast.toggle.success'], { type, achievementName, appName }),
+      );
       logEvent(`[Achievement Manager] ${type} ${achievementName} for ${appName} (${appId})`);
       return true;
     }
     showDangerToast(
-      i18next.t('toast.toggle.error', {
+      i18next.t($ => $['toast.toggle.error'], {
         type: type.replace('ed', '').toLowerCase(),
         achievementName,
         appName,

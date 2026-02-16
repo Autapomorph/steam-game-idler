@@ -89,7 +89,7 @@ export const fetchGamesWithDropsData = async (
     setIsCFDataLoading(false);
   } catch (error) {
     setIsCFDataLoading(false);
-    showDangerToast(i18next.t('common.error'));
+    showDangerToast(i18next.t($ => $['common.error']));
     console.error('Error in (fetchGamesWithDropsData):', error);
     logEvent(`[Error] in (fetchGamesWithDropsData): ${error}`);
   }

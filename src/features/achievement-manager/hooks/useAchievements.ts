@@ -82,7 +82,7 @@ export function useAchievements(
         setIsLoading(false);
         setAchievementsUnavailable(true);
         setStatisticsUnavailable(true);
-        showDangerToast(t('toast.achievementData.error'));
+        showDangerToast(t($ => $['toast.achievementData.error']));
         console.error('Error in (getAchievementData):', error);
         logEvent(`Error in (getAchievementData): ${error}`);
       }

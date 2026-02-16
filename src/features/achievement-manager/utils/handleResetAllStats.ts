@@ -42,7 +42,7 @@ export const handleResetAllStats = async (
     setStatistics(newData.achievement_data.stats);
 
     showSuccessToast(
-      i18next.t('toast.resetAll.success', {
+      i18next.t($ => $['toast.resetAll.success'], {
         count: statistics.length,
         appName,
       }),
@@ -51,6 +51,6 @@ export const handleResetAllStats = async (
     // Clear the tracked changes after successful update
     setChangedStats({});
   } else {
-    showDangerToast(i18next.t('toast.resetAll.error'));
+    showDangerToast(i18next.t($ => $['toast.resetAll.error']));
   }
 };

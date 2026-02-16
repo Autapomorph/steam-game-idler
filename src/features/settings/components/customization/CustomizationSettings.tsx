@@ -41,22 +41,22 @@ export const CustomizationSettings = () => {
     <div className="relative flex flex-col gap-4 mt-9 pb-16 w-4/5">
       <div className="flex flex-col gap-0 select-none">
         <p className="flex items-center text-xs text-altwhite font-bold">
-          {t('settings.title')}
+          {t($ => $['settings.title'])}
           <span>
             <TbChevronRight size={12} />
           </span>
         </p>
-        <p className="text-3xl font-black">{t('settings.customization.title')}</p>
+        <p className="text-3xl font-black">{t($ => $['settings.customization.title'])}</p>
       </div>
 
       <div className="flex flex-col gap-3 mt-4">
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
             <p className="text-sm text-content font-bold">
-              {t('settings.general.disableTooltips')}
+              {t($ => $['settings.general.disableTooltips'])}
             </p>
             <p className="text-xs text-altwhite">
-              {t('settings.general.disableTooltips.description')}
+              {t($ => $['settings.general.disableTooltips.description'])}
             </p>
           </div>
           <SettingsSwitch type="general" name="disableTooltips" />
@@ -67,10 +67,10 @@ export const CustomizationSettings = () => {
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
             <p className="text-sm text-content font-bold">
-              {t('settings.general.showRecommendedCarousel')}
+              {t($ => $['settings.general.showRecommendedCarousel'])}
             </p>
             <p className="text-xs text-altwhite">
-              {t('settings.general.showRecommendedCarousel.description')}
+              {t($ => $['settings.general.showRecommendedCarousel.description'])}
             </p>
           </div>
           <SettingsSwitch type="general" name="showRecommendedCarousel" />
@@ -81,10 +81,10 @@ export const CustomizationSettings = () => {
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
             <p className="text-sm text-content font-bold">
-              {t('settings.general.showRecentCarousel')}
+              {t($ => $['settings.general.showRecentCarousel'])}
             </p>
             <p className="text-xs text-altwhite">
-              {t('settings.general.showRecentCarousel.description')}
+              {t($ => $['settings.general.showRecentCarousel.description'])}
             </p>
           </div>
           <SettingsSwitch type="general" name="showRecentCarousel" />
@@ -95,10 +95,10 @@ export const CustomizationSettings = () => {
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
             <p className="text-sm text-content font-bold">
-              {t('settings.general.showCardDropsCarousel')}
+              {t($ => $['settings.general.showCardDropsCarousel'])}
             </p>
             <p className="text-xs text-altwhite">
-              {t('settings.general.showCardDropsCarousel.description')}
+              {t($ => $['settings.general.showCardDropsCarousel.description'])}
             </p>
           </div>
           <SettingsSwitch type="general" name="showCardDropsCarousel" />
@@ -108,8 +108,12 @@ export const CustomizationSettings = () => {
 
         <div className="flex flex-col justify-between gap-6">
           <div className="flex flex-col gap-2 w-1/2">
-            <p className="text-sm text-content font-bold">{t('settings.customization.theme')}</p>
-            <p className="text-xs text-altwhite">{t('settings.customization.theme.description')}</p>
+            <p className="text-sm text-content font-bold">
+              {t($ => $['settings.customization.theme'])}
+            </p>
+            <p className="text-xs text-altwhite">
+              {t($ => $['settings.customization.theme.description'])}
+            </p>
           </div>
 
           <RadioGroup

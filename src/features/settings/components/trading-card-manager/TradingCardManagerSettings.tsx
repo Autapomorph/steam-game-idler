@@ -37,11 +37,11 @@ export const TradingCardManagerSettings = () => {
   const sellOptions = [
     {
       key: 'highestBuyOrder',
-      label: t('settings.tradingCards.sellOptions.highestBuyOrder'),
+      label: t($ => $['settings.tradingCards.sellOptions.highestBuyOrder']),
     },
     {
       key: 'lowestSellOrder',
-      label: t('settings.tradingCards.sellOptions.lowestSellOrder'),
+      label: t($ => $['settings.tradingCards.sellOptions.lowestSellOrder']),
     },
   ];
 
@@ -49,12 +49,12 @@ export const TradingCardManagerSettings = () => {
     <div className="relative flex flex-col gap-4 mt-9 pb-16 w-4/5">
       <div className="flex flex-col gap-0 select-none">
         <p className="flex items-center text-xs text-altwhite font-bold">
-          {t('settings.title')}
+          {t($ => $['settings.title'])}
           <span>
             <TbChevronRight size={12} />
           </span>
         </p>
-        <p className="text-3xl font-black">{t('tradingCards.title')}</p>
+        <p className="text-3xl font-black">{t($ => $['tradingCards.title'])}</p>
 
         {!cardSettings.cardFarmingUser && (
           <div className="mt-4">
@@ -66,7 +66,7 @@ export const TradingCardManagerSettings = () => {
                 iconWrapper: '!bg-dynamic/30 border-dynamic/40',
                 description: 'font-bold text-xs',
               }}
-              description={t('settings.tradingCards.alert')}
+              description={t($ => $['settings.tradingCards.alert'])}
             />
           </div>
         )}
@@ -76,10 +76,10 @@ export const TradingCardManagerSettings = () => {
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
             <p className="text-sm text-content font-bold">
-              {t('settings.tradingCards.sellOptions')}
+              {t($ => $['settings.tradingCards.sellOptions'])}
             </p>
             <p className="text-xs text-altwhite">
-              {t('settings.tradingCards.sellOptions.description')}
+              {t($ => $['settings.tradingCards.sellOptions.description'])}
             </p>
           </div>
           <div className="flex items-center gap-4">
@@ -89,7 +89,7 @@ export const TradingCardManagerSettings = () => {
               radius="none"
               items={sellOptions}
               className="w-50"
-              placeholder={t('common.nextTask.selectPlaceholder')}
+              placeholder={t($ => $['common.nextTask.selectPlaceholder'])}
               classNames={{
                 listbox: ['p-0'],
                 value: ['text-sm !text-content'],
@@ -126,11 +126,11 @@ export const TradingCardManagerSettings = () => {
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
             <p className="text-sm text-content font-bold">
-              {t('settings.tradingCards.priceAdjustment')}
+              {t($ => $['settings.tradingCards.priceAdjustment'])}
             </p>
             <p className="text-xs text-altwhite">
               <Trans
-                i18nKey="settings.tradingCards.priceAdjustmentSub"
+                i18nKey={$ => $['settings.tradingCards.priceAdjustmentSub']}
                 values={{ priceAdjustment }}
                 components={{ 1: <strong /> }}
               />
@@ -169,10 +169,12 @@ export const TradingCardManagerSettings = () => {
 
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
-            <p className="text-sm text-content font-bold">{t('settings.tradingCards.sellLimit')}</p>
+            <p className="text-sm text-content font-bold">
+              {t($ => $['settings.tradingCards.sellLimit'])}
+            </p>
             <p className="text-xs text-altwhite">
               <Trans
-                i18nKey="settings.tradingCards.sellLimitSub"
+                i18nKey={$ => $['settings.tradingCards.sellLimitSub']}
                 values={{ sellLimitMin, sellLimitMax }}
                 components={{ 1: <strong />, 3: <strong /> }}
               />
@@ -253,10 +255,12 @@ export const TradingCardManagerSettings = () => {
 
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
-            <p className="text-sm text-content font-bold">{t('settings.tradingCards.sellDelay')}</p>
+            <p className="text-sm text-content font-bold">
+              {t($ => $['settings.tradingCards.sellDelay'])}
+            </p>
             <p className="text-xs text-altwhite">
               <Trans
-                i18nKey="settings.tradingCards.sellDelaySub"
+                i18nKey={$ => $['settings.tradingCards.sellDelaySub']}
                 values={{ sellDelay }}
                 components={{ 1: <strong /> }}
               />

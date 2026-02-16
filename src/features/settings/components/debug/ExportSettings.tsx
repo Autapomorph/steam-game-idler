@@ -143,9 +143,9 @@ export const ExportSettings = () => {
       // Copy to clipboard
       const allSettingsString = JSON.stringify(allSettings, null, 2);
       await navigator.clipboard.writeText(allSettingsString);
-      showSuccessToast(t('toast.exportData.success'));
+      showSuccessToast(t($ => $['toast.exportData.success']));
     } catch (error) {
-      showDangerToast(t('toast.exportData.error'));
+      showDangerToast(t($ => $['toast.exportData.error']));
       console.error('Export settings error:', error);
     }
   };
@@ -158,7 +158,7 @@ export const ExportSettings = () => {
       onPress={exportSettings}
       startContent={<TbArrowBarUp size={20} />}
     >
-      {t('settings.exportData')}
+      {t($ => $['settings.exportData'])}
     </Button>
   );
 };

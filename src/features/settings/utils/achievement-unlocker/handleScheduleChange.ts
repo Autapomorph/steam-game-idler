@@ -20,7 +20,7 @@ export const handleScheduleChange = async (
     setUserSettings(response.settings);
     logEvent(`[Settings - Achievement Unlocker] Changed '${type}' to '${String(value)}'`);
   } catch (error) {
-    showDangerToast(i18next.t('common.error'));
+    showDangerToast(i18next.t($ => $['common.error']));
     console.error('Error in (handleScheduleChange):', error);
     logEvent(`[Error] in (handleScheduleChange): ${error}`);
   }

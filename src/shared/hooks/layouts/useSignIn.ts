@@ -162,7 +162,7 @@ export function useSignIn(refreshKey: number) {
       logEvent(`[System] Logged in as ${userSummary?.personaName}`);
     } catch (error) {
       setIsLoading(false);
-      showDangerToast(t('common.error'));
+      showDangerToast(t($ => $['common.error']));
       console.error('Error in (handleLogin):', error);
       logEvent(`[Error] in (handleLogin): ${error}`);
     }

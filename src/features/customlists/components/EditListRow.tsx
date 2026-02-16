@@ -63,8 +63,8 @@ export const EditListRow = ({ index, style, data }: Props) => {
             }}
           >
             {blacklist.includes(item.appid)
-              ? t('customLists.blacklisted')
-              : t('customLists.blacklist')}
+              ? t($ => $['customLists.blacklisted'])
+              : t($ => $['customLists.blacklist'])}
           </Button>
         )}
         <Image

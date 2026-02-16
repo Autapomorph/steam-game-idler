@@ -37,7 +37,7 @@ export function useManualAdd(
       }
     } catch (error) {
       setIsLoading(false);
-      showDangerToast(t('common.error'));
+      showDangerToast(t($ => $['common.error']));
       console.error('Error in (handleAdd):', error);
       logEvent(`[Error] in (handleAdd): ${error}`);
     }
@@ -47,7 +47,7 @@ export function useManualAdd(
     try {
       setAppNameValue(e.target.value || '');
     } catch (error) {
-      showDangerToast(t('common.error'));
+      showDangerToast(t($ => $['common.error']));
       console.error('Error in (handleNameChange):', error);
       logEvent(`[Error] in (handleNameChange): ${error}`);
     }
@@ -64,7 +64,7 @@ export function useManualAdd(
         setAppIdValue(Number(value) || 0);
       }
     } catch (error) {
-      showDangerToast(t('common.error'));
+      showDangerToast(t($ => $['common.error']));
       console.error('Error in (handleIdChange):', error);
       logEvent(`[Error] in (handleIdChange): ${error}`);
     }

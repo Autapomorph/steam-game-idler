@@ -13,7 +13,7 @@ export const handleShowStoreLoginWindow = async (
   const result = await invoke<InvokeSteamCredentials>('open_store_login_window');
 
   if (!result?.success) {
-    showDangerToast(i18next.t('common.error'));
+    showDangerToast(i18next.t($ => $['common.error']));
     logEvent(`[Error] in (handleShowStoreLoginWindow): ${result?.message || 'Unknown error'}`);
     return;
   }
@@ -28,7 +28,7 @@ export const handleShowStoreLoginWindow = async (
     setUserSettings(response.settings);
 
     showSuccessToast(
-      i18next.t('toast.autoRedeem.authenticated', { user: userSummary?.personaName }),
+      i18next.t($ => $['toast.autoRedeem.authenticated'], { user: userSummary?.personaName }),
     );
   }
 };
@@ -41,7 +41,7 @@ export const handleSignOutCurrentStoreUser = async (
   const result = await invoke<InvokeSteamCredentials>('delete_store_cookies');
 
   if (!result?.success) {
-    showDangerToast(i18next.t('common.error'));
+    showDangerToast(i18next.t($ => $['common.error']));
     logEvent(
       `[Error] in (handleSignOutCurrentStoreUser) this error can occur if you are not already signed in: ${result?.message || 'Unknown error'}`,
     );

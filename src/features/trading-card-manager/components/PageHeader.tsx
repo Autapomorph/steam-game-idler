@@ -71,13 +71,13 @@ export const PageHeader = ({
   };
 
   const cardSortOptions: CardSortOption[] = [
-    { key: 'a-z', label: t('tradingCards.sort.cardNameAsc') },
-    { key: 'z-a', label: t('tradingCards.sort.cardNameDesc') },
-    { key: 'aa-zz', label: t('tradingCards.sort.gameNameAsc') },
-    { key: 'zz-aa', label: t('tradingCards.sort.gameNameDesc') },
-    { key: 'badge', label: t('tradingCards.sort.badge') },
-    { key: 'foil', label: t('tradingCards.sort.foils') },
-    { key: 'dupes', label: t('tradingCards.sort.duplicates') },
+    { key: 'a-z', label: t($ => $['tradingCards.sort.cardNameAsc']) },
+    { key: 'z-a', label: t($ => $['tradingCards.sort.cardNameDesc']) },
+    { key: 'aa-zz', label: t($ => $['tradingCards.sort.gameNameAsc']) },
+    { key: 'zz-aa', label: t($ => $['tradingCards.sort.gameNameDesc']) },
+    { key: 'badge', label: t($ => $['tradingCards.sort.badge']) },
+    { key: 'foil', label: t($ => $['tradingCards.sort.foils']) },
+    { key: 'dupes', label: t($ => $['tradingCards.sort.duplicates']) },
   ];
 
   return (
@@ -95,12 +95,12 @@ export const PageHeader = ({
         <div className="flex justify-between items-center pb-3 w-full">
           <div className="flex items-center gap-1 select-none w-full">
             <div className="flex flex-col justify-center w-full">
-              <p className="text-3xl font-black">{t('tradingCards.title')}</p>
-              <p className="text-xs text-altwhite my-2">{t('tradingCards.subtitle')}</p>
+              <p className="text-3xl font-black">{t($ => $['tradingCards.title'])}</p>
+              <p className="text-xs text-altwhite my-2">{t($ => $['tradingCards.subtitle'])}</p>
 
               <div className="flex flex-col justify-center gap-2 mt-1">
                 <div className="flex items-center gap-2 mt-1">
-                  <p className="text-sm text-altwhite font-bold">{t('common.sortBy')}</p>
+                  <p className="text-sm text-altwhite font-bold">{t($ => $['common.sortBy'])}</p>
 
                   <Tabs
                     aria-label="sort options"
@@ -131,7 +131,7 @@ export const PageHeader = ({
                     radius="full"
                     onPress={() => tradingCardContext.handleRefresh()}
                   >
-                    {t('common.refresh')}
+                    {t($ => $['common.refresh'])}
                   </Button>
 
                   <Button
@@ -144,7 +144,7 @@ export const PageHeader = ({
                     }
                     onPress={onConfirmOpen}
                   >
-                    {t('tradingCards.list')}{' '}
+                    {t($ => $['tradingCards.list'])}{' '}
                     {selectedCardsWithPrice.length > 0 && `(${selectedCardsWithPrice.length})`}
                   </Button>
 
@@ -158,7 +158,7 @@ export const PageHeader = ({
                     }
                     onPress={onBulkOpen}
                   >
-                    {t('tradingCards.bulk', {
+                    {t($ => $['tradingCards.bulk'], {
                       count: tradingCardContext.tradingCardsList?.length || 0,
                     })}
                   </Button>
@@ -173,7 +173,7 @@ export const PageHeader = ({
                     }
                     onPress={onRemoveOpen}
                   >
-                    {t('tradingCards.remove')}
+                    {t($ => $['tradingCards.remove'])}
                   </Button>
 
                   <Button
@@ -191,7 +191,9 @@ export const PageHeader = ({
                   {tradingCardQueryValue && (
                     <div className="flex items-center gap-2">
                       <Divider orientation="vertical" className="mx-2 h-8 bg-border" />
-                      <p className="text-sm text-altwhite font-bold">{t('common.search')}</p>
+                      <p className="text-sm text-altwhite font-bold">
+                        {t($ => $['common.search'])}
+                      </p>
                       <div className="flex items-center gap-2 text-sm text-altwhite p-2 bg-item-active rounded-full max-w-44">
                         <p className="text-content truncate">{tradingCardQueryValue}</p>
                         <div
@@ -240,10 +242,10 @@ export const PageHeader = ({
       <CustomModal
         isOpen={isConfirmOpen}
         onOpenChange={onConfirmOpenChange}
-        title={t('common.notice')}
+        title={t($ => $['common.notice'])}
         body={
           <div className="whitespace-pre-line">
-            {t('tradingCards.confirm', {
+            {t($ => $['tradingCards.confirm'], {
               time: formatTime(Number(selectedCardsWithPrice.length) * 1.5),
               count: Number(selectedCardsWithPrice.length),
             })}
@@ -259,7 +261,7 @@ export const PageHeader = ({
               className="font-semibold"
               onPress={onConfirmOpenChange}
             >
-              {t('common.cancel')}
+              {t($ => $['common.cancel'])}
             </Button>
             <Button
               size="sm"
@@ -270,7 +272,7 @@ export const PageHeader = ({
                 onConfirmOpenChange();
               }}
             >
-              {t('common.confirm')}
+              {t($ => $['common.confirm'])}
             </Button>
           </>
         }
@@ -279,10 +281,10 @@ export const PageHeader = ({
       <CustomModal
         isOpen={isBulkOpen}
         onOpenChange={onBulkOpenChange}
-        title={t('common.notice')}
+        title={t($ => $['common.notice'])}
         body={
           <div className="whitespace-pre-line">
-            {t('tradingCards.confirmBulk', {
+            {t($ => $['tradingCards.confirmBulk'], {
               time: formatTime(Number(tradingCardContext.tradingCardsList?.length) * 3),
               count: Number(tradingCardContext.tradingCardsList?.length),
             })}
@@ -298,7 +300,7 @@ export const PageHeader = ({
               className="font-semibold"
               onPress={onBulkOpenChange}
             >
-              {t('common.cancel')}
+              {t($ => $['common.cancel'])}
             </Button>
             <Button
               size="sm"
@@ -309,7 +311,7 @@ export const PageHeader = ({
                 onBulkOpenChange();
               }}
             >
-              {t('common.confirm')}
+              {t($ => $['common.confirm'])}
             </Button>
           </>
         }
@@ -318,10 +320,10 @@ export const PageHeader = ({
       <CustomModal
         isOpen={isRemoveOpen}
         onOpenChange={onRemoveOpenChange}
-        title={t('common.notice')}
+        title={t($ => $['common.notice'])}
         body={
           <div className="whitespace-pre-line">
-            {t('tradingCards.confirmRemove', {
+            {t($ => $['tradingCards.confirmRemove'], {
               time: formatTime(Number(tradingCardContext.tradingCardsList?.length) * 3),
               count: Number(tradingCardContext.tradingCardsList?.length),
             })}
@@ -337,7 +339,7 @@ export const PageHeader = ({
               className="font-semibold"
               onPress={onRemoveOpenChange}
             >
-              {t('common.cancel')}
+              {t($ => $['common.cancel'])}
             </Button>
             <Button
               size="sm"
@@ -348,7 +350,7 @@ export const PageHeader = ({
                 onRemoveOpenChange();
               }}
             >
-              {t('common.confirm')}
+              {t($ => $['common.confirm'])}
             </Button>
           </>
         }

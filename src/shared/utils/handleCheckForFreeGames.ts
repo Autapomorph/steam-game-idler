@@ -68,7 +68,7 @@ export const checkForFreeGames = async (
       setFreeGamesList([]);
     }
   } catch (error) {
-    showDangerToast(i18next.t('common.error'));
+    showDangerToast(i18next.t($ => $['common.error']));
     console.error('Error in (checkForFreeGames):', error);
     logEvent(`[Error] in (checkForFreeGames): ${error}`);
   }
@@ -87,11 +87,11 @@ export const autoRedeemFreeGames = async (
     for (const game of freeGamesList) {
       const result = await invoke<InvokeRedeemFreeGame>('redeem_free_game', { appId: game.appid });
       if (result.success) {
-        showSuccessToast(i18next.t('toast.autoRedeem.success', { appName: game.name }));
+        showSuccessToast(i18next.t($ => $['toast.autoRedeem.success'], { appName: game.name }));
         logEvent(`[Auto Redeem] Successfully redeemed free game ${game.name} (${game.appid})`);
         redeemedAppIds.push(Number(game.appid));
       } else {
-        showDangerToast(i18next.t('toast.autoRedeem.failure', { appName: game.name }));
+        showDangerToast(i18next.t($ => $['toast.autoRedeem.failure'], { appName: game.name }));
         logEvent(
           `[Auto Redeem] Failed to redeem free game ${game.name} (${game.appid}) - ${result.message}`,
         );
@@ -112,7 +112,7 @@ export const autoRedeemFreeGames = async (
       }, 3000);
     }
   } catch (error) {
-    showDangerToast(i18next.t('common.error'));
+    showDangerToast(i18next.t($ => $['common.error']));
     console.error('Error in (autoRedeemFreeGames):', error);
     logEvent(`[Error] in (autoRedeemFreeGames): ${error}`);
   }

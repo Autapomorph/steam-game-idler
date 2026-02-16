@@ -20,11 +20,11 @@ export const AchievementSettings = () => {
   const taskOptions = [
     {
       key: 'cardFarming',
-      label: t('common.cardFarming'),
+      label: t($ => $['common.cardFarming']),
     },
     {
       key: 'autoIdle',
-      label: t('customLists.autoIdle.title'),
+      label: t($ => $['customLists.autoIdle.title']),
     },
   ];
 
@@ -32,22 +32,22 @@ export const AchievementSettings = () => {
     <div className="relative flex flex-col gap-4 mt-9 pb-16 w-4/5">
       <div className="flex flex-col gap-0 select-none">
         <p className="flex items-center text-xs text-altwhite font-bold">
-          {t('settings.title')}
+          {t($ => $['settings.title'])}
           <span>
             <TbChevronRight size={12} />
           </span>
         </p>
-        <p className="text-3xl font-black">{t('common.achievementUnlocker')}</p>
+        <p className="text-3xl font-black">{t($ => $['common.achievementUnlocker'])}</p>
       </div>
 
       <div className="flex flex-col gap-3 mt-4">
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
             <p className="text-sm text-content font-bold">
-              {t('settings.achievementUnlocker.idle')}
+              {t($ => $['settings.achievementUnlocker.idle'])}
             </p>
             <p className="text-xs text-altwhite">
-              {t('settings.achievementUnlocker.idle.description')}
+              {t($ => $['settings.achievementUnlocker.idle.description'])}
             </p>
           </div>
           <SettingsSwitch type="achievementUnlocker" name="idle" />
@@ -58,10 +58,10 @@ export const AchievementSettings = () => {
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
             <p className="text-sm text-content font-bold">
-              {t('settings.achievementUnlocker.hidden')}
+              {t($ => $['settings.achievementUnlocker.hidden'])}
             </p>
             <p className="text-xs text-altwhite">
-              {t('settings.achievementUnlocker.hidden.description')}
+              {t($ => $['settings.achievementUnlocker.hidden.description'])}
             </p>
           </div>
           <SettingsSwitch type="achievementUnlocker" name="hidden" />
@@ -71,9 +71,9 @@ export const AchievementSettings = () => {
 
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
-            <p className="text-sm text-content font-bold">{t('common.nextTask')}</p>
+            <p className="text-sm text-content font-bold">{t($ => $['common.nextTask'])}</p>
             <p className="text-xs text-altwhite">
-              {t('settings.achievementUnlocker.nextTask.description')}
+              {t($ => $['settings.achievementUnlocker.nextTask.description'])}
             </p>
           </div>
           <div className="flex items-center gap-4">
@@ -83,7 +83,7 @@ export const AchievementSettings = () => {
               radius="none"
               items={taskOptions}
               className="w-50"
-              placeholder={t('common.nextTask.selectPlaceholder')}
+              placeholder={t($ => $['common.nextTask.selectPlaceholder'])}
               classNames={{
                 listbox: ['p-0'],
                 value: ['text-sm !text-content'],
@@ -128,10 +128,10 @@ export const AchievementSettings = () => {
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
             <p className="text-sm text-content font-bold">
-              {t('settings.achievementUnlocker.scheduleLabel')}
+              {t($ => $['settings.achievementUnlocker.scheduleLabel'])}
             </p>
             <p className="text-xs text-altwhite">
-              {t('settings.achievementUnlocker.schedule.description')}
+              {t($ => $['settings.achievementUnlocker.schedule.description'])}
             </p>
           </div>
           <div className="flex items-center gap-4">
@@ -155,7 +155,7 @@ export const AchievementSettings = () => {
               }
             />
 
-            <p className="text-sm">{t('settings.achievementUnlocker.scheduleTo')}</p>
+            <p className="text-sm">{t($ => $['settings.achievementUnlocker.scheduleTo'])}</p>
 
             <TimeInput
               aria-label="schedule-to"
@@ -185,7 +185,7 @@ export const AchievementSettings = () => {
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
             <p className="text-sm text-content font-bold">
-              {t('settings.achievementUnlocker.unlockInterval')}
+              {t($ => $['settings.achievementUnlocker.unlockInterval'])}
             </p>
             <p className="text-xs text-altwhite">{sliderLabel}</p>
           </div>
@@ -207,7 +207,7 @@ export const AchievementSettings = () => {
             onChange={e => {
               if (Array.isArray(e)) {
                 setSliderLabel(
-                  t('settings.achievementUnlocker.interval', {
+                  t($ => $['settings.achievementUnlocker.interval'], {
                     min: e[0],
                     max: e[1],
                   }),

@@ -38,7 +38,7 @@ export const PageHeader = ({ protectedAchievements, protectedStatistics }: PageH
       const filePath = `${userSummary?.steamId}\\achievement_data\\${appId}.json`;
       await invoke('open_file_explorer', { path: filePath });
     } catch (error) {
-      showDangerToast(t('common.error'));
+      showDangerToast(t($ => $['common.error']));
       console.error('Error in (handleOpenAchievementFile):', error);
       logEvent(`[Error] in (handleOpenAchievementFile): ${error}`);
     }
@@ -60,7 +60,7 @@ export const PageHeader = ({ protectedAchievements, protectedStatistics }: PageH
         </div>
 
         <div className="flex items-center gap-1 w-full">
-          <CustomTooltip content={t('achievementManager.steam')} placement="top">
+          <CustomTooltip content={t($ => $['achievementManager.steam'])} placement="top">
             <div>
               <ExtLink href={`https://steamcommunity.com/stats/${appId}/achievements/`}>
                 <div className="bg-btn-achievement-header hover:bg-btn-achievement-header-hover rounded-full p-2 cursor-pointer duration-200">
@@ -70,7 +70,7 @@ export const PageHeader = ({ protectedAchievements, protectedStatistics }: PageH
             </div>
           </CustomTooltip>
 
-          <CustomTooltip content={t('achievementManager.steamDB')} placement="top">
+          <CustomTooltip content={t($ => $['achievementManager.steamDB'])} placement="top">
             <div>
               <ExtLink href={`https://steamdb.info/app/${appId}/stats/`}>
                 <div className="bg-btn-achievement-header hover:bg-btn-achievement-header-hover rounded-full p-2 cursor-pointer duration-200">
@@ -80,7 +80,7 @@ export const PageHeader = ({ protectedAchievements, protectedStatistics }: PageH
             </div>
           </CustomTooltip>
 
-          <CustomTooltip content={t('achievementManager.file')} placement="top">
+          <CustomTooltip content={t($ => $['achievementManager.file'])} placement="top">
             <div>
               <div
                 className="bg-btn-achievement-header hover:bg-btn-achievement-header-hover rounded-full p-2 cursor-pointer duration-200"
@@ -99,7 +99,7 @@ export const PageHeader = ({ protectedAchievements, protectedStatistics }: PageH
             hideIcon
             title={
               <p>
-                <Trans i18nKey="achievementManager.alert">
+                <Trans i18nKey={$ => $['achievementManager.alert']}>
                   Some protected achievements or statistics have been disabled.
                   <ExtLink
                     className="text-dynamic hover:text-dynamic-hover duration-150"

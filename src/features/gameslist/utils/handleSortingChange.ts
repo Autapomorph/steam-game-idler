@@ -13,7 +13,7 @@ export const handleSortingChange = (
     localStorage.setItem('sortStyle', currentKey);
     setSortStyle(currentKey);
   } catch (error) {
-    showDangerToast(i18next.t('common.error'));
+    showDangerToast(i18next.t($ => $['common.error']));
     console.error('Error in (handleSorting):', error);
     logEvent(`[Error] in (handleSorting): ${error}`);
   }

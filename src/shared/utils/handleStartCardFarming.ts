@@ -73,7 +73,7 @@ export const startCardFarming = async () => {
 
     setIsCardFarming(true);
   } catch (error) {
-    showDangerToast(i18next.t('common.error'));
+    showDangerToast(i18next.t($ => $['common.error']));
     console.error('Error in (startCardFarming):', error);
     logEvent(`[Error] in (startCardFarming): ${error}`);
   }

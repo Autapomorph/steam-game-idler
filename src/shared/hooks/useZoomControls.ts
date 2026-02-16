@@ -45,7 +45,7 @@ export function useZoomControls() {
           }
         }
       } catch (error) {
-        showDangerToast(t('common.error'));
+        showDangerToast(t($ => $['common.error']));
         console.error('Error in (handleZoomControls):', error);
         logEvent(`[Error] in (handleZoomControls): ${error}`);
       }
@@ -66,7 +66,7 @@ export function useZoomControls() {
           await invoke('set_zoom', { scaleFactor: newZoom });
         }
       } catch (error) {
-        showDangerToast(t('common.error'));
+        showDangerToast(t($ => $['common.error']));
         console.error('Error in (handleWheelZoom):', error);
         logEvent(`[Error] in (handleWheelZoom): ${error}`);
       }

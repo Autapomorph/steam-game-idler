@@ -25,10 +25,10 @@ export const PageHeader = ({
   const setGameQueryValue = useSearchStore(state => state.setGameQueryValue);
 
   const sortOptions: SortOption[] = [
-    { key: '1-0', label: t('gamesList.sort.playtimeDesc') },
-    { key: '0-1', label: t('gamesList.sort.playtimeAsc') },
-    { key: 'a-z', label: t('gamesList.sort.titleAsc') },
-    { key: 'z-a', label: t('gamesList.sort.titleDesc') },
+    { key: '1-0', label: t($ => $['gamesList.sort.playtimeDesc']) },
+    { key: '0-1', label: t($ => $['gamesList.sort.playtimeAsc']) },
+    { key: 'a-z', label: t($ => $['gamesList.sort.titleAsc']) },
+    { key: 'z-a', label: t($ => $['gamesList.sort.titleDesc']) },
   ];
 
   return (
@@ -36,10 +36,10 @@ export const PageHeader = ({
       <div className="flex justify-between items-center pb-3">
         <div className="flex items-center gap-1 select-none">
           <div className="flex flex-col justify-center">
-            <p className="text-3xl font-black">{t('gamesList.title')}</p>
+            <p className="text-3xl font-black">{t($ => $['gamesList.title'])}</p>
 
             <p className="text-xs text-altwhite my-2">
-              {t('common.showing', {
+              {t($ => $['common.showing'], {
                 total: filteredGames.length,
               })}
             </p>
@@ -50,12 +50,12 @@ export const PageHeader = ({
                 radius="full"
                 onPress={() => handleRefreshGamesList(userSummary?.steamId, setRefreshKey, true)}
               >
-                {t('common.refresh')}
+                {t($ => $['common.refresh'])}
               </Button>
 
               <Divider orientation="vertical" className="mx-2 h-8 bg-border" />
 
-              <p className="text-sm text-altwhite font-bold">{t('common.sortBy')}</p>
+              <p className="text-sm text-altwhite font-bold">{t($ => $['common.sortBy'])}</p>
 
               <Tabs
                 aria-label="sort options"
@@ -79,7 +79,7 @@ export const PageHeader = ({
               {gameQueryValue && (
                 <div className="flex items-center gap-2">
                   <Divider orientation="vertical" className="mx-2 h-8 bg-border" />
-                  <p className="text-sm text-altwhite font-bold">{t('common.search')}</p>
+                  <p className="text-sm text-altwhite font-bold">{t($ => $['common.search'])}</p>
                   <div className="flex items-center gap-2 text-sm text-altwhite p-2 bg-item-active rounded-full max-w-64">
                     <p className="text-content truncate">{gameQueryValue}</p>
                     <div

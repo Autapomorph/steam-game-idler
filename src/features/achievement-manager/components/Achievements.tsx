@@ -104,7 +104,7 @@ export const Achievements = () => {
             }}
             onSelectionChange={e => setCurrentTab(e as CurrentTabType)}
           >
-            <Tab key="achievements" title={t('achievementManager.achievements.title')}>
+            <Tab key="achievements" title={t($ => $['achievementManager.achievements.title'])}>
               <AchievementsList
                 achievements={achievements}
                 setAchievements={setAchievements}
@@ -113,7 +113,7 @@ export const Achievements = () => {
                 setRefreshKey={achievementStates.setRefreshKey}
               />
             </Tab>
-            <Tab key="statistics" title={t('achievementManager.statistics.title')}>
+            <Tab key="statistics" title={t($ => $['achievementManager.statistics.title'])}>
               <StatisticsList
                 statistics={statistics}
                 setStatistics={setStatistics}

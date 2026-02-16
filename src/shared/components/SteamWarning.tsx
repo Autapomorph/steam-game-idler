@@ -40,8 +40,8 @@ export const SteamWarning = () => {
     <CustomModal
       isOpen={isOpen}
       onOpenChange={verifySteamStatus}
-      title={t('common.notice')}
-      body={t('confirmation.steamClosed')}
+      title={t($ => $['common.notice'])}
+      body={t($ => $['confirmation.steamClosed'])}
       buttons={
         <Button
           size="sm"
@@ -49,7 +49,7 @@ export const SteamWarning = () => {
           radius="full"
           onPress={verifySteamStatus}
         >
-          {t('common.confirm')}
+          {t($ => $['common.confirm'])}
         </Button>
       }
     />

@@ -81,7 +81,7 @@ export const AchievementsList = ({
         </>
       ) : (
         <div className="flex flex-col gap-2 justify-center items-center my-2 bg-tab-panel rounded-lg p-4 mr-10">
-          <p>{t('achievementManager.achievements.empty')}</p>
+          <p>{t($ => $['achievementManager.achievements.empty'])}</p>
         </div>
       )}
     </div>

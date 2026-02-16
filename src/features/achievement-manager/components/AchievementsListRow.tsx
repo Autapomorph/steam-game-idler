@@ -106,10 +106,10 @@ export const AchievementsListRow = ({ index, style, data }: Props) => {
             }
           >
             {protectedAchievement
-              ? t('achievementManager.achievements.protected')
+              ? t($ => $['achievementManager.achievements.protected'])
               : achieved
-                ? t('achievementManager.achievements.lock')
-                : t('achievementManager.achievements.unlock')}
+                ? t($ => $['achievementManager.achievements.lock'])
+                : t($ => $['achievementManager.achievements.unlock'])}
           </Button>
         </div>
         <div className="py-2 px-3 bg-achievement-footer select-none rounded-b-lg">

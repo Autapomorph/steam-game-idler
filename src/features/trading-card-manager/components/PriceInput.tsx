@@ -47,7 +47,7 @@ export const PriceInput = ({ item, tradingCardContext }: PriceInputProps) => {
         onValueChange={value => tradingCardContext.updateCardPrice(item.assetid, value)}
       />
 
-      <CustomTooltip content={t('common.list')} placement="top">
+      <CustomTooltip content={t($ => $['common.list'])} placement="top">
         <Button
           isIconOnly
           className="bg-btn-secondary text-btn-text font-bold"

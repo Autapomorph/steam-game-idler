@@ -18,7 +18,7 @@ export const handleSliderChange = async (
     setUserSettings(response.settings);
     logEvent(`[Settings - Achievement Unlocker] Changed 'interval' to '${String(newInterval)}'`);
   } catch (error) {
-    showDangerToast(i18next.t('common.error'));
+    showDangerToast(i18next.t($ => $['common.error']));
     console.error('Error in (handleSliderChange - Achievement Unlocker):', error);
     logEvent(`[Error] in (handleSliderChange - Achievement Unlocker): ${error}`);
   }

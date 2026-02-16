@@ -16,7 +16,7 @@ export const OpenSettings = () => {
       const filePath = `${userSummary?.steamId}\\settings.json`;
       await invoke('open_file_explorer', { path: filePath });
     } catch (error) {
-      showDangerToast(t('common.error'));
+      showDangerToast(t($ => $['common.error']));
       console.error('Error in (handleOpenSettingsFile):', error);
       logEvent(`[Error] in (handleOpenSettingsFile): ${error}`);
     }
@@ -30,7 +30,7 @@ export const OpenSettings = () => {
       onPress={handleOpenSettingsFile}
       startContent={<TbFolders size={20} />}
     >
-      {t('settings.debug.viewSettingsFile')}
+      {t($ => $['settings.debug.viewSettingsFile'])}
     </Button>
   );
 };

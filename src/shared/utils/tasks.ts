@@ -98,7 +98,7 @@ export async function autoRevalidateSteamCredentials(
     const result = await invoke<InvokeSteamCredentials>('open_steam_login_window');
 
     if (!result?.success) {
-      showDangerToast(i18next.t('common.error'));
+      showDangerToast(i18next.t($ => $['common.error']));
       logEvent(`[Error] in (handleShowSteamLoginWindow): ${result?.message || 'Unknown error'}`);
       return;
     }
@@ -163,7 +163,7 @@ export async function autoRevalidateSteamCredentials(
       logEvent('[Error] [Settings - Card Farming] Incorrect card farming credentials');
     }
   } catch (error) {
-    showDangerToast(i18next.t('common.error'));
+    showDangerToast(i18next.t($ => $['common.error']));
     console.error('Error in (autoRevalidateSteamCredentials):', error);
     logEvent(`[Error] in (autoRevalidateSteamCredentials): ${error}`);
   }
@@ -198,7 +198,7 @@ export const preserveKeysAndClearData = async () => {
       localStorage.setItem(key, value);
     });
   } catch (error) {
-    showDangerToast(i18next.t('common.error'));
+    showDangerToast(i18next.t($ => $['common.error']));
     console.error('Error in (preserveKeysAndClearData):', error);
     logEvent(`[Error] in (preserveKeysAndClearData): ${error}`);
   }
@@ -210,7 +210,7 @@ export const getAppVersion = async () => {
     const appVersion = await getVersion();
     return appVersion;
   } catch (error) {
-    showDangerToast(i18next.t('common.error'));
+    showDangerToast(i18next.t($ => $['common.error']));
     console.error('Error in (getAppVersion):', error);
     logEvent(`[Error] in (getAppVersion): ${error}`);
   }
@@ -310,7 +310,7 @@ export async function sendNativeNotification(title: string, body: string) {
       sendNotification({ title, body });
     }
   } catch (error) {
-    showDangerToast(i18next.t('common.error'));
+    showDangerToast(i18next.t($ => $['common.error']));
     console.error('Error in (sendNativeNotification):', error);
     logEvent(`[Error] in (sendNativeNotification): ${error}`);
   }

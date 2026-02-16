@@ -17,7 +17,7 @@ export const handleRefreshGamesList = async (
       const cooldown = sessionStorage.getItem('cooldown');
       if (cooldown && moment().unix() < Number(cooldown)) {
         return showPrimaryToast(
-          i18next.t('toast.refetch.cooldown', {
+          i18next.t($ => $['toast.refetch.cooldown'], {
             time: moment.unix(Number(cooldown)).format('h:mm A'),
           }),
         );
@@ -33,7 +33,7 @@ export const handleRefreshGamesList = async (
     // Trigger a refresh by incrementing the refresh key
     setRefreshKey(prevKey => prevKey + 1);
   } catch (error) {
-    showDangerToast(i18next.t('common.error'));
+    showDangerToast(i18next.t($ => $['common.error']));
     console.error('Error in (handleRefetch):', error);
     logEvent(`[Error] in (handleRefetch): ${error}`);
   }

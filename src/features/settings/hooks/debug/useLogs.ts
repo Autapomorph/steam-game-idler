@@ -44,7 +44,7 @@ export const useLogs = () => {
           });
         setLogs(logEntries);
       } catch (error) {
-        showDangerToast(i18next.t('common.error'));
+        showDangerToast(i18next.t($ => $['common.error']));
         console.error('Error in (fetchLogs):', error);
         logEvent(`[Error] in (fetchLogs): ${error}`);
       }

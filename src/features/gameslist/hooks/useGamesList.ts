@@ -52,7 +52,7 @@ export function useGamesList() {
         previousRefreshKeyRef.current = refreshKey;
       } catch (error) {
         setIsLoading(false);
-        showDangerToast(t('common.error'));
+        showDangerToast(t($ => $['common.error']));
         console.error('Error in (getGamesList):', error);
         logEvent(`[Error] in (getGamesList): ${error}`);
       }

@@ -21,12 +21,12 @@ export const GeneralSettings = () => {
     <div className="relative flex flex-col gap-4 mt-9 pb-16 w-4/5">
       <div className="flex flex-col gap-0 select-none">
         <p className="flex items-center text-xs text-altwhite font-bold">
-          {t('settings.title')}
+          {t($ => $['settings.title'])}
           <span>
             <TbChevronRight size={12} />
           </span>
         </p>
-        <p className="text-3xl font-black">{t('settings.general.title')}</p>
+        <p className="text-3xl font-black">{t($ => $['settings.general.title'])}</p>
       </div>
 
       <div className="flex flex-col gap-3 mt-4">
@@ -40,13 +40,17 @@ export const GeneralSettings = () => {
             priority
           />
           <div className="flex flex-col gap-1">
-            <p className="text-xs text-altwhite font-bold">{t('settings.general.displayName')}</p>
+            <p className="text-xs text-altwhite font-bold">
+              {t($ => $['settings.general.displayName'])}
+            </p>
             <p className="py-1.5 px-2 bg-input rounded-lg text-content text-sm font-semibold w-64">
               <span className="transition-all duration-200">{userSummary?.personaName}</span>
             </p>
           </div>
           <div className="flex flex-col gap-1">
-            <p className="text-xs text-altwhite font-bold">{t('settings.general.steamId')}</p>
+            <p className="text-xs text-altwhite font-bold">
+              {t($ => $['settings.general.steamId'])}
+            </p>
             <p className="py-1.5 px-2 bg-input rounded-lg text-content text-sm font-semibold w-64">
               <span className="transition-all duration-200">{userSummary?.steamId}</span>
             </p>
@@ -57,8 +61,12 @@ export const GeneralSettings = () => {
 
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
-            <p className="text-sm text-content font-bold">{t('settings.general.antiAway')}</p>
-            <p className="text-xs text-altwhite">{t('settings.general.antiAway.description')}</p>
+            <p className="text-sm text-content font-bold">
+              {t($ => $['settings.general.antiAway'])}
+            </p>
+            <p className="text-xs text-altwhite">
+              {t($ => $['settings.general.antiAway.description'])}
+            </p>
           </div>
           <SettingsSwitch type="general" name="antiAway" />
         </div>
@@ -67,9 +75,11 @@ export const GeneralSettings = () => {
 
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
-            <p className="text-sm text-content font-bold">{t('settings.general.runAtStartup')}</p>
+            <p className="text-sm text-content font-bold">
+              {t($ => $['settings.general.runAtStartup'])}
+            </p>
             <p className="text-xs text-altwhite">
-              {t('settings.general.runAtStartup.description')}
+              {t($ => $['settings.general.runAtStartup.description'])}
             </p>
           </div>
           <SettingsSwitch type="general" name="runAtStartup" />
@@ -79,9 +89,11 @@ export const GeneralSettings = () => {
 
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
-            <p className="text-sm text-content font-bold">{t('settings.general.startMinimized')}</p>
+            <p className="text-sm text-content font-bold">
+              {t($ => $['settings.general.startMinimized'])}
+            </p>
             <p className="text-xs text-altwhite">
-              {t('settings.general.startMinimized.description')}
+              {t($ => $['settings.general.startMinimized.description'])}
             </p>
           </div>
           <SettingsSwitch type="general" name="startMinimized" />
@@ -91,8 +103,12 @@ export const GeneralSettings = () => {
 
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
-            <p className="text-sm text-content font-bold">{t('settings.general.closeToTray')}</p>
-            <p className="text-xs text-altwhite">{t('settings.general.closeToTray.description')}</p>
+            <p className="text-sm text-content font-bold">
+              {t($ => $['settings.general.closeToTray'])}
+            </p>
+            <p className="text-xs text-altwhite">
+              {t($ => $['settings.general.closeToTray.description'])}
+            </p>
           </div>
           <SettingsSwitch type="general" name="closeToTray" />
         </div>
@@ -101,7 +117,9 @@ export const GeneralSettings = () => {
 
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
-            <p className="text-sm text-content font-bold">{t('settings.general.language')}</p>
+            <p className="text-sm text-content font-bold">
+              {t($ => $['settings.general.language'])}
+            </p>
           </div>
           <LanguageSwitch />
         </div>
@@ -110,8 +128,12 @@ export const GeneralSettings = () => {
 
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
-            <p className="text-sm text-content font-bold">{t('settings.general.currency')}</p>
-            <p className="text-xs text-altwhite">{t('settings.general.currency.description')}</p>
+            <p className="text-sm text-content font-bold">
+              {t($ => $['settings.general.currency'])}
+            </p>
+            <p className="text-xs text-altwhite">
+              {t($ => $['settings.general.currency.description'])}
+            </p>
           </div>
           <CurrencySwitch />
         </div>
@@ -120,9 +142,9 @@ export const GeneralSettings = () => {
 
         <div className="flex justify-between items-start">
           <div className="flex flex-col gap-2 w-1/2">
-            <p className="text-sm text-content font-bold">{t('settings.general.webApi')}</p>
+            <p className="text-sm text-content font-bold">{t($ => $['settings.general.webApi'])}</p>
             <p className="text-xs text-altwhite">
-              <Trans i18nKey="settings.general.webApi.description">
+              <Trans i18nKey={$ => $['settings.general.webApi.description']}>
                 Use your own Steam Web API Key.&nbsp;
                 <ExtLink
                   href="https://steamgameidler.com/docs/settings/general#steam-web-api-key"
@@ -133,7 +155,7 @@ export const GeneralSettings = () => {
               </Trans>
             </p>
             <p className="text-xs text-altwhite">
-              <Trans i18nKey="settings.general.webApi.descriptionTwo">
+              <Trans i18nKey={$ => $['settings.general.webApi.descriptionTwo']}>
                 Get your Steam Web API key from.&nbsp;
                 <ExtLink
                   href="https://steamcommunity.com/dev/apikey"
@@ -146,7 +168,7 @@ export const GeneralSettings = () => {
           </div>
           <div className="flex flex-col gap-4 w-62.5">
             <Input
-              placeholder={t('settings.general.webApi')}
+              placeholder={t($ => $['settings.general.webApi'])}
               className="max-w-62.5"
               classNames={{
                 inputWrapper: cn(
@@ -176,7 +198,7 @@ export const GeneralSettings = () => {
                 }
                 startContent={<TbEraser size={20} />}
               >
-                {t('common.clear')}
+                {t($ => $['common.clear'])}
               </Button>
               <Button
                 size="sm"
@@ -193,7 +215,7 @@ export const GeneralSettings = () => {
                 }
                 startContent={<TbUpload size={20} />}
               >
-                {t('common.save')}
+                {t($ => $['common.save'])}
               </Button>
             </div>
           </div>

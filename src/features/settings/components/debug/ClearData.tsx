@@ -20,14 +20,14 @@ export const ClearData = () => {
         onPress={onOpen}
         startContent={<TbEraser size={20} />}
       >
-        {t('settings.clearData.button')}
+        {t($ => $['settings.clearData.button'])}
       </Button>
 
       <CustomModal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
-        title={t('common.confirm')}
-        body={t('confirmation.clearData')}
+        title={t($ => $['common.confirm'])}
+        body={t($ => $['confirmation.clearData'])}
         buttons={
           <>
             <Button
@@ -38,7 +38,7 @@ export const ClearData = () => {
               className="font-semibold"
               onPress={onOpenChange}
             >
-              {t('common.cancel')}
+              {t($ => $['common.cancel'])}
             </Button>
             <Button
               size="sm"
@@ -46,7 +46,7 @@ export const ClearData = () => {
               radius="full"
               onPress={() => handleClearData(onOpenChange, setUserSummary)}
             >
-              {t('common.confirm')}
+              {t($ => $['common.confirm'])}
             </Button>
           </>
         }

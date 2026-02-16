@@ -50,7 +50,7 @@ export const PriceData = ({ item, tradingCardContext }: PriceDataProps) => {
         className="flex justify-center items-center gap-2 text-xs text-content cursor-pointer hover:opacity-80 group w-36"
         onClick={() => handleFetchPrice(item)}
       >
-        <p className="truncate">{t('tradingCards.fetchPrice')}</p>
+        <p className="truncate">{t($ => $['tradingCards.fetchPrice'])}</p>
         <TbArrowRight className="group-hover:translate-x-1 duration-200" />
       </div>
 
@@ -63,7 +63,7 @@ export const PriceData = ({ item, tradingCardContext }: PriceDataProps) => {
             {!tradingCardContext.loadingItemPrice[item.market_hash_name] ? (
               <>
                 <div className="flex flex-col gap-2">
-                  <p className="font-bold">{t('tradingCards.priceData.sellOrders')}</p>
+                  <p className="font-bold">{t($ => $['tradingCards.priceData.sellOrders'])}</p>
                   {item.price_data?.sell_order_summary && (
                     <p
                       className="text-xs text-altwhite"
@@ -75,10 +75,10 @@ export const PriceData = ({ item, tradingCardContext }: PriceDataProps) => {
                     <thead>
                       <tr className="bg-content/5">
                         <th className="px-2 py-1 text-center">
-                          {t('tradingCards.priceData.price')}
+                          {t($ => $['tradingCards.priceData.price'])}
                         </th>
                         <th className="px-2 py-1 text-center">
-                          {t('tradingCards.priceData.quantity')}
+                          {t($ => $['tradingCards.priceData.quantity'])}
                         </th>
                       </tr>
                     </thead>
@@ -109,7 +109,7 @@ export const PriceData = ({ item, tradingCardContext }: PriceDataProps) => {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <p className="font-bold">{t('tradingCards.priceData.buyOrders')}</p>
+                  <p className="font-bold">{t($ => $['tradingCards.priceData.buyOrders'])}</p>
                   {item.price_data?.buy_order_summary && (
                     <p
                       className="text-xs text-altwhite"
@@ -121,10 +121,10 @@ export const PriceData = ({ item, tradingCardContext }: PriceDataProps) => {
                     <thead>
                       <tr className="bg-content/5">
                         <th className="px-2 py-1 text-center">
-                          {t('tradingCards.priceData.price')}
+                          {t($ => $['tradingCards.priceData.price'])}
                         </th>
                         <th className="px-2 py-1 text-center">
-                          {t('tradingCards.priceData.quantity')}
+                          {t($ => $['tradingCards.priceData.quantity'])}
                         </th>
                       </tr>
                     </thead>
@@ -168,7 +168,7 @@ export const PriceData = ({ item, tradingCardContext }: PriceDataProps) => {
             className="font-semibold"
             onPress={onOpenChange}
           >
-            {t('common.close')}
+            {t($ => $['common.close'])}
           </Button>
         }
       />

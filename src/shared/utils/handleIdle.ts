@@ -66,7 +66,7 @@ export async function startIdle(appId: number, appName: string, manual: boolean)
 
     if (runningIdlers.includes(appId)) {
       // This is unlikely to happen but worth handling just in case
-      showWarningToast(i18next.t('toast.startIdle.alreadyIdling', { appName, appId }));
+      showWarningToast(i18next.t($ => $['toast.startIdle.alreadyIdling'], { appName, appId }));
       logEvent(`[Error] [Idle] Attempted to idle already idling game ${appName} (${appId})`);
       return false;
     }
@@ -187,21 +187,21 @@ export const handleIdle = async (item: Game) => {
     const success = await startIdle(item.appid, item.name, true);
     if (success) {
       showSuccessToast(
-        i18next.t('toast.startIdle.success', {
+        i18next.t($ => $['toast.startIdle.success'], {
           appName: item.name,
           appId: item.appid,
         }),
       );
     } else {
       showDangerToast(
-        i18next.t('toast.startIdle.error', {
+        i18next.t($ => $['toast.startIdle.error'], {
           appName: item.name,
           appId: item.appid,
         }),
       );
     }
   } catch (error) {
-    showDangerToast(i18next.t('common.error'));
+    showDangerToast(i18next.t($ => $['common.error']));
     console.error('Error in handleIdle:', error);
     logEvent(`Error in (handleIdle): ${error}`);
   }
@@ -221,21 +221,21 @@ export const handleStopIdle = async (
     if (response.success) {
       setIdleGamesList(idleGamesList.filter(i => i.pid !== item.pid));
       showSuccessToast(
-        i18next.t('toast.stopIdle.success', {
+        i18next.t($ => $['toast.stopIdle.success'], {
           appName: item.name,
           appId: item.appid,
         }),
       );
     } else {
       showDangerToast(
-        i18next.t('toast.stopIdle.error', {
+        i18next.t($ => $['toast.stopIdle.error'], {
           appName: item.name,
           appId: item.appid,
         }),
       );
     }
   } catch (error) {
-    showDangerToast(i18next.t('common.error'));
+    showDangerToast(i18next.t($ => $['common.error']));
     console.error('Error in handleStopIdle:', error);
     logEvent(`Error in (handleStopIdle): ${error}`);
   }

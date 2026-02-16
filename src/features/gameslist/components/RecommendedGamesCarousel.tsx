@@ -111,7 +111,7 @@ export const RecommendedGamesCarousel = ({ gamesContext }: RecommendedGamesCarou
   return (
     <div className="mb-6 px-6 mt-4">
       <div className="flex items-center justify-between mb-3">
-        <p className="text-lg font-black">{t('gamesList.recommended')}</p>
+        <p className="text-lg font-black">{t($ => $['gamesList.recommended'])}</p>
         <div className="flex gap-2">
           <Button
             isIconOnly

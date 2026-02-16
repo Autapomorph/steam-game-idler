@@ -27,15 +27,15 @@ export const handleSteamWebAPIKeySave = async (
 
         setHasKey(true);
 
-        showSuccessToast(i18next.t('toast.apiKey.save'));
+        showSuccessToast(i18next.t($ => $['toast.apiKey.save']));
         logEvent('[Settings - General] Steam web API key added');
       } else {
-        showDangerToast(i18next.t('toast.apiKey.error'));
+        showDangerToast(i18next.t($ => $['toast.apiKey.error']));
         logEvent('[Settings - General] Invalid Steam web API key');
       }
     }
   } catch (error) {
-    showDangerToast(i18next.t('common.error'));
+    showDangerToast(i18next.t($ => $['common.error']));
     console.error('Error in (handleSteamWebAPIKeySave):', error);
     logEvent(`[Error] in (handleSteamWebAPIKeySave): ${error}`);
   }
@@ -56,10 +56,10 @@ export const handleSteamWebAPIKeyClear = async (
     setUserSettings(response.settings);
     setKeyValue('');
     setHasKey(false);
-    showSuccessToast(i18next.t('toast.apiKey.clear'));
+    showSuccessToast(i18next.t($ => $['toast.apiKey.clear']));
     logEvent('[Settings - General] Steam web API key cleared');
   } catch (error) {
-    showDangerToast(i18next.t('common.error'));
+    showDangerToast(i18next.t($ => $['common.error']));
     console.error('Error in (handleSteamWebAPIKeyClear):', error);
     logEvent(`[Error] in (handleSteamWebAPIKeyClear): ${error}`);
   }

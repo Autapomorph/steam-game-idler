@@ -39,7 +39,7 @@ export const StatisticsListRow = ({ index, style, data }: Props) => {
               <p
                 className={`text-[10px] ${protectedStatisticOne ? 'text-warning' : 'text-altwhite'}`}
               >
-                {t('achievementManager.statistics.flags')}: {item1.flags}
+                {t($ => $['achievementManager.statistics.flags'])}: {item1.flags}
               </p>
             </div>
             <NumberInput
@@ -78,7 +78,7 @@ export const StatisticsListRow = ({ index, style, data }: Props) => {
               <p
                 className={`text-[10px] ${protectedStatisticTwo ? 'text-warning' : 'text-altwhite'}`}
               >
-                {t('achievementManager.statistics.flags')}: {item2.flags}
+                {t($ => $['achievementManager.statistics.flags'])}: {item2.flags}
               </p>
             </div>
             <NumberInput

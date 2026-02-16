@@ -61,7 +61,7 @@ export const RecentGamesCarousel = ({ gamesContext }: RecentGamesCarouselProps) 
     <div className={cn('duration-250 px-6 overflow-hidden group/carousel')}>
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-baseline gap-2">
-          <p className="text-lg font-black">{t('gamesList.recentlyPlayed')}</p>
+          <p className="text-lg font-black">{t($ => $['gamesList.recentlyPlayed'])}</p>
         </div>
         <div className="flex gap-2">
           <Button

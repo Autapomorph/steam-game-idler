@@ -27,7 +27,7 @@ export const SteamCredentials = () => {
     const result = await invoke<InvokeSteamCredentials>('open_steam_login_window');
 
     if (!result?.success) {
-      showDangerToast(t('common.error'));
+      showDangerToast(t($ => $['common.error']));
       logEvent(`[Error] in (handleShowSteamLoginWindow): ${result?.message || 'Unknown error'}`);
       return;
     }
@@ -52,7 +52,7 @@ export const SteamCredentials = () => {
     const result = await invoke<InvokeSteamCredentials>('delete_login_window_cookies');
 
     if (!result?.success) {
-      showDangerToast(t('common.error'));
+      showDangerToast(t($ => $['common.error']));
       logEvent(
         `[Error] in (handleSignOutCurrentUser) this error can occur if you are not already signed in: ${result?.message || 'Unknown error'}`,
       );
@@ -80,12 +80,14 @@ export const SteamCredentials = () => {
     <div className="relative flex flex-col gap-4 mt-9 pb-16 w-4/5">
       <div className="flex flex-col gap-0 select-none">
         <p className="flex items-center text-xs text-altwhite font-bold">
-          {t('settings.title')}
+          {t($ => $['settings.title'])}
           <span>
             <TbChevronRight size={12} />
           </span>
         </p>
-        <p className="text-3xl font-black">{t('settings.cardFarming.steamCredentialsTitle')}</p>
+        <p className="text-3xl font-black">
+          {t($ => $['settings.cardFarming.steamCredentialsTitle'])}
+        </p>
       </div>
 
       <div className="flex flex-col gap-3 mt-4">
@@ -93,17 +95,17 @@ export const SteamCredentials = () => {
           <div className="flex flex-col gap-2 w-1/2">
             <div className="flex items-center">
               <p className="text-sm text-content font-bold">
-                {t('settings.steamCredentials.automated')}
+                {t($ => $['settings.steamCredentials.automated'])}
               </p>
             </div>
             <p className="text-xs text-altwhite">
-              {t('settings.steamCredentials.automated.description')}
+              {t($ => $['settings.steamCredentials.automated.description'])}
             </p>
             <ExtLink
               href="https://steamgameidler.com/docs/steam-credentials#automated-method"
               className="text-xs text-dynamic hover:text-dynamic-hover duration-150"
             >
-              {t('common.learnMore')}
+              {t($ => $['common.learnMore'])}
             </ExtLink>
           </div>
 
@@ -114,7 +116,9 @@ export const SteamCredentials = () => {
               radius="full"
               onPress={handleShowSteamLoginWindow}
             >
-              {cardSettings.hasCookies ? t('common.reauthenticate') : t('common.signInSteam')}
+              {cardSettings.hasCookies
+                ? t($ => $['common.reauthenticate'])
+                : t($ => $['common.signInSteam'])}
             </Button>
             <Button
               size="sm"
@@ -123,7 +127,7 @@ export const SteamCredentials = () => {
               color="danger"
               onPress={handleSignOutCurrentUser}
             >
-              {t('common.signOut')}
+              {t($ => $['common.signOut'])}
             </Button>
           </div>
         </div>
@@ -133,10 +137,10 @@ export const SteamCredentials = () => {
         <div className="flex justify-between items-start">
           <div className="flex flex-col gap-2 w-1/2">
             <p className="text-sm text-content font-bold">
-              {t('settings.steamCredentials.manual')}
+              {t($ => $['settings.steamCredentials.manual'])}
             </p>
             <p className="text-xs text-altwhite">
-              <Trans i18nKey="settings.cardFarming.steamCredentials">
+              <Trans i18nKey={$ => $['settings.cardFarming.steamCredentials']}>
                 Steam credentials are required in order to use the Card Farming and Trading Card
                 Manager features.&nbsp;
                 <ExtLink
@@ -148,7 +152,7 @@ export const SteamCredentials = () => {
               </Trans>
             </p>
             <p className="text-xs text-altwhite">
-              <Trans i18nKey="settings.cardFarming.steamCredentialsTwo">
+              <Trans i18nKey={$ => $['settings.cardFarming.steamCredentialsTwo']}>
                 Get your Steam credentials from.&nbsp;
                 <ExtLink
                   href="https://steamcommunity.com/"
@@ -174,7 +178,7 @@ export const SteamCredentials = () => {
                       <div className="flex flex-col items-end gap-1">
                         <div className="flex gap-1">
                           <p className="text-sm text-altwhite font-bold mr-2">
-                            {t('settings.cardFarming.gamesWithDrops')}
+                            {t($ => $['settings.cardFarming.gamesWithDrops'])}
                           </p>
                           <p className="text-sm text-dynamic font-bold">
                             {userSettings.cardFarming.gamesWithDrops || 0}
@@ -182,7 +186,7 @@ export const SteamCredentials = () => {
                         </div>
                         <div className="flex gap-1">
                           <p className="text-sm text-altwhite font-bold mr-2">
-                            {t('settings.cardFarming.totalDrops')}
+                            {t($ => $['settings.cardFarming.totalDrops'])}
                           </p>
                           <p className="text-sm text-dynamic font-bold">
                             {userSettings.cardFarming.totalDropsRemaining || 0}
@@ -209,7 +213,7 @@ export const SteamCredentials = () => {
                           onOpenChange();
                         }}
                       >
-                        {t('common.viewList')}
+                        {t($ => $['common.viewList'])}
                       </Button>
                       <Button
                         size="sm"
@@ -225,14 +229,16 @@ export const SteamCredentials = () => {
                           )
                         }
                       >
-                        {t('common.refresh')}
+                        {t($ => $['common.refresh'])}
                       </Button>
                     </div>
                   </div>
                 ) : (
                   <div className="flex items-center justify-center gap-2">
                     <Spinner size="sm" variant="simple" />
-                    <p className="text-xs text-altwhite">{t('settings.cardFarming.loading')}</p>
+                    <p className="text-xs text-altwhite">
+                      {t($ => $['settings.cardFarming.loading'])}
+                    </p>
                   </div>
                 )}
               </div>
@@ -315,7 +321,7 @@ export const SteamCredentials = () => {
                 }
                 startContent={<TbEraser size={20} />}
               >
-                {t('common.clear')}
+                {t($ => $['common.clear'])}
               </Button>
               <Button
                 size="sm"
@@ -340,7 +346,7 @@ export const SteamCredentials = () => {
                 }
                 startContent={<TbUpload size={20} />}
               >
-                {t('common.save')}
+                {t($ => $['common.save'])}
               </Button>
             </div>
           </div>
@@ -356,7 +362,9 @@ export const SteamCredentials = () => {
         }}
         title={
           <div className="flex justify-between items-center">
-            <p className="truncate capitalize">{t('settings.cardFarming.gamesWithDrops')}</p>
+            <p className="truncate capitalize">
+              {t($ => $['settings.cardFarming.gamesWithDrops'])}
+            </p>
           </div>
         }
         body={
@@ -368,7 +376,7 @@ export const SteamCredentials = () => {
             ) : cardSettings.gamesWithDropsData.length === 0 ? (
               <div className="flex justify-center items-center w-full p-4">
                 <p className="text-center text-content">
-                  {t('customLists.cardFarming.drops', { count: 0 })}
+                  {t($ => $['customLists.cardFarming.drops'], { count: 0 })}
                 </p>
               </div>
             ) : (
@@ -394,7 +402,7 @@ export const SteamCredentials = () => {
                       <p className="truncate">{item.name}</p>
                     </ExtLink>
                     <p className="grow text-right">
-                      {t('customLists.cardFarming.drops', { count: item.remaining || 0 })}
+                      {t($ => $['customLists.cardFarming.drops'], { count: item.remaining || 0 })}
                     </p>
                   </div>
                 ))}
@@ -411,7 +419,7 @@ export const SteamCredentials = () => {
             className="font-semibold"
             onPress={onOpenChange}
           >
-            {t('common.close')}
+            {t($ => $['common.close'])}
           </Button>
         }
       />

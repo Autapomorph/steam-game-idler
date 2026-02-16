@@ -98,7 +98,7 @@ export const EditListModal = ({
               <Input
                 autoFocus
                 isClearable
-                placeholder={t('common.search')}
+                placeholder={t($ => $['common.search'])}
                 startContent={<RiSearchLine size={24} className="text-content/60" />}
                 classNames={{
                   inputWrapper: cn(
@@ -142,7 +142,7 @@ export const EditListModal = ({
                 className="font-semibold"
                 onPress={handleClearList}
               >
-                {t('common.clear')}
+                {t($ => $['common.clear'])}
               </Button>
               {type === 'cardFarmingList' && (
                 <Button
@@ -155,7 +155,7 @@ export const EditListModal = ({
                     if (showInList) setShowInList(false);
                   }}
                 >
-                  {t('customLists.inBlacklist')}
+                  {t($ => $['customLists.inBlacklist'])}
                 </Button>
               )}
               <Button
@@ -168,7 +168,7 @@ export const EditListModal = ({
                   if (showBlacklist) setShowBlacklist(false);
                 }}
               >
-                {t('customLists.inList')}
+                {t($ => $['customLists.inList'])}
               </Button>
               {type === 'achievementUnlockerList' && searchTerm === '' && (
                 <Button
@@ -180,7 +180,7 @@ export const EditListModal = ({
                   }
                   onPress={() => handleAddAllGames(filteredGamesList)}
                 >
-                  {t('customLists.addAll')}
+                  {t($ => $['customLists.addAll'])}
                 </Button>
               )}
               {type === 'achievementUnlockerList' && searchTerm !== '' && (
@@ -196,7 +196,7 @@ export const EditListModal = ({
                   }
                   onPress={() => handleAddAllResults(filteredGamesList)}
                 >
-                  {t('customLists.addAllResults')}
+                  {t($ => $['customLists.addAllResults'])}
                 </Button>
               )}
               <Button
@@ -205,7 +205,7 @@ export const EditListModal = ({
                 radius="full"
                 onPress={onClose}
               >
-                {t('common.done')}
+                {t($ => $['common.done'])}
               </Button>
             </ModalFooter>
           </>

@@ -47,15 +47,15 @@ export const FreeGamesList = () => {
         <div className="flex justify-between items-center pb-3">
           <div className="flex items-center gap-1 select-none">
             <div className="flex flex-col justify-center">
-              <p className="text-3xl font-black">{t('freeGames.title')}</p>
+              <p className="text-3xl font-black">{t($ => $['freeGames.title'])}</p>
 
               <p className="text-xs text-altwhite my-2">
                 {freeGamesList.length > 0
-                  ? t('common.showing', {
+                  ? t($ => $['common.showing'], {
                       count: freeGamesList.length,
                       total: freeGamesList.length,
                     })
-                  : t('freeGames.subtitle')}
+                  : t($ => $['freeGames.subtitle'])}
               </p>
             </div>
           </div>

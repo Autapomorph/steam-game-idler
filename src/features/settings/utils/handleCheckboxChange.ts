@@ -62,7 +62,7 @@ export const handleCheckboxChange = async (
 
     logEvent(`[Settings - ${key}] Changed '${name}' to '${checked}'`);
   } catch (error) {
-    showDangerToast(i18next.t('common.error'));
+    showDangerToast(i18next.t($ => $['common.error']));
     console.error('Error in (handleCheckboxChange):', error);
     logEvent(`[Error] in (handleCheckboxChange): ${error}`);
   }

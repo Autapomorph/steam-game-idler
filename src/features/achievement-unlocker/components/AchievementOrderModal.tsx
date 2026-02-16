@@ -150,12 +150,14 @@ const SortableAchievement = memo(function SortableAchievement({
                 {delayValue !== '' && delayValue !== 0 ? (
                   <p className="flex items-center text-green-400">
                     <FaCheck className="inline-block mr-1" />
-                    {t('customLists.achievementUnlocker.editDelay', { minutes: delayValue })}
+                    {t($ => $['customLists.achievementUnlocker.editDelay'], {
+                      minutes: delayValue,
+                    })}
                   </p>
                 ) : (
                   <p className="flex items-center text-blue-400">
                     <FaPlus className="inline-block mr-1" />
-                    {t('customLists.achievementUnlocker.addDelay')}
+                    {t($ => $['customLists.achievementUnlocker.addDelay'])}
                   </p>
                 )}
               </Button>
@@ -184,7 +186,7 @@ const SortableAchievement = memo(function SortableAchievement({
                     input: ['!text-content placeholder:text-altwhite/50'],
                   }}
                 />
-                <span className="text-xs text-gray-400">{t('common.minutes')}</span>
+                <span className="text-xs text-gray-400">{t($ => $['common.minutes'])}</span>
                 <Button
                   size="sm"
                   color="danger"
@@ -195,7 +197,7 @@ const SortableAchievement = memo(function SortableAchievement({
                   onMouseDown={handleClearInput}
                   onPointerDown={e => e.stopPropagation()}
                 >
-                  {t('common.clear')}
+                  {t($ => $['common.clear'])}
                 </Button>
               </div>
             )}
@@ -281,7 +283,7 @@ export const AchievementOrderModal = ({
       onOpenChange();
     } catch (error) {
       console.error('Error saving achievement order:', error);
-      showDangerToast(t('toast.achievementOrder.error'));
+      showDangerToast(t($ => $['toast.achievementOrder.error']));
     }
   };
 
@@ -366,7 +368,7 @@ export const AchievementOrderModal = ({
         setIsLoading(false);
       } catch (error) {
         setIsLoading(false);
-        showDangerToast(t('toast.achievementData.error'));
+        showDangerToast(t($ => $['toast.achievementData.error']));
         console.error('Error in (getAchievementData):', error);
         logEvent(`Error in (getAchievementData): ${error}`);
       }
@@ -434,7 +436,7 @@ export const AchievementOrderModal = ({
           ) : achievements.length === 0 ? (
             <div className="flex justify-center items-center w-full p-4">
               <p className="text-center text-content">
-                {t('achievementManager.achievements.empty')}
+                {t($ => $['achievementManager.achievements.empty'])}
               </p>
             </div>
           ) : (
@@ -445,10 +447,10 @@ export const AchievementOrderModal = ({
                 </span>
                 <div className="flex items-center gap-3 pl-0">
                   <span className="text-sm font-semibold text-content text-center w-6.5">
-                    {t('achievementManager.achievements.unlock')}
+                    {t($ => $['achievementManager.achievements.unlock'])}
                   </span>
                   <span className="text-sm font-semibold text-content flex-1 ml-8">
-                    {t('achievementManager.achievements.title')}
+                    {t($ => $['achievementManager.achievements.title'])}
                   </span>
                 </div>
               </div>
@@ -461,7 +463,7 @@ export const AchievementOrderModal = ({
         <>
           <ExtLink href="https://steamgameidler.com/docs/features/achievement-unlocker#custom-order--unlock-delay">
             <p className="text-xs cursor-pointer hover:text-altwhite duration-150 p-2 rounded-lg">
-              {t('common.needHelp')}
+              {t($ => $['common.needHelp'])}
             </p>
           </ExtLink>
           <Button
@@ -472,7 +474,7 @@ export const AchievementOrderModal = ({
             className="font-semibold"
             onPress={onOpenChange}
           >
-            {t('common.cancel')}
+            {t($ => $['common.cancel'])}
           </Button>
           <Button
             size="sm"
@@ -482,7 +484,7 @@ export const AchievementOrderModal = ({
             className="font-semibold"
             onPress={handleReset}
           >
-            {t('achievementManager.statistics.resetAll')}
+            {t($ => $['achievementManager.statistics.resetAll'])}
           </Button>
           <Button
             size="sm"
@@ -490,7 +492,7 @@ export const AchievementOrderModal = ({
             radius="full"
             onPress={handleSave}
           >
-            {t('common.save')}
+            {t($ => $['common.save'])}
           </Button>
         </>
       }

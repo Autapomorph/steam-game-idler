@@ -15,7 +15,7 @@ export const handleRunAtStartupChange = async (
     }
     setStartupState(!isEnabledState);
   } catch (error) {
-    showDangerToast(i18next.t('common.error'));
+    showDangerToast(i18next.t($ => $['common.error']));
     console.error('Error in (handleRunAtStartupChange):', error);
     logEvent(`[Error] in (handleRunAtStartupChange): ${error}`);
   }

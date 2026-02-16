@@ -20,7 +20,7 @@ export const handleUpdateAllStats = async (
   const changedKeys = Object.keys(changedStats);
 
   if (changedKeys.length === 0) {
-    return showWarningToast(i18next.t('toast.updateAll.noChanges'));
+    return showWarningToast(i18next.t($ => $['toast.updateAll.noChanges']));
   }
 
   // Format stats into array of objects with name/value pairs
@@ -41,7 +41,7 @@ export const handleUpdateAllStats = async (
 
   if (success) {
     showSuccessToast(
-      i18next.t('toast.updateAll.success', {
+      i18next.t($ => $['toast.updateAll.success'], {
         count: changedKeys.length,
         appName,
       }),
@@ -49,6 +49,6 @@ export const handleUpdateAllStats = async (
     // Clear the tracked changes after successful update
     setChangedStats({});
   } else {
-    showDangerToast(i18next.t('toast.updateAll.error'));
+    showDangerToast(i18next.t($ => $['toast.updateAll.error']));
   }
 };

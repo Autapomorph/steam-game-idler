@@ -115,7 +115,7 @@ export const TradingCardsList = () => {
           />
 
           <div className="flex items-center gap-1">
-            <CustomTooltip content={t('tradingCards.lockCard')} placement="top">
+            <CustomTooltip content={t($ => $['tradingCards.lockCard'])} placement="top">
               <div
                 className="hover:bg-item-hover rounded-full p-1 cursor-pointer duration-200"
                 onClick={() => handleLockCard(item.id)}
@@ -128,7 +128,7 @@ export const TradingCardsList = () => {
               </div>
             </CustomTooltip>
 
-            <CustomTooltip content={t('tradingCards.cardExchange')} placement="top">
+            <CustomTooltip content={t($ => $['tradingCards.cardExchange'])} placement="top">
               <div>
                 <ExtLink
                   href={`https://www.steamcardexchange.net/index.php?gamepage-appid-${item.appid}`}
@@ -178,8 +178,8 @@ export const TradingCardsList = () => {
           <CustomTooltip
             content={
               item.badge_level > 0
-                ? t('tradingCards.badgeLevel', { level: item.badge_level })
-                : t('tradingCards.noBadge')
+                ? t($ => $['tradingCards.badgeLevel'], { level: item.badge_level })
+                : t($ => $['tradingCards.noBadge'])
             }
             placement="top"
             important
@@ -239,7 +239,7 @@ export const TradingCardsList = () => {
               iconWrapper: '!bg-dynamic/30 border-dynamic/40',
               description: 'font-bold text-xs',
             }}
-            description={t('settings.tradingCards.alert')}
+            description={t($ => $['settings.tradingCards.alert'])}
           />
         </div>
       )}

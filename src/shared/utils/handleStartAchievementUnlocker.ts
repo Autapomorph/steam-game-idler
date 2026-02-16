@@ -24,7 +24,7 @@ export const startAchievementUnlocker = async () => {
 
     setIsAchievementUnlocker(true);
   } catch (error) {
-    showDangerToast(i18next.t('common.error'));
+    showDangerToast(i18next.t($ => $['common.error']));
     console.error('Error in (startAchievementUnlocker):', error);
     logEvent(`[Error] in (startAchievementUnlocker): ${error}`);
   }

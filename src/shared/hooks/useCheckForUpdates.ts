@@ -33,7 +33,7 @@ export function useCheckForUpdates() {
           }
         }
       } catch (error) {
-        showDangerToast(t('toast.checkUpdate.error'));
+        showDangerToast(t($ => $['toast.checkUpdate.error']));
         console.error('Error in (checkForUpdates):', error);
         logEvent(`Error in (checkForUpdates): ${error}`);
       }

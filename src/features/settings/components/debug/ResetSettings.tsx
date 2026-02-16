@@ -22,14 +22,14 @@ export const ResetSettings = ({ setRefreshKey }: ResetSettingsProps) => {
         onPress={onOpen}
         startContent={<TbRotateClockwise className="rotate-90" size={20} />}
       >
-        {t('settings.resetSettings.button')}
+        {t($ => $['settings.resetSettings.button'])}
       </Button>
 
       <CustomModal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
-        title={t('common.confirm')}
-        body={t('confirmation.resetSettings')}
+        title={t($ => $['common.confirm'])}
+        body={t($ => $['confirmation.resetSettings'])}
         buttons={
           <>
             <Button
@@ -40,7 +40,7 @@ export const ResetSettings = ({ setRefreshKey }: ResetSettingsProps) => {
               className="font-semibold"
               onPress={onOpenChange}
             >
-              {t('common.cancel')}
+              {t($ => $['common.cancel'])}
             </Button>
             <Button
               size="sm"
@@ -48,7 +48,7 @@ export const ResetSettings = ({ setRefreshKey }: ResetSettingsProps) => {
               radius="full"
               onPress={() => handleResetSettings(onOpenChange, setRefreshKey)}
             >
-              {t('common.confirm')}
+              {t($ => $['common.confirm'])}
             </Button>
           </>
         }

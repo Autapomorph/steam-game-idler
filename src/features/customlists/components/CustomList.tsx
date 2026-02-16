@@ -171,34 +171,34 @@ export const CustomList = ({ type }: CustomListProps) => {
 
   const listTypes: Record<CustomListType, ListTypeConfig> = {
     cardFarmingList: {
-      title: t('common.cardFarming'),
-      description: t('customLists.cardFarming.subtitle'),
+      title: t($ => $['common.cardFarming']),
+      description: t($ => $['customLists.cardFarming.subtitle']),
       icon: <TbCards fontSize={20} />,
       startButton: 'startCardFarming',
-      buttonLabel: t('customLists.cardFarming.buttonLabel'),
+      buttonLabel: t($ => $['customLists.cardFarming.buttonLabel']),
       settingsButton: true,
       settingsButtonLink: 'card-farming',
       switches: true,
     },
     achievementUnlockerList: {
-      title: t('common.achievementUnlocker'),
-      description: t('customLists.achievementUnlocker.subtitle'),
+      title: t($ => $['common.achievementUnlocker']),
+      description: t($ => $['customLists.achievementUnlocker.subtitle']),
       icon: <TbAward fontSize={20} />,
       startButton: 'startAchievementUnlocker',
-      buttonLabel: t('customLists.achievementUnlocker.buttonLabel'),
+      buttonLabel: t($ => $['customLists.achievementUnlocker.buttonLabel']),
       settingsButton: true,
       settingsButtonLink: 'achievement-unlocker',
     },
     autoIdleList: {
-      title: t('customLists.autoIdle.title'),
-      description: t('customLists.autoIdle.subtitle'),
+      title: t($ => $['customLists.autoIdle.title']),
+      description: t($ => $['customLists.autoIdle.subtitle']),
       icon: <TbHourglassLow fontSize={20} />,
       startButton: 'startAutoIdleGamesImpl',
-      buttonLabel: t('customLists.autoIdle.buttonLabel'),
+      buttonLabel: t($ => $['customLists.autoIdle.buttonLabel']),
     },
     favoritesList: {
-      title: t('customLists.favorites.title'),
-      description: t('customLists.favorites.subtitle'),
+      title: t($ => $['customLists.favorites.title']),
+      description: t($ => $['customLists.favorites.subtitle']),
       icon: <TbHeart fontSize={20} />,
       startButton: null,
       buttonLabel: null,
@@ -208,7 +208,7 @@ export const CustomList = ({ type }: CustomListProps) => {
   const listType = listTypes[type];
 
   if (!listType) {
-    return <p>{t('customLists.invalid')}</p>;
+    return <p>{t($ => $['customLists.invalid'])}</p>;
   }
 
   const handleAddGameFromCarousel = (game: Game) => {
@@ -247,7 +247,7 @@ export const CustomList = ({ type }: CustomListProps) => {
                     startContent={<TbEdit fontSize={20} />}
                     onPress={() => setEditModalOpen(true)}
                   >
-                    {t('customLists.edit')}
+                    {t($ => $['customLists.edit'])}
                   </Button>
 
                   <ManualAddModal listName={type} setList={setList} />
@@ -322,7 +322,7 @@ export const CustomList = ({ type }: CustomListProps) => {
                 iconWrapper: '!bg-dynamic/30 border-dynamic/40',
                 description: 'font-bold text-xs',
               }}
-              description={t('settings.cardFarming.alert')}
+              description={t($ => $['settings.cardFarming.alert'])}
             />
           </div>
         )}
@@ -335,7 +335,7 @@ export const CustomList = ({ type }: CustomListProps) => {
 
         {list.length > 0 && (
           <div>
-            <p className="text-lg font-black px-6">{t('customLists.yourList')}</p>
+            <p className="text-lg font-black px-6">{t($ => $['customLists.yourList'])}</p>
           </div>
         )}
         <DndContext onDragEnd={handleDragEnd}>

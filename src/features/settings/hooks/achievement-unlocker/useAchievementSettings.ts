@@ -11,7 +11,7 @@ export const useAchievementSettings = () => {
   useEffect(() => {
     const interval = userSettings.achievementUnlocker?.interval;
     setSliderLabel(
-      t('settings.achievementUnlocker.interval', {
+      t($ => $['settings.achievementUnlocker.interval'], {
         min: interval[0],
         max: interval[1],
       }),

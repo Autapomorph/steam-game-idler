@@ -41,7 +41,7 @@ export const GamesListRow = ({ index, style, data }: Props) => {
   if (rowType === 'header') {
     return (
       <div style={style}>
-        <p className="text-lg font-black px-6">{t('gamesList.allGames')}</p>
+        <p className="text-lg font-black px-6">{t($ => $['gamesList.allGames'])}</p>
       </div>
     );
   }

@@ -270,6 +270,7 @@
   "toast.autoRedeem.failure": "Не удалось активировать бесплатную игру {{appName}}",
   "trayIcon.achievementUnlocker": "Разблокировка {{total}} достижений для {{appName}}",
   "trayIcon.cardFarming": "Фарм {{count}} карточек для {{total}} игр",
+  "common.updateReady": "Обновление готово",
   "common.refresh": "Обновить",
   "common.help": "Нужна помощь?",
   "common.cardFarming": "Фарм карточек",

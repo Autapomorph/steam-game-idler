@@ -37,7 +37,7 @@ export function useThemes() {
         localStorage.setItem('theme', userTheme);
         setTheme(userTheme);
       } catch (error) {
-        showDangerToast(t('common.error'));
+        showDangerToast(t($ => $['common.error']));
         console.error('Error in (applyThemeForUser):', error);
         logEvent(`[Error] in (applyThemeForUser): ${error}`);
       }

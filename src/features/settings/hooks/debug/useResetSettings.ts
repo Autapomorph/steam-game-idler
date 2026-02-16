@@ -23,11 +23,11 @@ export function useResetSettings() {
       });
       setUserSettings(response.settings);
       setRefreshKey(prevKey => prevKey + 1);
-      showSuccessToast(t('toast.resetSettings.success'));
+      showSuccessToast(t($ => $['toast.resetSettings.success']));
       logEvent('[Settings] Reset to default');
       onClose();
     } catch (error) {
-      showDangerToast(t('common.error'));
+      showDangerToast(t($ => $['common.error']));
       console.error('Error in (handleResetSettings):', error);
       logEvent(`[Error] in (handleResetSettings): ${error}`);
     }

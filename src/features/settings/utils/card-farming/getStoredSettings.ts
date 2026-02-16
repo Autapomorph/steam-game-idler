@@ -33,7 +33,7 @@ export const getStoredSettings = async (
       setTotalDropsRemaining(totalDropsRemaining);
     }
   } catch (error) {
-    showDangerToast(i18next.t('common.error'));
+    showDangerToast(i18next.t($ => $['common.error']));
     console.error('Error in (getStoredSettings):', error);
     logEvent(`[Error] in (getStoredSettings): ${error}`);
   }

@@ -52,7 +52,7 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
   useEffect(() => {
     if (isAchievementUnlocker && currentGame) {
       updateTrayIcon(
-        t('trayIcon.achievementUnlocker', {
+        t($ => $['trayIcon.achievementUnlocker'], {
           total: achievementCount,
           appName: currentGame?.name || '',
         }),
@@ -90,10 +90,10 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
         <div className="flex justify-between items-center pb-3">
           <div className="flex items-center gap-1 select-none">
             <div className="flex flex-col justify-center">
-              <p className="text-3xl font-black">{t('common.achievementUnlocker')}</p>
+              <p className="text-3xl font-black">{t($ => $['common.achievementUnlocker'])}</p>
 
               <p className="text-xs text-altwhite my-2">
-                {t('automation.achievementUnlocker.running')}
+                {t($ => $['automation.achievementUnlocker.running'])}
               </p>
 
               <div className="flex items-center gap-2 mt-1">
@@ -108,7 +108,11 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
                     updateTrayIcon();
                   }}
                 >
-                  {isComplete ? <p>{t('common.close')}</p> : <p>{t('common.stop')}</p>}
+                  {isComplete ? (
+                    <p>{t($ => $['common.close'])}</p>
+                  ) : (
+                    <p>{t($ => $['common.stop'])}</p>
+                  )}
                 </Button>
               </div>
             </div>
@@ -128,7 +132,7 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
           <div className="flex justify-center items-center flex-col p-6 bg-tab-panel min-h-[40vh] w-full rounded-4xl border border-border">
             {isWaitingForSchedule && (
               <p className="font-semibold text-yellow-400">
-                {t('automation.achievementUnlocker.scheduleWait')}
+                {t($ => $['automation.achievementUnlocker.scheduleWait'])}
               </p>
             )}
 
@@ -137,14 +141,14 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
                 <div className="border border-border rounded-full inline-block p-2 w-fit">
                   <TbCheck className="text-green-400" fontSize={50} />
                 </div>
-                <p className="mt-4">{t('common.done')}</p>
+                <p className="mt-4">{t($ => $['common.done'])}</p>
               </>
             )}
 
             {isInitialDelay && (
               <p className="text-lg font-semibold">
                 <Trans
-                  i18nKey="automation.achievementUnlocker.initialDelay"
+                  i18nKey={$ => $['automation.achievementUnlocker.initialDelay']}
                   values={{ timer: countdownTimer }}
                 >
                   Starting in <span className="font-bold text-dynamic">{countdownTimer}</span>
@@ -155,7 +159,7 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
             {!isInitialDelay && !isComplete && !isWaitingForSchedule && (
               <div className="flex flex-col items-center gap-4">
                 <p className="text-xl font-black">
-                  {t('automation.achievementUnlocker.currentGame')}
+                  {t($ => $['automation.achievementUnlocker.currentGame'])}
                 </p>
 
                 <Image
@@ -170,7 +174,7 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
 
                 <p>
                   <Trans
-                    i18nKey="automation.achievementUnlocker.progress"
+                    i18nKey={$ => $['automation.achievementUnlocker.progress']}
                     values={{
                       count: achievementCount,
                       appName: currentGame?.name,
@@ -184,7 +188,7 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
 
                 <p className="text-sm">
                   <Trans
-                    i18nKey="automation.achievementUnlocker.delay"
+                    i18nKey={$ => $['automation.achievementUnlocker.delay']}
                     values={{ timer: countdownTimer }}
                     components={{
                       1: <span className="font-bold text-sm text-dynamic" />,

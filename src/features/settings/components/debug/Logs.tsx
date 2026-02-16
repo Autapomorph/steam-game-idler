@@ -23,12 +23,12 @@ export const Logs = () => {
     <div className="relative flex flex-col gap-4 mt-9 pr-10">
       <div className="flex flex-col gap-0 select-none">
         <p className="flex items-center text-xs text-altwhite font-bold">
-          {t('settings.title')}
+          {t($ => $['settings.title'])}
           <span>
             <TbChevronRight size={12} />
           </span>
         </p>
-        <p className="text-3xl font-black">{t('settings.debug.title')}</p>
+        <p className="text-3xl font-black">{t($ => $['settings.debug.title'])}</p>
       </div>
 
       <div className="flex flex-col gap-4 mt-4">
@@ -41,7 +41,7 @@ export const Logs = () => {
               onPress={handleOpenLogFile}
               startContent={<TbFolders size={20} />}
             >
-              {t('settings.debug.viewLogFile')}
+              {t($ => $['settings.debug.viewLogFile'])}
             </Button>
             <OpenSettings />
             <ExportSettings />
@@ -53,7 +53,7 @@ export const Logs = () => {
               onPress={() => handleClearLogs()}
               startContent={<TbEraser size={20} />}
             >
-              {t('settings.debug.clearLogs')}
+              {t($ => $['settings.debug.clearLogs'])}
             </Button>
             <ResetSettings setRefreshKey={setRefreshKey} />
             <ClearData />
@@ -109,7 +109,9 @@ export const Logs = () => {
               <div className="flex items-center justify-center py-16">
                 <div className="text-center">
                   <div className="text-2xl text-altwhite/30 mb-2">◯</div>
-                  <p className="text-sm text-altwhite/60 font-mono">{t('settings.debug.noLogs')}</p>
+                  <p className="text-sm text-altwhite/60 font-mono">
+                    {t($ => $['settings.debug.noLogs'])}
+                  </p>
                 </div>
               </div>
             )}

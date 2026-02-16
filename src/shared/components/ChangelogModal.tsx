@@ -83,7 +83,7 @@ export const ChangelogModal = () => {
             startContent={<FaStar size={20} />}
             onPress={() => openExternalLink('https://github.com/Autapomorph/steam-game-idler')}
           >
-            {t('changelog.star')}
+            {t($ => $['changelog.star'])}
           </Button>
           <div className="flex gap-2">
             <Button
@@ -94,7 +94,7 @@ export const ChangelogModal = () => {
               className="font-semibold"
               onPress={onOpenChange}
             >
-              {t('common.close')}
+              {t($ => $['common.close'])}
             </Button>
             <Button
               size="sm"
@@ -102,7 +102,7 @@ export const ChangelogModal = () => {
               className="bg-white text-black font-semibold"
               onPress={() => openExternalLink(`https://steamgameidler.com/changelog#${appVersion}`)}
             >
-              {t('menu.changelog')}
+              {t($ => $['menu.changelog'])}
             </Button>
           </div>
         </ModalFooter>

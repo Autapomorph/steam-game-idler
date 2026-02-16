@@ -42,12 +42,12 @@ export const ManualAddModal = ({ listName, setList }: ManualAddModalProps) => {
           onOpenChange();
           handleClose();
         }}
-        title={t('customLists.manualAdd.title')}
+        title={t($ => $['customLists.manualAdd.title'])}
         body={
           <>
             <Input
               autoFocus
-              placeholder={t('customLists.manualAdd.gameName')}
+              placeholder={t($ => $['customLists.manualAdd.gameName'])}
               value={manualAdd.appNameValue || ''}
               classNames={{
                 inputWrapper: cn(
@@ -64,7 +64,7 @@ export const ManualAddModal = ({ listName, setList }: ManualAddModalProps) => {
 
             <NumberInput
               hideStepper
-              label={t('customLists.manualAdd.gameId')}
+              label={t($ => $['customLists.manualAdd.gameId'])}
               value={Number(manualAdd.appIdValue)}
               formatOptions={{ useGrouping: false }}
               aria-label="manual add"
@@ -92,7 +92,7 @@ export const ManualAddModal = ({ listName, setList }: ManualAddModalProps) => {
               className="font-semibold"
               onPress={onOpenChange}
             >
-              {t('common.cancel')}
+              {t($ => $['common.cancel'])}
             </Button>
             <Button
               size="sm"
@@ -102,7 +102,7 @@ export const ManualAddModal = ({ listName, setList }: ManualAddModalProps) => {
               isDisabled={!manualAdd.appNameValue || !manualAdd.appIdValue}
               onPress={() => manualAdd.handleAdd(onOpenChange)}
             >
-              {t('common.add')}
+              {t($ => $['common.add'])}
             </Button>
           </>
         }

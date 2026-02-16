@@ -33,7 +33,7 @@ export const handleLockAllAchievements = async (
       });
 
       showSuccessToast(
-        i18next.t('toast.lockAll.success', {
+        i18next.t($ => $['toast.lockAll.success'], {
           count: achievements.length,
           appName,
         }),
@@ -42,7 +42,7 @@ export const handleLockAllAchievements = async (
       showAccountMismatchToast('danger');
     }
   } catch (error) {
-    showDangerToast(i18next.t('common.error'));
+    showDangerToast(i18next.t($ => $['common.error']));
     console.error('Error in handleLockAll:', error);
     logEvent(`[Error] in handleLockAll: ${error}`);
   }

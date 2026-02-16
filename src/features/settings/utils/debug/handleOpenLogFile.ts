@@ -7,7 +7,7 @@ export const handleOpenLogFile = async () => {
   try {
     await invoke('open_file_explorer', { path: 'log.txt' });
   } catch (error) {
-    showDangerToast(i18next.t('common.error'));
+    showDangerToast(i18next.t($ => $['common.error']));
     console.error('Error in (handleOpenLogFile):', error);
     logEvent(`[Error] in (handleOpenLogFile): ${error}`);
   }

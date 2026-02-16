@@ -70,7 +70,7 @@ export const handleSaveCredentials = async (
         setCardFarmingUser(cardFarmingUser);
         setHasCookies(true);
 
-        showSuccessToast(i18next.t('toast.cardFarming.logIn', { user: validate.user }));
+        showSuccessToast(i18next.t($ => $['toast.cardFarming.logIn'], { user: validate.user }));
         logEvent(`[Settings - Card Farming] Logged in as ${validate.user}`);
 
         fetchGamesWithDropsData(
@@ -85,7 +85,7 @@ export const handleSaveCredentials = async (
       }
     }
   } catch (error) {
-    showDangerToast(i18next.t('common.error'));
+    showDangerToast(i18next.t($ => $['common.error']));
     console.error('Error in (handleSave):', error);
     logEvent(`[Error] in (handleSave): ${error}`);
   }
@@ -137,11 +137,11 @@ export const handleClearCredentials = async (
     setTotalDropsRemaining(0);
     setUserSettings(response.settings);
 
-    showSuccessToast(i18next.t('toast.cardFarming.logOut'));
+    showSuccessToast(i18next.t($ => $['toast.cardFarming.logOut']));
 
     logEvent('[Settings - Card Farming] Logged out');
   } catch (error) {
-    showDangerToast(i18next.t('common.error'));
+    showDangerToast(i18next.t($ => $['common.error']));
     console.error('Error in (handleCredentialsClear):', error);
     logEvent(`[Error] in (handleCredentialsClear): ${error}`);
   }

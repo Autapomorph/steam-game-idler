@@ -52,17 +52,17 @@ export const Menu = () => {
         }
         await relaunch();
       } else {
-        showPrimaryToast(t('toast.checkUpdate.none'));
+        showPrimaryToast(t($ => $['toast.checkUpdate.none']));
       }
     } catch (error) {
-      showDangerToast(t('toast.checkUpdate.error'));
+      showDangerToast(t($ => $['toast.checkUpdate.error']));
       console.error('Error in (handleUpdate):', error);
       logEvent(`Error in (handleUpdate): ${error}`);
     }
   };
 
   return (
-    <CustomTooltip content={t('common.menu')}>
+    <CustomTooltip content={t($ => $['common.menu'])}>
       <div>
         <Dropdown
           aria-label="Settings actions"
@@ -98,7 +98,7 @@ export const Menu = () => {
               }}
               onPress={() => openExternalLink('https://steamgameidler.com/docs/')}
             >
-              {t('menu.guide')}
+              {t($ => $['menu.guide'])}
             </DropdownItem>
 
             <DropdownItem
@@ -115,7 +115,7 @@ export const Menu = () => {
                 )
               }
             >
-              {t('menu.issue')}
+              {t($ => $['menu.issue'])}
             </DropdownItem>
 
             <DropdownItem
@@ -133,7 +133,7 @@ export const Menu = () => {
                 )
               }
             >
-              {t('menu.feature')}
+              {t($ => $['menu.feature'])}
             </DropdownItem>
 
             <DropdownItem
@@ -146,7 +146,7 @@ export const Menu = () => {
               }}
               onPress={() => setShowChangelog(true)}
             >
-              {t('menu.changelog')}
+              {t($ => $['menu.changelog'])}
             </DropdownItem>
 
             {!isPortable ? (
@@ -160,7 +160,7 @@ export const Menu = () => {
                 }}
                 onPress={handleUpdate}
               >
-                {t('menu.update')}
+                {t($ => $['menu.update'])}
               </DropdownItem>
             ) : null}
           </DropdownMenu>

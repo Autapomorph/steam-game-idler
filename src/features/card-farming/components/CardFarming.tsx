@@ -47,7 +47,7 @@ export const CardFarming = ({ activePage }: { activePage: ActivePageType }) => {
   useEffect(() => {
     if (isCardFarming && gamesWithDrops.size > 0 && totalDropsRemaining > 0) {
       updateTrayIcon(
-        t('trayIcon.cardFarming', {
+        t($ => $['trayIcon.cardFarming'], {
           count: totalDropsRemaining,
           total: gamesWithDrops.size,
         }),
@@ -67,7 +67,7 @@ export const CardFarming = ({ activePage }: { activePage: ActivePageType }) => {
       return (
         <Spinner
           variant="simple"
-          label={t('automation.cardFarming.initialDelay')}
+          label={t($ => $['automation.cardFarming.initialDelay'])}
           classNames={{ label: 'text-content' }}
         />
       );
@@ -78,7 +78,7 @@ export const CardFarming = ({ activePage }: { activePage: ActivePageType }) => {
         {!isComplete && (
           <p>
             <Trans
-              i18nKey="automation.cardFarming.progress"
+              i18nKey={$ => $['automation.cardFarming.progress']}
               values={{
                 count: gamesWithDrops.size,
                 total: totalDropsRemaining,
@@ -122,7 +122,7 @@ export const CardFarming = ({ activePage }: { activePage: ActivePageType }) => {
           <div className="border border-border rounded-full inline-block p-2 w-fit">
             <TbCheck className="text-green-400" fontSize={50} />
           </div>
-          <p className="mt-4">{t('common.done')}</p>
+          <p className="mt-4">{t($ => $['common.done'])}</p>
         </div>
       );
     }
@@ -155,9 +155,11 @@ export const CardFarming = ({ activePage }: { activePage: ActivePageType }) => {
         <div className="flex justify-between items-center pb-3">
           <div className="flex items-center gap-1 select-none">
             <div className="flex flex-col justify-center">
-              <p className="text-3xl font-black">{t('common.cardFarming')}</p>
+              <p className="text-3xl font-black">{t($ => $['common.cardFarming'])}</p>
 
-              <p className="text-xs text-altwhite my-2">{t('automation.cardFarming.running')}</p>
+              <p className="text-xs text-altwhite my-2">
+                {t($ => $['automation.cardFarming.running'])}
+              </p>
 
               <div className="flex items-center gap-2 mt-1">
                 <Button
@@ -172,7 +174,11 @@ export const CardFarming = ({ activePage }: { activePage: ActivePageType }) => {
                     updateTrayIcon();
                   }}
                 >
-                  {isComplete ? <p>{t('common.close')}</p> : <p>{t('common.stop')}</p>}
+                  {isComplete ? (
+                    <p>{t($ => $['common.close'])}</p>
+                  ) : (
+                    <p>{t($ => $['common.stop'])}</p>
+                  )}
                 </Button>
               </div>
             </div>

@@ -123,7 +123,7 @@ export function useTradingCardsList() {
             setTradingCardsList(sortedCards);
           } else {
             setTradingCardsList([]);
-            showPrimaryToast(t('toast.tradingCards.noCards'));
+            showPrimaryToast(t($ => $['toast.tradingCards.noCards']));
           }
         }
       } catch (error) {
@@ -272,7 +272,7 @@ export function useTradingCardsList() {
     try {
       const card = tradingCardsList.find(c => c.assetid === assetId);
       if (card && isCardLocked(card.id)) {
-        showDangerToast(t('toast.tradingCards.cardLocked'));
+        showDangerToast(t($ => $['toast.tradingCards.cardLocked']));
         return;
       }
 
@@ -287,7 +287,7 @@ export function useTradingCardsList() {
       if (!isWithinSellLimits(adjustedPrice)) {
         const sellLimit = userSettings?.tradingCards?.sellLimit;
         showDangerToast(
-          t('toast.tradingCards.priceOutOfRange', {
+          t($ => $['toast.tradingCards.priceOutOfRange'], {
             price: adjustedPrice.toFixed(2),
             min: sellLimit?.min?.toFixed(2) || '0.00',
             max: sellLimit?.max?.toFixed(2) || '∞',
@@ -318,24 +318,24 @@ export function useTradingCardsList() {
 
         if (result.success) {
           if (result.data?.needs_email_confirmation) {
-            showSuccessToast(t('toast.tradingCards.emailConfirm', { count: 1 }));
+            showSuccessToast(t($ => $['toast.tradingCards.emailConfirm'], { count: 1 }));
           } else if (result.data?.needs_mobile_confirmation) {
-            showSuccessToast(t('toast.tradingCards.mobileConfirm', { count: 1 }));
+            showSuccessToast(t($ => $['toast.tradingCards.mobileConfirm'], { count: 1 }));
           } else {
-            showSuccessToast(t('toast.tradingCards.listed', { count: 1 }));
+            showSuccessToast(t($ => $['toast.tradingCards.listed'], { count: 1 }));
           }
         } else {
-          showDangerToast(t('common.error'));
+          showDangerToast(t($ => $['common.error']));
           logEvent(`[Error] Failed to list trading card ${assetId}: ${result.message}`);
         }
       } else {
-        showDangerToast(t('common.error'));
+        showDangerToast(t($ => $['common.error']));
         logEvent(`[Error] Failed to list trading card: ${JSON.stringify(response)}`);
       }
 
       logEvent(`Complete listing result: ${JSON.stringify(response)}`);
     } catch (error) {
-      showDangerToast(t('common.error'));
+      showDangerToast(t($ => $['common.error']));
       console.error('Error in handleSellSingleCard:', error);
       logEvent(`[Error] in handleSellSingleCard: ${error}`);
     } finally {
@@ -368,12 +368,14 @@ export function useTradingCardsList() {
       const lockedCardsCount = cardsToSell.length - unlockedCards.length;
 
       if (lockedCardsCount > 0) {
-        showPrimaryToast(t('toast.tradingCards.skippedLockedCards', { count: lockedCardsCount }));
+        showPrimaryToast(
+          t($ => $['toast.tradingCards.skippedLockedCards'], { count: lockedCardsCount }),
+        );
         logEvent(`[Info] Skipped ${lockedCardsCount} locked cards`);
       }
 
       if (unlockedCards.length === 0) {
-        showDangerToast(t('toast.tradingCards.allCardsLocked'));
+        showDangerToast(t($ => $['toast.tradingCards.allCardsLocked']));
         return;
       }
 
@@ -388,12 +390,12 @@ export function useTradingCardsList() {
       const skippedCards = cardsToSell.length - validCards.length;
 
       if (validCards.length === 0) {
-        showDangerToast(t('toast.tradingCards.allCardsOutOfRange'));
+        showDangerToast(t($ => $['toast.tradingCards.allCardsOutOfRange']));
         return;
       }
 
       if (skippedCards > 0) {
-        showPrimaryToast(t('toast.tradingCards.skippedCards', { count: skippedCards }));
+        showPrimaryToast(t($ => $['toast.tradingCards.skippedCards'], { count: skippedCards }));
         logEvent(`[Info] Skipped ${skippedCards} cards due to sell limit restrictions`);
       }
 
@@ -403,7 +405,7 @@ export function useTradingCardsList() {
       ]);
 
       setLoadingListButton(true);
-      showPrimaryToast(t('toast.tradingCards.processing'));
+      showPrimaryToast(t($ => $['toast.tradingCards.processing']));
       logEvent(`Cards for listing: ${JSON.stringify(cardsForBulkListing)}`);
 
       const response = await invoke<InvokeListCards>('list_trading_cards', {
@@ -428,14 +430,16 @@ export function useTradingCardsList() {
         if (successfulCards.length > 0) {
           if (needsEmailConfirmation.length > 0) {
             showSuccessToast(
-              t('toast.tradingCards.emailConfirm', { count: successfulCards.length }),
+              t($ => $['toast.tradingCards.emailConfirm'], { count: successfulCards.length }),
             );
           } else if (needsMobileConfirmation.length > 0) {
             showSuccessToast(
-              t('toast.tradingCards.mobileConfirm', { count: successfulCards.length }),
+              t($ => $['toast.tradingCards.mobileConfirm'], { count: successfulCards.length }),
             );
           } else {
-            showSuccessToast(t('toast.tradingCards.listed', { count: successfulCards.length }));
+            showSuccessToast(
+              t($ => $['toast.tradingCards.listed'], { count: successfulCards.length }),
+            );
           }
         }
 
@@ -443,13 +447,13 @@ export function useTradingCardsList() {
           logEvent(`[Error] Failed to list trading card ${card.assetid}: ${card.message}`);
         }
       } else {
-        showDangerToast(t('common.error'));
+        showDangerToast(t($ => $['common.error']));
         logEvent(`[Error] Failed to list trading cards: ${JSON.stringify(response)}`);
       }
 
       logEvent(`Complete listing results: ${JSON.stringify(response)}`);
     } catch (error) {
-      showDangerToast(t('common.error'));
+      showDangerToast(t($ => $['common.error']));
       console.error('Error in handleSellSelectedCards:', error);
       logEvent(`[Error] in handleSellSelectedCards: ${error}`);
     } finally {
@@ -466,7 +470,7 @@ export function useTradingCardsList() {
       if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast();
 
       setLoadingListButton(true);
-      showPrimaryToast(t('toast.tradingCards.processing'));
+      showPrimaryToast(t($ => $['toast.tradingCards.processing']));
 
       const priceAdjustment = userSettings?.tradingCards?.priceAdjustment || 0.0;
       const sellDelay = userSettings?.tradingCards?.sellDelay || 5;
@@ -571,11 +575,13 @@ export function useTradingCardsList() {
       }
 
       if (successfulCards.length > 0) {
-        showSuccessToast(t('toast.tradingCards.listed', { count: successfulCards.length }));
+        showSuccessToast(t($ => $['toast.tradingCards.listed'], { count: successfulCards.length }));
       }
 
       if (skippedCards.length > 0) {
-        showPrimaryToast(t('toast.tradingCards.skippedCards', { count: skippedCards.length }));
+        showPrimaryToast(
+          t($ => $['toast.tradingCards.skippedCards'], { count: skippedCards.length }),
+        );
         logEvent(
           `[Info] in (handleSellAllCards): Skipped ${skippedCards.length} cards due to sell limit restrictions`,
         );
@@ -589,7 +595,7 @@ export function useTradingCardsList() {
         }
       }
     } catch (error) {
-      showDangerToast(t('common.error'));
+      showDangerToast(t($ => $['common.error']));
       console.error('Error in handleSellAllCards:', error);
       logEvent(`[Error] in (handleSellAllCards): ${error}`);
     } finally {
@@ -614,7 +620,7 @@ export function useTradingCardsList() {
       if (!validate.user) return showIncorrectCredentialsToast();
 
       setLoadingRemoveListings(true);
-      showPrimaryToast(t('toast.tradingCards.processing'));
+      showPrimaryToast(t($ => $['toast.tradingCards.processing']));
 
       const response = await invoke<InvokeRemoveListings>('remove_market_listings', {
         sid: decrypt(credentials.sid),
@@ -625,7 +631,7 @@ export function useTradingCardsList() {
 
       if (response.successful_removals > 0) {
         showSuccessToast(
-          t('toast.tradingCards.removedListings', {
+          t($ => $['toast.tradingCards.removedListings'], {
             count: response.successful_removals,
             total: response.processed_listings,
           }),
@@ -634,14 +640,14 @@ export function useTradingCardsList() {
         // Refresh the trading cards list after removing listings
         await handleRefresh();
       } else if (response.processed_listings === 0) {
-        showPrimaryToast(t('toast.tradingCards.noListings'));
+        showPrimaryToast(t($ => $['toast.tradingCards.noListings']));
       } else {
-        showDangerToast(t('toast.tradingCards.failedRemove'));
+        showDangerToast(t($ => $['toast.tradingCards.failedRemove']));
       }
 
       logEvent(`Remove listings result: ${JSON.stringify(response)}`);
     } catch (error) {
-      showDangerToast(t('common.error'));
+      showDangerToast(t($ => $['common.error']));
       console.error('Error in handleRemoveActiveListings:', error);
       logEvent(`[Error] in handleRemoveActiveListings: ${error}`);
     } finally {
@@ -661,7 +667,7 @@ export function useTradingCardsList() {
 
       setRefreshKey(prev => prev + 1);
     } catch (error) {
-      showDangerToast(t('common.error'));
+      showDangerToast(t($ => $['common.error']));
       console.error('Error in handleRefresh:', error);
       logEvent(`[Error] in handleRefresh: ${error}`);
     }

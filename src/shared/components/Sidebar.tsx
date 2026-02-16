@@ -50,13 +50,13 @@ export const Sidebar = () => {
     {
       id: 'games',
       page: 'games',
-      title: t('gamesList.title'),
+      title: t($ => $['gamesList.title']),
       icon: TbDeviceGamepad2,
     },
     {
       id: 'idling',
       page: 'idling',
-      title: t('idlingGames.title'),
+      title: t($ => $['idlingGames.title']),
       icon: TbPlayerPlay,
       isActive: idleGamesList.length > 0,
       customClassName: idleGamesList.length > 0 ? 'text-dynamic animate-pulse' : '',
@@ -64,19 +64,19 @@ export const Sidebar = () => {
     {
       id: 'favorites',
       page: 'customlists/favorites',
-      title: t('customLists.favorites.title'),
+      title: t($ => $['customLists.favorites.title']),
       icon: TbHeart,
     },
     {
       id: 'free-games',
       page: 'freeGames',
-      title: t('freeGames.title'),
+      title: t($ => $['freeGames.title']),
       icon: TbGift,
     },
     {
       id: 'card-farming',
       page: 'customlists/card-farming',
-      title: t('common.cardFarming'),
+      title: t($ => $['common.cardFarming']),
       icon: TbCards,
       isActive: isCardFarming,
       customClassName: isCardFarming ? 'text-dynamic animate-pulse' : '',
@@ -84,7 +84,7 @@ export const Sidebar = () => {
     {
       id: 'achievement-unlocker',
       page: 'customlists/achievement-unlocker',
-      title: t('common.achievementUnlocker'),
+      title: t($ => $['common.achievementUnlocker']),
       icon: TbAward,
       isActive: isAchievementUnlocker,
       customClassName: isAchievementUnlocker ? 'text-dynamic animate-pulse' : '',
@@ -92,22 +92,22 @@ export const Sidebar = () => {
     {
       id: 'auto-idle',
       page: 'customlists/auto-idle',
-      title: t('customLists.autoIdle.title'),
+      title: t($ => $['customLists.autoIdle.title']),
       icon: TbHourglassLow,
     },
     {
       id: 'trading-cards',
       page: 'tradingCards',
-      title: t('tradingCards.title'),
+      title: t($ => $['tradingCards.title']),
       icon: TbBuildingStore,
     },
   ];
 
   // Section headers and their corresponding first item indices
   const sectionHeaders: Record<number, string> = {
-    0: t('sidebar.section.games'),
-    4: t('sidebar.section.automation'),
-    7: t('sidebar.section.misc'),
+    0: t($ => $['sidebar.section.games']),
+    4: t($ => $['sidebar.section.automation']),
+    7: t($ => $['sidebar.section.misc']),
   };
 
   // Helper to render section header if needed
@@ -269,7 +269,7 @@ export const Sidebar = () => {
                     {searchContent.statisticQueryValue}
                   </p>
                 ) : (
-                  <p className="text-sm font-bold">{t('common.search')}</p>
+                  <p className="text-sm font-bold">{t($ => $['common.search'])}</p>
                 )}
               </div>
             )}
@@ -395,8 +395,8 @@ export const Sidebar = () => {
       <CustomModal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
-        title={t('common.confirm')}
-        body={t('confirmation.logout')}
+        title={t($ => $['common.confirm'])}
+        body={t($ => $['confirmation.logout'])}
         buttons={
           <>
             <Button
@@ -407,7 +407,7 @@ export const Sidebar = () => {
               className="font-semibold"
               onPress={onOpenChange}
             >
-              {t('common.cancel')}
+              {t($ => $['common.cancel'])}
             </Button>
             <Button
               size="sm"
@@ -418,7 +418,7 @@ export const Sidebar = () => {
                 handleLogout(onOpenChange);
               }}
             >
-              {t('common.confirm')}
+              {t($ => $['common.confirm'])}
             </Button>
           </>
         }

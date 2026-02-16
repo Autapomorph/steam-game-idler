@@ -66,31 +66,34 @@ export const Settings = () => {
           panel: 'w-full pb-10 pl-10 ml-[260px] mt-9 h-calc overflow-y-auto z-39',
         }}
       >
-        <Tab key="general" title={t('settings.general.title')}>
+        <Tab key="general" title={t($ => $['settings.general.title'])}>
           <GeneralSettings />
         </Tab>
-        <Tab key="customization" title={t('settings.customization.title')}>
+        <Tab key="customization" title={t($ => $['settings.customization.title'])}>
           <CustomizationSettings />
         </Tab>
-        <Tab key="steam-credentials" title={t('settings.cardFarming.steamCredentialsTitle')}>
+        <Tab
+          key="steam-credentials"
+          title={t($ => $['settings.cardFarming.steamCredentialsTitle'])}
+        >
           <SteamCredentials />
         </Tab>
-        <Tab key="card-farming" title={t('common.cardFarming')}>
+        <Tab key="card-farming" title={t($ => $['common.cardFarming'])}>
           <CardSettings />
         </Tab>
-        <Tab key="achievement-unlocker" title={t('common.achievementUnlocker')}>
+        <Tab key="achievement-unlocker" title={t($ => $['common.achievementUnlocker'])}>
           <AchievementSettings />
         </Tab>
-        <Tab key="trading-card-manager" title={t('tradingCards.title')}>
+        <Tab key="trading-card-manager" title={t($ => $['tradingCards.title'])}>
           <TradingCardManagerSettings />
         </Tab>
-        <Tab key="free-games" title={t('freeGames.title')}>
+        <Tab key="free-games" title={t($ => $['freeGames.title'])}>
           <FreeGamesSettings />
         </Tab>
-        <Tab key="game-settings" title={t('common.gameSettings')}>
+        <Tab key="game-settings" title={t($ => $['common.gameSettings'])}>
           <GameSettings />
         </Tab>
-        <Tab key="debug" title={t('settings.debug.title')}>
+        <Tab key="debug" title={t($ => $['settings.debug.title'])}>
           <Logs />
         </Tab>
       </Tabs>

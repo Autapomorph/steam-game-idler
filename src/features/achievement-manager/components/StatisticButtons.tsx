@@ -37,7 +37,7 @@ export const StatisticButtons = ({
           if (setRefreshKey) setRefreshKey(prev => prev + 1);
         }}
       >
-        {t('common.refresh')}
+        {t($ => $['common.refresh'])}
       </Button>
 
       <Button
@@ -47,7 +47,7 @@ export const StatisticButtons = ({
         isDisabled={!hasChanges}
         startContent={<TbUpload size={19} />}
       >
-        {t('achievementManager.statistics.saveChanges')} {hasChanges && `(${changedCount})`}
+        {t($ => $['achievementManager.statistics.saveChanges'])} {hasChanges && `(${changedCount})`}
       </Button>
 
       <Button
@@ -57,16 +57,16 @@ export const StatisticButtons = ({
         onPress={onOpen}
         startContent={<TbRotateClockwise className="rotate-90" size={20} />}
       >
-        {t('achievementManager.statistics.resetAll')}
+        {t($ => $['achievementManager.statistics.resetAll'])}
       </Button>
 
       <CustomModal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
-        title={t('common.confirm')}
+        title={t($ => $['common.confirm'])}
         body={
           <p className="text-sm">
-            <Trans i18nKey="confirmation.resetStatistics">
+            <Trans i18nKey={$ => $['confirmation.resetStatistics']}>
               Are you sure you want to <strong>reset</strong> all statistics?
             </Trans>
           </p>
@@ -81,7 +81,7 @@ export const StatisticButtons = ({
               className="font-semibold"
               onPress={onOpenChange}
             >
-              {t('common.cancel')}
+              {t($ => $['common.cancel'])}
             </Button>
             <Button
               size="sm"
@@ -91,7 +91,7 @@ export const StatisticButtons = ({
                 handleResetAllStats(statistics, setStatistics, setChangedStats, onOpenChange)
               }
             >
-              {t('common.confirm')}
+              {t($ => $['common.confirm'])}
             </Button>
           </>
         }

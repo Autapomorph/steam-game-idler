@@ -15,22 +15,22 @@ export const FreeGamesSettings = () => {
     <div className="relative flex flex-col gap-4 mt-9 pb-16 w-4/5">
       <div className="flex flex-col gap-0 select-none">
         <p className="flex items-center text-xs text-altwhite font-bold">
-          {t('settings.title')}
+          {t($ => $['settings.title'])}
           <span>
             <TbChevronRight size={12} />
           </span>
         </p>
-        <p className="text-3xl font-black">{t('freeGames.title')}</p>
+        <p className="text-3xl font-black">{t($ => $['freeGames.title'])}</p>
       </div>
 
       <div className="flex flex-col gap-3 mt-4">
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
             <p className="text-sm text-content font-bold">
-              {t('settings.general.freeGameNotifications')}
+              {t($ => $['settings.general.freeGameNotifications'])}
             </p>
             <p className="text-xs text-altwhite">
-              {t('settings.general.freeGameNotifications.description')}
+              {t($ => $['settings.general.freeGameNotifications.description'])}
             </p>
           </div>
           <SettingsSwitch type="general" name="freeGameNotifications" />
@@ -42,18 +42,18 @@ export const FreeGamesSettings = () => {
           <div className="flex flex-col gap-2 w-1/2">
             <div className="flex items-center">
               <p className="text-sm text-content font-bold">
-                {t('settings.general.autoRedeemFreeGames')}
+                {t($ => $['settings.general.autoRedeemFreeGames'])}
               </p>
               <Beta />
             </div>
             <p className="text-xs text-altwhite">
-              {t('settings.general.autoRedeemFreeGames.description')}
+              {t($ => $['settings.general.autoRedeemFreeGames.description'])}
             </p>
             <ExtLink
               href="https://steamgameidler.com/docs/settings/free-games#auto-redeem-free-games"
               className="text-xs text-dynamic hover:text-dynamic-hover duration-150"
             >
-              {t('common.learnMore')}
+              {t($ => $['common.learnMore'])}
             </ExtLink>
           </div>
 
@@ -65,8 +65,8 @@ export const FreeGamesSettings = () => {
               onPress={() => handleShowStoreLoginWindow(setUserSettings)}
             >
               {userSettings.general?.autoRedeemFreeGames
-                ? t('common.reauthenticate')
-                : t('common.signInSteam')}
+                ? t($ => $['common.reauthenticate'])
+                : t($ => $['common.signInSteam'])}
             </Button>
             <Button
               size="sm"
@@ -75,7 +75,7 @@ export const FreeGamesSettings = () => {
               color="danger"
               onPress={() => handleSignOutCurrentStoreUser(setUserSettings)}
             >
-              {t('common.signOut')}
+              {t($ => $['common.signOut'])}
             </Button>
           </div>
         </div>

@@ -39,7 +39,7 @@ export const startAutoIdleGames = async () => {
     // Steam is running, proceed with idling
     await startAutoIdleGamesImpl(userSummary.steamId);
   } catch (error) {
-    showDangerToast(i18next.t('common.error'));
+    showDangerToast(i18next.t($ => $['common.error']));
     console.error('Error in (startAutoIdleGames):', error);
     logEvent(`[Error] in (startAutoIdleGames): ${error}`);
   }
@@ -114,7 +114,7 @@ export async function startAutoIdleGamesImpl(steamId: string, manual?: boolean) 
       }
     }
   } catch (error) {
-    showDangerToast(i18next.t('common.error'));
+    showDangerToast(i18next.t($ => $['common.error']));
     console.error('Error in (startAutoIdleGamesImpl):', error);
     logEvent(`[Error] in (startAutoIdleGamesImpl): ${error}`);
   }

@@ -31,7 +31,7 @@ export function useSidebar(
       await invoke('kill_all_steamutil_processes');
       logEvent(`[System] Logged out of ${userSummary?.personaName}`);
     } catch (error) {
-      showDangerToast(t('common.error'));
+      showDangerToast(t($ => $['common.error']));
       console.error('Error in (handleLogout):', error);
       logEvent(`[Error] in (handleLogout): ${error}`);
     }
@@ -48,7 +48,7 @@ export function useSidebar(
       localStorage.removeItem('sortStyle');
       localStorage.removeItem('userSummary');
     } catch (error) {
-      showDangerToast(t('common.error'));
+      showDangerToast(t($ => $['common.error']));
       console.error('Error in (clearLocalStorageData):', error);
       logEvent(`[Error] in (clearLocalStorageData): ${error}`);
     }
