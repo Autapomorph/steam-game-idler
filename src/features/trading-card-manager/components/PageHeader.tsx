@@ -32,6 +32,7 @@ interface PageHeaderProps {
   tradingCardContext: ReturnType<typeof useTradingCardsList>;
   currentPage: number;
   totalPages: number;
+  lockedCards: string[];
   onPageChange: (page: number) => void;
 }
 
@@ -40,6 +41,7 @@ export const PageHeader = ({
   tradingCardContext,
   currentPage,
   totalPages,
+  lockedCards,
   onPageChange,
 }: PageHeaderProps) => {
   const { t } = useTranslation();
@@ -159,7 +161,8 @@ export const PageHeader = ({
                     onPress={onBulkOpen}
                   >
                     {t($ => $['tradingCards.bulk'], {
-                      count: tradingCardContext.tradingCardsList?.length || 0,
+                      count:
+                        tradingCardContext.tradingCardsList?.length || 0 - lockedCards.length || 0,
                     })}
                   </Button>
 

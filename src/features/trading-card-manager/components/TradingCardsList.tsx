@@ -102,7 +102,8 @@ export const TradingCardsList = () => {
           <Checkbox
             size="sm"
             name={item.assetid}
-            isSelected={tradingCardContext.selectedCards[item.assetid] || false}
+            isDisabled={isLocked}
+            isSelected={(!isLocked && tradingCardContext.selectedCards[item.assetid]) || false}
             onChange={() => tradingCardContext.toggleCardSelection(item.assetid)}
             classNames={{
               hiddenInput: 'w-fit',
@@ -202,9 +203,9 @@ export const TradingCardsList = () => {
           </CustomTooltip>
         </div>
 
-        <PriceInput item={item} tradingCardContext={tradingCardContext} />
+        <PriceInput item={item} tradingCardContext={tradingCardContext} isLocked={isLocked} />
 
-        <PriceData item={item} tradingCardContext={tradingCardContext} />
+        <PriceData item={item} tradingCardContext={tradingCardContext} isLocked={isLocked} />
       </div>
     );
   };
@@ -226,6 +227,7 @@ export const TradingCardsList = () => {
         tradingCardContext={tradingCardContext}
         currentPage={currentPage}
         totalPages={totalPages}
+        lockedCards={lockedCards}
         onPageChange={setCurrentPage}
       />
 
