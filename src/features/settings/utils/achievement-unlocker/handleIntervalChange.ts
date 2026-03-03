@@ -4,7 +4,7 @@ import i18next from 'i18next';
 import { showDangerToast } from '@/shared/components';
 import { logEvent } from '@/shared/utils';
 
-export const handleSliderChange = async (
+export const handleIntervalChange = async (
   newInterval: [number, number] | number[] | number,
   userSummary: UserSummary,
   setUserSettings: (value: UserSettings) => void,
@@ -19,7 +19,7 @@ export const handleSliderChange = async (
     logEvent(`[Settings - Achievement Unlocker] Changed 'interval' to '${String(newInterval)}'`);
   } catch (error) {
     showDangerToast(i18next.t($ => $['common.error']));
-    console.error('Error in (handleSliderChange - Achievement Unlocker):', error);
-    logEvent(`[Error] in (handleSliderChange - Achievement Unlocker): ${error}`);
+    console.error('Error in (handleIntervalChange  - Achievement Unlocker):', error);
+    logEvent(`[Error] in (handleIntervalChange  - Achievement Unlocker): ${error}`);
   }
 };

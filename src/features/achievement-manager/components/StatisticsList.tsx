@@ -81,7 +81,7 @@ export const StatisticsList = ({
             rowHeight={62}
             style={{
               width: '100%',
-              height: windowInnerHeight - 196,
+              height: windowInnerHeight - 212,
             }}
             rowProps={{
               data: rowData,

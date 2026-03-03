@@ -67,12 +67,12 @@ export const AchievementsList = ({
 
           <List
             rowComponent={AchievementsListRow}
-            defaultHeight={windowInnerHeight - 196}
+            defaultHeight={windowInnerHeight - 212}
             rowCount={filteredAchievements.length}
             rowHeight={110}
             style={{
               width: '100%',
-              height: windowInnerHeight - 196,
+              height: windowInnerHeight - 212,
             }}
             rowProps={{
               data: rowData,
