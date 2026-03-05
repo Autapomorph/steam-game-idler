@@ -299,6 +299,7 @@ jobs:
             Merging this PR allows the release to be distributed through Tauri Updater for auto-updates
           branch: "version-bump-${{ needs.validate_version.outputs.new_version }}-${{ github.run_id }}"
           base: "main"
+          commit-options: --no-verify
           add-paths: |
             src-tauri/tauri.conf.json
             latest.json
