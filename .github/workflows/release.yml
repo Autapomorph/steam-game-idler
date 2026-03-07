@@ -66,19 +66,19 @@ jobs:
           version: ${{ steps.normalize_new_version.outputs.new_version }}
 
       - name: Validate version increment
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
-            const prev = '${{ steps.get_previous_version.outputs.previous_version }}'.replace(/^v/, '');
-            const next = '${{ steps.normalize_new_version.outputs.new_version }}';
+            const prevVersion = '${{ steps.get_previous_version.outputs.previous_version }}'.replace(/^v/, '');
+            const newVersion = '${{ steps.normalize_new_version.outputs.new_version }}';
             
-            const [prevMajor, prevMinor, prevPatch] = prev.split('.').map(Number);
-            const [nextMajor, nextMinor, nextPatch] = next.split('.').map(Number);
+            const [prevMajor, prevMinor, prevPatch] = prevVersion.split('.').map(Number);
+            const [newMajor, newMinor, newPatch] = newVersion.split('.').map(Number);
             
             // Check if it's a valid increment
-            const isMajor = nextMajor > prevMajor && nextMinor === 0 && nextPatch === 0;
-            const isMinor = nextMajor === prevMajor && nextMinor > prevMinor && nextPatch === 0;
-            const isPatch = nextMajor === prevMajor && nextMinor === prevMinor && nextPatch === prevPatch + 1;
+            const isMajor = newMajor > prevMajor && newMinor === 0 && newPatch === 0;
+            const isMinor = newMajor === prevMajor && newMinor > prevMinor && newPatch === 0;
+            const isPatch = newMajor === prevMajor && newMinor === prevMinor && newPatch === prevPatch + 1;
             
             if (!isMajor && !isMinor && !isPatch) {
               const validOptions = [
@@ -89,13 +89,13 @@ jobs:
               
               core.setFailed(
                 `❌ Invalid version increment!\n\n` +
-                `Current: ${prev}\n` +
-                `Attempted: ${next}\n\n` +
+                `Current: ${prevVersion}\n` +
+                `Attempted: ${newVersion}\n\n` +
                 `Valid options:\n${validOptions.map(v => `  • ${v}`).join('\n')}`
               );
             }
             
-            console.log(`✅ Valid version increment: ${prev} → ${next}`);
+            console.log(`✅ Valid version increment: ${prevVersion} → ${newVersion}`);
 
   build_dotnet_libs:
     runs-on: windows-latest
@@ -114,6 +114,7 @@ jobs:
         run: |
           # Create directory if it doesn't exist
           mkdir -Force "C:\Users\runneradmin\.nuget\packages"
+
           # Get and report actual NuGet packages location
           dotnet nuget locals global-packages --list
         shell: pwsh
@@ -133,7 +134,7 @@ jobs:
         uses: actions/cache@v5
         with:
           path: src-tauri/libs/
-          key: ${{ runner.os }}-dotnet-${{ hashFiles('libs/**/*.cs', 'libs/**/*.csproj') }}
+          key: ${{ runner.os }}-dotnet-${{ hashFiles('src-tauri/libs/**/*.cs', 'src-tauri/libs/**/*.csproj') }}
           restore-keys: |
             ${{ runner.os }}-dotnet-
 
@@ -165,11 +166,6 @@ jobs:
           node-version: 24
           cache: "npm"
 
-      - name: Setup Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.x"
-
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
@@ -187,9 +183,9 @@ jobs:
         uses: actions/cache@v5
         with:
           path: .next/cache
-          key: ${{ runner.OS }}-nextjs-${{ hashFiles('**.[jt]sx', '**.[jt]s', 'package.json') }}
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**.[jt]sx', '**.[jt]s', 'package.json') }}
           restore-keys: |
-            ${{ runner.OS }}-nextjs-
+            ${{ runner.os }}-nextjs-
 
       - name: Clean Next.js cache
         if: steps.cache-nextjs.outputs.cache-hit != 'true' || github.event.inputs.force_nextjs_build == 'true'
@@ -219,20 +215,27 @@ jobs:
           $previousVersion = "${{ needs.validate_version.outputs.previous_version }}"
           $newVersion = "${{ needs.validate_version.outputs.new_version }}"
 
-          $tauriConf = Get-Content src-tauri/tauri.conf.json
-          $updatedTauriConf = $tauriConf -replace $previousVersion, $newVersion
-          $updatedTauriConf | Set-Content src-tauri/tauri.conf.json
+          # update tauri.conf.json version
+          $tauriConfJson = Get-Content src-tauri/tauri.conf.json | ConvertFrom-Json
+          $tauriConfJson.version = $newVersion
+          $tauriConfJson | ConvertTo-Json -Depth 10 | Set-Content src-tauri/tauri.conf.json
 
-          $latest = Get-Content latest.json
-          $updatedLatest = $latest -replace $previousVersion, $newVersion
-          $updatedLatest | Set-Content latest.json
+          # update latest.json version & url
+          $latestJson = Get-Content latest.json | ConvertFrom-Json
+          $latestJson.version = $newVersion
+          $latestJson.platforms.'windows-x86_64'.url = $latestJson.platforms.'windows-x86_64'.url -replace [regex]::Escape($previousVersion), $newVersion
+          $latestJson | ConvertTo-Json -Depth 10 | Set-Content latest.json
 
       - name: Create .env.production file
         run: |
-          echo "KEY=${{ secrets.KEY }}" > .env.production
-          echo "STEAM_DEV_ACCOUNTS=${{ secrets.STEAM_DEV_ACCOUNTS }}" >> .env.production
+          @"
+          KEY=$env:KEY
+          STEAM_DEV_ACCOUNTS=$env:STEAM_DEV_ACCOUNTS
+          "@ | Set-Content .env.production
         shell: pwsh
-        working-directory: ${{ github.workspace }}
+        env:
+          KEY: ${{ secrets.KEY }}
+          STEAM_DEV_ACCOUNTS: ${{ secrets.STEAM_DEV_ACCOUNTS }}
 
       - name: Download built .NET libraries
         uses: actions/download-artifact@v7
@@ -243,40 +246,41 @@ jobs:
       - name: Build and package Tauri app
         if: steps.update-versions.outcome == 'success'
         run: |
-          $env:NEXT_TELEMETRY_DISABLED = "1"
-          $env:TAURI_CI = "1"
           npm run tauri build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+          TAURI_CI: "1"
+          NEXT_TELEMETRY_DISABLED: "1"
+
         shell: pwsh
 
       - name: Update latest.json with signature
-        run: |
-          python -c "
-          import base64
-          import json
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
 
-          nsis_signature_path = './src-tauri/target/release/bundle/nsis/Steam Game Idler_${{ needs.validate_version.outputs.new_version }}_x64-setup.exe.sig'
-          latest_json_path = './latest.json'
+            const newVersion = process.env.NEW_VERSION;
+            const isMajorInput = process.env.IS_MAJOR;
 
-          with open(nsis_signature_path, 'r') as sig_file:
-              new_signature = sig_file.read().strip()
+            const sigPath = path.resolve(`./src-tauri/target/release/bundle/nsis/Steam Game Idler_${newVersion}_x64-setup.exe.sig`);
+            const latestJsonPath = path.resolve('./latest.json');
 
-          with open(latest_json_path, 'r') as json_file:
-              latest_json = json.load(json_file)
+            const newSignature = fs.readFileSync(sigPath, 'utf-8').trim();
+            const latestJson = JSON.parse(fs.readFileSync(latestJsonPath, 'utf-8'));
 
-          latest_json['platforms']['windows-x86_64']['signature'] = new_signature
+            latestJson.platforms['windows-x86_64'].signature = newSignature;
+            latestJson.major = isMajorInput === 'true';
 
-          is_major = True if '${{ github.event.inputs.is_major }}' == 'true' else False
-          latest_json['major'] = is_major
+            fs.writeFileSync(latestJsonPath, JSON.stringify(latestJson, null, 2));
 
-          with open(latest_json_path, 'w') as json_file:
-              json.dump(latest_json, json_file, indent=2)
-
-          print('Updated latest.json with new signature')
-          "
+            console.log('Updated latest.json with new signature');
+        env:
+          NEW_VERSION: ${{ needs.validate_version.outputs.new_version }}
+          IS_MAJOR: ${{ github.event.inputs.is_major }}
 
       - uses: actions/create-github-app-token@v2
         id: generate-token
@@ -299,7 +303,6 @@ jobs:
             Merging this PR allows the release to be distributed through Tauri Updater for auto-updates
           branch: "version-bump-${{ needs.validate_version.outputs.new_version }}-${{ github.run_id }}"
           base: "main"
-          commit-options: --no-verify
           add-paths: |
             src-tauri/tauri.conf.json
             latest.json
