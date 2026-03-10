@@ -144,7 +144,7 @@ jobs:
         shell: pwsh
 
       - name: Upload built .NET libraries
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: dotnet-libs
           path: src-tauri/libs/
@@ -238,7 +238,7 @@ jobs:
           STEAM_DEV_ACCOUNTS: ${{ secrets.STEAM_DEV_ACCOUNTS }}
 
       - name: Download built .NET libraries
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: dotnet-libs
           path: src-tauri/libs/
