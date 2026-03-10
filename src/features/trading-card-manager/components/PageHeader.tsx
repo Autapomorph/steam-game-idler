@@ -12,7 +12,7 @@ import {
 } from 'react-icons/tb';
 import { Button, cn, Divider, Tab, Tabs, useDisclosure } from '@heroui/react';
 import { CustomModal } from '@/shared/components';
-import { useNavigationStore, useSearchStore, useStateStore } from '@/shared/stores';
+import { useNavigationStore, useSearchStore, useStateStore, useUserStore } from '@/shared/stores';
 
 // Helper function to format seconds to HH:MM:SS
 const formatTime = (seconds: number) => {
@@ -45,6 +45,7 @@ export const PageHeader = ({
   onPageChange,
 }: PageHeaderProps) => {
   const { t } = useTranslation();
+  const userSettings = useUserStore(state => state.userSettings);
   const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed);
   const transitionDuration = useStateStore(state => state.transitionDuration);
   const tradingCardQueryValue = useSearchStore(state => state.tradingCardQueryValue);
@@ -249,7 +250,10 @@ export const PageHeader = ({
         body={
           <div className="whitespace-pre-line">
             {t($ => $['tradingCards.confirm'], {
-              time: formatTime(Number(selectedCardsWithPrice.length) * 1.5),
+              time: formatTime(
+                Number(tradingCardContext.tradingCardsList?.length) *
+                  (userSettings.tradingCards.sellDelay || 10),
+              ),
               count: Number(selectedCardsWithPrice.length),
             })}
           </div>

@@ -348,7 +348,7 @@ export function useTradingCardsList() {
   const handleSellSelectedCards = async () => {
     try {
       const { credentials } = userSettings.cardFarming;
-      const sellDelay = userSettings?.tradingCards?.sellDelay || 5;
+      const sellDelay = userSettings?.tradingCards?.sellDelay || 10;
 
       if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast();
 
@@ -473,7 +473,7 @@ export function useTradingCardsList() {
       showPrimaryToast(t($ => $['toast.tradingCards.processing']));
 
       const priceAdjustment = userSettings?.tradingCards?.priceAdjustment || 0.0;
-      const sellDelay = userSettings?.tradingCards?.sellDelay || 5;
+      const sellDelay = userSettings?.tradingCards?.sellDelay || 10;
       const successfulCards = [];
       const failedCards = [];
       const skippedCards = [];
@@ -509,62 +509,52 @@ export function useTradingCardsList() {
             logEvent(
               `[Error] in (handleSellAllCards): Failed to fetch price for card ${card.assetid} (${card.market_hash_name}) - skipping`,
             );
-            continue;
-          }
-
-          if (!priceResult.price) {
+          } else if (!priceResult.price) {
             logEvent(
               `[Error] in (handleSellAllCards): Couldn't determine price for card ${card.assetid} (${card.market_hash_name}) - skipping`,
             );
-            continue;
-          }
+          } else if (!shouldContinue) {
+            // Check shouldContinue before proceeding
+            // This is to ensure that if we were rate limited during price fetching, we don't attempt to list any more cards
+          } else {
+            const parsedPrice = priceResult.price.replace(/[^0-9.,]/g, '').replace(',', '.');
+            const finalPrice = parseFloat(parsedPrice) + priceAdjustment;
 
-          // Wait before processing to avoid rate limiting
-          await new Promise(resolve => setTimeout(resolve, sellDelay * 1000));
-
-          if (!shouldContinue) break;
-
-          const parsedPrice = priceResult.price.replace(/[^0-9.,]/g, '').replace(',', '.');
-          const finalPrice = parseFloat(parsedPrice) + priceAdjustment;
-
-          // Check if price is within sell limits
-          if (!isWithinSellLimits(finalPrice)) {
-            skippedCards.push(card.assetid);
-            logEvent(
-              `[Info] in (handleSellAllCards): Skipped card ${card.assetid} (${card.market_hash_name}) - price ${finalPrice} outside sell limits`,
-            );
-            continue;
-          }
-
-          const cardForListing: [string, string] = [card.assetid, finalPrice.toString()];
-
-          const response = await invoke<InvokeListCards>('list_trading_cards', {
-            sid: decrypt(credentials.sid),
-            sls: decrypt(credentials.sls),
-            sma: credentials?.sma,
-            steamId: userSummary?.steamId,
-            cards: [cardForListing],
-          });
-
-          if (response.successful && response.results && response.results.length > 0) {
-            const result = response.results[0];
-            if (result.success) {
-              successfulCards.push(card.assetid);
+            // Check if price is within sell limits
+            if (!isWithinSellLimits(finalPrice)) {
+              skippedCards.push(card.assetid);
+              logEvent(
+                `[Info] in (handleSellAllCards): Skipped card ${card.assetid} (${card.market_hash_name}) - price ${finalPrice} outside sell limits`,
+              );
             } else {
-              failedCards.push({ assetid: card.assetid, message: result.message });
+              const cardForListing: [string, string] = [card.assetid, finalPrice.toString()];
 
-              if (result.message?.toLowerCase().includes('rate limit')) {
-                showPriceFetchRateLimitToast();
-                logEvent(
-                  `[Error] in (handleSellAllCards): Rate limited when listing card ${card.assetid} (${card.market_hash_name}) - stopping (Increasing the 'sell delay' in 'settings > trading card manager' can help prevent this issue)`,
-                );
-                shouldContinue = false;
-                break;
+              const response = await invoke<InvokeListCards>('list_trading_cards', {
+                sid: decrypt(credentials.sid),
+                sls: decrypt(credentials.sls),
+                sma: credentials?.sma,
+                steamId: userSummary?.steamId,
+                cards: [cardForListing],
+              });
+
+              if (response.successful && response.results && response.results.length > 0) {
+                const result = response.results[0];
+                if (result.success) {
+                  successfulCards.push(card.assetid);
+                } else {
+                  failedCards.push({ assetid: card.assetid, message: result.message });
+
+                  if (result.message?.toLowerCase().includes('rate limit')) {
+                    showPriceFetchRateLimitToast();
+                    logEvent(
+                      `[Error] in (handleSellAllCards): Rate limited when listing card ${card.assetid} (${card.market_hash_name}) - stopping (Increasing the 'sell delay' in 'settings > trading card manager' can help prevent this issue)`,
+                    );
+                    shouldContinue = false;
+                  }
+                }
               }
             }
           }
-
-          await new Promise(resolve => setTimeout(resolve, sellDelay * 1000)); // Wait between listings to avoid rate limiting
         } catch (error) {
           failedCards.push({ assetid: card.assetid, message: String(error) });
           console.error(`Error processing card ${card.assetid}:`, error);
@@ -572,6 +562,9 @@ export function useTradingCardsList() {
             `[Error] in (handleSellAllCards): processing card ${card.assetid} (${card.market_hash_name}): ${error}`,
           );
         }
+
+        // Delay once per card iteration, regardless of success or failure
+        await new Promise(resolve => setTimeout(resolve, sellDelay * 1000));
       }
 
       if (successfulCards.length > 0) {
