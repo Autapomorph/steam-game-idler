@@ -1,4 +1,5 @@
 import type { AppProps } from 'next/app';
+import { useTranslation } from 'react-i18next';
 import { HeroUIProvider, ToastProvider } from '@heroui/react';
 import { TbX } from 'react-icons/tb';
 
@@ -9,6 +10,7 @@ import { useLoaderStore, useStateStore } from '@/shared/stores';
 import '@/styles/globals.css';
 
 const App = ({ Component, pageProps }: AppProps) => {
+  const { i18n } = useTranslation();
   const { loadingUserSummary } = useStateStore();
   const { loaderFadeOut } = useLoaderStore();
 
@@ -21,7 +23,7 @@ const App = ({ Component, pageProps }: AppProps) => {
         defaultTheme="dark"
         disableTransitionOnChange
       >
-        <HeroUIProvider>
+        <HeroUIProvider locale={i18n.language}>
           <ToastProvider
             toastProps={{
               radius: 'sm',
