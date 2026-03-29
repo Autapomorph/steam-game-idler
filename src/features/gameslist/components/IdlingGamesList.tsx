@@ -64,7 +64,7 @@ export const IdlingGamesList = () => {
     <div
       className={cn(
         'min-h-calc max-h-calc overflow-y-auto overflow-x-hidden mt-9 ease-in-out',
-        sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
+        sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-calc',
       )}
       style={{
         transitionDuration,
@@ -82,13 +82,12 @@ export const IdlingGamesList = () => {
             {idleGamesList?.length > 0 && (
               <div className="flex items-center gap-2 mt-1">
                 <Button
-                  radius="full"
-                  className="font-bold"
-                  color="danger"
+                  className="font-bold rounded-full"
+                  variant="danger"
                   isDisabled={idleGamesList?.length === 0}
-                  startContent={<TbPlayerStopFilled fontSize={20} />}
                   onPress={handleStopIdleAll}
                 >
+                  <TbPlayerStopFilled fontSize={20} />
                   {t($ => $['idlingGames.stopAll'])}
                 </Button>
               </div>

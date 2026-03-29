@@ -1,13 +1,5 @@
 import { useEffect, useState } from 'react';
-import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  Spinner,
-  useDisclosure,
-} from '@heroui/react';
+import { Button, Modal, Spinner, useOverlayState } from '@heroui/react';
 import 'github-markdown-css/github-markdown-light.css';
 import { getVersion } from '@tauri-apps/api/app';
 import { useTranslation } from 'react-i18next';
@@ -20,16 +12,16 @@ export const ChangelogModal = () => {
   const { t } = useTranslation();
   const showChangelog = useUpdateStore(state => state.showChangelog);
   const setShowChangelog = useUpdateStore(state => state.setShowChangelog);
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, open, toggle } = useOverlayState();
   const [appVersion, setAppVersion] = useState('');
   const [isVersionLoaded, setIsVersionLoaded] = useState(false);
 
   useEffect(() => {
     if (showChangelog && isVersionLoaded) {
-      onOpen();
+      open();
       setShowChangelog(false);
     }
-  }, [onOpen, showChangelog, setShowChangelog, isVersionLoaded]);
+  }, [open, showChangelog, setShowChangelog, isVersionLoaded]);
 
   useEffect(() => {
     (async () => {
@@ -46,67 +38,58 @@ export const ChangelogModal = () => {
   }, []);
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onOpenChange={onOpenChange}
-      size="lg"
-      className="text-content bg-transparent border border-border rounded-4xl"
-      classNames={{
-        closeButton: 'mr-1.5 mt-1.5',
-      }}
-      style={{
-        backgroundImage: 'linear-gradient(to bottom, #1d1d1dff 0%, #000000ff 100%)',
-      }}
-    >
-      <ModalContent>
-        <ModalBody className="p-0">
-          {isVersionLoaded ? (
-            <iframe
-              title="changelog"
-              src={`https://steamgameidler.com/changelog/${appVersion}`}
-              className="min-h-125"
-            />
-          ) : (
-            <div className="flex items-center justify-center min-h-125">
-              <Spinner variant="simple" className="m-10" />
-            </div>
-          )}
-        </ModalBody>
+    <Modal.Backdrop isOpen={isOpen} onOpenChange={toggle}>
+      <Modal.Container
+        size="lg"
+        className="text-content bg-transparent border border-border rounded-4xl"
+      >
+        <Modal.Dialog>
+          <Modal.Body className="p-0">
+            {isVersionLoaded ? (
+              <iframe
+                title="changelog"
+                src={`https://steamgameidler.com/changelog/${appVersion}`}
+                className="min-h-125"
+              />
+            ) : (
+              <div className="flex items-center justify-center min-h-125">
+                <Spinner className="m-10" />
+              </div>
+            )}
+          </Modal.Body>
 
-        <ModalFooter className="border-t border-border justify-between">
-          <Button
-            size="sm"
-            color="warning"
-            variant="flat"
-            radius="full"
-            className="font-semibold"
-            startContent={<FaStar size={20} />}
-            onPress={() => openExternalLink('https://github.com/Autapomorph/steam-game-idler')}
-          >
-            {t($ => $['changelog.star'])}
-          </Button>
-          <div className="flex gap-2">
+          <Modal.Footer className="border-t border-border justify-between">
             <Button
               size="sm"
-              color="danger"
-              variant="light"
-              radius="full"
-              className="font-semibold"
-              onPress={onOpenChange}
+              variant="tertiary"
+              className="bg-github-star text-github-star-foreground hover:bg-github-star-hover hover:text-github-star-foreground-hover font-semibold rounded-full"
+              onPress={() => openExternalLink('https://github.com/Autapomorph/steam-game-idler')}
             >
-              {t($ => $['common.close'])}
+              <FaStar size={20} />
+              {t($ => $['changelog.star'])}
             </Button>
-            <Button
-              size="sm"
-              radius="full"
-              className="bg-white text-black font-semibold"
-              onPress={() => openExternalLink(`https://steamgameidler.com/changelog#${appVersion}`)}
-            >
-              {t($ => $['menu.changelog'])}
-            </Button>
-          </div>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                variant="ghost"
+                className="text-danger hover:bg-danger-soft font-semibold rounded-full"
+                onPress={toggle}
+              >
+                {t($ => $['common.close'])}
+              </Button>
+              <Button
+                size="sm"
+                className="bg-white text-black font-semibold rounded-full"
+                onPress={() =>
+                  openExternalLink(`https://steamgameidler.com/changelog#${appVersion}`)
+                }
+              >
+                {t($ => $['menu.changelog'])}
+              </Button>
+            </div>
+          </Modal.Footer>
+        </Modal.Dialog>
+      </Modal.Container>
+    </Modal.Backdrop>
   );
 };

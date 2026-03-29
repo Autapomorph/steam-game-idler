@@ -7,7 +7,7 @@ import type {
   InvokeSettings,
   UserSummary,
 } from '@/shared/types';
-import type { TimeInputValue } from '@heroui/react';
+import type { TimeValue } from '@heroui/react';
 import { invoke } from '@tauri-apps/api/core';
 import { showAccountMismatchToast } from '@/shared/components';
 import {
@@ -447,8 +447,8 @@ const startCountdown = (
 
 // Wait until within the specified schedule
 const waitUntilInSchedule = async (
-  scheduleFrom: TimeInputValue,
-  scheduleTo: TimeInputValue,
+  scheduleFrom: TimeValue,
+  scheduleTo: TimeValue,
   isMountedRef: React.RefObject<boolean>,
   setIsWaitingForSchedule: React.Dispatch<React.SetStateAction<boolean>>,
   abortControllerRef: React.RefObject<AbortController>,

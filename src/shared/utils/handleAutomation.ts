@@ -1,5 +1,5 @@
 import type { InvokeDropsRemaining, InvokeGamesWithDrops } from '@/shared/types';
-import type { TimeInputValue } from '@heroui/react';
+import type { TimeValue } from '@heroui/react';
 import { Time } from '@internationalized/date';
 import { invoke } from '@tauri-apps/api/core';
 import { showMissingCredentialsToast } from '@/shared/components';
@@ -70,7 +70,7 @@ export async function getAllGamesWithDrops(
 }
 
 // Check if the current time is within the specified schedule
-export function isWithinSchedule(scheduleFrom: TimeInputValue, scheduleTo: TimeInputValue) {
+export function isWithinSchedule(scheduleFrom: TimeValue, scheduleTo: TimeValue) {
   const now = new Date();
   const currentTime = new Time(now.getHours(), now.getMinutes());
   const scheduleFromTime = new Time(scheduleFrom.hour, scheduleFrom.minute);

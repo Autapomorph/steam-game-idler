@@ -3,7 +3,7 @@ import type {
   CardFarmingSettings,
   GeneralSettings,
 } from '@/shared/types';
-import { cn, Switch } from '@heroui/react';
+import { Switch } from '@heroui/react';
 
 import {
   handleCheckboxChange,
@@ -50,14 +50,25 @@ export const SettingsSwitch = ({ type, name }: SettingsCheckboxProps) => {
         size="sm"
         name={name}
         isSelected={isSettingEnabled()}
-        classNames={{
-          wrapper: cn('group-data-[selected=true]:!bg-dynamic !bg-switch'),
-        }}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          handleCheckboxChange(e, 'general', userSummary?.steamId, setUserSettings);
+        onChange={isChecked => {
+          handleCheckboxChange(
+            {
+              target: {
+                name,
+                checked: isChecked,
+              },
+            },
+            'general',
+            userSummary?.steamId,
+            setUserSettings,
+          );
           antiAwayStatus(isSettingEnabled() ? null : undefined);
         }}
-      />
+      >
+        <Switch.Control>
+          <Switch.Thumb />
+        </Switch.Control>
+      </Switch>
     );
   }
 
@@ -67,11 +78,12 @@ export const SettingsSwitch = ({ type, name }: SettingsCheckboxProps) => {
         size="sm"
         name={name}
         isSelected={startupState || false}
-        classNames={{
-          wrapper: cn('group-data-[selected=true]:!bg-dynamic !bg-switch'),
-        }}
         onChange={() => handleRunAtStartupChange(setStartupState)}
-      />
+      >
+        <Switch.Control>
+          <Switch.Thumb onChange={w => w} />
+        </Switch.Control>
+      </Switch>
     );
   }
 
@@ -80,18 +92,49 @@ export const SettingsSwitch = ({ type, name }: SettingsCheckboxProps) => {
       size="sm"
       name={name}
       isSelected={isSettingEnabled()}
-      classNames={{
-        wrapper: cn('group-data-[selected=true]:!bg-dynamic !bg-switch'),
-      }}
-      onChange={e => {
+      onChange={isChecked => {
         if (type === 'general') {
-          handleCheckboxChange(e, 'general', userSummary?.steamId, setUserSettings);
+          handleCheckboxChange(
+            {
+              target: {
+                name,
+                checked: isChecked,
+              },
+            },
+            'general',
+            userSummary?.steamId,
+            setUserSettings,
+          );
         } else if (type === 'cardFarming') {
-          handleCheckboxChange(e, 'cardFarming', userSummary?.steamId, setUserSettings);
+          handleCheckboxChange(
+            {
+              target: {
+                name,
+                checked: isChecked,
+              },
+            },
+            'cardFarming',
+            userSummary?.steamId,
+            setUserSettings,
+          );
         } else {
-          handleCheckboxChange(e, 'achievementUnlocker', userSummary?.steamId, setUserSettings);
+          handleCheckboxChange(
+            {
+              target: {
+                name,
+                checked: isChecked,
+              },
+            },
+            'achievementUnlocker',
+            userSummary?.steamId,
+            setUserSettings,
+          );
         }
       }}
-    />
+    >
+      <Switch.Control>
+        <Switch.Thumb />
+      </Switch.Control>
+    </Switch>
   );
 };

@@ -1,15 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TbLanguage } from 'react-icons/tb';
-import { cn, Select, SelectItem } from '@heroui/react';
+import { cn, ListBox, Select } from '@heroui/react';
 
-export const LanguageSwitch = ({
-  className,
-  classNames,
-}: {
-  className?: string;
-  classNames?: Record<string, string[]>;
-}) => {
+export const LanguageSwitch = ({ className }: { className?: string }) => {
   const { i18n } = useTranslation();
   const [mounted, setMounted] = useState(false);
 
@@ -31,34 +25,29 @@ export const LanguageSwitch = ({
   return (
     <Select
       aria-label="language"
-      disallowEmptySelection
-      radius="none"
-      startContent={<TbLanguage />}
-      items={languages}
       className={cn('w-62.5', className)}
-      classNames={{
-        listbox: 'p-0',
-        value: 'text-sm !text-content',
-        trigger:
-          'bg-input data-[hover=true]:!bg-inputhover data-[open=true]:!bg-input duration-100 rounded-lg',
-        popoverContent: 'bg-input rounded-xl justify-start !text-content',
-        ...classNames,
-      }}
-      defaultSelectedKeys={[currentLanguage]}
-      onSelectionChange={e => {
-        const selectedLanguage = e.currentKey;
+      defaultValue={currentLanguage}
+      onChange={v => {
+        const selectedLanguage = String(v);
         i18n.changeLanguage(selectedLanguage);
       }}
     >
-      {language => (
-        <SelectItem
-          classNames={{
-            base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
-          }}
-        >
-          {language.label}
-        </SelectItem>
-      )}
+      <Select.Trigger className="flex items-center">
+        <TbLanguage />
+        <Select.Value />
+        <Select.Indicator />
+      </Select.Trigger>
+
+      <Select.Popover>
+        <ListBox disallowEmptySelection>
+          {languages.map(option => (
+            <ListBox.Item key={option.key} id={option.key}>
+              {option.label}
+              <ListBox.ItemIndicator />
+            </ListBox.Item>
+          ))}
+        </ListBox>
+      </Select.Popover>
     </Select>
   );
 };

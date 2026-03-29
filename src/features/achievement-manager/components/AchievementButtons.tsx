@@ -2,7 +2,7 @@ import type { Achievement, SortOption } from '@/shared/types';
 import { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { TbLock, TbLockOpen, TbSortDescending2 } from 'react-icons/tb';
-import { Button, cn, Select, SelectItem, useDisclosure } from '@heroui/react';
+import { Button, Select, ListBox, useOverlayState } from '@heroui/react';
 import {
   handleLockAllAchievements,
   handleSortingChange,
@@ -27,7 +27,7 @@ export const AchievementButtons = ({
   const { t } = useTranslation();
   const appId = useStateStore(state => state.appId);
   const appName = useStateStore(state => state.appName);
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, open, close, toggle } = useOverlayState();
   const [state, setState] = useState('');
 
   const sortOptions: SortOption[] = [
@@ -74,8 +74,7 @@ export const AchievementButtons = ({
   return (
     <div className="absolute top-0 right-0 flex gap-2 mt-4 px-10">
       <Button
-        className="bg-btn-secondary text-btn-text font-bold"
-        radius="full"
+        className="bg-btn-secondary text-btn-text font-bold rounded-full"
         onPress={() => {
           if (setRefreshKey) setRefreshKey(prev => prev + 1);
         }}
@@ -84,61 +83,53 @@ export const AchievementButtons = ({
       </Button>
 
       <Button
-        className="bg-btn-secondary text-btn-text font-bold"
-        radius="full"
+        className="bg-btn-secondary text-btn-text font-bold rounded-full"
         isDisabled={protectedAchievements || unAchieved.length === 0}
-        onPress={() => handleShowModal(onOpen, 'unlock')}
-        startContent={<TbLockOpen size={20} />}
+        onPress={() => handleShowModal(open, 'unlock')}
       >
+        <TbLockOpen size={20} />
         {t($ => $['achievementManager.achievements.unlockAll'])}
       </Button>
 
       <Button
-        className="font-bold"
-        radius="full"
-        color="danger"
+        className="font-bold rounded-full"
+        variant="danger"
         isDisabled={protectedAchievements || achieved.length === 0}
-        onPress={() => handleShowModal(onOpen, 'lock')}
-        startContent={<TbLock size={20} />}
+        onPress={() => handleShowModal(open, 'lock')}
       >
+        <TbLock size={20} />
         {t($ => $['achievementManager.achievements.lockAll'])}
       </Button>
 
       <Select
         aria-label="sort"
-        disallowEmptySelection
-        radius="none"
-        startContent={<TbSortDescending2 fontSize={26} />}
-        items={sortOptions}
-        className="w-57.5"
-        classNames={{
-          listbox: ['p-0'],
-          value: ['text-sm !text-content'],
-          trigger: cn(
-            'bg-btn-achievement-header data-[hover=true]:!bg-btn-achievement-header-hover',
-            'data-[open=true]:!bg-btn-achievement-header-open duration-100 rounded-lg',
-          ),
-          popoverContent: ['bg-input rounded-xl justify-start !text-content'],
-        }}
-        defaultSelectedKeys={['percent']}
-        onSelectionChange={e => {
-          handleSortingChange(e.currentKey, achievements, setAchievements);
+        className="w-57.5 rounded-none"
+        defaultValue="percent"
+        onChange={v => {
+          handleSortingChange(v ? String(v) : undefined, achievements, setAchievements);
         }}
       >
-        {item => (
-          <SelectItem
-            classNames={{
-              base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
-            }}
-          >
-            {item.label}
-          </SelectItem>
-        )}
+        <Select.Trigger className="flex items-center">
+          <TbSortDescending2 fontSize={26} />
+          <Select.Value />
+          <Select.Indicator />
+        </Select.Trigger>
+
+        <Select.Popover>
+          <ListBox disallowEmptySelection>
+            {sortOptions.map(option => (
+              <ListBox.Item key={option.key} id={option.key}>
+                {option.label}
+                <ListBox.ItemIndicator />
+              </ListBox.Item>
+            ))}
+          </ListBox>
+        </Select.Popover>
       </Select>
 
       <CustomModal
         isOpen={isOpen}
-        onOpenChange={onOpenChange}
+        onOpenChange={toggle}
         title={t($ => $['common.confirm'])}
         body={
           <p className="text-sm">
@@ -156,18 +147,15 @@ export const AchievementButtons = ({
           <>
             <Button
               size="sm"
-              color="danger"
-              variant="light"
-              radius="full"
-              className="font-semibold"
-              onPress={onOpenChange}
+              variant="ghost"
+              className="font-semibold text-danger hover:bg-danger-soft rounded-full"
+              onPress={toggle}
             >
               {t($ => $['common.cancel'])}
             </Button>
             <Button
               size="sm"
-              className="bg-btn-secondary text-btn-text font-bold"
-              radius="full"
+              className="bg-btn-secondary text-btn-text font-bold rounded-full"
               onPress={() => {
                 if (state === 'unlock') {
                   if (appId && appName) {
@@ -176,17 +164,11 @@ export const AchievementButtons = ({
                       appName,
                       achievements,
                       setAchievements,
-                      onOpenChange,
+                      close,
                     );
                   }
                 } else if (appId && appName) {
-                  handleLockAllAchievements(
-                    appId,
-                    appName,
-                    achievements,
-                    setAchievements,
-                    onOpenChange,
-                  );
+                  handleLockAllAchievements(appId, appName, achievements, setAchievements, close);
                 }
               }}
             >

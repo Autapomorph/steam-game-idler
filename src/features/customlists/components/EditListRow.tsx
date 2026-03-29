@@ -56,7 +56,7 @@ export const EditListRow = ({ index, style, data }: Props) => {
             size="sm"
             className={cn(
               'min-w-6 h-6',
-              blacklist.includes(item.appid) ? 'bg-danger/20 text-danger' : 'mr-3.5',
+              blacklist.includes(item.appid) ? 'bg-danger-soft-hover text-danger' : 'mr-3.5',
             )}
             onPress={() => {
               handleBlacklistGame(item);

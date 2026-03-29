@@ -36,7 +36,7 @@ export const UpdateButton = () => {
     <div>
       {isLoading ? (
         <div className="flex items-center p-2 rounded-full">
-          <Spinner size="sm" variant="simple" />
+          <Spinner size="sm" />
         </div>
       ) : (
         <CustomTooltip content={t($ => $['common.updateReady'])}>

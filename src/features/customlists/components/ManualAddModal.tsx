@@ -1,7 +1,7 @@
 import type { Game } from '@/shared/types';
 import { useTranslation } from 'react-i18next';
 import { TbPlus } from 'react-icons/tb';
-import { Button, cn, Input, NumberInput, useDisclosure } from '@heroui/react';
+import { Button, Input, NumberField, useOverlayState } from '@heroui/react';
 import { useManualAdd } from '@/features/customlists';
 import { CustomModal } from '@/shared/components';
 
@@ -12,7 +12,7 @@ interface ManualAddModalProps {
 
 export const ManualAddModal = ({ listName, setList }: ManualAddModalProps) => {
   const { t } = useTranslation();
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, open, toggle } = useOverlayState();
   const manualAdd = useManualAdd(listName, setList);
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>, onClose: () => void) => {
@@ -30,16 +30,16 @@ export const ManualAddModal = ({ listName, setList }: ManualAddModalProps) => {
     <>
       <Button
         isIconOnly
-        className="bg-btn-secondary text-btn-text font-bold"
-        radius="full"
-        startContent={<TbPlus fontSize={18} />}
-        onPress={onOpen}
-      />
+        className="bg-btn-secondary text-btn-text font-bold rounded-full"
+        onPress={open}
+      >
+        <TbPlus fontSize={18} />
+      </Button>
 
       <CustomModal
         isOpen={isOpen}
         onOpenChange={() => {
-          onOpenChange();
+          toggle();
           handleClose();
         }}
         title={t($ => $['customLists.manualAdd.title'])}
@@ -49,58 +49,40 @@ export const ManualAddModal = ({ listName, setList }: ManualAddModalProps) => {
               autoFocus
               placeholder={t($ => $['customLists.manualAdd.gameName'])}
               value={manualAdd.appNameValue || ''}
-              classNames={{
-                inputWrapper: cn(
-                  'bg-input data-[hover=true]:!bg-inputhover',
-                  'group-data-[focus-within=true]:!bg-inputhover',
-                  'group-data-[focus-visible=true]:ring-transparent',
-                  'group-data-[focus-visible=true]:ring-offset-transparent',
-                ),
-                input: ['!text-content placeholder:text-altwhite/50'],
-              }}
               onChange={manualAdd.handleNameChange}
-              onKeyDown={e => handleKeyPress(e, onOpenChange)}
+              onKeyDown={e => handleKeyPress(e, toggle)}
             />
 
-            <NumberInput
-              hideStepper
-              label={t($ => $['customLists.manualAdd.gameId'])}
+            <NumberField
               value={Number(manualAdd.appIdValue)}
               formatOptions={{ useGrouping: false }}
-              aria-label="manual add"
-              classNames={{
-                inputWrapper: cn(
-                  'bg-input data-[hover=true]:!bg-inputhover',
-                  'group-data-[focus-within=true]:!bg-inputhover',
-                  'group-data-[focus-visible=true]:ring-transparent',
-                  'group-data-[focus-visible=true]:ring-offset-transparent',
-                ),
-                input: ['text-sm !text-content placeholder:text-altwhite/50'],
-              }}
               onChange={e => manualAdd.handleIdChange(e)}
-              onKeyDown={e => handleKeyPress(e, onOpenChange)}
-            />
+              onKeyDown={e => handleKeyPress(e, toggle)}
+            >
+              <NumberField.Group>
+                <NumberField.DecrementButton />
+                <NumberField.Input className="text-sm text-content! placeholder:text-altwhite/50" />
+                <NumberField.IncrementButton />
+              </NumberField.Group>
+            </NumberField>
           </>
         }
         buttons={
           <>
             <Button
               size="sm"
-              color="danger"
-              variant="light"
-              radius="full"
-              className="font-semibold"
-              onPress={onOpenChange}
+              variant="ghost"
+              className="text-danger hover:bg-danger-soft font-semibold rounded-full"
+              onPress={toggle}
             >
               {t($ => $['common.cancel'])}
             </Button>
             <Button
               size="sm"
-              className="bg-btn-secondary text-btn-text font-bold"
-              radius="full"
-              isLoading={manualAdd.isLoading}
+              className="bg-btn-secondary text-btn-text font-bold rounded-full"
+              isPending={manualAdd.isLoading}
               isDisabled={!manualAdd.appNameValue || !manualAdd.appIdValue}
-              onPress={() => manualAdd.handleAdd(onOpenChange)}
+              onPress={() => manualAdd.handleAdd(toggle)}
             >
               {t($ => $['common.add'])}
             </Button>

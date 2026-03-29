@@ -1,4 +1,4 @@
-import type { TimeInputValue } from '@heroui/react';
+import type { TimeValue } from '@heroui/react';
 
 export interface AchievementUnlockerSettings {
   hidden: boolean;
@@ -7,8 +7,8 @@ export interface AchievementUnlockerSettings {
   nextTask: string | null;
   interval: [number, number];
   schedule: boolean;
-  scheduleFrom: TimeInputValue;
-  scheduleTo: TimeInputValue;
+  scheduleFrom: TimeValue;
+  scheduleTo: TimeValue;
 }
 
 export interface CardFarmingUser {

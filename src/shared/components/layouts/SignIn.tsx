@@ -35,14 +35,7 @@ export const SignIn = () => {
           </p>
         </ExtLink>
 
-        <LanguageSwitch
-          className="w-45 pointer-events-auto"
-          classNames={{
-            trigger: [
-              'bg-input/80 data-[hover=true]:!bg-inputhover/80 data-[open=true]:!bg-inputhover/80 duration-100 rounded-lg border border-border',
-            ],
-          }}
-        />
+        <LanguageSwitch className="w-45 pointer-events-auto" />
       </div>
       <div className="flex gap-4 w-screen h-screen relative overflow-hidden z-1">
         <div className="flex flex-col items-center w-[90%] justify-center h-calc">
@@ -102,7 +95,7 @@ function UserSelectionArea({ onRefresh }: { onRefresh: () => void }) {
           {/* Loader */}
           {isLoading && (
             <div className="flex flex-col items-center space-y-2">
-              <Spinner variant="simple" />
+              <Spinner />
             </div>
           )}
           {/* No accounts found */}
@@ -162,16 +155,14 @@ function UserSelectionArea({ onRefresh }: { onRefresh: () => void }) {
         {/* Buttons */}
         <div className="flex gap-4 mb-6">
           <Button
-            radius="full"
-            variant="bordered"
-            className="font-semibold border-white text-content"
+            variant="outline"
+            className="font-semibold border-white text-content rounded-full"
             onPress={onRefresh}
           >
             {t($ => $['common.refresh'])}
           </Button>
           <Button
-            radius="full"
-            className="font-semibold bg-content text-black group"
+            className="font-semibold bg-content text-black group rounded-full"
             onPress={() => {
               if (selectedUser) handleLogin(steamUsers.indexOf(selectedUser));
             }}

@@ -25,11 +25,10 @@ export const OpenSettings = () => {
   return (
     <Button
       size="sm"
-      className="bg-btn-secondary text-btn-text font-bold"
-      radius="full"
+      className="bg-btn-secondary text-btn-text font-bold rounded-full"
       onPress={handleOpenSettingsFile}
-      startContent={<TbFolders size={20} />}
     >
+      <TbFolders size={20} />
       {t($ => $['settings.debug.viewSettingsFile'])}
     </Button>
   );

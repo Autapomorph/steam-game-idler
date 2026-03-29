@@ -1,6 +1,6 @@
 import { Trans, useTranslation } from 'react-i18next';
 import { TbChevronRight, TbEraser, TbUpload } from 'react-icons/tb';
-import { Button, cn, Divider, Input } from '@heroui/react';
+import { Button, Separator, Input } from '@heroui/react';
 import Image from 'next/image';
 import {
   CurrencySwitch,
@@ -57,7 +57,7 @@ export const GeneralSettings = () => {
           </div>
         </div>
 
-        <Divider className="bg-border/70 my-4" />
+        <Separator className="bg-border/70 my-4" />
 
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
@@ -71,7 +71,7 @@ export const GeneralSettings = () => {
           <SettingsSwitch type="general" name="antiAway" />
         </div>
 
-        <Divider className="bg-border/70 my-4" />
+        <Separator className="bg-border/70 my-4" />
 
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
@@ -85,7 +85,7 @@ export const GeneralSettings = () => {
           <SettingsSwitch type="general" name="runAtStartup" />
         </div>
 
-        <Divider className="bg-border/70 my-4" />
+        <Separator className="bg-border/70 my-4" />
 
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
@@ -99,7 +99,7 @@ export const GeneralSettings = () => {
           <SettingsSwitch type="general" name="startMinimized" />
         </div>
 
-        <Divider className="bg-border/70 my-4" />
+        <Separator className="bg-border/70 my-4" />
 
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
@@ -113,7 +113,7 @@ export const GeneralSettings = () => {
           <SettingsSwitch type="general" name="closeToTray" />
         </div>
 
-        <Divider className="bg-border/70 my-4" />
+        <Separator className="bg-border/70 my-4" />
 
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
@@ -124,7 +124,7 @@ export const GeneralSettings = () => {
           <LanguageSwitch />
         </div>
 
-        <Divider className="bg-border/70 my-4" />
+        <Separator className="bg-border/70 my-4" />
 
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
@@ -138,7 +138,7 @@ export const GeneralSettings = () => {
           <CurrencySwitch />
         </div>
 
-        <Divider className="bg-border/70 my-4" />
+        <Separator className="bg-border/70 my-4" />
 
         <div className="flex justify-between items-start">
           <div className="flex flex-col gap-2 w-1/2">
@@ -170,13 +170,6 @@ export const GeneralSettings = () => {
             <Input
               placeholder={t($ => $['settings.general.webApi'])}
               className="max-w-62.5"
-              classNames={{
-                inputWrapper: cn(
-                  'bg-input data-[hover=true]:!bg-inputhover',
-                  'rounded-lg group-data-[focus-within=true]:!bg-inputhover',
-                ),
-                input: ['!text-content placeholder:text-altwhite/50'],
-              }}
               value={keyValue}
               onChange={e => setKeyValue(e.target.value)}
               type="password"
@@ -184,9 +177,8 @@ export const GeneralSettings = () => {
             <div className="flex justify-end gap-2">
               <Button
                 size="sm"
-                variant="light"
-                radius="full"
-                color="danger"
+                variant="ghost"
+                className="text-danger hover:bg-danger-soft rounded-full"
                 isDisabled={!hasKey}
                 onPress={() =>
                   handleSteamWebAPIKeyClear(
@@ -196,14 +188,13 @@ export const GeneralSettings = () => {
                     setUserSettings,
                   )
                 }
-                startContent={<TbEraser size={20} />}
               >
+                <TbEraser size={20} />
                 {t($ => $['common.clear'])}
               </Button>
               <Button
                 size="sm"
-                className="bg-btn-secondary text-btn-text font-bold"
-                radius="full"
+                className="bg-btn-secondary text-btn-text font-bold rounded-full"
                 isDisabled={hasKey || !keyValue}
                 onPress={() =>
                   handleSteamWebAPIKeySave(
@@ -213,8 +204,8 @@ export const GeneralSettings = () => {
                     setUserSettings,
                   )
                 }
-                startContent={<TbUpload size={20} />}
               >
+                <TbUpload size={20} />
                 {t($ => $['common.save'])}
               </Button>
             </div>

@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { TbChevronRight } from 'react-icons/tb';
-import { Alert, cn, Divider, Select, SelectItem } from '@heroui/react';
+import { Alert, Separator, Select, ListBox } from '@heroui/react';
 import { useCardSettings } from '@/features/settings';
 import { SettingsSwitch } from '@/shared/components';
 import { useUserStore } from '@/shared/stores';
@@ -37,16 +37,14 @@ export const CardSettings = () => {
 
         {!cardSettings.cardFarmingUser && (
           <div className="mt-4">
-            <Alert
-              color="primary"
-              variant="faded"
-              classNames={{
-                base: '!bg-dynamic/30 text-dynamic !border-dynamic/40',
-                iconWrapper: '!bg-dynamic/30 border-dynamic/40',
-                description: 'font-bold text-xs',
-              }}
-              description={t($ => $['settings.cardFarming.alert'])}
-            />
+            <Alert className="bg-dynamic/30! text-dynamic border-dynamic/40!">
+              <Alert.Indicator className="bg-dynamic/30! border-dynamic/40 rounded-full" />
+              <Alert.Content>
+                <Alert.Title className="font-bold text-xs">
+                  {t($ => $['settings.cardFarming.alert'])}
+                </Alert.Title>
+              </Alert.Content>
+            </Alert>
           </div>
         )}
       </div>
@@ -64,7 +62,7 @@ export const CardSettings = () => {
           <SettingsSwitch type="cardFarming" name="listGames" />
         </div>
 
-        <Divider className="bg-border/70 my-4" />
+        <Separator className="bg-border/70 my-4" />
 
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
@@ -78,7 +76,7 @@ export const CardSettings = () => {
           <SettingsSwitch type="cardFarming" name="allGames" />
         </div>
 
-        <Divider className="bg-border/70 my-4" />
+        <Separator className="bg-border/70 my-4" />
 
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
@@ -92,7 +90,7 @@ export const CardSettings = () => {
           <SettingsSwitch type="cardFarming" name="skipNoPlaytime" />
         </div>
 
-        <Divider className="bg-border/70 my-4" />
+        <Separator className="bg-border/70 my-4" />
 
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
@@ -104,37 +102,29 @@ export const CardSettings = () => {
           <div className="flex items-center gap-4">
             <Select
               aria-label="nextTask"
-              disallowEmptySelection
-              radius="none"
-              items={taskOptions}
               className="w-50"
               placeholder={t($ => $['common.nextTask.selectPlaceholder'])}
-              classNames={{
-                listbox: ['p-0'],
-                value: ['text-sm !text-content'],
-                trigger: cn(
-                  'bg-input data-[hover=true]:!bg-inputhover',
-                  'data-[open=true]:!bg-input duration-100 rounded-lg',
-                ),
-                popoverContent: ['bg-input rounded-xl justify-start !text-content'],
-              }}
+              defaultValue={userSettings.cardFarming.nextTask}
               isDisabled={!userSettings.cardFarming.nextTaskCheckbox}
-              defaultSelectedKeys={
-                userSettings.cardFarming.nextTask ? [userSettings.cardFarming.nextTask] : []
-              }
-              onSelectionChange={e => {
-                handleNextTaskChange('cardFarming', e.currentKey!, userSummary, setUserSettings);
+              onChange={v => {
+                handleNextTaskChange('cardFarming', String(v), userSummary, setUserSettings);
               }}
             >
-              {item => (
-                <SelectItem
-                  classNames={{
-                    base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
-                  }}
-                >
-                  {item.label}
-                </SelectItem>
-              )}
+              <Select.Trigger>
+                <Select.Value />
+                <Select.Indicator />
+              </Select.Trigger>
+
+              <Select.Popover>
+                <ListBox disallowEmptySelection>
+                  {taskOptions.map(option => (
+                    <ListBox.Item key={option.key} id={option.key}>
+                      {option.label}
+                      <ListBox.ItemIndicator />
+                    </ListBox.Item>
+                  ))}
+                </ListBox>
+              </Select.Popover>
             </Select>
 
             <SettingsSwitch type="cardFarming" name="nextTaskCheckbox" />

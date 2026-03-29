@@ -1,7 +1,7 @@
 import type { Achievement, ChangedStats, Statistic } from '@/shared/types';
 import { Trans, useTranslation } from 'react-i18next';
 import { TbRotateClockwise, TbUpload } from 'react-icons/tb';
-import { Button, useDisclosure } from '@heroui/react';
+import { Button, useOverlayState } from '@heroui/react';
 import { handleResetAllStats, handleUpdateAllStats } from '@/features/achievement-manager';
 import { CustomModal } from '@/shared/components';
 
@@ -23,7 +23,7 @@ export const StatisticButtons = ({
   setRefreshKey,
 }: StatisticButtonsProps) => {
   const { t } = useTranslation();
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, open, close, toggle } = useOverlayState();
 
   const changedCount = Object.keys(changedStats).length;
   const hasChanges = changedCount > 0;
@@ -31,8 +31,7 @@ export const StatisticButtons = ({
   return (
     <div className="absolute top-0 right-0 flex gap-2 mt-4 px-10">
       <Button
-        className="bg-btn-secondary text-btn-text font-bold"
-        radius="full"
+        className="bg-btn-secondary text-btn-text font-bold rounded-full"
         onPress={() => {
           if (setRefreshKey) setRefreshKey(prev => prev + 1);
         }}
@@ -41,28 +40,22 @@ export const StatisticButtons = ({
       </Button>
 
       <Button
-        className="bg-btn-secondary text-btn-text font-bold"
-        radius="full"
+        className="bg-btn-secondary text-btn-text font-bold rounded-full"
         onPress={() => handleUpdateAllStats(changedStats, setChangedStats, setAchievements)}
         isDisabled={!hasChanges}
-        startContent={<TbUpload size={19} />}
       >
+        <TbUpload size={19} />
         {t($ => $['achievementManager.statistics.saveChanges'])} {hasChanges && `(${changedCount})`}
       </Button>
 
-      <Button
-        className="font-bold"
-        radius="full"
-        color="danger"
-        onPress={onOpen}
-        startContent={<TbRotateClockwise className="rotate-90" size={20} />}
-      >
+      <Button className="font-bold rounded-full" variant="danger" onPress={open}>
+        <TbRotateClockwise className="rotate-90" size={20} />
         {t($ => $['achievementManager.statistics.resetAll'])}
       </Button>
 
       <CustomModal
         isOpen={isOpen}
-        onOpenChange={onOpenChange}
+        onOpenChange={toggle}
         title={t($ => $['common.confirm'])}
         body={
           <p className="text-sm">
@@ -75,21 +68,16 @@ export const StatisticButtons = ({
           <>
             <Button
               size="sm"
-              color="danger"
-              variant="light"
-              radius="full"
-              className="font-semibold"
-              onPress={onOpenChange}
+              variant="ghost"
+              className="font-semibold text-danger hover:bg-danger-soft rounded-full"
+              onPress={toggle}
             >
               {t($ => $['common.cancel'])}
             </Button>
             <Button
               size="sm"
-              className="bg-btn-secondary text-btn-text font-bold"
-              radius="full"
-              onPress={() =>
-                handleResetAllStats(statistics, setStatistics, setChangedStats, onOpenChange)
-              }
+              className="bg-btn-secondary text-btn-text font-bold rounded-full"
+              onPress={() => handleResetAllStats(statistics, setStatistics, setChangedStats, close)}
             >
               {t($ => $['common.confirm'])}
             </Button>

@@ -11,7 +11,7 @@ import {
   TbListCheck,
   TbSquareRoundedChevronDown,
 } from 'react-icons/tb';
-import { cn, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react';
+import { cn, Dropdown, Label, Separator } from '@heroui/react';
 
 import { CustomTooltip, showDangerToast, showPrimaryToast } from '@/shared/components';
 import { useUpdateStore } from '@/shared/stores';
@@ -64,15 +64,8 @@ export const Menu = () => {
   return (
     <CustomTooltip content={t($ => $['common.menu'])}>
       <div>
-        <Dropdown
-          aria-label="Settings actions"
-          backdrop="opaque"
-          onOpenChange={() => setShowMenu(!showMenu)}
-          classNames={{
-            content: ['rounded-xl p-0 bg-transparent'],
-          }}
-        >
-          <DropdownTrigger>
+        <Dropdown aria-label="Settings actions" onOpenChange={() => setShowMenu(!showMenu)}>
+          <Dropdown.Trigger>
             <div
               className={cn(
                 'flex items-center justify-center text-content hover:bg-header-hover/10',
@@ -81,89 +74,81 @@ export const Menu = () => {
             >
               <TbSquareRoundedChevronDown fontSize={18} />
             </div>
-          </DropdownTrigger>
+          </Dropdown.Trigger>
 
-          <DropdownMenu
-            aria-label="Settings actions"
-            classNames={{ base: 'bg-popover border border-border rounded-xl' }}
-          >
-            <DropdownItem
-              showDivider
-              key="help"
-              startContent={<TbBookFilled size={18} />}
-              textValue="Help"
-              className="rounded-xl text-content"
-              classNames={{
-                base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
-              }}
-              onPress={() => openExternalLink('https://steamgameidler.com/docs/')}
-            >
-              {t($ => $['menu.guide'])}
-            </DropdownItem>
+          <Dropdown.Popover>
+            <Dropdown.Menu aria-label="Settings actions">
+              <Dropdown.Section>
+                <Dropdown.Item
+                  key="help"
+                  textValue="Help"
+                  className="rounded-xl text-content"
+                  onPress={() => openExternalLink('https://steamgameidler.com/docs/')}
+                >
+                  <TbBookFilled size={18} />
+                  <Label>{t($ => $['menu.guide'])}</Label>
+                </Dropdown.Item>
+              </Dropdown.Section>
 
-            <DropdownItem
-              key="report"
-              startContent={<TbBugFilled size={18} />}
-              textValue="Report an issue"
-              className="rounded-xl text-content"
-              classNames={{
-                base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
-              }}
-              onPress={() =>
-                openExternalLink(
-                  `${githubIssueUrl}bug%2Cinvestigating&projects=&template=issue_report.yml`,
-                )
-              }
-            >
-              {t($ => $['menu.issue'])}
-            </DropdownItem>
+              <Separator />
 
-            <DropdownItem
-              showDivider
-              key="feature"
-              startContent={<TbBulbFilled size={18} />}
-              textValue="Feature request"
-              className="rounded-xl text-content"
-              classNames={{
-                base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
-              }}
-              onPress={() =>
-                openExternalLink(
-                  `${githubIssueUrl}feature+request&projects=&template=feature_request.yml`,
-                )
-              }
-            >
-              {t($ => $['menu.feature'])}
-            </DropdownItem>
+              <Dropdown.Section>
+                <Dropdown.Item
+                  key="report"
+                  textValue="Report an issue"
+                  className="rounded-xl text-content"
+                  onPress={() =>
+                    openExternalLink(
+                      `${githubIssueUrl}bug%2Cinvestigating&projects=&template=issue_report.yml`,
+                    )
+                  }
+                >
+                  <TbBugFilled size={18} />
+                  <Label>{t($ => $['menu.issue'])}</Label>
+                </Dropdown.Item>
 
-            <DropdownItem
-              key="changelog"
-              startContent={<TbListCheck size={18} />}
-              textValue="Changelog"
-              className="rounded-xl text-content"
-              classNames={{
-                base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
-              }}
-              onPress={() => setShowChangelog(true)}
-            >
-              {t($ => $['menu.changelog'])}
-            </DropdownItem>
+                <Dropdown.Item
+                  key="feature"
+                  textValue="Feature request"
+                  className="rounded-xl text-content"
+                  onPress={() =>
+                    openExternalLink(
+                      `${githubIssueUrl}feature+request&projects=&template=feature_request.yml`,
+                    )
+                  }
+                >
+                  <TbBulbFilled size={18} />
+                  <Label>{t($ => $['menu.feature'])}</Label>
+                </Dropdown.Item>
+              </Dropdown.Section>
 
-            {!isPortable ? (
-              <DropdownItem
-                key="updates"
-                startContent={<TbDownload size={18} />}
-                textValue="Check for updates"
-                className="rounded-xl text-content"
-                classNames={{
-                  base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
-                }}
-                onPress={handleUpdate}
-              >
-                {t($ => $['menu.update'])}
-              </DropdownItem>
-            ) : null}
-          </DropdownMenu>
+              <Separator />
+
+              <Dropdown.Section>
+                <Dropdown.Item
+                  key="changelog"
+                  textValue="Changelog"
+                  className="rounded-xl text-content"
+                  onPress={() => setShowChangelog(true)}
+                >
+                  <TbListCheck size={18} />
+                  <Label>{t($ => $['menu.changelog'])}</Label>
+                </Dropdown.Item>
+
+                {!isPortable ? (
+                  <Dropdown.Item
+                    key="updates"
+                    textValue="Check for updates"
+                    className="rounded-xl text-content"
+                    onPress={handleUpdate}
+                  >
+                    <TbDownload size={18} />
+                    <Label>{t($ => $['menu.update'])}</Label>
+                  </Dropdown.Item>
+                ) : null}
+              </Dropdown.Section>
+            </Dropdown.Menu>
+          </Dropdown.Popover>
         </Dropdown>
       </div>
     </CustomTooltip>

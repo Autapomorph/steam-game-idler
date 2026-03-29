@@ -1,7 +1,7 @@
 import type { InvokeSettings } from '@/shared/types';
 import { invoke } from '@tauri-apps/api/core';
 import { useTranslation } from 'react-i18next';
-import { useDisclosure } from '@heroui/react';
+import { useOverlayState } from '@heroui/react';
 import { showDangerToast, showSuccessToast } from '@/shared/components';
 import { useUserStore } from '@/shared/stores';
 import { logEvent } from '@/shared/utils';
@@ -10,7 +10,7 @@ export function useResetSettings() {
   const { t } = useTranslation();
   const userSummary = useUserStore(state => state.userSummary);
   const setUserSettings = useUserStore(state => state.setUserSettings);
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, open, toggle } = useOverlayState();
 
   // Reset settings to default
   const handleResetSettings = async (
@@ -33,5 +33,5 @@ export function useResetSettings() {
     }
   };
 
-  return { handleResetSettings, isOpen, onOpen, onOpenChange };
+  return { handleResetSettings, isOpen, open, toggle };
 }

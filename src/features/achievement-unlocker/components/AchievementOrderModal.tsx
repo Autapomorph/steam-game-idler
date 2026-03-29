@@ -114,10 +114,14 @@ const SortableAchievement = memo(function SortableAchievement({
         <div className="flex items-center justify-center w-6.5">
           <Checkbox
             isSelected={achievement.skip !== true}
-            onValueChange={() => onToggleSkip(achievement.name)}
+            onChange={() => onToggleSkip(achievement.name)}
             onClick={e => e.stopPropagation()}
             className="ml-3"
-          />
+          >
+            <Checkbox.Control>
+              <Checkbox.Indicator />
+            </Checkbox.Control>
+          </Checkbox>
         </div>
         <Image
           className="rounded-full ml-8 select-none"
@@ -172,27 +176,15 @@ const SortableAchievement = memo(function SortableAchievement({
                   className="w-16 text-xs"
                   value={delayValue.toString() || '0'}
                   onChange={handleDelayChange}
-                  size="sm"
                   onPointerDown={e => e.stopPropagation()}
                   onBlur={handleInputBlur}
                   onKeyDown={handleKeyDown}
-                  classNames={{
-                    inputWrapper: cn(
-                      'bg-input data-[hover=true]:!bg-inputhover',
-                      'group-data-[focus-within=true]:!bg-inputhover',
-                      'group-data-[focus-visible=true]:ring-transparent',
-                      'group-data-[focus-visible=true]:ring-offset-transparent',
-                    ),
-                    input: ['!text-content placeholder:text-altwhite/50'],
-                  }}
                 />
                 <span className="text-xs text-gray-400">{t($ => $['common.minutes'])}</span>
                 <Button
                   size="sm"
-                  color="danger"
-                  variant="light"
-                  radius="full"
-                  className="font-semibold"
+                  variant="ghost"
+                  className="font-semibold text-danger hover:bg-danger-soft rounded-full"
                   onPress={handleClearInput}
                   onMouseDown={handleClearInput}
                   onPointerDown={e => e.stopPropagation()}
@@ -418,10 +410,6 @@ export const AchievementOrderModal = ({
     <CustomModal
       isOpen={isOpen}
       onOpenChange={onOpenChange}
-      classNames={{
-        body: '!p-0 !max-h-[60vh] !min-h-[60vh]',
-        base: 'max-w-xl bg-base/85 backdrop-blur-sm',
-      }}
       title={
         <div className="flex justify-between items-center">
           <p className="truncate">{item.name}</p>
@@ -468,28 +456,23 @@ export const AchievementOrderModal = ({
           </ExtLink>
           <Button
             size="sm"
-            color="danger"
-            variant="light"
-            radius="full"
-            className="font-semibold"
+            variant="ghost"
+            className="font-semibold text-danger hover:bg-danger-soft rounded-full"
             onPress={onOpenChange}
           >
             {t($ => $['common.cancel'])}
           </Button>
           <Button
             size="sm"
-            color="danger"
-            variant="light"
-            radius="full"
-            className="font-semibold"
+            variant="ghost"
+            className="font-semibold text-danger hover:bg-danger-soft rounded-full"
             onPress={handleReset}
           >
             {t($ => $['achievementManager.statistics.resetAll'])}
           </Button>
           <Button
             size="sm"
-            className="bg-btn-secondary text-btn-text font-bold"
-            radius="full"
+            className="bg-btn-secondary text-btn-text font-bold rounded-full"
             onPress={handleSave}
           >
             {t($ => $['common.save'])}

@@ -10,43 +10,39 @@ interface ResetSettingsProps {
 
 export const ResetSettings = ({ setRefreshKey }: ResetSettingsProps) => {
   const { t } = useTranslation();
-  const { handleResetSettings, isOpen, onOpen, onOpenChange } = useResetSettings();
+  const { handleResetSettings, isOpen, open, toggle } = useResetSettings();
 
   return (
     <>
       <Button
         size="sm"
-        variant="light"
-        radius="full"
-        color="danger"
-        onPress={onOpen}
-        startContent={<TbRotateClockwise className="rotate-90" size={20} />}
+        className="text-danger hover:bg-danger-soft rounded-full"
+        variant="ghost"
+        onPress={open}
       >
+        <TbRotateClockwise className="rotate-90" size={20} />
         {t($ => $['settings.resetSettings.button'])}
       </Button>
 
       <CustomModal
         isOpen={isOpen}
-        onOpenChange={onOpenChange}
+        onOpenChange={toggle}
         title={t($ => $['common.confirm'])}
         body={t($ => $['confirmation.resetSettings'])}
         buttons={
           <>
             <Button
               size="sm"
-              color="danger"
-              variant="light"
-              radius="full"
-              className="font-semibold"
-              onPress={onOpenChange}
+              variant="ghost"
+              className="text-danger hover:bg-danger-soft font-semibold rounded-full"
+              onPress={toggle}
             >
               {t($ => $['common.cancel'])}
             </Button>
             <Button
               size="sm"
-              className="bg-btn-secondary text-btn-text font-bold"
-              radius="full"
-              onPress={() => handleResetSettings(onOpenChange, setRefreshKey)}
+              className="bg-btn-secondary text-btn-text font-bold rounded-full"
+              onPress={() => handleResetSettings(toggle, setRefreshKey)}
             >
               {t($ => $['common.confirm'])}
             </Button>

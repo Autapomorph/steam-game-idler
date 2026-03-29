@@ -49,11 +49,11 @@ export const PageHeader = ({ protectedAchievements, protectedStatistics }: PageH
       <div className="flex items-center gap-3">
         <Button
           isIconOnly
-          radius="full"
-          className="bg-btn-achievement-header hover:bg-btn-achievement-header-hover text-btn-alt"
-          startContent={<TbX />}
+          className="bg-btn-achievement-header hover:bg-btn-achievement-header-hover text-btn-alt rounded-full"
           onPress={handleClick}
-        />
+        >
+          <TbX />
+        </Button>
 
         <div className="w-[320px]">
           <p className="text-3xl font-black truncate">{appName}</p>
@@ -96,9 +96,15 @@ export const PageHeader = ({ protectedAchievements, protectedStatistics }: PageH
       {(protectedAchievements || protectedStatistics) && (
         <div className="absolute top-0 right-0 pr-7">
           <Alert
-            hideIcon
-            title={
-              <p>
+            className={cn(
+              'bg-base/60! h-10 py-2 flex justify-center items-center gap-0 rounded-lg text-content',
+            )}
+          >
+            <Alert.Indicator>
+              <TbAlertHexagonFilled fontSize={22} className="text-warning" />
+            </Alert.Indicator>
+            <Alert.Content>
+              <Alert.Title className="text-sm">
                 <Trans i18nKey={$ => $['achievementManager.alert']}>
                   Some protected achievements or statistics have been disabled.
                   <ExtLink
@@ -108,17 +114,9 @@ export const PageHeader = ({ protectedAchievements, protectedStatistics }: PageH
                     <span> Learn more</span>
                   </ExtLink>
                 </Trans>
-              </p>
-            }
-            startContent={<TbAlertHexagonFilled fontSize={22} className="text-warning" />}
-            classNames={{
-              base: cn(
-                '!bg-base/60 h-10 py-1 flex justify-center items-center gap-0',
-                'rounded-lg text-content',
-              ),
-              title: ['text-sm'],
-            }}
-          />
+              </Alert.Title>
+            </Alert.Content>
+          </Alert>
         </div>
       )}
     </div>

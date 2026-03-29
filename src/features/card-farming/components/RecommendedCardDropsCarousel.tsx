@@ -118,8 +118,7 @@ export const RecommendedCardDropsCarousel = ({
             <Button
               isIconOnly
               size="sm"
-              className="bg-btn-secondary text-btn-text font-bold"
-              radius="full"
+              className="bg-btn-secondary text-btn-text font-bold rounded-full"
               isDisabled
             >
               <TbChevronLeft size={16} />
@@ -127,8 +126,7 @@ export const RecommendedCardDropsCarousel = ({
             <Button
               isIconOnly
               size="sm"
-              className="bg-btn-secondary text-btn-text font-bold"
-              radius="full"
+              className="bg-btn-secondary text-btn-text font-bold rounded-full"
               isDisabled
             >
               <TbChevronRight size={16} />
@@ -155,8 +153,7 @@ export const RecommendedCardDropsCarousel = ({
           <Button
             isIconOnly
             size="sm"
-            className="bg-btn-secondary text-btn-text font-bold"
-            radius="full"
+            className="bg-btn-secondary text-btn-text font-bold rounded-full"
             onPress={() => handleManualScroll('left')}
           >
             <TbChevronLeft size={16} />
@@ -164,8 +161,7 @@ export const RecommendedCardDropsCarousel = ({
           <Button
             isIconOnly
             size="sm"
-            className="bg-btn-secondary text-btn-text font-bold"
-            radius="full"
+            className="bg-btn-secondary text-btn-text font-bold rounded-full"
             onPress={() => handleManualScroll('right')}
           >
             <TbChevronRight size={16} />
@@ -190,7 +186,7 @@ export const RecommendedCardDropsCarousel = ({
                   />
                   <div
                     className="pointer-events-none absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150"
-                    style={{ boxShadow: 'inset 0 0 0 2px hsl(var(--heroui-dynamic))' }}
+                    style={{ boxShadow: 'inset 0 0 0 2px hsl(var(--dynamic))' }}
                   />
                 </div>
                 <div className="flex justify-between items-center pt-3">
@@ -205,8 +201,7 @@ export const RecommendedCardDropsCarousel = ({
                     <Button
                       isIconOnly
                       size="sm"
-                      radius="full"
-                      className="bg-transparent hover:bg-item-hover text-altwhite hover:text-content transition-colors duration-150"
+                      className="bg-transparent hover:bg-item-hover text-altwhite hover:text-content rounded-full transition-colors duration-150"
                       onPress={() => onAddGame(game)}
                     >
                       <TbPlus size={18} />

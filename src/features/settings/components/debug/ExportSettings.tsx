@@ -153,11 +153,10 @@ export const ExportSettings = () => {
   return (
     <Button
       size="sm"
-      className="bg-btn-secondary text-btn-text font-bold"
-      radius="full"
+      className="bg-btn-secondary text-btn-text font-bold rounded-full"
       onPress={exportSettings}
-      startContent={<TbArrowBarUp size={20} />}
     >
+      <TbArrowBarUp size={20} />
       {t($ => $['settings.exportData'])}
     </Button>
   );

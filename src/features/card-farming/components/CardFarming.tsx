@@ -65,11 +65,10 @@ export const CardFarming = ({ activePage }: { activePage: ActivePageType }) => {
   const renderGamesList = () => {
     if (!gamesWithDrops.size) {
       return (
-        <Spinner
-          variant="simple"
-          label={t($ => $['automation.cardFarming.initialDelay'])}
-          classNames={{ label: 'text-content' }}
-        />
+        <div className="flex flex-col items-center gap-2">
+          <Spinner color="current" />
+          <span className="text-content">{t($ => $['automation.cardFarming.initialDelay'])}</span>
+        </div>
       );
     }
 
@@ -163,10 +162,8 @@ export const CardFarming = ({ activePage }: { activePage: ActivePageType }) => {
 
               <div className="flex items-center gap-2 mt-1">
                 <Button
-                  color="danger"
-                  radius="full"
-                  className="font-bold"
-                  startContent={<TbPlayerStopFilled size={18} />}
+                  variant="danger"
+                  className="font-bold rounded-full"
                   isDisabled={!isComplete && disableStopButton}
                   onPress={() => {
                     handleCancel(gamesWithDrops, isMountedRef, abortControllerRef);
@@ -174,6 +171,7 @@ export const CardFarming = ({ activePage }: { activePage: ActivePageType }) => {
                     updateTrayIcon();
                   }}
                 >
+                  <TbPlayerStopFilled size={18} />
                   {isComplete ? (
                     <p>{t($ => $['common.close'])}</p>
                   ) : (

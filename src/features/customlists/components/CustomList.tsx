@@ -13,7 +13,7 @@ import { TbAward, TbCards, TbEdit, TbHeart, TbHourglassLow, TbSettings } from 'r
 import { DndContext } from '@dnd-kit/core';
 import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Alert, Button, cn, useDisclosure } from '@heroui/react';
+import { Alert, Button, cn, useOverlayState } from '@heroui/react';
 import { AchievementOrderModal } from '@/features/achievement-unlocker';
 import { RecommendedCardDropsCarousel } from '@/features/card-farming';
 import { EditListModal, ManualAddModal, useCustomList } from '@/features/customlists';
@@ -83,7 +83,7 @@ export const CustomList = ({ type }: CustomListProps) => {
   const transitionDuration = useStateStore(state => state.transitionDuration);
   const isCardFarming = useStateStore(state => state.isCardFarming);
   const isAchievementUnlocker = useStateStore(state => state.isAchievementUnlocker);
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, open, toggle } = useOverlayState();
   const setActivePage = useNavigationStore(state => state.setActivePage);
   const setPreviousActivePage = useNavigationStore(state => state.setPreviousActivePage);
   const setCurrentSettingsTab = useNavigationStore(state => state.setCurrentSettingsTab);
@@ -217,7 +217,7 @@ export const CustomList = ({ type }: CustomListProps) => {
 
   const handleGameClick = (game: Game) => {
     setSelectedGame(game);
-    onOpen();
+    open();
   };
 
   return (
@@ -226,7 +226,7 @@ export const CustomList = ({ type }: CustomListProps) => {
         ref={containerRef}
         className={cn(
           'min-h-calc max-h-calc overflow-y-auto overflow-x-hidden mt-9 ease-in-out',
-          sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
+          sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-calc',
         )}
         style={{
           transitionDuration,
@@ -242,11 +242,10 @@ export const CustomList = ({ type }: CustomListProps) => {
 
                 <div className="flex items-center gap-2 mt-1">
                   <Button
-                    className="bg-btn-secondary text-btn-text font-bold"
-                    radius="full"
-                    startContent={<TbEdit fontSize={20} />}
+                    className="bg-btn-secondary text-btn-text font-bold rounded-full"
                     onPress={() => setEditModalOpen(true)}
                   >
+                    <TbEdit fontSize={20} />
                     {t($ => $['customLists.edit'])}
                   </Button>
 
@@ -255,9 +254,7 @@ export const CustomList = ({ type }: CustomListProps) => {
                   {listType.settingsButton && listType.settingsButtonLink && (
                     <Button
                       isIconOnly
-                      radius="full"
-                      className="bg-btn-secondary text-btn-text font-bold"
-                      startContent={<TbSettings size={20} />}
+                      className="bg-btn-secondary text-btn-text font-bold rounded-full"
                       isDisabled={isCardFarming || isAchievementUnlocker}
                       onPress={() => {
                         setPreviousActivePage(
@@ -270,13 +267,15 @@ export const CustomList = ({ type }: CustomListProps) => {
                           );
                         }
                       }}
-                    />
+                    >
+                      <TbSettings size={20} />
+                    </Button>
                   )}
 
                   {listType.startButton && (
                     <Button
                       className={cn(
-                        'text-white font-bold transition-all duration-300 relative overflow-hidden before:absolute',
+                        'text-white font-bold rounded-full transition-all duration-300 relative overflow-hidden before:absolute',
                         'before:inset-0 before:bg-linear-to-r before:from-transparent before:via-(--shimmer-color)',
                         'before:to-transparent before:-translate-x-full before:animate-[custom-shimmer_2.7s_ease-in-out_infinite]',
                         '*:relative *:z-10',
@@ -284,8 +283,6 @@ export const CustomList = ({ type }: CustomListProps) => {
                       style={{
                         backgroundImage: 'var(--gradient-btn)',
                       }}
-                      radius="full"
-                      startContent={listType.icon}
                       onPress={
                         listType.startButton === 'startCardFarming'
                           ? () => {
@@ -303,6 +300,7 @@ export const CustomList = ({ type }: CustomListProps) => {
                               : undefined
                       }
                     >
+                      {listType.icon}
                       {listType.buttonLabel}
                     </Button>
                   )}
@@ -314,16 +312,14 @@ export const CustomList = ({ type }: CustomListProps) => {
 
         {type === 'cardFarmingList' && !userSettings.cardFarming.credentials && (
           <div className="mx-6 mb-1 max-w-fit">
-            <Alert
-              color="primary"
-              variant="faded"
-              classNames={{
-                base: '!bg-dynamic/30 text-dynamic !border-dynamic/40',
-                iconWrapper: '!bg-dynamic/30 border-dynamic/40',
-                description: 'font-bold text-xs',
-              }}
-              description={t($ => $['settings.cardFarming.alert'])}
-            />
+            <Alert className="bg-dynamic/30! text-dynamic border-dynamic/40!">
+              <Alert.Indicator className="bg-dynamic/30! border-dynamic/40 rounded-full" />
+              <Alert.Content>
+                <Alert.Title className="font-bold text-xs">
+                  {t($ => $['settings.cardFarming.alert'])}
+                </Alert.Title>
+              </Alert.Content>
+            </Alert>
           </div>
         )}
 
@@ -363,7 +359,7 @@ export const CustomList = ({ type }: CustomListProps) => {
       </div>
 
       {selectedGame && (
-        <AchievementOrderModal item={selectedGame} isOpen={isOpen} onOpenChange={onOpenChange} />
+        <AchievementOrderModal item={selectedGame} isOpen={isOpen} onOpenChange={toggle} />
       )}
 
       <EditListModal

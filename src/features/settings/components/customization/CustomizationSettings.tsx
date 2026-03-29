@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TbChevronRight } from 'react-icons/tb';
-import { Divider, Radio, RadioGroup } from '@heroui/react';
+import { Separator, Radio, RadioGroup } from '@heroui/react';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
 
@@ -62,7 +62,7 @@ export const CustomizationSettings = () => {
           <SettingsSwitch type="general" name="disableTooltips" />
         </div>
 
-        <Divider className="bg-border/70 my-4" />
+        <Separator className="bg-border/70 my-4" />
 
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
@@ -76,7 +76,7 @@ export const CustomizationSettings = () => {
           <SettingsSwitch type="general" name="showRecommendedCarousel" />
         </div>
 
-        <Divider className="bg-border/70 my-4" />
+        <Separator className="bg-border/70 my-4" />
 
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
@@ -90,7 +90,7 @@ export const CustomizationSettings = () => {
           <SettingsSwitch type="general" name="showRecentCarousel" />
         </div>
 
-        <Divider className="bg-border/70 my-4" />
+        <Separator className="bg-border/70 my-4" />
 
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
@@ -104,7 +104,7 @@ export const CustomizationSettings = () => {
           <SettingsSwitch type="general" name="showCardDropsCarousel" />
         </div>
 
-        <Divider className="bg-border/70 my-4" />
+        <Separator className="bg-border/70 my-4" />
 
         <div className="flex flex-col justify-between gap-6">
           <div className="flex flex-col gap-2 w-1/2">
@@ -119,34 +119,34 @@ export const CustomizationSettings = () => {
           <RadioGroup
             orientation="horizontal"
             defaultValue={resolvedTheme}
-            onValueChange={value => handleThemeChange(value, setTheme)}
+            onChange={value => handleThemeChange(value, setTheme)}
           >
             <div className="grid grid-cols-5 space-x-2 space-y-4">
               {themes.map(theme => (
                 <div key={theme.key}>
-                  <Radio
-                    value={theme.key}
-                    classNames={{
-                      base: 'items-end gap-0',
-                    }}
-                    size="sm"
-                  >
-                    <div className="relative cursor-pointer">
-                      <Image
-                        src={`/themes/${theme.key}.webp`}
-                        alt={theme.label}
-                        width={147}
-                        height={45}
-                        className="rounded-lg border border-border object-cover -translate-x-6 mb-2"
-                      />
-                      <div
-                        className="pointer-events-none -translate-x-6 absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150"
-                        style={{ boxShadow: 'inset 0 0 0 2px hsl(var(--heroui-dynamic))' }}
-                      />
-                    </div>
-                    <div className="flex items-center translate-y-0.5">
-                      <p className="text-altwhite">{theme.label}</p>
-                    </div>
+                  <Radio value={theme.key}>
+                    <Radio.Control>
+                      <Radio.Indicator />
+                    </Radio.Control>
+
+                    <Radio.Content>
+                      <div className="relative cursor-pointer">
+                        <Image
+                          src={`/themes/${theme.key}.webp`}
+                          alt={theme.label}
+                          width={147}
+                          height={45}
+                          className="rounded-lg border border-border object-cover -translate-x-6 mb-2"
+                        />
+                        <div
+                          className="pointer-events-none -translate-x-6 absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150"
+                          style={{ boxShadow: 'inset 0 0 0 2px hsl(var(--dynamic))' }}
+                        />
+                      </div>
+                      <div className="flex items-center translate-y-0.5">
+                        <p className="text-altwhite">{theme.label}</p>
+                      </div>
+                    </Radio.Content>
                   </Radio>
                 </div>
               ))}

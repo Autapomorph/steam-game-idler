@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { cn, Divider, Input, NumberInput } from '@heroui/react';
+import { cn, CloseButton, InputGroup, TextField, NumberField, Separator } from '@heroui/react';
 import { RiSearchLine } from 'react-icons/ri';
 import { TbChevronRight } from 'react-icons/tb';
 import { List } from 'react-window';
@@ -63,22 +63,26 @@ export const GameSettings = () => {
       </div>
 
       <div className="flex flex-col gap-3 mt-4">
-        <Input
-          isClearable
-          placeholder={t($ => $['common.search'])}
-          startContent={<RiSearchLine size={24} className="text-content/60" />}
-          classNames={{
-            inputWrapper: cn(
-              'bg-input data-[hover=true]:!bg-inputhover',
-              'rounded-lg group-data-[focus-within=true]:!bg-inputhover',
-            ),
-            label: ['text-xs !text-altwhite font-bold'],
-            input: ['!text-content placeholder:text-altwhite/50'],
-          }}
-          value={searchTerm}
-          onChange={e => setSearchTerm(e.target.value)}
-          onClear={() => setSearchTerm('')}
-        />
+        <TextField fullWidth onChange={setSearchTerm}>
+          <InputGroup>
+            <InputGroup.Prefix>
+              <RiSearchLine size={24} className="text-content/60" />
+            </InputGroup.Prefix>
+            <InputGroup.Input
+              className={cn('text-content! placeholder:text-altwhite/50')}
+              placeholder={t($ => $['common.search'])}
+            />
+            <InputGroup.Suffix>
+              {searchTerm && (
+                <CloseButton
+                  className="bg-surface-secondary text-content/60 hover:text-content"
+                  aria-label="Close"
+                  onPress={() => setSearchTerm('')}
+                />
+              )}
+            </InputGroup.Suffix>
+          </InputGroup>
+        </TextField>
 
         <div className="border border-border/70 rounded-lg mb-2 overflow-hidden bg-popover/80">
           <List
@@ -95,7 +99,7 @@ export const GameSettings = () => {
           />
         </div>
 
-        <Divider className="bg-border/70 my-4" />
+        <Separator className="bg-border/70 my-4" />
 
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
@@ -104,98 +108,74 @@ export const GameSettings = () => {
             </p>
             <p className="text-xs text-altwhite">{t($ => $['gameSettings.globalMaxIdleSub'])}</p>
           </div>
-          <NumberInput
-            size="sm"
+
+          <NumberField
+            aria-label="max idle time"
+            className="w-22.5"
             value={globalMaxIdleTime}
             step={1}
             minValue={0}
             maxValue={99999}
-            aria-label="max idle time"
-            className="w-22.5"
-            classNames={{
-              inputWrapper: cn(
-                'bg-input data-[hover=true]:!bg-inputhover border-none',
-                'group-data-[focus-visible=true]:ring-transparent',
-                'group-data-[focus-visible=true]:ring-offset-transparent',
-                'group-data-[focus-within=true]:!bg-inputhover',
-                'border group-data-[invalid=true]:border-red-500!',
-                'border group-data-[invalid=true]:bg-red-500/10!',
-                !selectedGame && 'opacity-50',
-              ),
-              input: ['text-sm !text-content'],
-              stepperButton: ['!text-content', 'text-sm'],
-            }}
-            onValueChange={handleGlobalMaxIdleTimeChange}
-          />
+            onChange={handleGlobalMaxIdleTimeChange}
+          >
+            <NumberField.Group>
+              <NumberField.DecrementButton />
+              <NumberField.Input className="text-sm text-content! placeholder:text-altwhite/50" />
+              <NumberField.IncrementButton />
+            </NumberField.Group>
+          </NumberField>
         </div>
 
-        <Divider className="bg-border/70 my-4" />
+        <Separator className="bg-border/70 my-4" />
 
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
             <p className="text-sm text-content font-bold">{t($ => $['gameSettings.idle'])}</p>
             <p className="text-xs text-altwhite">{t($ => $['gameSettings.idleSub'])}</p>
           </div>
-          <NumberInput
-            size="sm"
+
+          <NumberField
+            aria-label="max idle time"
+            className="w-22.5"
             value={maxIdleTime}
             step={1}
             minValue={0}
             maxValue={99999}
-            aria-label="max idle time"
-            className="w-22.5"
-            isDisabled={!selectedGame}
-            classNames={{
-              inputWrapper: cn(
-                'bg-input data-[hover=true]:!bg-inputhover border-none',
-                'group-data-[focus-visible=true]:ring-transparent',
-                'group-data-[focus-visible=true]:ring-offset-transparent',
-                'group-data-[focus-within=true]:!bg-inputhover',
-                'border group-data-[invalid=true]:border-red-500!',
-                'border group-data-[invalid=true]:bg-red-500/10!',
-                !selectedGame && 'opacity-50',
-              ),
-              input: ['text-sm !text-content'],
-              stepperButton: ['!text-content', 'text-sm'],
-            }}
-            onValueChange={handleMaxIdleTimeChange}
-          />
+            onChange={handleMaxIdleTimeChange}
+          >
+            <NumberField.Group>
+              <NumberField.DecrementButton />
+              <NumberField.Input className="text-sm text-content! placeholder:text-altwhite/50" />
+              <NumberField.IncrementButton />
+            </NumberField.Group>
+          </NumberField>
         </div>
 
-        <Divider className="bg-border/70 my-4" />
+        <Separator className="bg-border/70 my-4" />
 
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
             <p className="text-sm text-content font-bold">{t($ => $['gameSettings.drops'])}</p>
             <p className="text-xs text-altwhite">{t($ => $['gameSettings.dropsSub'])}</p>
           </div>
-          <NumberInput
-            size="sm"
+          <NumberField
+            aria-label="max card drops"
+            className="w-22.5"
             value={maxCardDrops}
             step={1}
             minValue={0}
             maxValue={99999}
-            aria-label="max card drops"
-            className="w-22.5"
-            isDisabled={!selectedGame}
-            classNames={{
-              inputWrapper: cn(
-                'bg-input data-[hover=true]:!bg-inputhover border-none',
-                'group-data-[focus-visible=true]:ring-transparent',
-                'group-data-[focus-visible=true]:ring-offset-transparent',
-                'group-data-[focus-within=true]:!bg-inputhover',
-                'border group-data-[invalid=true]:border-red-500!',
-                'border group-data-[invalid=true]:bg-red-500/10!',
-                !selectedGame && 'opacity-50',
-              ),
-              input: ['text-sm !text-content'],
-              stepperButton: ['!text-content', 'text-sm'],
-            }}
-            onValueChange={handleMaxCardDropsChange}
-          />
+            onChange={handleMaxCardDropsChange}
+          >
+            <NumberField.Group>
+              <NumberField.DecrementButton />
+              <NumberField.Input className="text-sm text-content! placeholder:text-altwhite/50" />
+              <NumberField.IncrementButton />
+            </NumberField.Group>
+          </NumberField>
         </div>
 
-        <Divider className="bg-border/70 my-4" />
+        <Separator className="bg-border/70 my-4" />
 
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
@@ -204,30 +184,22 @@ export const GameSettings = () => {
             </p>
             <p className="text-xs text-altwhite">{t($ => $['gameSettings.achievementsSub'])}</p>
           </div>
-          <NumberInput
-            size="sm"
+
+          <NumberField
+            aria-label="max achievement unlocks"
+            className="w-22.5"
             value={maxAchievementUnlocks}
             step={1}
             minValue={0}
             maxValue={99999}
-            aria-label="max achievement unlocks"
-            className="w-22.5"
-            isDisabled={!selectedGame}
-            classNames={{
-              inputWrapper: cn(
-                'bg-input data-[hover=true]:!bg-inputhover border-none',
-                'group-data-[focus-visible=true]:ring-transparent',
-                'group-data-[focus-visible=true]:ring-offset-transparent',
-                'group-data-[focus-within=true]:!bg-inputhover',
-                'border group-data-[invalid=true]:border-red-500!',
-                'border group-data-[invalid=true]:bg-red-500/10!',
-                !selectedGame && 'opacity-50',
-              ),
-              input: ['text-sm !text-content'],
-              stepperButton: ['!text-content', 'text-sm'],
-            }}
-            onValueChange={handleMaxAchievementUnlocksChange}
-          />
+            onChange={handleMaxAchievementUnlocksChange}
+          >
+            <NumberField.Group>
+              <NumberField.DecrementButton />
+              <NumberField.Input className="text-sm text-content! placeholder:text-altwhite/50" />
+              <NumberField.IncrementButton />
+            </NumberField.Group>
+          </NumberField>
         </div>
       </div>
     </div>

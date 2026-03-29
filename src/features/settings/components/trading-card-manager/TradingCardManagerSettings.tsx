@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { TbChevronRight } from 'react-icons/tb';
-import { Alert, cn, Divider, NumberInput, Select, SelectItem } from '@heroui/react';
+import { Alert, Separator, NumberField, Select, ListBox } from '@heroui/react';
 import {
   handlePriceAdjustmentChange,
   handleSellDelayChange,
@@ -58,16 +58,14 @@ export const TradingCardManagerSettings = () => {
 
         {!cardSettings.cardFarmingUser && (
           <div className="mt-4">
-            <Alert
-              color="primary"
-              variant="faded"
-              classNames={{
-                base: '!bg-dynamic/30 text-dynamic !border-dynamic/40',
-                iconWrapper: '!bg-dynamic/30 border-dynamic/40',
-                description: 'font-bold text-xs',
-              }}
-              description={t($ => $['settings.tradingCards.alert'])}
-            />
+            <Alert className="bg-dynamic/30! text-dynamic border-dynamic/40!">
+              <Alert.Indicator className="bg-dynamic/30! border-dynamic/40 rounded-full" />
+              <Alert.Content>
+                <Alert.Title className="font-bold text-xs">
+                  {t($ => $['settings.tradingCards.alert'])}
+                </Alert.Title>
+              </Alert.Content>
+            </Alert>
           </div>
         )}
       </div>
@@ -85,43 +83,33 @@ export const TradingCardManagerSettings = () => {
           <div className="flex items-center gap-4">
             <Select
               aria-label="sellOptions"
-              disallowEmptySelection
-              radius="none"
-              items={sellOptions}
               className="w-50"
+              defaultValue={userSettings.tradingCards?.sellOptions}
               placeholder={t($ => $['common.nextTask.selectPlaceholder'])}
-              classNames={{
-                listbox: ['p-0'],
-                value: ['text-sm !text-content'],
-                trigger: cn(
-                  'bg-input data-[hover=true]:!bg-inputhover',
-                  'data-[open=true]:!bg-input duration-100 rounded-lg',
-                ),
-                popoverContent: ['bg-input rounded-xl justify-start !text-content'],
-              }}
-              defaultSelectedKeys={
-                userSettings.tradingCards?.sellOptions
-                  ? [userSettings.tradingCards?.sellOptions]
-                  : []
-              }
-              onSelectionChange={e => {
-                handleSellOptionChange(e.currentKey!, userSummary, setUserSettings);
+              onChange={v => {
+                handleSellOptionChange(String(v), userSummary, setUserSettings);
               }}
             >
-              {item => (
-                <SelectItem
-                  classNames={{
-                    base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
-                  }}
-                >
-                  {item.label}
-                </SelectItem>
-              )}
+              <Select.Trigger>
+                <Select.Value />
+                <Select.Indicator />
+              </Select.Trigger>
+
+              <Select.Popover>
+                <ListBox disallowEmptySelection>
+                  {sellOptions.map(option => (
+                    <ListBox.Item key={option.key} id={option.key}>
+                      {option.label}
+                      <ListBox.ItemIndicator />
+                    </ListBox.Item>
+                  ))}
+                </ListBox>
+              </Select.Popover>
             </Select>
           </div>
         </div>
 
-        <Divider className="bg-border/70 my-4" />
+        <Separator className="bg-border/70 my-4" />
 
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
@@ -136,8 +124,8 @@ export const TradingCardManagerSettings = () => {
               />
             </p>
           </div>
-          <NumberInput
-            size="sm"
+
+          <NumberField
             value={priceAdjustment}
             formatOptions={{
               style: 'decimal',
@@ -147,25 +135,19 @@ export const TradingCardManagerSettings = () => {
             step={0.01}
             aria-label="price adjustment value"
             className="w-22.5"
-            classNames={{
-              inputWrapper: cn(
-                'bg-input data-[hover=true]:!bg-inputhover border-none',
-                'group-data-[focus-visible=true]:ring-transparent',
-                'group-data-[focus-visible=true]:ring-offset-transparent',
-                'group-data-[focus-within=true]:!bg-inputhover',
-                'border group-data-[invalid=true]:border-red-500!',
-                'border group-data-[invalid=true]:bg-red-500/10!',
-              ),
-              input: ['text-sm !text-content'],
-              stepperButton: ['!text-content', 'text-sm'],
-            }}
-            onValueChange={value =>
+            onChange={value =>
               handlePriceAdjustmentChange(value, userSummary, setUserSettings, setPriceAdjustment)
             }
-          />
+          >
+            <NumberField.Group>
+              <NumberField.DecrementButton />
+              <NumberField.Input className="text-sm text-content! placeholder:text-altwhite/50" />
+              <NumberField.IncrementButton />
+            </NumberField.Group>
+          </NumberField>
         </div>
 
-        <Divider className="bg-border/70 my-4" />
+        <Separator className="bg-border/70 my-4" />
 
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
@@ -181,8 +163,7 @@ export const TradingCardManagerSettings = () => {
             </p>
           </div>
           <div className="flex items-center gap-4">
-            <NumberInput
-              size="sm"
+            <NumberField
               value={sellLimitMin}
               formatOptions={{
                 style: 'decimal',
@@ -193,19 +174,7 @@ export const TradingCardManagerSettings = () => {
               step={0.01}
               aria-label="sell limit minimum value"
               className="w-22.5"
-              classNames={{
-                inputWrapper: cn(
-                  'bg-input data-[hover=true]:!bg-inputhover border-none',
-                  'group-data-[focus-visible=true]:ring-transparent',
-                  'group-data-[focus-visible=true]:ring-offset-transparent',
-                  'group-data-[focus-within=true]:!bg-inputhover',
-                  'border group-data-[invalid=true]:border-red-500!',
-                  'border group-data-[invalid=true]:bg-red-500/10!',
-                ),
-                input: ['text-sm !text-content'],
-                stepperButton: ['!text-content', 'text-sm'],
-              }}
-              onValueChange={value =>
+              onChange={value =>
                 handleSellLimitMinChange(
                   value,
                   userSummary,
@@ -214,9 +183,15 @@ export const TradingCardManagerSettings = () => {
                   setSellLimitMin,
                 )
               }
-            />
-            <NumberInput
-              size="sm"
+            >
+              <NumberField.Group>
+                <NumberField.DecrementButton />
+                <NumberField.Input className="text-sm text-content! placeholder:text-altwhite/50" />
+                <NumberField.IncrementButton />
+              </NumberField.Group>
+            </NumberField>
+
+            <NumberField
               value={sellLimitMax}
               formatOptions={{
                 style: 'decimal',
@@ -226,19 +201,7 @@ export const TradingCardManagerSettings = () => {
               step={0.01}
               aria-label="sell limit maximum value"
               className="w-22.5"
-              classNames={{
-                inputWrapper: cn(
-                  'bg-input data-[hover=true]:!bg-inputhover border-none',
-                  'group-data-[focus-visible=true]:ring-transparent',
-                  'group-data-[focus-visible=true]:ring-offset-transparent',
-                  'group-data-[focus-within=true]:!bg-inputhover',
-                  'border group-data-[invalid=true]:border-red-500!',
-                  'border group-data-[invalid=true]:bg-red-500/10!',
-                ),
-                input: ['text-sm !text-content'],
-                stepperButton: ['!text-content', 'text-sm'],
-              }}
-              onValueChange={value =>
+              onChange={value =>
                 handleSellLimitMaxChange(
                   value,
                   userSummary,
@@ -247,11 +210,17 @@ export const TradingCardManagerSettings = () => {
                   setSellLimitMax,
                 )
               }
-            />
+            >
+              <NumberField.Group>
+                <NumberField.DecrementButton />
+                <NumberField.Input className="text-sm text-content! placeholder:text-altwhite/50" />
+                <NumberField.IncrementButton />
+              </NumberField.Group>
+            </NumberField>
           </div>
         </div>
 
-        <Divider className="bg-border/70 my-4" />
+        <Separator className="bg-border/70 my-4" />
 
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
@@ -266,30 +235,24 @@ export const TradingCardManagerSettings = () => {
               />
             </p>
           </div>
-          <NumberInput
-            size="sm"
+
+          <NumberField
             value={sellDelay}
             step={1}
             minValue={10}
             maxValue={60}
             aria-label="sell delay value"
             className="w-22.5"
-            classNames={{
-              inputWrapper: cn(
-                'bg-input data-[hover=true]:!bg-inputhover border-none',
-                'group-data-[focus-visible=true]:ring-transparent',
-                'group-data-[focus-visible=true]:ring-offset-transparent',
-                'group-data-[focus-within=true]:!bg-inputhover',
-                'border group-data-[invalid=true]:border-red-500!',
-                'border group-data-[invalid=true]:bg-red-500/10!',
-              ),
-              input: ['text-sm !text-content'],
-              stepperButton: ['!text-content', 'text-sm'],
-            }}
-            onValueChange={value =>
+            onChange={value =>
               handleSellDelayChange(value, userSummary, setUserSettings, setSellDelay)
             }
-          />
+          >
+            <NumberField.Group>
+              <NumberField.DecrementButton />
+              <NumberField.Input className="text-sm text-content! placeholder:text-altwhite/50" />
+              <NumberField.IncrementButton />
+            </NumberField.Group>
+          </NumberField>
         </div>
       </div>
     </div>

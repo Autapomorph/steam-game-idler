@@ -2,7 +2,7 @@ import type { useTradingCardsList } from '@/features/trading-card-manager';
 import type { TradingCard } from '@/shared/types';
 import { useTranslation } from 'react-i18next';
 import { TbArrowRight } from 'react-icons/tb';
-import { Button, Spinner, useDisclosure, cn } from '@heroui/react';
+import { Button, Spinner, useOverlayState, cn } from '@heroui/react';
 import { CustomModal, showPriceFetchCooldownToast } from '@/shared/components';
 import { logEvent } from '@/shared/utils';
 
@@ -14,7 +14,7 @@ interface PriceDataProps {
 
 export const PriceData = ({ item, isLocked, tradingCardContext }: PriceDataProps) => {
   const { t } = useTranslation();
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, open, toggle } = useOverlayState();
 
   const handleFetchPrice = async (item: TradingCard) => {
     try {
@@ -24,7 +24,7 @@ export const PriceData = ({ item, isLocked, tradingCardContext }: PriceDataProps
 
       // If we already have price data, open the modal
       if (item.price_data) {
-        onOpen();
+        open();
         return;
       }
 
@@ -37,7 +37,7 @@ export const PriceData = ({ item, isLocked, tradingCardContext }: PriceDataProps
 
       // Not in cooldown, fetch price data, open modal and set new cooldown
       localStorage.setItem(cooldownKey, (now + 5_000).toString());
-      onOpen();
+      open();
       await tradingCardContext.fetchCardPrices(item.market_hash_name);
     } catch (error) {
       console.error('Error fetching price data:', error);
@@ -60,7 +60,7 @@ export const PriceData = ({ item, isLocked, tradingCardContext }: PriceDataProps
 
       <CustomModal
         isOpen={isOpen}
-        onOpenChange={onOpenChange}
+        onOpenChange={toggle}
         title={item.full_name}
         body={
           <div className="flex justify-center gap-4">
@@ -100,7 +100,7 @@ export const PriceData = ({ item, isLocked, tradingCardContext }: PriceDataProps
                                   .replace(',', '.');
                                 const price = parseFloat(numericPrice);
                                 tradingCardContext.updateCardPrice(item.assetid, price);
-                                onOpenChange();
+                                toggle();
                               }}
                             >
                               {row[0]}
@@ -146,7 +146,7 @@ export const PriceData = ({ item, isLocked, tradingCardContext }: PriceDataProps
                                   .replace(',', '.');
                                 const price = parseFloat(numericPrice);
                                 tradingCardContext.updateCardPrice(item.assetid, price);
-                                onOpenChange();
+                                toggle();
                               }}
                             >
                               {row[0]}
@@ -166,11 +166,9 @@ export const PriceData = ({ item, isLocked, tradingCardContext }: PriceDataProps
         buttons={
           <Button
             size="sm"
-            color="danger"
-            variant="light"
-            radius="full"
-            className="font-semibold"
-            onPress={onOpenChange}
+            variant="ghost"
+            className="text-danger hover:bg-danger-soft font-semibold rounded-full"
+            onPress={toggle}
           >
             {t($ => $['common.close'])}
           </Button>

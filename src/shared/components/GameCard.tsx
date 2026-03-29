@@ -57,7 +57,7 @@ export const GameCard = memo(function GameCard({
             />
             <div
               className="pointer-events-none absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150"
-              style={{ boxShadow: 'inset 0 0 0 2px hsl(var(--heroui-dynamic))' }}
+              style={{ boxShadow: 'inset 0 0 0 2px hsl(var(--dynamic))' }}
             />
           </div>
           <div className="flex justify-between items-center pt-3">
@@ -94,7 +94,7 @@ export const GameCard = memo(function GameCard({
           />
           <div
             className="pointer-events-none absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150"
-            style={{ boxShadow: 'inset 0 0 0 2px hsl(var(--heroui-dynamic))' }}
+            style={{ boxShadow: 'inset 0 0 0 2px hsl(var(--dynamic))' }}
           />
         </div>
         <div className="flex justify-between items-center pt-3">
@@ -106,8 +106,7 @@ export const GameCard = memo(function GameCard({
             <Button
               isIconOnly
               size="sm"
-              radius="full"
-              className="bg-transparent hover:bg-item-hover text-altwhite hover:text-content transition-colors duration-150"
+              className="bg-transparent rounded-full hover:bg-item-hover text-altwhite hover:text-content transition-colors duration-150"
               onPress={() =>
                 isIdling ? handleStopIdle(item, idleGamesList, setIdleGamesList) : handleIdle(item)
               }
@@ -118,8 +117,7 @@ export const GameCard = memo(function GameCard({
             <Button
               isIconOnly
               size="sm"
-              radius="full"
-              className="bg-transparent hover:bg-item-hover text-altwhite hover:text-content transition-colors duration-150"
+              className="bg-transparent rounded-full hover:bg-item-hover text-altwhite hover:text-content transition-colors duration-150"
               onPress={() => viewAchievments(item, setAppId, setAppName, setShowAchievements)}
             >
               <TbAwardFilled size={18} />
@@ -129,8 +127,7 @@ export const GameCard = memo(function GameCard({
               <Button
                 isIconOnly
                 size="sm"
-                radius="full"
-                className="bg-transparent hover:bg-item-hover text-altwhite hover:text-content transition-colors duration-150"
+                className="bg-transparent rounded-full hover:bg-item-hover text-altwhite hover:text-content transition-colors duration-150"
                 onPress={() => {
                   if (onOpen) onOpen();
                 }}

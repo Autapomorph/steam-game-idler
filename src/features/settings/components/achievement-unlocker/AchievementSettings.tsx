@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { FaMinus, FaPlus } from 'react-icons/fa6';
 import { TbChevronRight } from 'react-icons/tb';
-import { Button, cn, Divider, Select, SelectItem, Slider, TimeInput } from '@heroui/react';
+import { Button, Separator, Select, Slider, TimeField, ListBox } from '@heroui/react';
 import {
   handleIntervalChange,
   handleScheduleChange,
@@ -54,7 +54,7 @@ export const AchievementSettings = () => {
           <SettingsSwitch type="achievementUnlocker" name="idle" />
         </div>
 
-        <Divider className="bg-border/70 my-4" />
+        <Separator className="bg-border/70 my-4" />
 
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
@@ -68,7 +68,7 @@ export const AchievementSettings = () => {
           <SettingsSwitch type="achievementUnlocker" name="hidden" />
         </div>
 
-        <Divider className="bg-border/70 my-4" />
+        <Separator className="bg-border/70 my-4" />
 
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
@@ -80,51 +80,41 @@ export const AchievementSettings = () => {
           <div className="flex items-center gap-4">
             <Select
               aria-label="nextTask"
-              disallowEmptySelection
-              radius="none"
-              items={taskOptions}
               className="w-50"
               placeholder={t($ => $['common.nextTask.selectPlaceholder'])}
-              classNames={{
-                listbox: ['p-0'],
-                value: ['text-sm !text-content'],
-                trigger: cn(
-                  'bg-input data-[hover=true]:!bg-inputhover',
-                  'data-[open=true]:!bg-input duration-100 rounded-lg',
-                ),
-                popoverContent: ['bg-input rounded-xl justify-start !text-content'],
-              }}
+              defaultValue={userSettings.achievementUnlocker.nextTask}
               isDisabled={!userSettings.achievementUnlocker.nextTaskCheckbox}
-              defaultSelectedKeys={
-                userSettings.achievementUnlocker.nextTask
-                  ? [userSettings.achievementUnlocker.nextTask]
-                  : []
-              }
-              onSelectionChange={e => {
+              onChange={v => {
                 handleNextTaskChange(
                   'achievementUnlocker',
-                  e.currentKey!,
+                  String(v),
                   userSummary,
                   setUserSettings,
                 );
               }}
             >
-              {item => (
-                <SelectItem
-                  classNames={{
-                    base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
-                  }}
-                >
-                  {item.label}
-                </SelectItem>
-              )}
+              <Select.Trigger>
+                <Select.Value />
+                <Select.Indicator />
+              </Select.Trigger>
+
+              <Select.Popover>
+                <ListBox disallowEmptySelection>
+                  {taskOptions.map(option => (
+                    <ListBox.Item key={option.key} id={option.key}>
+                      {option.label}
+                      <ListBox.ItemIndicator />
+                    </ListBox.Item>
+                  ))}
+                </ListBox>
+              </Select.Popover>
             </Select>
 
             <SettingsSwitch type="achievementUnlocker" name="nextTaskCheckbox" />
           </div>
         </div>
 
-        <Divider className="bg-border/70 my-4" />
+        <Separator className="bg-border/70 my-4" />
 
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
@@ -136,52 +126,45 @@ export const AchievementSettings = () => {
             </p>
           </div>
           <div className="flex items-center gap-4">
-            <TimeInput
+            <TimeField
               aria-label="schedule-from"
               isDisabled={!userSettings?.achievementUnlocker?.schedule}
               value={userSettings?.achievementUnlocker?.scheduleFrom}
-              size="sm"
               className="w-23.75"
-              classNames={{
-                inputWrapper: cn(
-                  'rounded-lg min-h-[25px] max-h-[25px] bg-input',
-                  'hover:bg-inputhover border border-border',
-                  'focus-within:!bg-inputhover',
-                ),
-                segment: ['!text-content'],
-                input: ['text-sm'],
-              }}
               onChange={value =>
                 handleScheduleChange(value, 'scheduleFrom', userSummary, setUserSettings)
               }
-            />
+            >
+              <TimeField.Group>
+                <TimeField.Input>
+                  {segment => <TimeField.Segment segment={segment} />}
+                </TimeField.Input>
+              </TimeField.Group>
+            </TimeField>
 
             <p className="text-sm">{t($ => $['settings.achievementUnlocker.scheduleTo'])}</p>
 
-            <TimeInput
+            <TimeField
               aria-label="schedule-to"
               isDisabled={!userSettings?.achievementUnlocker?.schedule}
               value={userSettings?.achievementUnlocker?.scheduleTo}
-              size="sm"
               className="w-23.75"
-              classNames={{
-                inputWrapper: cn(
-                  'rounded-lg min-h-[25px] max-h-[25px] bg-input',
-                  'hover:bg-inputhover border border-border',
-                  'focus-within:!bg-inputhover',
-                ),
-                segment: ['!text-content'],
-                input: ['text-sm'],
-              }}
               onChange={value =>
                 handleScheduleChange(value, 'scheduleTo', userSummary, setUserSettings)
               }
-            />
+            >
+              <TimeField.Group>
+                <TimeField.Input>
+                  {segment => <TimeField.Segment segment={segment} />}
+                </TimeField.Input>
+              </TimeField.Group>
+            </TimeField>
+
             <SettingsSwitch type="achievementUnlocker" name="schedule" />
           </div>
         </div>
 
-        <Divider className="bg-border/70 my-4" />
+        <Separator className="bg-border/70 my-4" />
 
         <div className="flex justify-between items-start">
           <div className="flex flex-col gap-2 w-1/2">
@@ -193,19 +176,12 @@ export const AchievementSettings = () => {
 
           <div className="flex flex-col items-center gap-1">
             <Slider
-              size="md"
               step={1}
               minValue={1}
               maxValue={2880}
               defaultValue={userSettings?.achievementUnlocker?.interval}
               formatOptions={{ style: 'currency', currency: 'USD' }}
-              hideValue
               className="mt-2 w-87.5"
-              classNames={{
-                track: 'bg-input',
-                filler: 'bg-dynamic',
-                thumb: 'bg-white after:bg-dynamic',
-              }}
               onChangeEnd={e => handleIntervalChange(e, userSummary, setUserSettings)}
               onChange={e => {
                 if (Array.isArray(e)) {
@@ -217,61 +193,70 @@ export const AchievementSettings = () => {
                   );
                 }
               }}
-            />
+            >
+              <Slider.Track>
+                <Slider.Fill />
+                <Slider.Thumb />
+              </Slider.Track>
+            </Slider>
 
             <div className="flex w-full justify-between">
               <div>
                 <Button
                   isIconOnly
+                  className="rounded-full"
                   size="sm"
-                  radius="full"
-                  variant="light"
-                  startContent={<FaMinus />}
+                  variant="ghost"
                   onPress={() => {
                     const [min, max] = userSettings?.achievementUnlocker?.interval ?? [];
                     const newValue = [Math.max(1, min - 1), max];
                     handleIntervalChange(newValue, userSummary, setUserSettings);
                   }}
-                />
+                >
+                  <FaMinus />
+                </Button>
                 <Button
                   isIconOnly
+                  className="rounded-full"
                   size="sm"
-                  radius="full"
-                  variant="light"
-                  startContent={<FaPlus />}
+                  variant="ghost"
                   onPress={() => {
                     const [min, max] = userSettings?.achievementUnlocker?.interval ?? [];
                     const newValue = [Math.min(max, min + 1), max];
                     handleIntervalChange(newValue, userSummary, setUserSettings);
                   }}
-                />
+                >
+                  <FaPlus />
+                </Button>
               </div>
 
               <div>
                 <Button
                   isIconOnly
+                  className="rounded-full"
                   size="sm"
-                  radius="full"
-                  variant="light"
-                  startContent={<FaMinus />}
+                  variant="ghost"
                   onPress={() => {
                     const [min, max] = userSettings?.achievementUnlocker?.interval ?? [];
                     const newValue = [min, Math.max(min, max - 1)];
                     handleIntervalChange(newValue, userSummary, setUserSettings);
                   }}
-                />
+                >
+                  <FaMinus />
+                </Button>
                 <Button
                   isIconOnly
+                  className="rounded-full"
                   size="sm"
-                  radius="full"
-                  variant="light"
-                  startContent={<FaPlus />}
+                  variant="ghost"
                   onPress={() => {
                     const [min, max] = userSettings?.achievementUnlocker?.interval ?? [];
                     const newValue = [min, Math.min(2880, max + 1)];
                     handleIntervalChange(newValue, userSummary, setUserSettings);
                   }}
-                />
+                >
+                  <FaPlus />
+                </Button>
               </div>
             </div>
           </div>

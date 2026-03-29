@@ -10,7 +10,7 @@ import {
   TbSettings,
   TbX,
 } from 'react-icons/tb';
-import { Button, cn, Divider, Tab, Tabs, useDisclosure } from '@heroui/react';
+import { Button, cn, Separator, Tabs, useOverlayState } from '@heroui/react';
 import { CustomModal } from '@/shared/components';
 import { useNavigationStore, useSearchStore, useStateStore, useUserStore } from '@/shared/stores';
 
@@ -53,21 +53,9 @@ export const PageHeader = ({
   const setActivePage = useNavigationStore(state => state.setActivePage);
   const setPreviousActivePage = useNavigationStore(state => state.setPreviousActivePage);
   const setCurrentSettingsTab = useNavigationStore(state => state.setCurrentSettingsTab);
-  const {
-    isOpen: isConfirmOpen,
-    onOpen: onConfirmOpen,
-    onOpenChange: onConfirmOpenChange,
-  } = useDisclosure();
-  const {
-    isOpen: isBulkOpen,
-    onOpen: onBulkOpen,
-    onOpenChange: onBulkOpenChange,
-  } = useDisclosure();
-  const {
-    isOpen: isRemoveOpen,
-    onOpen: onRemoveOpen,
-    onOpenChange: onRemoveOpenChange,
-  } = useDisclosure();
+  const { isOpen: isConfirmOpen, open: confirmOpen, toggle: onConfirmToggle } = useOverlayState();
+  const { isOpen: isBulkOpen, open: bulkOpen, toggle: onBulkToggle } = useOverlayState();
+  const { isOpen: isRemoveOpen, open: removeOpen, toggle: onRemoveToggle } = useOverlayState();
 
   const handleCardSorting = (key: string) => {
     tradingCardContext.setCardSortStyle?.(key);
@@ -106,61 +94,50 @@ export const PageHeader = ({
                   <p className="text-sm text-altwhite font-bold">{t($ => $['common.sortBy'])}</p>
 
                   <Tabs
-                    aria-label="sort options"
-                    items={cardSortOptions}
                     selectedKey={tradingCardContext.cardSortStyle}
-                    radius="full"
-                    classNames={{
-                      tabList: 'gap-0 w-full bg-tab-panel',
-                      tab: cn(
-                        'data-[hover-unselected=true]:!bg-item-hover',
-                        'data-[hover-unselected=true]:opacity-100',
-                      ),
-                      tabContent:
-                        'text-sm group-data-[selected=true]:text-content text-altwhite font-bold',
-                      cursor: '!bg-item-active w-full',
-                    }}
                     onSelectionChange={key => {
                       handleCardSorting(key as string);
                     }}
                   >
-                    {item => <Tab key={item.key} title={item.label} />}
+                    <Tabs.ListContainer>
+                      <Tabs.List aria-label="sort options">
+                        {cardSortOptions.map(option => (
+                          <Tabs.Tab key={option.key} id={option.key}>
+                            {option.label}
+                            <Tabs.Indicator />
+                          </Tabs.Tab>
+                        ))}
+                      </Tabs.List>
+                    </Tabs.ListContainer>
                   </Tabs>
                 </div>
 
                 <div className="flex items-center gap-2 mt-1">
                   <Button
-                    className="bg-btn-secondary text-btn-text font-bold"
-                    radius="full"
+                    className="bg-btn-secondary text-btn-text font-bold rounded-full"
                     onPress={() => tradingCardContext.handleRefresh()}
                   >
                     {t($ => $['common.refresh'])}
                   </Button>
 
                   <Button
-                    className="bg-btn-secondary text-btn-text font-bold"
-                    radius="full"
+                    className="bg-btn-secondary text-btn-text font-bold rounded-full"
                     isDisabled={selectedCardsWithPrice.length === 0}
-                    isLoading={tradingCardContext.loadingListButton}
-                    startContent={
-                      !tradingCardContext.loadingListButton && <TbChecks fontSize={20} />
-                    }
-                    onPress={onConfirmOpen}
+                    isPending={tradingCardContext.loadingListButton}
+                    onPress={confirmOpen}
                   >
+                    !tradingCardContext.loadingListButton && <TbChecks fontSize={20} />
                     {t($ => $['tradingCards.list'])}{' '}
                     {selectedCardsWithPrice.length > 0 && `(${selectedCardsWithPrice.length})`}
                   </Button>
 
                   <Button
-                    className="bg-btn-secondary text-btn-text font-bold"
-                    radius="full"
+                    className="bg-btn-secondary text-btn-text font-bold rounded-full"
                     isDisabled={tradingCardContext.tradingCardsList.length === 0}
-                    isLoading={tradingCardContext.loadingListButton}
-                    startContent={
-                      !tradingCardContext.loadingListButton && <TbPackageExport fontSize={20} />
-                    }
-                    onPress={onBulkOpen}
+                    isPending={tradingCardContext.loadingListButton}
+                    onPress={bulkOpen}
                   >
+                    {!tradingCardContext.loadingListButton && <TbPackageExport fontSize={20} />}
                     {t($ => $['tradingCards.bulk'], {
                       count:
                         tradingCardContext.tradingCardsList?.length || 0 - lockedCards.length || 0,
@@ -168,33 +145,30 @@ export const PageHeader = ({
                   </Button>
 
                   <Button
-                    className="font-bold"
-                    radius="full"
-                    color="danger"
-                    isLoading={tradingCardContext.loadingRemoveListings}
-                    startContent={
-                      !tradingCardContext.loadingRemoveListings && <TbEraser fontSize={20} />
-                    }
-                    onPress={onRemoveOpen}
+                    className="font-bold rounded-full"
+                    variant="danger"
+                    isPending={tradingCardContext.loadingRemoveListings}
+                    onPress={removeOpen}
                   >
+                    {!tradingCardContext.loadingRemoveListings && <TbEraser fontSize={20} />}
                     {t($ => $['tradingCards.remove'])}
                   </Button>
 
                   <Button
                     isIconOnly
-                    radius="full"
-                    className="bg-btn-secondary text-btn-text font-bold"
-                    startContent={<TbSettings size={20} />}
+                    className="bg-btn-secondary text-btn-text font-bold rounded-full"
                     onPress={() => {
                       setPreviousActivePage('tradingCards');
                       setActivePage('settings');
                       setCurrentSettingsTab('trading-card-manager');
                     }}
-                  />
+                  >
+                    <TbSettings size={20} />
+                  </Button>
 
                   {tradingCardQueryValue && (
                     <div className="flex items-center gap-2">
-                      <Divider orientation="vertical" className="mx-2 h-8 bg-border" />
+                      <Separator orientation="vertical" className="mx-2 h-8 bg-border" />
                       <p className="text-sm text-altwhite font-bold">
                         {t($ => $['common.search'])}
                       </p>
@@ -215,12 +189,12 @@ export const PageHeader = ({
                     <div className="flex ml-auto justify-center items-center gap-4">
                       <Button
                         isIconOnly
-                        className="bg-btn-secondary text-btn-text font-bold"
-                        radius="full"
-                        startContent={<TbChevronLeft fontSize={20} />}
-                        disabled={currentPage === 1}
+                        className="bg-btn-secondary text-btn-text font-bold rounded-full"
+                        isDisabled={currentPage === 1}
                         onPress={() => onPageChange(currentPage - 1)}
-                      />
+                      >
+                        <TbChevronLeft fontSize={20} />
+                      </Button>
 
                       <p className="text-sm">
                         {currentPage} / {totalPages}
@@ -228,12 +202,12 @@ export const PageHeader = ({
 
                       <Button
                         isIconOnly
-                        className="bg-btn-secondary text-btn-text font-bold"
-                        radius="full"
-                        startContent={<TbChevronRight fontSize={20} />}
-                        disabled={currentPage === totalPages}
+                        className="bg-btn-secondary text-btn-text font-bold rounded-full"
+                        isDisabled={currentPage === totalPages}
                         onPress={() => onPageChange(currentPage + 1)}
-                      />
+                      >
+                        <TbChevronRight fontSize={20} />
+                      </Button>
                     </div>
                   )}
                 </div>
@@ -245,7 +219,7 @@ export const PageHeader = ({
 
       <CustomModal
         isOpen={isConfirmOpen}
-        onOpenChange={onConfirmOpenChange}
+        onOpenChange={onConfirmToggle}
         title={t($ => $['common.notice'])}
         body={
           <div className="whitespace-pre-line">
@@ -262,21 +236,18 @@ export const PageHeader = ({
           <>
             <Button
               size="sm"
-              color="danger"
-              variant="light"
-              radius="full"
-              className="font-semibold"
-              onPress={onConfirmOpenChange}
+              variant="ghost"
+              className="text-danger hover:bg-danger-soft font-semibold rounded-full"
+              onPress={onConfirmToggle}
             >
               {t($ => $['common.cancel'])}
             </Button>
             <Button
               size="sm"
-              className="bg-btn-secondary text-btn-text font-bold"
-              radius="full"
+              className="bg-btn-secondary text-btn-text font-bold rounded-full"
               onPress={() => {
                 tradingCardContext.handleSellSelectedCards();
-                onConfirmOpenChange();
+                onConfirmToggle();
               }}
             >
               {t($ => $['common.confirm'])}
@@ -287,7 +258,7 @@ export const PageHeader = ({
 
       <CustomModal
         isOpen={isBulkOpen}
-        onOpenChange={onBulkOpenChange}
+        onOpenChange={onBulkToggle}
         title={t($ => $['common.notice'])}
         body={
           <div className="whitespace-pre-line">
@@ -301,21 +272,18 @@ export const PageHeader = ({
           <>
             <Button
               size="sm"
-              color="danger"
-              variant="light"
-              radius="full"
-              className="font-semibold"
-              onPress={onBulkOpenChange}
+              variant="ghost"
+              className="text-danger hover:bg-danger-soft font-semibold rounded-full"
+              onPress={onBulkToggle}
             >
               {t($ => $['common.cancel'])}
             </Button>
             <Button
               size="sm"
-              className="bg-btn-secondary text-btn-text font-bold"
-              radius="full"
+              className="bg-btn-secondary text-btn-text font-bold rounded-full"
               onPress={() => {
                 tradingCardContext.handleSellAllCards();
-                onBulkOpenChange();
+                onBulkToggle();
               }}
             >
               {t($ => $['common.confirm'])}
@@ -326,7 +294,7 @@ export const PageHeader = ({
 
       <CustomModal
         isOpen={isRemoveOpen}
-        onOpenChange={onRemoveOpenChange}
+        onOpenChange={onRemoveToggle}
         title={t($ => $['common.notice'])}
         body={
           <div className="whitespace-pre-line">
@@ -340,21 +308,18 @@ export const PageHeader = ({
           <>
             <Button
               size="sm"
-              color="danger"
-              variant="light"
-              radius="full"
-              className="font-semibold"
-              onPress={onRemoveOpenChange}
+              variant="ghost"
+              className="text-danger hover:bg-danger-soft font-semibold rounded-full"
+              onPress={onRemoveToggle}
             >
               {t($ => $['common.cancel'])}
             </Button>
             <Button
               size="sm"
-              className="bg-btn-secondary text-btn-text font-bold"
-              radius="full"
+              className="bg-btn-secondary text-btn-text font-bold rounded-full"
               onPress={() => {
                 tradingCardContext.handleRemoveActiveListings();
-                onRemoveOpenChange();
+                onRemoveToggle();
               }}
             >
               {t($ => $['common.confirm'])}

@@ -14,7 +14,7 @@ import {
   TbPlayerPlay,
   TbSettings,
 } from 'react-icons/tb';
-import { Button, cn, Divider } from '@heroui/react';
+import { Button, cn, Separator } from '@heroui/react';
 import Image from 'next/image';
 
 import { Beta, Brand, CustomModal, Searchbar } from '@/shared/components';
@@ -116,7 +116,7 @@ export const Sidebar = () => {
     const header = sectionHeaders[index];
     if (!header) return null;
     if (sidebarCollapsed) {
-      return <Divider className="w-full bg-border/60 mt-0.5 mb-2" />;
+      return <Separator className="w-full bg-border/60 mt-0.5 mb-2" />;
     }
     return (
       <div
@@ -224,14 +224,13 @@ export const Sidebar = () => {
           {/* Search button */}
           <Button
             isIconOnly={sidebarCollapsed}
-            radius="full"
             isDisabled={
               activePage === 'idling' ||
               activePage === 'freeGames' ||
               (activePage.includes('customlists') && !showAchievements)
             }
             className={cn(
-              'text-altwhite active:scale-95 w-full mt-4 duration-150',
+              'text-altwhite rounded-full active:scale-95 w-full mt-4 duration-150',
               sidebarCollapsed ? 'w-0 justify-center' : 'min-w-40 justify-start',
               searchContent.gameQueryValue ||
                 searchContent.tradingCardQueryValue ||
@@ -343,7 +342,7 @@ export const Sidebar = () => {
                       'text-altwhite rounded-full p-1.5 duration-150',
                       isCardFarming || isAchievementUnlocker
                         ? 'opacity-40'
-                        : 'hover:bg-danger/20 hover:text-danger cursor-pointer active:scale-95',
+                        : 'hover:bg-danger-soft-hover hover:text-danger cursor-pointer active:scale-95',
                     )}
                     onClick={
                       !(isCardFarming || isAchievementUnlocker) ? openConfirmation : undefined
@@ -379,7 +378,7 @@ export const Sidebar = () => {
                     'text-altwhite rounded-full p-1.5 duration-150',
                     isCardFarming || isAchievementUnlocker
                       ? 'opacity-40'
-                      : 'hover:bg-danger/20 hover:text-danger cursor-pointer active:scale-95',
+                      : 'hover:bg-danger-soft-hover hover:text-danger cursor-pointer active:scale-95',
                   )}
                   onClick={!(isCardFarming || isAchievementUnlocker) ? openConfirmation : undefined}
                 >
@@ -402,18 +401,15 @@ export const Sidebar = () => {
           <>
             <Button
               size="sm"
-              color="danger"
-              variant="light"
-              radius="full"
-              className="font-semibold"
+              variant="ghost"
+              className="text-danger hover:bg-danger-soft font-semibold rounded-full"
               onPress={onOpenChange}
             >
               {t($ => $['common.cancel'])}
             </Button>
             <Button
               size="sm"
-              className="bg-btn-secondary text-btn-text font-bold"
-              radius="full"
+              className="bg-btn-secondary text-btn-text font-bold rounded-full"
               onPress={() => {
                 setShowAchievements(false);
                 handleLogout(onOpenChange);

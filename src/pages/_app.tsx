@@ -1,7 +1,7 @@
 import type { AppProps } from 'next/app';
 import { useTranslation } from 'react-i18next';
-import { HeroUIProvider, ToastProvider } from '@heroui/react';
-import { TbX } from 'react-icons/tb';
+import { Toast } from '@heroui/react';
+import { I18nProvider as ReactAriaI18nProvider } from '@react-aria/i18n';
 
 import { FullscreenLoader, Layout } from '@/shared/components';
 import { ErrorBoundaryProvider, I18nProvider, ThemeProvider } from '@/shared/providers';
@@ -16,36 +16,23 @@ const App = ({ Component, pageProps }: AppProps) => {
 
   return (
     <I18nProvider>
-      <ThemeProvider
-        attribute="class"
-        themes={['dark', 'black']}
-        enableSystem
-        defaultTheme="dark"
-        disableTransitionOnChange
-      >
-        <HeroUIProvider locale={i18n.language}>
-          <ToastProvider
-            toastProps={{
-              radius: 'sm',
-              variant: 'flat',
-              timeout: 3000,
-              shouldShowTimeoutProgress: true,
-              closeIcon: <TbX size={16} className="text-content" />,
-              classNames: {
-                base: ['bg-sidebar border-none cursor-default'],
-                description: ['text-content text-sm font-medium'],
-                closeButton: ['opacity-100 absolute right-1 top-1 hover:bg-item-hover'],
-              },
-            }}
-          />
+      <ReactAriaI18nProvider locale={i18n.language}>
+        <ThemeProvider
+          attribute="data-theme"
+          themes={['dark', 'black']}
+          enableSystem
+          defaultTheme="dark"
+          disableTransitionOnChange
+        >
+          <Toast.Provider className="rounded-sm" />
           <ErrorBoundaryProvider>
             {loadingUserSummary && <FullscreenLoader loaderFadeOut={loaderFadeOut} />}
             <Layout>
               <Component {...pageProps} />
             </Layout>
           </ErrorBoundaryProvider>
-        </HeroUIProvider>
-      </ThemeProvider>
+        </ThemeProvider>
+      </ReactAriaI18nProvider>
     </I18nProvider>
   );
 };

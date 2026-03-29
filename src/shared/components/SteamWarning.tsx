@@ -1,7 +1,7 @@
 import { invoke } from '@tauri-apps/api/core';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, useDisclosure } from '@heroui/react';
+import { Button, useOverlayState } from '@heroui/react';
 import { CustomModal } from '@/shared/components';
 import { useStateStore, useUserStore } from '@/shared/stores';
 import { checkSteamStatus } from '@/shared/utils';
@@ -11,7 +11,7 @@ export const SteamWarning = () => {
   const showSteamWarning = useStateStore(state => state.showSteamWarning);
   const setShowSteamWarning = useStateStore(state => state.setShowSteamWarning);
   const userSummary = useUserStore(state => state.userSummary);
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, open, toggle } = useOverlayState();
 
   useEffect(() => {
     const shouldShowWarning = async () => {
@@ -21,18 +21,18 @@ export const SteamWarning = () => {
       const isUserDev = devAccounts.includes(userSummary?.steamId ?? '');
 
       if (showSteamWarning && !isDev && !isUserDev) {
-        onOpen();
+        open();
       }
     };
 
     shouldShowWarning();
-  }, [onOpen, showSteamWarning, userSummary?.steamId]);
+  }, [open, showSteamWarning, userSummary?.steamId]);
 
   const verifySteamStatus = async () => {
     const isSteamRunning = await checkSteamStatus(true);
     if (isSteamRunning) {
       setShowSteamWarning(false);
-      onOpenChange();
+      toggle();
     }
   };
 
@@ -45,8 +45,7 @@ export const SteamWarning = () => {
       buttons={
         <Button
           size="sm"
-          className="bg-btn-secondary text-btn-text font-bold"
-          radius="full"
+          className="bg-btn-secondary text-btn-text font-bold rounded-full"
           onPress={verifySteamStatus}
         >
           {t($ => $['common.confirm'])}

@@ -1,7 +1,46 @@
-@import 'tailwindcss';
-@config "../../tailwind.config.mjs";
+@import "tailwindcss";
+@import "@heroui/styles";
+@import "./themes/black.css";
 
-:root {
+@source inline("break-inside-avoid");
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+:root,
+[data-theme='dark'] {
+  --accent: #2c7adb;
+  --default: #137eb5;
+  --danger: #ef4444;
+  --danger-foreground: #fff;
+  
+  --base: #000000;
+  --dynamic: #7ac2e3ff;
+  --dynamic-hover: #5aa3c4ff;
+  --btn-text: #000000;
+  --btn-secondary: #ebebeb;
+  --btn-achievement-header: #6f6f6f52;
+  --btn-achievement-header-hover: #58585852;
+  --content: #ffffff;
+  --altwhite: #a9a9a9;
+  --header-hover: #ffffff;
+  --sidebar: #151515ff;
+  --item-active: #ffffff11;
+  --item-hover: #ffffff0c;
+  --search: #6d6d6d42;
+  --border: #1f1f1fff;
+  --input: #333333ff;
+  --inputhover: #272727ff;
+  --switch: #333333ff;
+  --tab-panel: #00000058;
+  --popover: #101010ff;
+  --achievement-main: #1c1c1ccc;
+  --achievement-footer: #1f1f1fcc;
+  --stats-input: #333333ff;
+  --stats-inputhover: #272727ff;
+  --github-star: #332309;
+  --github-star-foreground: #f5a524;
+  --github-star-hover: #2e2008;
+  --github-star-foreground-hover: #dd9520;
+
   --gradient-bg: linear-gradient(to bottom, #171717ff 0%, #070707ff 100%);
   --gradient-alt: linear-gradient(to bottom, #171717ff 0%, #0c0c0cff 100%);
   --gradient-btn: linear-gradient(
@@ -11,6 +50,7 @@
     #2eabe5ff 70%,
     #34bfffff 100%
   );
+
   --sb-thumb: #515255;
   --sb-track: #222326;
   --holo-bg: linear-gradient(120deg, #3031358f 0%, #2020228f 50%, #3031358f 100%);
@@ -26,29 +66,43 @@
   --shimmer-color: #ffffff38;
 }
 
-/* Themes */
-.dark {
-  --gradient-bg: linear-gradient(to bottom, #171717ff 0%, #070707ff 100%);
-  --gradient-alt: linear-gradient(to bottom, #171717ff 0%, #0c0c0cff 100%);
-  --gradient-btn: linear-gradient(
-    100deg,
-    #154d66ff 0%,
-    #227ca5ff 40%,
-    #2eabe5ff 70%,
-    #34bfffff 100%
-  );
-}
+@theme {
+  --background-image-gradient-bg: var(--gradient-bg);
+  --background-image-gradient-alt: var(--gradient-alt);
 
-.black {
-  --gradient-bg: linear-gradient(to bottom, #000000 0%, #050505 100%);
-  --gradient-alt: linear-gradient(to bottom, #000000 0%, #0a0a0a 100%);
-  --gradient-btn: linear-gradient(
-    100deg,
-    #232323ff 0%,
-    #383838ff 40%,
-    #5e5e5eff 70%,
-    #606060ff 100%
-  );
+  --color-base: var(--base);
+  --color-dynamic: var(--dynamic);
+  --color-dynamic-hover: var(--dynamic-hover);
+  --color-btn-text: var(--btn-text);
+  --color-btn-secondary: var(--btn-secondary);
+  --color-btn-achievement-header: var(--btn-achievement-header);
+  --color-btn-achievement-header-hover: var(--btn-achievement-header-hover);
+  --color-content: var(--content);
+  --color-altwhite: var(--altwhite);
+  --color-header-hover: var(--header-hover);
+  --color-sidebar: var(--sidebar);
+  --color-item-active: var(--item-active);
+  --color-item-hover: var(--item-hover);
+  --color-search: var(--search);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-inputhover: var(--inputhover);
+  --color-switch: var(--switch);
+  --color-tab-panel: var(--tab-panel);
+  --color-popover: var(--popover);
+  --color-achievement-main: var(--achievement-main);
+  --color-achievement-footer: var(--achievement-footer);
+  --color-stats-input: var(--stats-input);
+  --color-stats-inputhover: var(--stats-inputhover);
+  --color-github-star: var(--github-star);
+  --color-github-star-foreground: var(--github-star-foreground);
+  --color-github-star-hover: var(--github-star-hover);
+  --color-github-star-foreground-hover: var(--github-star-foreground-hover);
+
+  --width-calc: calc(100vw - 250px);
+  --height-calc: calc(100vh - 36px);
+
+  --animate-skew-scroll: skew-scroll 30s linear infinite;
 }
 
 ::-webkit-scrollbar {
@@ -136,212 +190,6 @@ svg {
   }
 }
 
-/* Go pro button */
-
-@property --gradient-angle {
-  syntax: '<angle>';
-  initial-value: 0deg;
-  inherits: false;
-}
-
-@property --gradient-angle-offset {
-  syntax: '<angle>';
-  initial-value: 0deg;
-  inherits: false;
-}
-
-@property --gradient-percent {
-  syntax: '<percentage>';
-  initial-value: 5%;
-  inherits: false;
-}
-
-@property --gradient-shine {
-  syntax: '<color>';
-  initial-value: white;
-  inherits: false;
-}
-
-.shiny-cta,
-.shiny-cta-link {
-  --shiny-cta-bg: #000000ff;
-  --shiny-cta-bg-subtle: #1a1818;
-  --shiny-cta-fg: #ffffff;
-  --shiny-cta-highlight: #34bfffff;
-  --shiny-cta-highlight-subtle: #34bfffff;
-  --animation: gradient-angle linear infinite;
-  --duration: 3s;
-  --shadow-size: 2px;
-  --transition: 800ms cubic-bezier(0.25, 1, 0.5, 1);
-
-  isolation: isolate;
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-  outline-offset: 4px;
-  padding: 0.1rem 0.25rem;
-  padding-left: 0.5rem;
-  font-size: 0.7rem;
-  line-height: 1;
-  height: 1.6rem;
-  min-width: 130px;
-  font-weight: 500;
-  border: 1px solid transparent;
-  border-radius: 9999px;
-  color: var(--shiny-cta-fg);
-  background:
-    linear-gradient(100deg, #154d66ff 0%, #227ca5ff 40%, #2eabe5ff 70%, #34bfffff 100%) padding-box,
-    conic-gradient(
-        from calc(var(--gradient-angle) - var(--gradient-angle-offset)),
-        transparent,
-        var(--shiny-cta-highlight) var(--gradient-percent),
-        var(--gradient-shine) calc(var(--gradient-percent) * 2),
-        var(--shiny-cta-highlight) calc(var(--gradient-percent) * 3),
-        transparent calc(var(--gradient-percent) * 4)
-      )
-      border-box;
-  box-shadow: inset 0 0 0 1px var(--shiny-cta-bg-subtle);
-  transition: var(--transition);
-  transition-property: --gradient-angle-offset, --gradient-percent, --gradient-shine;
-}
-
-/* Link-specific styles */
-.shiny-cta-link {
-  display: inline-block;
-  text-decoration: none;
-}
-
-.shiny-cta::before,
-.shiny-cta::after,
-.shiny-cta span::before,
-.shiny-cta-link::before,
-.shiny-cta-link::after,
-.shiny-cta-link span::before {
-  content: '';
-  pointer-events: none;
-  position: absolute;
-  inset-inline-start: 50%;
-  inset-block-start: 50%;
-  translate: -50% -50%;
-  z-index: -1;
-}
-
-/* Dots pattern */
-.shiny-cta::before,
-.shiny-cta-link::before {
-  --size: calc(100% - var(--shadow-size) * 3);
-  --position: 2px;
-  --space: calc(var(--position) * 2);
-  width: var(--size);
-  height: var(--size);
-  background: radial-gradient(
-      circle at var(--position) var(--position),
-      white calc(var(--position) / 4),
-      transparent 0
-    )
-    padding-box;
-  background-size: var(--space) var(--space);
-  background-repeat: space;
-  mask-image: conic-gradient(
-    from calc(var(--gradient-angle) + 45deg),
-    black,
-    transparent 10% 90%,
-    black
-  );
-  border-radius: 0.5rem;
-  opacity: 0.4;
-  z-index: -1;
-}
-
-/* Inner shimmer */
-.shiny-cta::after,
-.shiny-cta-link::after {
-  --animation: shimmer linear infinite;
-  width: 100%;
-  aspect-ratio: 1;
-  background: linear-gradient(-50deg, transparent, var(--shiny-cta-highlight), transparent);
-  mask-image: radial-gradient(circle at bottom, transparent 40%, black);
-  opacity: 0.6;
-}
-
-.shiny-cta span,
-.shiny-cta-link span {
-  z-index: 1;
-}
-
-.shiny-cta span::before,
-.shiny-cta-link span::before {
-  --size: calc(100% + 1rem);
-  width: var(--size);
-  height: var(--size);
-  box-shadow: inset 0 -1ex 2rem 4px var(--shiny-cta-highlight);
-  opacity: 0;
-  transition: opacity var(--transition);
-  animation: calc(var(--duration) * 1.5) breathe linear infinite;
-}
-
-/* Animate */
-.shiny-cta,
-.shiny-cta::before,
-.shiny-cta::after,
-.shiny-cta-link,
-.shiny-cta-link::before,
-.shiny-cta-link::after {
-  animation:
-    var(--animation) var(--duration),
-    var(--animation) calc(var(--duration) / 0.4) reverse paused;
-  animation-composition: add;
-}
-
-.shiny-cta:is(:hover, :focus-visible),
-.shiny-cta-link:is(:hover, :focus-visible) {
-  --gradient-percent: 20%;
-  --gradient-angle-offset: 95deg;
-  --gradient-shine: var(--shiny-cta-highlight-subtle);
-}
-
-.shiny-cta:is(:hover, :focus-visible),
-.shiny-cta:is(:hover, :focus-visible)::before,
-.shiny-cta:is(:hover, :focus-visible)::after,
-.shiny-cta-link:is(:hover, :focus-visible),
-.shiny-cta-link:is(:hover, :focus-visible)::before,
-.shiny-cta-link:is(:hover, :focus-visible)::after {
-  animation-play-state: running;
-}
-
-.shiny-cta:is(:hover, :focus-visible) span::before,
-.shiny-cta-link:is(:hover, :focus-visible) span::before {
-  opacity: 1;
-}
-
-@keyframes gradient-angle {
-  to {
-    --gradient-angle: 360deg;
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    transform: translateX(-100%);
-  }
-  50% {
-    transform: translateX(100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
-}
-
-@keyframes breathe {
-  from,
-  to {
-    scale: 1;
-  }
-  50% {
-    scale: 1.2;
-  }
-}
-
 @keyframes custom-shimmer {
   0% {
     transform: translateX(0%);
@@ -351,5 +199,14 @@ svg {
   }
   100% {
     transform: translateX(200%);
+  }
+}
+
+@keyframes skew-scroll {
+  0% {
+    transform: rotatex(20deg) rotateZ(-20deg) skewX(20deg) translateZ(0) translateY(0);
+  }
+  100% {
+    transform: rotatex(20deg) rotateZ(-20deg) skewX(20deg) translateZ(0) translateY(-100%);
   }
 }

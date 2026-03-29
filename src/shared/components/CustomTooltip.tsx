@@ -23,19 +23,14 @@ export const CustomTooltip = ({
   }
 
   return (
-    <Tooltip
-      showArrow
-      content={content}
-      placement={placement}
-      className={`font-semibold bg-[#0a0a0a] text-content ${className}`}
-      delay={250}
-      closeDelay={100}
-      classNames={{
-        base: 'pointer-events-none before:bg-[#0a0a0a]!',
-        content: 'shadow-none',
-      }}
-    >
-      {children}
+    <Tooltip delay={250} closeDelay={100}>
+      <Tooltip.Trigger className={`font-semibold text-content ${className}`}>
+        {children}
+      </Tooltip.Trigger>
+      <Tooltip.Content showArrow placement={placement}>
+        <Tooltip.Arrow />
+        {content}
+      </Tooltip.Content>
     </Tooltip>
   );
 };

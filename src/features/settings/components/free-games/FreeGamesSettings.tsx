@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { TbChevronRight } from 'react-icons/tb';
-import { Button, Divider } from '@heroui/react';
+import { Button, Separator } from '@heroui/react';
 
 import { handleShowStoreLoginWindow, handleSignOutCurrentStoreUser } from '@/features/settings';
 import { Beta, ExtLink, SettingsSwitch } from '@/shared/components';
@@ -36,7 +36,7 @@ export const FreeGamesSettings = () => {
           <SettingsSwitch type="general" name="freeGameNotifications" />
         </div>
 
-        <Divider className="bg-border/70 my-4" />
+        <Separator className="bg-border/70 my-4" />
 
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
@@ -60,8 +60,7 @@ export const FreeGamesSettings = () => {
           <div className="flex flex-col justify-end gap-2">
             <Button
               size="sm"
-              className="bg-btn-secondary text-btn-text font-bold"
-              radius="full"
+              className="bg-btn-secondary text-btn-text font-bold rounded-full"
               onPress={() => handleShowStoreLoginWindow(setUserSettings)}
             >
               {userSettings.general?.autoRedeemFreeGames
@@ -70,9 +69,8 @@ export const FreeGamesSettings = () => {
             </Button>
             <Button
               size="sm"
-              variant="light"
-              radius="full"
-              color="danger"
+              variant="ghost"
+              className="text-danger hover:bg-danger-soft rounded-full"
               onPress={() => handleSignOutCurrentStoreUser(setUserSettings)}
             >
               {t($ => $['common.signOut'])}

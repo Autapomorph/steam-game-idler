@@ -100,20 +100,15 @@ export const TradingCardsList = () => {
       >
         <div className="relative flex justify-between items-center w-full mb-2">
           <Checkbox
-            size="sm"
             name={item.assetid}
             isDisabled={isLocked}
             isSelected={(!isLocked && tradingCardContext.selectedCards[item.assetid]) || false}
             onChange={() => tradingCardContext.toggleCardSelection(item.assetid)}
-            classNames={{
-              hiddenInput: 'w-fit',
-              wrapper: cn(
-                'before:group-data-[selected=true]:!border-dynamic',
-                'before:border-altwhite after:bg-dynamic m-0',
-              ),
-              label: 'hidden',
-            }}
-          />
+          >
+            <Checkbox.Control>
+              <Checkbox.Indicator />
+            </Checkbox.Control>
+          </Checkbox>
 
           <div className="flex items-center gap-1">
             <CustomTooltip content={t($ => $['tradingCards.lockCard'])} placement="top">
@@ -215,7 +210,7 @@ export const TradingCardsList = () => {
       key={tradingCardContext.refreshKey}
       className={cn(
         'min-h-calc max-h-calc overflow-y-auto overflow-x-hidden mt-9 ease-in-out',
-        sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
+        sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-calc',
       )}
       style={{
         transitionDuration,
@@ -233,16 +228,14 @@ export const TradingCardsList = () => {
 
       {!userSettings.cardFarming.credentials && (
         <div className="mx-6 max-w-fit">
-          <Alert
-            color="primary"
-            variant="faded"
-            classNames={{
-              base: '!bg-dynamic/30 text-dynamic !border-dynamic/40',
-              iconWrapper: '!bg-dynamic/30 border-dynamic/40',
-              description: 'font-bold text-xs',
-            }}
-            description={t($ => $['settings.tradingCards.alert'])}
-          />
+          <Alert className="bg-dynamic/30! text-dynamic border-dynamic/40!">
+            <Alert.Indicator className="bg-dynamic/30! border-dynamic/40 rounded-full" />
+            <Alert.Content>
+              <Alert.Title className="font-bold text-xs">
+                {t($ => $['settings.tradingCards.alert'])}
+              </Alert.Title>
+            </Alert.Content>
+          </Alert>
         </div>
       )}
 
@@ -256,7 +249,7 @@ export const TradingCardsList = () => {
         </div>
       ) : (
         <div className="flex justify-center items-center w-calc h-[calc(100vh-224px)]">
-          <Spinner variant="simple" />
+          <Spinner />
         </div>
       )}
     </div>

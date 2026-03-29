@@ -2,7 +2,7 @@ import type { Game } from '@/shared/types';
 import { useTranslation } from 'react-i18next';
 import { FaSteam } from 'react-icons/fa';
 import { TbAwardFilled, TbDotsVertical, TbPlayerPlayFilled } from 'react-icons/tb';
-import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react';
+import { Dropdown, Label } from '@heroui/react';
 import { useStateStore } from '@/shared/stores';
 import { handleIdle, openExternalLink, viewAchievments } from '@/shared/utils';
 
@@ -21,51 +21,46 @@ export const CardMenu = ({ item }: { item: Game }) => {
   };
 
   return (
-    <Dropdown
-      classNames={{
-        content: ['rounded-xl p-0 bg-transparent'],
-      }}
-    >
-      <DropdownTrigger>
+    <Dropdown>
+      <Dropdown.Trigger>
         <div className="p-1 bg-black/50 hover:bg-black hover:bg-opacity-80 cursor-pointer rounded-md duration-200">
           <TbDotsVertical />
         </div>
-      </DropdownTrigger>
-      <DropdownMenu
-        aria-label="actions"
-        classNames={{ base: 'bg-popover border border-border rounded-xl' }}
-      >
-        <DropdownItem
-          className="rounded-xl"
-          classNames={{ base: ['data-[hover=true]:bg-item-hover'] }}
-          key="idle"
-          startContent={<TbPlayerPlayFilled size={16} className="text-content" />}
-          onPress={() => handleIdle(item)}
-          textValue="Idle game"
-        >
-          <p className="text-sm text-content">{t($ => $['cardMenu.idle'])}</p>
-        </DropdownItem>
-        <DropdownItem
-          className="rounded-xl"
-          classNames={{ base: ['data-[hover=true]:bg-item-hover'] }}
-          key="achievements"
-          startContent={<TbAwardFilled size={16} className="text-content" />}
-          onPress={() => viewAchievments(item, setAppId, setAppName, setShowAchievements)}
-          textValue="View achievements"
-        >
-          <p className="text-sm text-content">{t($ => $['cardMenu.achievements'])}</p>
-        </DropdownItem>
-        <DropdownItem
-          className="rounded-xl"
-          classNames={{ base: ['data-[hover=true]:bg-item-hover'] }}
-          key="store"
-          startContent={<FaSteam fontSize={16} className="text-content" />}
-          onPress={() => viewStorePage(item)}
-          textValue="View store page"
-        >
-          <p className="text-sm text-content">{t($ => $['cardMenu.store'])}</p>
-        </DropdownItem>
-      </DropdownMenu>
+      </Dropdown.Trigger>
+
+      <Dropdown.Popover>
+        <Dropdown.Menu aria-label="actions">
+          <Dropdown.Item
+            className="rounded-xl"
+            key="idle"
+            onPress={() => handleIdle(item)}
+            textValue="Idle game"
+          >
+            <TbPlayerPlayFilled size={16} className="text-content" />
+            <Label className="text-sm text-content">{t($ => $['cardMenu.idle'])}</Label>
+          </Dropdown.Item>
+
+          <Dropdown.Item
+            className="rounded-xl"
+            key="achievements"
+            onPress={() => viewAchievments(item, setAppId, setAppName, setShowAchievements)}
+            textValue="View achievements"
+          >
+            <TbAwardFilled size={16} className="text-content" />
+            <Label className="text-sm text-content">{t($ => $['cardMenu.achievements'])}</Label>
+          </Dropdown.Item>
+
+          <Dropdown.Item
+            className="rounded-xl"
+            key="store"
+            onPress={() => viewStorePage(item)}
+            textValue="View store page"
+          >
+            <FaSteam fontSize={16} className="text-content" />
+            <Label className="text-sm text-content">{t($ => $['cardMenu.store'])}</Label>
+          </Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown.Popover>
     </Dropdown>
   );
 };

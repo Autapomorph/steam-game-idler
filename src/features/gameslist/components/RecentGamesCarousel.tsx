@@ -67,8 +67,7 @@ export const RecentGamesCarousel = ({ gamesContext }: RecentGamesCarouselProps) 
           <Button
             isIconOnly
             size="sm"
-            className="bg-btn-secondary text-btn-text font-bold"
-            radius="full"
+            className="bg-btn-secondary text-btn-text font-bold rounded-full"
             onPress={() => scroll('left')}
           >
             <TbChevronLeft size={16} />
@@ -76,8 +75,7 @@ export const RecentGamesCarousel = ({ gamesContext }: RecentGamesCarouselProps) 
           <Button
             isIconOnly
             size="sm"
-            className="bg-btn-secondary text-btn-text font-bold"
-            radius="full"
+            className="bg-btn-secondary text-btn-text font-bold rounded-full"
             onPress={() => scroll('right')}
           >
             <TbChevronRight size={16} />

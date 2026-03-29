@@ -116,10 +116,7 @@ export const GamesList = () => {
   return (
     <div
       key={gamesContext.refreshKey}
-      className={cn(
-        'mt-9 ease-in-out',
-        sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
-      )}
+      className={cn('mt-9 ease-in-out', sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-calc')}
       style={{
         transitionDuration,
         transitionProperty: 'width',
@@ -155,7 +152,7 @@ export const GamesList = () => {
         />
       ) : (
         <div className="flex justify-center items-center w-calc h-[calc(100vh-168px)]">
-          <Spinner variant="simple" />
+          <Spinner />
         </div>
       )}
     </div>

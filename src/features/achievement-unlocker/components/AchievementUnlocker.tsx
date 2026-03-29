@@ -98,16 +98,15 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
 
               <div className="flex items-center gap-2 mt-1">
                 <Button
-                  color="danger"
-                  radius="full"
-                  className="font-bold"
-                  startContent={<TbPlayerStopFilled size={18} />}
+                  variant="danger"
+                  className="font-bold rounded-full"
                   onPress={() => {
                     stopIdle(currentGame?.appid, currentGame?.name);
                     setIsAchievementUnlocker(false);
                     updateTrayIcon();
                   }}
                 >
+                  <TbPlayerStopFilled size={18} />
                   {isComplete ? (
                     <p>{t($ => $['common.close'])}</p>
                   ) : (

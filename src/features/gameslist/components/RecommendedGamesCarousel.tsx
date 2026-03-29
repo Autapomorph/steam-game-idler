@@ -116,8 +116,7 @@ export const RecommendedGamesCarousel = ({ gamesContext }: RecommendedGamesCarou
           <Button
             isIconOnly
             size="sm"
-            className="bg-btn-secondary text-btn-text font-bold"
-            radius="full"
+            className="bg-btn-secondary text-btn-text font-bold rounded-full"
             onPress={() => handleManualScroll('left')}
           >
             <TbChevronLeft size={16} />
@@ -125,8 +124,7 @@ export const RecommendedGamesCarousel = ({ gamesContext }: RecommendedGamesCarou
           <Button
             isIconOnly
             size="sm"
-            className="bg-btn-secondary text-btn-text font-bold"
-            radius="full"
+            className="bg-btn-secondary text-btn-text font-bold rounded-full"
             onPress={() => handleManualScroll('right')}
           >
             <TbChevronRight size={16} />

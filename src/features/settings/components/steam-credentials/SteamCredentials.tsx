@@ -2,7 +2,16 @@ import type { InvokeSteamCredentials } from '@/shared/types';
 import { invoke } from '@tauri-apps/api/core';
 import { Trans, useTranslation } from 'react-i18next';
 import { TbChevronRight, TbEraser, TbUpload } from 'react-icons/tb';
-import { Button, cn, Divider, Input, Spinner, useDisclosure } from '@heroui/react';
+import {
+  Button,
+  cn,
+  Separator,
+  TextField,
+  InputGroup,
+  Spinner,
+  useOverlayState,
+  Label,
+} from '@heroui/react';
 import Image from 'next/image';
 
 import {
@@ -21,7 +30,7 @@ export const SteamCredentials = () => {
   const userSettings = useUserStore(state => state.userSettings);
   const setUserSettings = useUserStore(state => state.setUserSettings);
   const cardSettings = useCardSettings();
-  const { isOpen, onOpenChange } = useDisclosure();
+  const { isOpen, toggle } = useOverlayState();
 
   const handleShowSteamLoginWindow = async () => {
     const result = await invoke<InvokeSteamCredentials>('open_steam_login_window');
@@ -112,8 +121,7 @@ export const SteamCredentials = () => {
           <div className="flex flex-col justify-end gap-2">
             <Button
               size="sm"
-              className="bg-btn-secondary text-btn-text font-bold"
-              radius="full"
+              className="bg-btn-secondary text-btn-text font-bold rounded-full"
               onPress={handleShowSteamLoginWindow}
             >
               {cardSettings.hasCookies
@@ -122,9 +130,8 @@ export const SteamCredentials = () => {
             </Button>
             <Button
               size="sm"
-              variant="light"
-              radius="full"
-              color="danger"
+              className="text-danger hover:bg-danger-soft rounded-full"
+              variant="ghost"
               onPress={handleSignOutCurrentUser}
             >
               {t($ => $['common.signOut'])}
@@ -132,7 +139,7 @@ export const SteamCredentials = () => {
           </div>
         </div>
 
-        <Divider className="bg-border/70 my-4" />
+        <Separator className="bg-border/70 my-4" />
 
         <div className="flex justify-between items-start">
           <div className="flex flex-col gap-2 w-1/2">
@@ -198,8 +205,7 @@ export const SteamCredentials = () => {
                     <div className="flex justify-center gap-2 mt-3">
                       <Button
                         size="sm"
-                        className="bg-btn-secondary text-btn-text font-bold"
-                        radius="full"
+                        className="bg-btn-secondary text-btn-text font-bold rounded-full"
                         fullWidth
                         onPress={() => {
                           if (cardSettings.gamesWithDropsData.length === 0) {
@@ -210,15 +216,14 @@ export const SteamCredentials = () => {
                               cardSettings.setGamesWithDropsData,
                             );
                           }
-                          onOpenChange();
+                          toggle();
                         }}
                       >
                         {t($ => $['common.viewList'])}
                       </Button>
                       <Button
                         size="sm"
-                        className="bg-btn-secondary text-btn-text font-bold"
-                        radius="full"
+                        className="bg-btn-secondary text-btn-text font-bold rounded-full"
                         fullWidth
                         onPress={() =>
                           fetchGamesWithDropsData(
@@ -235,7 +240,7 @@ export const SteamCredentials = () => {
                   </div>
                 ) : (
                   <div className="flex items-center justify-center gap-2">
-                    <Spinner size="sm" variant="simple" />
+                    <Spinner size="sm" />
                     <p className="text-xs text-altwhite">
                       {t($ => $['settings.cardFarming.loading'])}
                     </p>
@@ -246,65 +251,61 @@ export const SteamCredentials = () => {
           </div>
 
           <div className="flex flex-col gap-4 w-62.5">
-            <Input
+            <TextField
+              className={cn('max-w-72.5')}
+              type="password"
               isRequired
-              label="sessionid"
-              labelPlacement="outside"
-              placeholder="sessionid"
-              className="max-w-72.5"
-              classNames={{
-                inputWrapper: cn(
-                  'bg-input data-[hover=true]:!bg-inputhover',
-                  'rounded-lg group-data-[focus-within=true]:!bg-inputhover',
-                ),
-                label: ['text-xs !text-altwhite font-bold'],
-                input: ['!text-content placeholder:text-altwhite/50'],
-              }}
               value={cardSettings.sidValue}
-              onChange={e => cardSettings.setSidValue(e.target.value)}
+              onChange={cardSettings.setSidValue}
+            >
+              <Label className="text-xs text-altwhite! font-bold">sessionid</Label>
+              <InputGroup>
+                <InputGroup.Input
+                  className={cn('text-content! placeholder:text-altwhite/50')}
+                  placeholder="sessionid"
+                />
+              </InputGroup>
+            </TextField>
+
+            <TextField
               type="password"
-            />
-            <Input
+              className={cn('max-w-72.5')}
               isRequired
-              label="steamLoginSecure"
-              labelPlacement="outside"
-              placeholder="steamLoginSecure"
-              className="max-w-72.5"
-              classNames={{
-                inputWrapper: cn(
-                  'bg-input data-[hover=true]:!bg-inputhover',
-                  'rounded-lg group-data-[focus-within=true]:!bg-inputhover',
-                ),
-                label: ['text-xs !text-altwhite font-bold'],
-                input: ['!text-content placeholder:text-altwhite/50'],
-              }}
               value={cardSettings.slsValue}
-              onChange={e => cardSettings.setSlsValue(e.target.value)}
+              onChange={cardSettings.setSlsValue}
+            >
+              <Label className="text-xs text-altwhite! font-bold">steamLoginSecure</Label>
+              <InputGroup>
+                <InputGroup.Input
+                  className={cn('text-content! placeholder:text-altwhite/50')}
+                  placeholder="steamLoginSecure"
+                />
+              </InputGroup>
+            </TextField>
+
+            <TextField
               type="password"
-            />
-            <Input
-              label={<p>steamParental / steamMachineAuth</p>}
-              labelPlacement="outside"
-              placeholder="steamParental / steamMachineAuth"
-              className="max-w-72.5"
-              classNames={{
-                inputWrapper: cn(
-                  'bg-input data-[hover=true]:!bg-inputhover',
-                  'rounded-lg group-data-[focus-within=true]:!bg-inputhover',
-                ),
-                label: ['text-xs !text-altwhite font-bold'],
-                input: ['!text-content placeholder:text-altwhite/50'],
-              }}
+              className={cn('max-w-72.5')}
+              isRequired
               value={cardSettings.smaValue}
-              onChange={e => cardSettings.setSmaValue(e.target.value)}
-              type="password"
-            />
+              onChange={cardSettings.setSmaValue}
+            >
+              <Label className="text-xs text-altwhite! font-bold">
+                <p>steamParental / steamMachineAuth</p>
+              </Label>
+              <InputGroup>
+                <InputGroup.Input
+                  className={cn('text-content! placeholder:text-altwhite/50')}
+                  placeholder="steamParental / steamMachineAuth"
+                />
+              </InputGroup>
+            </TextField>
+
             <div className="flex justify-end gap-2">
               <Button
                 size="sm"
-                variant="light"
-                radius="full"
-                color="danger"
+                className="text-danger hover:bg-danger-soft rounded-full"
+                variant="ghost"
                 isDisabled={!cardSettings.hasCookies}
                 onPress={() =>
                   handleClearCredentials(
@@ -319,14 +320,13 @@ export const SteamCredentials = () => {
                     cardSettings.setTotalDropsRemaining,
                   )
                 }
-                startContent={<TbEraser size={20} />}
               >
+                <TbEraser size={20} />
                 {t($ => $['common.clear'])}
               </Button>
               <Button
                 size="sm"
-                className="bg-btn-secondary text-btn-text font-bold"
-                radius="full"
+                className="bg-btn-secondary text-btn-text font-bold rounded-full"
                 isDisabled={
                   cardSettings.hasCookies || !cardSettings.sidValue || !cardSettings.slsValue
                 }
@@ -344,8 +344,8 @@ export const SteamCredentials = () => {
                     cardSettings.setGamesWithDropsData,
                   )
                 }
-                startContent={<TbUpload size={20} />}
               >
+                <TbUpload size={20} />
                 {t($ => $['common.save'])}
               </Button>
             </div>
@@ -355,11 +355,7 @@ export const SteamCredentials = () => {
 
       <CustomModal
         isOpen={isOpen}
-        onOpenChange={onOpenChange}
-        classNames={{
-          body: '!p-0 !max-h-[60vh] !min-h-[60vh]',
-          base: 'max-w-xl bg-base/85 backdrop-blur-sm',
-        }}
+        onOpenChange={toggle}
         title={
           <div className="flex justify-between items-center">
             <p className="truncate capitalize">
@@ -413,11 +409,9 @@ export const SteamCredentials = () => {
         buttons={
           <Button
             size="sm"
-            color="danger"
-            variant="light"
-            radius="full"
-            className="font-semibold"
-            onPress={onOpenChange}
+            variant="ghost"
+            className="text-danger hover:bg-danger-soft font-semibold rounded-full"
+            onPress={toggle}
           >
             {t($ => $['common.close'])}
           </Button>

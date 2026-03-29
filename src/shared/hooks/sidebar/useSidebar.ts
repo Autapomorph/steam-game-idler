@@ -1,7 +1,7 @@
 import type { ActivePageType, CurrentTabType } from '@/shared/types';
 import { invoke } from '@tauri-apps/api/core';
 import { useTranslation } from 'react-i18next';
-import { useDisclosure } from '@heroui/react';
+import { useOverlayState } from '@heroui/react';
 import { showDangerToast } from '@/shared/components';
 import { useNavigationStore, useSearchStore, useUserStore } from '@/shared/stores';
 import { logEvent } from '@/shared/utils';
@@ -16,10 +16,10 @@ export function useSidebar(
   const setCurrentTab = useNavigationStore(state => state.setCurrentTab);
   const userSummary = useUserStore(state => state.userSummary);
   const setUserSummary = useUserStore(state => state.setUserSummary);
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, open, toggle } = useOverlayState();
 
   const openConfirmation = () => {
-    onOpen();
+    open();
   };
 
   // Handle logging out
@@ -56,7 +56,7 @@ export function useSidebar(
 
   return {
     isOpen,
-    onOpenChange,
+    onOpenChange: toggle,
     activePage,
     setActivePage,
     openConfirmation,

@@ -1,4 +1,4 @@
-import { cn, NumberInput } from '@heroui/react';
+import { cn, NumberField } from '@heroui/react';
 import { type RowComponentProps } from 'react-window';
 import { useTranslation } from 'react-i18next';
 
@@ -42,26 +42,22 @@ export const StatisticsListRow = ({ index, style, data }: Props) => {
                 {t($ => $['achievementManager.statistics.flags'])}: {item1.flags}
               </p>
             </div>
-            <NumberInput
-              hideStepper
+
+            <NumberField
+              aria-label="statistic value"
+              className="w-30"
               isDisabled={protectedStatisticOne}
-              size="sm"
               value={item1.value}
               maxValue={99999}
               formatOptions={{ useGrouping: false }}
               onChange={e => updateStatistic(item1.id, e)}
-              aria-label="statistic value"
-              className="w-30"
-              classNames={{
-                inputWrapper: cn(
-                  'bg-stats-input data-[hover=true]:!bg-stats-inputhover',
-                  'group-data-[focus-visible=true]:ring-transparent',
-                  'group-data-[focus-visible=true]:ring-offset-transparent',
-                  'group-data-[focus-within=true]:!bg-stats-inputhover h-8',
-                ),
-                input: ['text-sm !text-content'],
-              }}
-            />
+            >
+              <NumberField.Group>
+                <NumberField.DecrementButton />
+                <NumberField.Input className="text-sm text-content! placeholder:text-altwhite/50" />
+                <NumberField.IncrementButton />
+              </NumberField.Group>
+            </NumberField>
           </div>
         </div>
       )}
@@ -81,26 +77,22 @@ export const StatisticsListRow = ({ index, style, data }: Props) => {
                 {t($ => $['achievementManager.statistics.flags'])}: {item2.flags}
               </p>
             </div>
-            <NumberInput
-              hideStepper
+
+            <NumberField
+              aria-label="statistic value"
+              className="w-30"
               isDisabled={protectedStatisticTwo}
-              size="sm"
               value={item2.value}
               maxValue={99999}
               formatOptions={{ useGrouping: false }}
               onChange={e => updateStatistic(item2.id, e)}
-              aria-label="statistic value"
-              className="w-30"
-              classNames={{
-                inputWrapper: cn(
-                  'bg-stats-input data-[hover=true]:!bg-stats-inputhover',
-                  'group-data-[focus-visible=true]:ring-transparent',
-                  'group-data-[focus-visible=true]:ring-offset-transparent',
-                  'group-data-[focus-within=true]:!bg-stats-inputhover h-8',
-                ),
-                input: ['text-sm !text-content'],
-              }}
-            />
+            >
+              <NumberField.Group>
+                <NumberField.DecrementButton />
+                <NumberField.Input className="text-sm text-content! placeholder:text-altwhite/50" />
+                <NumberField.IncrementButton />
+              </NumberField.Group>
+            </NumberField>
           </div>
         </div>
       )}

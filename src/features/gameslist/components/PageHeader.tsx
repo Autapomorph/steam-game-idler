@@ -1,7 +1,7 @@
 import type { Game, SortOption } from '@/shared/types';
 import { useTranslation } from 'react-i18next';
 import { TbX } from 'react-icons/tb';
-import { Button, cn, Divider, Tab, Tabs } from '@heroui/react';
+import { Button, cn, Separator, Tabs } from '@heroui/react';
 import { handleSortingChange } from '@/features/gameslist';
 import { handleRefreshGamesList } from '@/features/gameslist/utils/handleRefreshGamesList';
 import { useSearchStore, useUserStore } from '@/shared/stores';
@@ -46,39 +46,37 @@ export const PageHeader = ({
 
             <div className="flex items-center gap-2 mt-1">
               <Button
-                className="bg-btn-secondary text-btn-text font-bold"
-                radius="full"
+                className="bg-btn-secondary text-btn-text font-bold rounded-full"
                 onPress={() => handleRefreshGamesList(userSummary?.steamId, setRefreshKey, true)}
               >
                 {t($ => $['common.refresh'])}
               </Button>
 
-              <Divider orientation="vertical" className="mx-2 h-8 bg-border" />
+              <Separator orientation="vertical" className="mx-2 h-8 bg-border" />
 
               <p className="text-sm text-altwhite font-bold">{t($ => $['common.sortBy'])}</p>
 
               <Tabs
-                aria-label="sort options"
-                items={sortOptions}
                 selectedKey={sortStyle}
-                radius="full"
-                classNames={{
-                  tabList: 'gap-0 w-full bg-item-active',
-                  tab: 'data-[hover-unselected=true]:!bg-item-hover data-[hover-unselected=true]:opacity-100',
-                  tabContent:
-                    'text-sm group-data-[selected=true]:text-dynamic text-altwhite font-bold',
-                  cursor: '!bg-dynamic/10 w-full',
-                }}
                 onSelectionChange={key => {
                   handleSortingChange(key as string, setSortStyle);
                 }}
               >
-                {item => <Tab key={item.key} title={item.label} />}
+                <Tabs.ListContainer>
+                  <Tabs.List aria-label="sort options">
+                    {sortOptions.map(option => (
+                      <Tabs.Tab key={option.key} id={option.key}>
+                        {option.label}
+                        <Tabs.Indicator />
+                      </Tabs.Tab>
+                    ))}
+                  </Tabs.List>
+                </Tabs.ListContainer>
               </Tabs>
 
               {gameQueryValue && (
                 <div className="flex items-center gap-2">
-                  <Divider orientation="vertical" className="mx-2 h-8 bg-border" />
+                  <Separator orientation="vertical" className="mx-2 h-8 bg-border" />
                   <p className="text-sm text-altwhite font-bold">{t($ => $['common.search'])}</p>
                   <div className="flex items-center gap-2 text-sm text-altwhite p-2 bg-item-active rounded-full max-w-64">
                     <p className="text-content truncate">{gameQueryValue}</p>

@@ -37,8 +37,7 @@ export const Private = ({ setRefreshKey }: PrivateProps) => {
           {t($ => $['gamesList.private.change'])}
         </ExtLink>
         <Button
-          className="bg-btn-secondary text-btn-text font-bold mt-4"
-          radius="full"
+          className="bg-btn-secondary text-btn-text font-bold rounded-full mt-4"
           onPress={handleRefresh}
         >
           {t($ => $['gamesList.private.tryAgain'])}

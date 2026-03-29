@@ -2,7 +2,7 @@ import type { useTradingCardsList } from '@/features/trading-card-manager';
 import type { TradingCard } from '@/shared/types';
 import { useTranslation } from 'react-i18next';
 import { TbPackageExport } from 'react-icons/tb';
-import { Button, cn, NumberInput } from '@heroui/react';
+import { Button, NumberField } from '@heroui/react';
 import { CustomTooltip } from '@/shared/components';
 
 interface PriceInputProps {
@@ -16,8 +16,7 @@ export const PriceInput = ({ item, isLocked, tradingCardContext }: PriceInputPro
 
   return (
     <div className="flex items-center justify-center gap-1 mt-2">
-      <NumberInput
-        size="sm"
+      <NumberField
         isDisabled={isLocked}
         isInvalid={
           tradingCardContext.selectedCards[item.assetid] &&
@@ -34,32 +33,24 @@ export const PriceInput = ({ item, isLocked, tradingCardContext }: PriceInputPro
         }}
         aria-label="statistic value"
         className="w-21.25"
-        classNames={{
-          inputWrapper: cn(
-            'bg-input data-[hover=true]:!bg-inputhover border-none',
-            'group-data-[focus-visible=true]:ring-transparent',
-            'group-data-[focus-visible=true]:ring-offset-transparent',
-            'group-data-[focus-within=true]:!bg-inputhover',
-            'border group-data-[invalid=true]:border-red-500!',
-            'border group-data-[invalid=true]:bg-red-500/10!',
-          ),
-          input: ['text-sm !text-content'],
-          stepperButton: ['!text-content', 'text-sm'],
-        }}
-        onValueChange={value => tradingCardContext.updateCardPrice(item.assetid, value)}
-      />
+        onChange={value => tradingCardContext.updateCardPrice(item.assetid, value)}
+      >
+        <NumberField.Group>
+          <NumberField.DecrementButton />
+          <NumberField.Input className="text-sm text-content! placeholder:text-altwhite/50" />
+          <NumberField.IncrementButton />
+        </NumberField.Group>
+      </NumberField>
 
       <CustomTooltip content={t($ => $['common.list'])} placement="top">
         <Button
           isIconOnly
-          className="bg-btn-secondary text-btn-text font-bold"
-          radius="full"
-          isLoading={tradingCardContext.loadingListButton}
+          className="bg-btn-secondary text-btn-text font-bold rounded-full"
+          isPending={tradingCardContext.loadingListButton}
           isDisabled={
             tradingCardContext.loadingListButton ||
             tradingCardContext.getCardPriceValue(item.assetid) <= 0
           }
-          startContent={!tradingCardContext.loadingListButton && <TbPackageExport size={20} />}
           onPress={() => {
             tradingCardContext.handleSellSingleCard(
               item.assetid,
@@ -67,7 +58,9 @@ export const PriceInput = ({ item, isLocked, tradingCardContext }: PriceInputPro
               tradingCardContext.getCardPriceValue(item.assetid),
             );
           }}
-        />
+        >
+          {!tradingCardContext.loadingListButton && <TbPackageExport size={20} />}
+        </Button>
       </CustomTooltip>
     </div>
   );

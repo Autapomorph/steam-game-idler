@@ -36,23 +36,21 @@ export const Logs = () => {
           <div className="grid grid-cols-3 gap-2">
             <Button
               size="sm"
-              className="bg-btn-secondary text-btn-text font-bold"
-              radius="full"
+              className="bg-btn-secondary text-btn-text font-bold rounded-full"
               onPress={handleOpenLogFile}
-              startContent={<TbFolders size={20} />}
             >
+              <TbFolders size={20} />
               {t($ => $['settings.debug.viewLogFile'])}
             </Button>
             <OpenSettings />
             <ExportSettings />
             <Button
+              className="text-danger hover:bg-danger-soft rounded-full"
               size="sm"
-              variant="light"
-              radius="full"
-              color="danger"
+              variant="ghost"
               onPress={() => handleClearLogs()}
-              startContent={<TbEraser size={20} />}
             >
+              <TbEraser size={20} />
               {t($ => $['settings.debug.clearLogs'])}
             </Button>
             <ResetSettings setRefreshKey={setRefreshKey} />

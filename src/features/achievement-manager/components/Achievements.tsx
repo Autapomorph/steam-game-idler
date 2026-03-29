@@ -1,7 +1,7 @@
 import type { Achievement, CurrentTabType, Statistic } from '@/shared/types';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { cn, Tab, Tabs } from '@heroui/react';
+import { cn, Tabs } from '@heroui/react';
 import Image from 'next/image';
 import {
   AchievementsList,
@@ -45,7 +45,7 @@ export const Achievements = () => {
     <div
       className={cn(
         'overflow-y-auto overflow-x-hidden mt-9 ease-in-out',
-        sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-[calc(100vw-250px)]',
+        sidebarCollapsed ? 'w-[calc(100vw-56px)]' : 'w-calc',
       )}
       style={{
         transitionDuration,
@@ -87,24 +87,24 @@ export const Achievements = () => {
       <div className="relative flex flex-wrap gap-4 mt-2">
         <div className="flex flex-col w-full">
           <Tabs
-            aria-label="Settings tabs"
-            color="default"
-            variant="solid"
-            radius="full"
             className="max-w-75 ml-5"
-            classNames={{
-              tabList: 'gap-0 w-full bg-btn-achievement-header ml-7 mt-4',
-              tab: cn(
-                'data-[hover-unselected=true]:!bg-item-hover',
-                'data-[hover-unselected=true]:opacity-100',
-              ),
-              cursor: '!bg-item-active w-full',
-              tabContent: 'text-sm group-data-[selected=true]:text-content text-altwhite font-bold',
-              panel: 'p-0 ml-12 mr-10 mt-6 rounded-xl h-calc bg-base/50 p-4',
-            }}
             onSelectionChange={e => setCurrentTab(e as CurrentTabType)}
           >
-            <Tab key="achievements" title={t($ => $['achievementManager.achievements.title'])}>
+            <Tabs.ListContainer>
+              <Tabs.List aria-label="Settings tabs">
+                <Tabs.Tab id="achievements">
+                  {t($ => $['achievementManager.achievements.title'])}
+                  <Tabs.Indicator />
+                </Tabs.Tab>
+
+                <Tabs.Tab id="statistics">
+                  {t($ => $['achievementManager.statistics.title'])}
+                  <Tabs.Indicator />
+                </Tabs.Tab>
+              </Tabs.List>
+            </Tabs.ListContainer>
+
+            <Tabs.Panel id="achievements">
               <AchievementsList
                 achievements={achievements}
                 setAchievements={setAchievements}
@@ -112,8 +112,9 @@ export const Achievements = () => {
                 windowInnerHeight={achievementStates.windowInnerHeight}
                 setRefreshKey={achievementStates.setRefreshKey}
               />
-            </Tab>
-            <Tab key="statistics" title={t($ => $['achievementManager.statistics.title'])}>
+            </Tabs.Panel>
+
+            <Tabs.Panel id="statistics">
               <StatisticsList
                 statistics={statistics}
                 setStatistics={setStatistics}
@@ -121,7 +122,7 @@ export const Achievements = () => {
                 windowInnerHeight={achievementStates.windowInnerHeight}
                 setRefreshKey={achievementStates.setRefreshKey}
               />
-            </Tab>
+            </Tabs.Panel>
           </Tabs>
         </div>
       </div>

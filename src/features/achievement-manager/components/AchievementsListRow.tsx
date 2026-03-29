@@ -85,9 +85,9 @@ export const AchievementsListRow = ({ index, style, data }: Props) => {
           <Button
             isDisabled={protectedAchievement}
             size="sm"
-            radius="full"
             className={cn(
               'font-bold',
+              'rounded-full',
               protectedAchievement
                 ? 'bg-warning'
                 : achieved
@@ -95,16 +95,15 @@ export const AchievementsListRow = ({ index, style, data }: Props) => {
                   : 'bg-btn-secondary text-btn-text',
             )}
             onPress={handleToggle}
-            startContent={
-              protectedAchievement ? (
-                <TbCancel size={20} />
-              ) : achieved ? (
-                <TbLock size={20} />
-              ) : (
-                <TbLockOpen size={20} />
-              )
-            }
           >
+            {protectedAchievement ? (
+              <TbCancel size={20} />
+            ) : achieved ? (
+              <TbLock size={20} />
+            ) : (
+              <TbLockOpen size={20} />
+            )}
+
             {protectedAchievement
               ? t($ => $['achievementManager.achievements.protected'])
               : achieved

@@ -1,0 +1,34 @@
+@layer base {
+  [data-theme='black'] {
+    --dynamic: #dadadaff;
+    --dynamic-hover: #cdcdcdff;
+    --btn-secondary: #f2f2f2;
+    --btn-achievement-header: #ffffff1a;
+    --btn-achievement-header-hover: #ffffff33;
+    --altwhite: #bfbfbf;
+    --sidebar: #000000;
+    --item-active: #ffffff0f;
+    --item-hover: #ffffff08;
+    --search: #ffffff1a;
+    --border: #1a1a1a;
+    --input: #111111ff;
+    --inputhover: #0c0c0cff;
+    --switch: #161616ff;
+    --tab-panel: #00000088;
+    --popover: #050505;
+    --achievement-main: #1a1a1acc;
+    --achievement-footer: #1a1a1ae6;
+    --stats-input: #212121ff;
+    --stats-inputhover: #1b1b1bff;
+
+    --gradient-bg: linear-gradient(to bottom, #000000 0%, #050505 100%);
+    --gradient-alt: linear-gradient(to bottom, #000000 0%, #0a0a0a 100%);
+    --gradient-btn: linear-gradient(
+      100deg,
+      #232323ff 0%,
+      #383838ff 40%,
+      #5e5e5eff 70%,
+      #606060ff 100%
+    );
+  }
+}

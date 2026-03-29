@@ -29,7 +29,7 @@ export const FullscreenLoader = ({ loaderFadeOut = false }: { loaderFadeOut?: bo
         <p className={`${unbounded.className} text-4xl font-black uppercase text-content`}>
           Steam Game Idler
         </p>
-        <Spinner size="lg" variant="simple" color="white" />
+        <Spinner size="lg" className="text-white" />
       </div>
     </div>
   );
