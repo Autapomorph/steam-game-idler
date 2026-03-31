@@ -93,7 +93,7 @@
   "automation.achievementUnlocker.progress": "Получение достижений <1>{{count}}</1> для <3>{{appName}}</3>",
   "automation.achievementUnlocker.scheduleWait": "Получение достижений приостановлено, так как текущее время не входит в расписание, и возобновится позднее",
   "freeGames.title": "Бесплатные игры",
-  "freeGames.subtitle": "Когда появятся бесплатные игры, которые вы сможете получить, они появятся здесь",
+  "freeGames.subtitle": "Здесь будут отображаться бесплатные игры, которые вы сможете забрать",
   "cardMenu.idle": "Запустить в режиме бездействия",
   "cardMenu.achievements": "Посмотреть достижения",
   "cardMenu.store": "Посетить страницу игры в Steam",
