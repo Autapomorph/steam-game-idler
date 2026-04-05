@@ -47,7 +47,6 @@ export const StatisticsListRow = ({ index, style, data }: Props) => {
               isDisabled={protectedStatisticOne}
               size="sm"
               value={item1.value}
-              maxValue={99999}
               formatOptions={{ useGrouping: false }}
               onChange={e => updateStatistic(item1.id, e)}
               aria-label="statistic value"
@@ -86,7 +85,6 @@ export const StatisticsListRow = ({ index, style, data }: Props) => {
               isDisabled={protectedStatisticTwo}
               size="sm"
               value={item2.value}
-              maxValue={99999}
               formatOptions={{ useGrouping: false }}
               onChange={e => updateStatistic(item2.id, e)}
               aria-label="statistic value"

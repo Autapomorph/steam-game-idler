@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { Button, cn } from '@heroui/react';
+import { Button, Checkbox, cn } from '@heroui/react';
 import { TbCancel, TbLock, TbLockOpen } from 'react-icons/tb';
 import { type RowComponentProps } from 'react-window';
 import { useTranslation } from 'react-i18next';
@@ -14,13 +14,27 @@ export interface RowData {
   appName: string;
   filteredAchievements: Achievement[];
   updateAchievement: (achievementId: string, newAchievedState: boolean) => void;
+  selectedToUnlock: Set<string>;
+  setSelectedToUnlock: React.Dispatch<React.SetStateAction<Set<string>>>;
+  selectedToLock: Set<string>;
+  setSelectedToLock: React.Dispatch<React.SetStateAction<Set<string>>>;
 }
 
 type Props = RowComponentProps<{ data: RowData }>;
 
 export const AchievementsListRow = ({ index, style, data }: Props) => {
   const { t } = useTranslation();
-  const { userSummary, appId, appName, filteredAchievements, updateAchievement } = data;
+  const {
+    userSummary,
+    appId,
+    appName,
+    filteredAchievements,
+    updateAchievement,
+    selectedToUnlock,
+    setSelectedToUnlock,
+    selectedToLock,
+    setSelectedToLock,
+  } = data;
 
   const item = filteredAchievements[index];
 
@@ -37,6 +51,32 @@ export const AchievementsListRow = ({ index, style, data }: Props) => {
   const icon = achieved
     ? `${iconUrl}${appId}/${item.iconNormal}`
     : `${iconUrl}${appId}/${item.iconLocked}`;
+
+  const isSelected = achieved ? !selectedToLock.has(item.id) : selectedToUnlock.has(item.id);
+
+  const handleCheckboxChange = (checked: boolean) => {
+    if (achieved) {
+      setSelectedToLock(prev => {
+        const next = new Set(prev);
+        if (!checked) {
+          next.add(item.id);
+        } else {
+          next.delete(item.id);
+        }
+        return next;
+      });
+    } else {
+      setSelectedToUnlock(prev => {
+        const next = new Set(prev);
+        if (checked) {
+          next.add(item.id);
+        } else {
+          next.delete(item.id);
+        }
+        return next;
+      });
+    }
+  };
 
   const handleToggle = async (): Promise<void> => {
     const isSteamRunning = await checkSteamStatus(true);
@@ -57,6 +97,14 @@ export const AchievementsListRow = ({ index, style, data }: Props) => {
     <div style={style} className="grid grid-cols-1 pb-4 pr-6">
       <div className="rounded-lg shadow-sm group">
         <div className="flex items-center py-3 px-3 bg-achievement-main rounded-t-lg">
+          {!protectedAchievement && (
+            <Checkbox
+              isSelected={isSelected}
+              onValueChange={handleCheckboxChange}
+              className="mr-1 min-w-fit"
+              size="sm"
+            />
+          )}
           <div className="w-10 h-10 flex items-center justify-center">
             <Image
               className="rounded-full"

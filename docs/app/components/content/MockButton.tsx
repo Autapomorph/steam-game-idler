@@ -44,7 +44,7 @@ type ButtonType =
   | 'context-add'
   | 'context-cog'
   | 'your-games'
-  | 'trading-card-manager'
+  | 'inventory-manager'
   | 'idling-games'
   | 'auto-idle'
   | 'free-games'
@@ -56,139 +56,121 @@ type ButtonType =
   | 'start-manually'
   | 'checkbox';
 
-interface Props {
+interface MockButtonProps {
   type: ButtonType;
   content?: string;
 }
 
-export default function MockButton({ type, content }: Props) {
+export default function MockButton({ type, content }: MockButtonProps) {
   if (type === 'content') {
     return (
       <span className="inline-flex align-middle items-center justify-center bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1">
         {content}
       </span>
     );
-  }
-  if (type === 'lock') {
+  } else if (type === 'lock') {
     return (
       <span className="inline-flex align-middle items-center justify-center text-icon-dark bg-red-500 text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1">
         <TbLock fontSize={16} className="inline" /> Lock
       </span>
     );
-  }
-  if (type === 'lock-all') {
+  } else if (type === 'lock-all') {
     return (
       <span className="inline-flex align-middle items-center justify-center text-icon-dark bg-red-500 text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1">
         <TbLock fontSize={16} className="inline" /> Lock All
       </span>
     );
-  }
-  if (type === 'remove-all') {
+  } else if (type === 'remove-all') {
     return (
       <span className="inline bg-red-500 text-white text-[12px] font-semibold px-2 py-1.5 rounded-full shadow-sm select-none">
         <TbEraser fontSize={16} className="inline" /> Remove All
       </span>
     );
-  }
-  if (type === 'unlock') {
+  } else if (type === 'unlock') {
     return (
       <span className="inline-flex align-middle items-center justify-center bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1">
         <TbLockOpen fontSize={16} className="inline" /> Unlock
       </span>
     );
-  }
-  if (type === 'unlock-all') {
+  } else if (type === 'unlock-all') {
     return (
       <span className="inline-flex align-middle items-center justify-center bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1">
         <TbLockOpen fontSize={16} className="inline" /> Unlock All
       </span>
     );
-  }
-  if (type === 'edit') {
+  } else if (type === 'edit') {
     return (
       <span className="inline-flex align-middle items-center justify-center bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1">
         <TbEdit fontSize={16} className="inline" /> Edit List
       </span>
     );
-  }
-  if (type === 'card-farming') {
+  } else if (type === 'card-farming') {
     return (
       <span className="inline-flex align-middle items-center justify-center bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1">
         <TbCards fontSize={16} className="inline" /> Card Farming
       </span>
     );
-  }
-  if (type === 'card-farming-action') {
+  } else if (type === 'card-farming-action') {
     return (
       <span className="inline-flex align-middle items-center justify-center bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1">
         <TbCards fontSize={16} className="inline" /> Start Card Farming
       </span>
     );
-  }
-  if (type === 'achievement-unlocker') {
+  } else if (type === 'achievement-unlocker') {
     return (
       <span className="inline-flex align-middle items-center justify-center bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1">
         <TbAward fontSize={16} className="inline" /> Achievement Unlocker
       </span>
     );
-  }
-  if (type === 'achievement-unlocker-action') {
+  } else if (type === 'achievement-unlocker-action') {
     return (
       <span className="inline-flex align-middle items-center justify-center bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1">
         <TbAward fontSize={16} className="inline" /> Start Achievement Unlocker
       </span>
     );
-  }
-  if (type === 'achievement-manager') {
+  } else if (type === 'achievement-manager') {
     return (
       <span className="inline-flex align-middle items-center justify-center bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1 h-8">
         <TbAward fontSize={16} className="inline" />
       </span>
     );
-  }
-  if (type === 'list-card') {
+  } else if (type === 'list-card') {
     return (
       <span className="inline-flex align-middle items-center justify-center bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1 h-8">
         <TbPackageExport fontSize={16} className="inline" />
       </span>
     );
-  }
-  if (type === 'list-selected') {
+  } else if (type === 'list-selected') {
     return (
       <span className="inline-flex align-middle items-center justify-center bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1">
         <TbChecks fontSize={16} className="inline" /> List Selected
       </span>
     );
-  }
-  if (type === 'list-all') {
+  } else if (type === 'list-all') {
     return (
       <span className="inline-flex align-middle items-center justify-center bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1">
         <TbPackageExport fontSize={16} className="inline" /> List All
       </span>
     );
-  }
-  if (type === 'save') {
+  } else if (type === 'save') {
     return (
       <span className="inline-flex align-middle items-center justify-center bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1">
         <TbUpload fontSize={16} className="inline" /> Save
       </span>
     );
-  }
-  if (type === 'save-alt') {
+  } else if (type === 'save-alt') {
     return (
       <span className="inline-flex align-middle items-center justify-center bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1">
         Save
       </span>
     );
-  }
-  if (type === 'save-changes') {
+  } else if (type === 'save-changes') {
     return (
       <span className="inline-flex align-middle items-center justify-center bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1">
         <TbUpload fontSize={16} className="inline" /> Save Changes
       </span>
     );
-  }
-  if (type === 'context-add') {
+  } else if (type === 'context-add') {
     return (
       <span
         className={`inline-flex align-middle items-center justify-center bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1 ${content === undefined && 'h-8'}`}
@@ -196,8 +178,7 @@ export default function MockButton({ type, content }: Props) {
         <TbPlus fontSize={16} className="inline" /> {content}
       </span>
     );
-  }
-  if (type === 'context-cog') {
+  } else if (type === 'context-cog') {
     return (
       <span
         className={`inline-flex align-middle items-center justify-center bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1 ${content === undefined && 'h-8'}`}
@@ -205,85 +186,73 @@ export default function MockButton({ type, content }: Props) {
         <TbSettings fontSize={16} className="inline" /> {content}
       </span>
     );
-  }
-  if (type === 'your-games') {
+  } else if (type === 'your-games') {
     return (
       <span className="inline-flex align-middle items-center justify-center bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1">
         <TbDeviceGamepad2 fontSize={16} className="inline" /> Your Games
       </span>
     );
-  }
-  if (type === 'trading-card-manager') {
+  } else if (type === 'inventory-manager') {
     return (
       <span className="inline-flex align-middle items-center justify-center bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1">
-        <TbBuildingStore fontSize={16} className="inline" /> Trading Card Manager
+        <TbBuildingStore fontSize={16} className="inline" /> Inventory Manager
       </span>
     );
-  }
-  if (type === 'idling-games') {
+  } else if (type === 'idling-games') {
     return (
       <span className="inline-flex align-middle items-center justify-center bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1">
         <TbPlayerPlay fontSize={16} className="inline" /> Idling Games
       </span>
     );
-  }
-  if (type === 'auto-idle') {
+  } else if (type === 'auto-idle') {
     return (
       <span className="inline-flex align-middle items-center justify-center bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1">
         <TbHourglassLow fontSize={16} className="inline" /> Automatic Idler
       </span>
     );
-  }
-  if (type === 'free-games') {
+  } else if (type === 'free-games') {
     return (
       <span className="inline-flex align-middle items-center justify-center bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1">
         <TbGift fontSize={16} className="inline" /> Free Games
       </span>
     );
-  }
-  if (type === 'unlock-order') {
+  } else if (type === 'unlock-order') {
     return (
       <span className="inline-flex align-middle items-center justify-center bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1 h-8">
         <TbArrowsSort fontSize={16} className="inline" />
       </span>
     );
-  }
-  if (type === 'grabber') {
+  } else if (type === 'grabber') {
     return (
       <span className="inline-flex align-middle items-center justify-center bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-1 rounded-full shadow-sm select-none gap-1 h-8">
         <GoGrabber fontSize={24} className="inline" />
       </span>
     );
-  }
-  if (type === 'favorites') {
+  } else if (type === 'favorites') {
     return (
       <span className="inline-flex align-middle items-center justify-center bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1">
         <TbHeart fontSize={16} className="inline" /> Favorite Games
       </span>
     );
-  }
-  if (type === 'start-idle') {
+  } else if (type === 'start-idle') {
     return (
       <span className="inline-flex align-middle items-center justify-center bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1 h-8">
         <TbPlayerPlay fontSize={16} className="inline" />
       </span>
     );
-  }
-  if (type === 'steam') {
+  } else if (type === 'steam') {
     return (
       <span className="inline-flex align-middle items-center justify-center bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1 h-8">
         <FaSteam fontSize={16} className="inline" />
       </span>
     );
-  }
-  if (type === 'start-manually') {
+  } else if (type === 'start-manually') {
     return (
       <span className="inline-flex align-middle items-center justify-center bg-icon-light dark:bg-icon-dark text-icon-light dark:text-icon-dark text-[12px] font-semibold px-2 rounded-full shadow-sm select-none gap-1">
         <TbHourglassLow fontSize={16} className="inline" /> Start Manually
       </span>
     );
-  }
-  if (type === 'checkbox') {
+  } else if (type === 'checkbox') {
     return (
       <span className="inline-flex align-middle items-center justify-center w-5 h-5 rounded-md text-white bg-blue-500 border border-border">
         <span className="w-3 h-3 block">

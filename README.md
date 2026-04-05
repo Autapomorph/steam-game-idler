@@ -28,7 +28,7 @@ Refer to the **[documentation](https://steamgameidler.com/docs/)** for a detaile
 * **[Card Farming](https://steamgameidler.com/docs/features/card-farming)**: Farm trading cards to sell for a profit or use in badge crafting
 * **[Achievement Unlocker](https://steamgameidler.com/docs/features/achievement-unlocker)**: Unlock achievements automatically with human-like behavior
 * **[Achievement Manager](https://steamgameidler.com/docs/features/achievement-manager)**: Manually unlock or lock any achievement for any game
-* **[Trading Card Manager](https://steamgameidler.com/docs/features/trading-card-manager)**: Easily sell your trading cards on the Steam marketplace
+* **[Inventory Manager](https://steamgameidler.com/docs/features/inventory-manager)**: Easily sell your inventory items on the Steam marketplace
 * **[Playtime Booster](https://steamgameidler.com/docs/features/playtime-booster)**: Increase a game's total playtime by idling it manually
 * **[Automatic Idler](https://steamgameidler.com/docs/features/auto-idler)**: Automatically idle chosen games when SGI launches
 * **[Task Scheduling](https://steamgameidler.com/docs/features/task-scheduling)**: When one feature finishes, automatically start the next

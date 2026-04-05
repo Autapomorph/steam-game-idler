@@ -51,7 +51,7 @@ const comparisonData = [
       { name: 'Queue-based Unlocking', steamGameIdler: true, alt: false },
       { name: 'Custom Queue Order', steamGameIdler: true, alt: false },
       { name: 'Automated Card Farming', steamGameIdler: true, alt: false },
-      { name: 'Trading Card Manager', steamGameIdler: true, alt: false },
+      { name: 'Inventory Manager', steamGameIdler: true, alt: false },
       { name: 'Playtime Boosting', steamGameIdler: true, alt: false },
       { name: 'Game Cover Art', steamGameIdler: true, alt: true },
     ],

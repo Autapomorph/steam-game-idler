@@ -1,6 +1,4 @@
-export type FAQEntry = { section: string } | { question: string; markdown: string };
-
-export const faqData: FAQEntry[] = [
+export const faqData = [
   { section: 'General' },
   {
     question: 'Why are some games not showing up in my games list in SGI?',
@@ -267,7 +265,7 @@ export const faqData: FAQEntry[] = [
       '>\n' +
       '> * You are logged in to the Steam client with a different account than you are using in SGI. Most features in SGI require you to be logged in to the same account in both the Steam client and SGI\n' +
       '>\n' +
-      '> If you confirm that you are logged in to the same account in both SGI and the Steam client and the error message persists, please report the issue on the [GitHub Issues page](https://github.com/Autapomorph/steam-game-idler/issues).',
+      '> If you confirm that you are logged in to the same account in both SGI and the Steam client and the error message persists, please report the issue on the [GitHub Issues page](https://github.com/zevnda/steam-game-idler/issues).',
   },
   {
     question: 'Incorrect card farming credentials',
@@ -304,6 +302,6 @@ export const faqData: FAQEntry[] = [
       '>\n' +
       '> Rate limit times can vary, so you may need to wait a few minutes to an hour before trying again.\n' +
       '>\n' +
-      '> To avoid hitting the rate limit in the future, consider increasing the [Sell Delay](/docs/settings/trading-card-manager#sell-delay) in [Settings > Trading Card Manager](/docs/settings/trading-card-manager).',
+      '> To avoid hitting the rate limit in the future, consider increasing the [Sell Delay](/docs/settings/inventory-manager#sell-delay) in [Settings > Inventory Manager](/docs/settings/inventory-manager).',
   },
 ];

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { List } from 'react-window';
 import { useTranslation } from 'react-i18next';
 
@@ -23,6 +23,8 @@ export const AchievementsList = ({
   setRefreshKey,
 }: AchievementsListProps) => {
   const { t } = useTranslation();
+  const [selectedToUnlock, setSelectedToUnlock] = useState<Set<string>>(new Set());
+  const [selectedToLock, setSelectedToLock] = useState<Set<string>>(new Set());
   const userSummary = useUserStore(state => state.userSummary);
   const achievementQueryValue = useSearchStore(state => state.achievementQueryValue);
   const appId = useStateStore(state => state.appId);
@@ -36,6 +38,21 @@ export const AchievementsList = ({
           : achievement,
       );
     });
+
+    // Clear from selection sets when manually toggled
+    if (newAchievedState) {
+      setSelectedToUnlock(prev => {
+        const next = new Set(prev);
+        next.delete(achievementId);
+        return next;
+      });
+    } else {
+      setSelectedToLock(prev => {
+        const next = new Set(prev);
+        next.delete(achievementId);
+        return next;
+      });
+    }
   };
 
   const filteredAchievements = useMemo(
@@ -52,6 +69,10 @@ export const AchievementsList = ({
     appName: appName as string,
     filteredAchievements,
     updateAchievement,
+    selectedToUnlock,
+    setSelectedToUnlock,
+    selectedToLock,
+    setSelectedToLock,
   };
 
   return (
@@ -63,6 +84,10 @@ export const AchievementsList = ({
             setAchievements={setAchievements}
             protectedAchievements={protectedAchievements}
             setRefreshKey={setRefreshKey}
+            selectedToUnlock={selectedToUnlock}
+            setSelectedToUnlock={setSelectedToUnlock}
+            selectedToLock={selectedToLock}
+            setSelectedToLock={setSelectedToLock}
           />
 
           <List

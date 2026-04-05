@@ -71,7 +71,7 @@ export { SteamCredentials } from './components/steam-credentials/SteamCredential
 
 export * from './utils/steam-credentials/handleSteamCredentials';
 
-// Trading Card Manager Feature
+// Inventory Manager Feature
 
-export { TradingCardManagerSettings } from './components/trading-card-manager/TradingCardManagerSettings';
-export * from './utils/trading-card-manager/handleSettingsChange';
+export { InventoryManagerSettings } from './components/inventory-manager/InventoryManagerSettings';
+export * from './utils/inventory-manager/handleSettingsChange';
