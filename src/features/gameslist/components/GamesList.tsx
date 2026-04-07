@@ -1,12 +1,16 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { VariableSizeList as List } from 'react-window';
 import { cn, Spinner } from '@heroui/react';
-import { List } from 'react-window';
-
+import {
+  PageHeader,
+  Private,
+  RecentGamesCarousel,
+  RecommendedGamesCarousel,
+  useGamesList,
+} from '@/features/gameslist';
+import { GameCard } from '@/shared/components';
 import { useStateStore, useUserStore } from '@/shared/stores';
-import { PageHeader } from './PageHeader';
-import { GamesListRow, type RowData } from './GamesListRow';
-import { Private } from './Private';
-import { useGamesList } from '../hooks/useGamesList';
 
 export const GamesList = () => {
   const gamesContext = useGamesList();
@@ -14,8 +18,10 @@ export const GamesList = () => {
   const transitionDuration = useStateStore(state => state.transitionDuration);
   const showAchievements = useStateStore(state => state.showAchievements);
   const userSettings = useUserStore(state => state.userSettings);
+  const { t } = useTranslation();
 
   const [columnCount, setColumnCount] = useState(5);
+  const listRef = useRef<List>(null);
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
@@ -33,6 +39,9 @@ export const GamesList = () => {
       setColumnCount(7);
     } else {
       setColumnCount(5);
+    }
+    if (listRef.current) {
+      listRef.current.resetAfterIndex(0, true);
     }
   }, []);
 
@@ -89,6 +98,13 @@ export const GamesList = () => {
     return r;
   }, [hasRecommended, hasRecent, gameRowCount]);
 
+  // Reset list measurements when rows structure changes
+  useEffect(() => {
+    if (listRef.current) {
+      listRef.current.resetAfterIndex(0, true);
+    }
+  }, [rows]);
+
   const getRowHeight = useCallback(
     (index: number): number => {
       const rowType = rows[index];
@@ -100,11 +116,50 @@ export const GamesList = () => {
     [rows, getDynamicRowHeight],
   );
 
-  const rowData: RowData = {
-    rows,
-    games,
-    columnCount,
-  };
+  // eslint-disable-next-line react/no-unstable-nested-components
+  const Row = memo(({ index, style }: { index: number; style: React.CSSProperties }) => {
+    const rowType = rows[index];
+    if (rowType === 'recommended') {
+      return (
+        <div style={style}>
+          <RecommendedGamesCarousel gamesContext={gamesContext} />
+        </div>
+      );
+    }
+    if (rowType === 'recent') {
+      return (
+        <div style={style}>
+          <RecentGamesCarousel gamesContext={gamesContext} />
+        </div>
+      );
+    }
+    if (rowType === 'header') {
+      return (
+        <div style={style}>
+          <p className="text-lg font-black px-6">{t($ => $['gamesList.allGames'])}</p>
+        </div>
+      );
+    }
+    if (typeof rowType === 'number') {
+      return (
+        <div
+          style={style}
+          className={cn(
+            'grid gap-x-5 gap-y-4 px-6',
+            columnCount === 7 ? 'grid-cols-7' : 'grid-cols-5',
+            columnCount === 8 ? 'grid-cols-8' : '',
+            columnCount === 10 ? 'grid-cols-10' : '',
+            columnCount === 12 ? 'grid-cols-12' : '',
+          )}
+        >
+          {games.slice(rowType * columnCount, (rowType + 1) * columnCount).map(item => (
+            <GameCard key={item.appid} item={item} />
+          ))}
+        </div>
+      );
+    }
+    return null;
+  });
 
   if (!gamesContext.isLoading && gamesContext.gamesList.length === 0)
     return (
@@ -141,18 +196,17 @@ export const GamesList = () => {
               ? `collapsed-${windowSize.width}x${windowSize.height}`
               : `expanded-${windowSize.width}x${windowSize.height}`
           }
-          rowComponent={GamesListRow}
-          rowCount={rows.length}
-          rowHeight={getRowHeight}
+          height={windowSize.height - 168}
+          itemCount={rows.length}
+          itemSize={getRowHeight}
+          width="100%"
           style={{
             overflowX: 'hidden',
-            width: '100%',
-            height: windowSize.height - 168,
           }}
-          rowProps={{
-            data: rowData,
-          }}
-        />
+          ref={listRef}
+        >
+          {Row}
+        </List>
       ) : (
         <div className="flex justify-center items-center w-calc h-[calc(100vh-168px)]">
           <Spinner variant="simple" />

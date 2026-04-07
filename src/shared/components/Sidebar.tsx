@@ -42,6 +42,7 @@ export const Sidebar = () => {
   const showAchievements = useStateStore(state => state.showAchievements);
   const transitionDuration = useStateStore(state => state.transitionDuration);
   const setShowAchievements = useStateStore(state => state.setShowAchievements);
+  const setShowAchievementOrder = useStateStore(state => state.setShowAchievementOrder);
   const { isOpen, onOpenChange, openConfirmation, handleLogout } = useSidebar(
     activePage,
     setActivePage,
@@ -166,6 +167,7 @@ export const Sidebar = () => {
             )}
             onClick={() => {
               setShowAchievements(false);
+              setShowAchievementOrder(false);
               setActivePage(item.page);
             }}
           >
@@ -331,6 +333,7 @@ export const Sidebar = () => {
                       !(isCardFarming || isAchievementUnlocker)
                         ? () => {
                             setShowAchievements(false);
+                            setShowAchievementOrder(false);
                             setActivePage('settings');
                           }
                         : undefined
@@ -367,6 +370,7 @@ export const Sidebar = () => {
                     !(isCardFarming || isAchievementUnlocker)
                       ? () => {
                           setShowAchievements(false);
+                          setShowAchievementOrder(false);
                           setActivePage('settings');
                         }
                       : undefined
@@ -416,6 +420,7 @@ export const Sidebar = () => {
               radius="full"
               onPress={() => {
                 setShowAchievements(false);
+                setShowAchievementOrder(false);
                 handleLogout(onOpenChange);
               }}
             >

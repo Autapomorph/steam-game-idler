@@ -1,14 +1,64 @@
-import { useEffect, useMemo, useState } from 'react';
-import { cn, Divider, Input, NumberInput } from '@heroui/react';
+import type { Game } from '@/shared/types';
+import { memo, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { RiSearchLine } from 'react-icons/ri';
 import { TbChevronRight } from 'react-icons/tb';
-import { List } from 'react-window';
-import { useTranslation } from 'react-i18next';
-
-import type { Game } from '@/shared/types';
+import { FixedSizeList as List } from 'react-window';
+import { cn, Divider, Input, NumberInput } from '@heroui/react';
+import Image from 'next/image';
+import { useGameSettings } from '@/features/settings';
 import { useUserStore } from '@/shared/stores';
-import { GameSettingsRow, type RowData } from './GameSettingsRow';
-import { useGameSettings } from '../../hooks/game-settings/useGameSettings';
+
+interface RowData {
+  filteredGamesList: Game[];
+  selectedGame: Game | null;
+  onGameSelect: (game: Game) => void;
+}
+
+interface RowProps {
+  index: number;
+  style: React.CSSProperties;
+  data: RowData;
+}
+
+const Row = memo(({ index, style, data }: RowProps) => {
+  const { filteredGamesList, selectedGame, onGameSelect } = data;
+  const item = filteredGamesList[index];
+
+  const handleImageError = (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    (event.target as HTMLImageElement).src = '/fallback.webp';
+  };
+
+  const isSelected = selectedGame?.appid === item.appid;
+
+  return (
+    <div
+      style={style}
+      className={cn(
+        'flex justify-between items-center gap-2',
+        'hover:bg-item-hover cursor-pointer px-3 py-1',
+        'duration-150 select-none',
+        isSelected && 'bg-item-hover border-l-2 border-blue-500',
+      )}
+      onClick={() => onGameSelect(item)}
+    >
+      <div className="flex items-center gap-3 max-w-[90%]">
+        <Image
+          src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${item.appid}/header.jpg`}
+          className="aspect-62/29 rounded-sm"
+          width={62}
+          height={29}
+          alt={`${item.name} image`}
+          priority
+          onError={handleImageError}
+        />
+        <p className="text-sm truncate mr-8">{item.name}</p>
+      </div>
+    </div>
+  );
+});
+
+Row.displayName = 'Row';
 
 export const GameSettings = () => {
   const { t } = useTranslation();
@@ -33,7 +83,7 @@ export const GameSettings = () => {
     return gamesList.filter(game => game.name.toLowerCase().includes(searchTerm.toLowerCase()));
   }, [gamesList, searchTerm]);
 
-  const rowData: RowData = {
+  const itemData = {
     filteredGamesList,
     selectedGame,
     onGameSelect: setSelectedGame,
@@ -82,17 +132,14 @@ export const GameSettings = () => {
 
         <div className="border border-border/70 rounded-lg mb-2 overflow-hidden bg-popover/80">
           <List
-            rowComponent={GameSettingsRow}
-            rowCount={filteredGamesList.length}
-            rowHeight={37}
-            style={{
-              width: '100%',
-              height: windowInnerHeight - 610,
-            }}
-            rowProps={{
-              data: rowData,
-            }}
-          />
+            height={windowInnerHeight - 610}
+            itemCount={filteredGamesList.length}
+            itemSize={37}
+            width="100%"
+            itemData={itemData}
+          >
+            {Row}
+          </List>
         </div>
 
         <Divider className="bg-border/70 my-4" />

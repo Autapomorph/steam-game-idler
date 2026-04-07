@@ -1,16 +1,18 @@
 import type { useTradingCardsList } from '@/features/inventory-manager';
-import type { CardSortOption } from '@/shared/types';
+import type { CardSortOption, SortOption, TradingCard } from '@/shared/types';
 import { useTranslation } from 'react-i18next';
 import {
   TbChecks,
   TbChevronLeft,
   TbChevronRight,
   TbEraser,
+  TbFilter,
   TbPackageExport,
   TbSettings,
+  TbSortDescending2,
   TbX,
 } from 'react-icons/tb';
-import { Button, cn, Divider, Tab, Tabs, useDisclosure } from '@heroui/react';
+import { Button, cn, Divider, Select, SelectItem, useDisclosure } from '@heroui/react';
 import { CustomModal } from '@/shared/components';
 import { useNavigationStore, useSearchStore, useStateStore, useUserStore } from '@/shared/stores';
 
@@ -30,19 +32,23 @@ const formatTime = (seconds: number) => {
 interface PageHeaderProps {
   selectedCardsWithPrice: string[];
   tradingCardContext: ReturnType<typeof useTradingCardsList>;
+  filteredTradingCardsList: TradingCard[];
   currentPage: number;
   totalPages: number;
-  lockedCards: string[];
   onPageChange: (page: number) => void;
+  cardFilterValues: Set<string>;
+  setCardFilterValues: React.Dispatch<React.SetStateAction<Set<string>>>;
 }
 
 export const PageHeader = ({
   selectedCardsWithPrice,
   tradingCardContext,
+  filteredTradingCardsList,
   currentPage,
   totalPages,
-  lockedCards,
   onPageChange,
+  cardFilterValues,
+  setCardFilterValues,
 }: PageHeaderProps) => {
   const { t } = useTranslation();
   const userSettings = useUserStore(state => state.userSettings);
@@ -83,10 +89,19 @@ export const PageHeader = ({
     { key: 'z-a', label: t($ => $['tradingCards.sort.cardNameDesc']) },
     { key: 'aa-zz', label: t($ => $['tradingCards.sort.gameNameAsc']) },
     { key: 'zz-aa', label: t($ => $['tradingCards.sort.gameNameDesc']) },
-    { key: 'cards', label: t($ => $['tradingCards.sort.cards']) },
-    { key: 'badge', label: t($ => $['tradingCards.sort.badge']) },
-    { key: 'foil', label: t($ => $['tradingCards.sort.foils']) },
-    { key: 'dupes', label: t($ => $['tradingCards.sort.duplicates']) },
+    { key: 'badge-desc', label: t($ => $['tradingCards.sort.badgeLevel']) },
+  ];
+
+  const cardFilterOptions: SortOption[] = [
+    { key: 'cards', label: t($ => $['tradingCards.filter.cards']) },
+    { key: 'foil', label: t($ => $['tradingCards.filter.foil']) },
+    { key: 'backgrounds', label: t($ => $['tradingCards.filter.backgrounds']) },
+    { key: 'emoticons', label: t($ => $['tradingCards.filter.emoticons']) },
+    { key: 'boosters', label: t($ => $['tradingCards.filter.boosters']) },
+    { key: 'sale', label: t($ => $['tradingCards.filter.sale']) },
+    { key: 'badge', label: t($ => $['tradingCards.filter.badge']) },
+    { key: 'dupes', label: t($ => $['tradingCards.filter.dupes']) },
+    { key: 'locked', label: t($ => $['tradingCards.filter.locked']) },
   ];
 
   return (
@@ -142,8 +157,7 @@ export const PageHeader = ({
                     onPress={onBulkOpen}
                   >
                     {t($ => $['tradingCards.bulk'], {
-                      count:
-                        tradingCardContext.tradingCardsList?.length || 0 - lockedCards.length || 0,
+                      count: filteredTradingCardsList.length,
                     })}
                   </Button>
 
@@ -231,27 +245,87 @@ export const PageHeader = ({
                   )}
                 </div>
 
-                <div className="flex items-center gap-2 mt-1">
-                  <p className="text-sm text-altwhite font-bold">{t($ => $['common.sortBy'])}</p>
-
-                  <Tabs
-                    aria-label="sort options"
+                <div className="flex items-center gap-3 mt-1">
+                  <Select
+                    aria-label="sort"
+                    disallowEmptySelection
+                    isDisabled={tradingCardContext.tradingCardsList.length === 0}
+                    radius="none"
+                    startContent={<TbSortDescending2 fontSize={22} />}
                     items={cardSortOptions}
-                    selectedKey={tradingCardContext.cardSortStyle}
-                    radius="full"
+                    className="w-52"
                     classNames={{
-                      tabList: 'gap-0 w-full bg-item-active',
-                      tab: 'data-[hover-unselected=true]:!bg-item-hover data-[hover-unselected=true]:opacity-100',
-                      tabContent:
-                        'text-sm group-data-[selected=true]:text-dynamic text-altwhite font-bold',
-                      cursor: '!bg-dynamic/10 w-full',
+                      listbox: ['p-0'],
+                      value: ['text-sm !text-content'],
+                      trigger: cn(
+                        'bg-input data-[hover=true]:!bg-inputhover',
+                        'data-[open=true]:!bg-inputhover duration-100 rounded-lg',
+                      ),
+                      popoverContent: ['bg-input rounded-xl justify-start !text-content'],
                     }}
-                    onSelectionChange={key => {
-                      handleCardSorting(key as string);
+                    selectedKeys={[tradingCardContext.cardSortStyle]}
+                    onSelectionChange={e => {
+                      if (e.currentKey) handleCardSorting(e.currentKey);
                     }}
                   >
-                    {item => <Tab key={item.key} title={item.label} />}
-                  </Tabs>
+                    {item => (
+                      <SelectItem
+                        key={item.key}
+                        classNames={{
+                          base: [
+                            'data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content',
+                          ],
+                        }}
+                      >
+                        {item.label}
+                      </SelectItem>
+                    )}
+                  </Select>
+
+                  <Select<SortOption>
+                    aria-label="filter"
+                    selectionMode="multiple"
+                    isDisabled={tradingCardContext.tradingCardsList.length === 0}
+                    radius="none"
+                    placeholder={t($ => $['tradingCards.filter.placeholder'])}
+                    startContent={<TbFilter fontSize={20} />}
+                    items={cardFilterOptions}
+                    className="w-56"
+                    classNames={{
+                      listbox: ['p-0'],
+                      value: ['text-sm !text-content'],
+                      trigger: cn(
+                        'bg-input data-[hover=true]:!bg-inputhover',
+                        'data-[open=true]:!bg-inputhover duration-100 rounded-lg',
+                      ),
+                      popoverContent: ['bg-input rounded-xl justify-start !text-content'],
+                    }}
+                    selectedKeys={cardFilterValues}
+                    renderValue={items =>
+                      items.length === 1
+                        ? items[0].rendered
+                        : t($ => $['tradingCards.filter.active'], { count: items.length })
+                    }
+                    onSelectionChange={selection => {
+                      if (selection === 'all') return;
+                      setCardFilterValues(
+                        new Set(Array.from(selection as Set<React.Key>).map(String)),
+                      );
+                    }}
+                  >
+                    {(item: SortOption) => (
+                      <SelectItem
+                        key={item.key}
+                        classNames={{
+                          base: [
+                            'data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content',
+                          ],
+                        }}
+                      >
+                        {item.label}
+                      </SelectItem>
+                    )}
+                  </Select>
                 </div>
               </div>
             </div>
@@ -306,10 +380,10 @@ export const PageHeader = ({
           <div className="whitespace-pre-line">
             {t($ => $['tradingCards.confirmBulk'], {
               time: formatTime(
-                Number(tradingCardContext.tradingCardsList?.length) *
+                Number(filteredTradingCardsList.length) *
                   (userSettings.tradingCards.sellDelay || 10),
               ),
-              count: Number(tradingCardContext.tradingCardsList?.length),
+              count: Number(filteredTradingCardsList.length),
             })}
           </div>
         }
@@ -330,7 +404,7 @@ export const PageHeader = ({
               className="bg-btn-secondary text-btn-text font-bold"
               radius="full"
               onPress={() => {
-                tradingCardContext.handleSellAllCards();
+                tradingCardContext.handleSellAllCards(filteredTradingCardsList);
                 onBulkOpenChange();
               }}
             >
