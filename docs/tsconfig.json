@@ -3,7 +3,7 @@
     "paths": {
       "@docs/*": ["./app/*"],
       "@lib/*": ["./lib/*"],
-      "fumadocs-mdx:collections/*": [".source/*"]
+      "fumadocs-mdx:collections/*": ["./.source/*"]
     },
     "plugins": [
       {
