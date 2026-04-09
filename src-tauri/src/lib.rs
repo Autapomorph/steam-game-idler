@@ -40,7 +40,7 @@ pub fn run() {
                 std::env::set_var("KEY", key);
             },
             _ => {
-                dotenv::from_filename(".env.development").unwrap().load();
+                dotenv::from_filename(".env.dev").unwrap().load();
             }
         }
     } else {
@@ -146,7 +146,8 @@ pub fn run() {
             delete_store_cookies,
             redeem_free_game,
             set_zoom,
-            quit_app
+            quit_app,
+            update_tray_menu
         ])
         .build(tauri::generate_context!())
         .expect("Error while building tauri application")

@@ -329,5 +329,8 @@
   "common.continue": "Продолжить",
   "common.minutes": "минут",
   "common.viewList": "Список",
-  "changelog.star": "Star on GitHub"
+  "changelog.star": "GitHub",
+  "tray.show": "Показать",
+  "tray.quit": "Выйти",
+  "tray.update": "Проверить обновления"
 }
