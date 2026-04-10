@@ -10,6 +10,7 @@ export const useAchievementSettings = () => {
   // Sync local settings with global settings when they change
   useEffect(() => {
     const interval = userSettings.achievementUnlocker?.interval;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSliderLabel(
       t($ => $['settings.achievementUnlocker.interval'], {
         min: interval[0],

@@ -49,6 +49,7 @@ const SortableAchievement = memo(function SortableAchievement({
   );
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setDelayValue(achievement.delayNextUnlock !== undefined ? achievement.delayNextUnlock : '');
   }, [achievement.delayNextUnlock]);
 

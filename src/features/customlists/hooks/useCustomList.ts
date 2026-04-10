@@ -48,6 +48,7 @@ export function useCustomList(listName: string) {
     // Setup infinite scroll
     const container = containerRef.current;
     if (container) {
+      // eslint-disable-next-line react-hooks/immutability
       container.addEventListener('scroll', handleScroll);
       return () => {
         container.removeEventListener('scroll', handleScroll);

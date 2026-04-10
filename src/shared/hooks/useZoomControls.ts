@@ -14,6 +14,7 @@ export function useZoomControls() {
     if (storedZoom) {
       const parsedZoom = parseFloat(storedZoom);
       if (!Number.isNaN(parsedZoom)) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setZoom(parsedZoom);
         invoke('set_zoom', { scaleFactor: parsedZoom });
       }

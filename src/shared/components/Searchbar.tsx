@@ -66,6 +66,7 @@ export const Searchbar = ({ isModalOpen = false, onModalClose }: SearchbarProps)
   useEffect(() => {
     if (isModalOpen) {
       const currentQuery = getCurrentSearchQuery();
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setInputValue(currentQuery);
     }
   }, [isModalOpen, getCurrentSearchQuery]);

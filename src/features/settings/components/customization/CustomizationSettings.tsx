@@ -32,6 +32,7 @@ export const CustomizationSettings = () => {
     } else {
       setTheme(localTheme);
     }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, [setTheme]);
 

@@ -30,12 +30,14 @@ export const TradingCardsList = () => {
   const CARDS_PER_PAGE = 54;
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCurrentPage(1);
   }, [tradingCardContext.cardSortStyle, cardFilterValues]);
 
   useEffect(() => {
     const storedLockedCards = localStorage.getItem('lockedTradingCards');
     if (storedLockedCards) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLockedCards(JSON.parse(storedLockedCards));
     }
   }, []);

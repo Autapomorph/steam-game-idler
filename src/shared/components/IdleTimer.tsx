@@ -35,6 +35,7 @@ export const IdleTimer = ({ startTime }: { startTime: number }) => {
   }, []);
 
   // Calculate time directly in render
+  // eslint-disable-next-line react-hooks/purity
   const elapsed = Date.now() - startTime;
   const displayTime = formatTime(elapsed);
 

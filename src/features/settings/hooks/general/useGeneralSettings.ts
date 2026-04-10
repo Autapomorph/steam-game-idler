@@ -22,6 +22,7 @@ export const useGeneralSettings = () => {
     // Load Steam web API key from user settings
     const { apiKey } = userSettings.general;
     if (apiKey && apiKey.length > 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setHasKey(true);
       setKeyValue(apiKey);
     }

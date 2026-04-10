@@ -72,6 +72,7 @@ export function useGameSettings({ appId }: UseGameSettingsProps = {}) {
 
     // Only assign to appId if not globalMaxIdleTime
     if (appId !== 'globalMaxIdleTime') {
+      // eslint-disable-next-line react-hooks/immutability
       gameSettings[appId] = {
         ...(isGameSpecificSettings(gameSettings[appId])
           ? (gameSettings[appId] as GameSpecificSettings)

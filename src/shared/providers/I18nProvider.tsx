@@ -6,6 +6,7 @@ export const I18nProvider = ({ children }: React.PropsWithChildren) => {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsClient(true);
   }, []);
 

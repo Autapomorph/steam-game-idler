@@ -24,6 +24,7 @@ export const InventoryManagerSettings = () => {
   const [sellDelay, setSellDelay] = useState<number>(10);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setPriceAdjustment(userSettings?.tradingCards?.priceAdjustment || 0.0);
     setSellLimitMin(userSettings?.tradingCards?.sellLimit?.min || 0.01);
     setSellLimitMax(userSettings?.tradingCards?.sellLimit?.max || 1.1);
