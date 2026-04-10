@@ -1,11 +1,10 @@
 'use client';
 
-import Link from 'next/link';
 import { FaWindows } from 'react-icons/fa';
 import { FiGithub } from 'react-icons/fi';
-
 import { Logo } from '@docs/components/content/Logo';
 import { useGlobalStore } from '@docs/stores/globalStore';
+import Link from 'next/link';
 
 export default function DocsCTA() {
   const { downloadUrl } = useGlobalStore(state => state);

@@ -1,10 +1,9 @@
 'use client';
 
-import Link from 'next/link';
-import Image from 'next/image';
 import { FaBook, FaDiscord, FaGithub, FaStar, FaWindows } from 'react-icons/fa6';
-
 import { useGlobalStore } from '@docs/stores/globalStore';
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default function HeroSection() {
   const { downloadUrl, latestVersion, repoStars } = useGlobalStore(state => state);

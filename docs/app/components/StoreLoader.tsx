@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect } from 'react';
-
 import { useGlobalStore } from '@docs/stores/globalStore';
 
 export default function StoreLoader() {

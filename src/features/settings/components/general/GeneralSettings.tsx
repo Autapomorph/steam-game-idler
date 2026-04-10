@@ -117,6 +117,24 @@ export const GeneralSettings = () => {
 
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
+            <div className="flex items-center">
+              <p className="text-sm text-content font-bold">
+                {t($ => $['settings.general.autoUpdateGamesList'])}
+              </p>
+            </div>
+            <p className="text-xs text-altwhite">
+              {t($ => $['settings.general.autoUpdateGamesList.description'])}
+            </p>
+          </div>
+          <div>
+            <SettingsSwitch type="general" name="autoUpdateGamesList" />
+          </div>
+        </div>
+
+        <Divider className="bg-border/70 my-4" />
+
+        <div className="flex justify-between items-center">
+          <div className="flex flex-col gap-2 w-1/2">
             <p className="text-sm text-content font-bold">
               {t($ => $['settings.general.language'])}
             </p>

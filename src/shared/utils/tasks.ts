@@ -90,7 +90,7 @@ export async function antiAwayStatus(active: boolean | null = null) {
   }
 }
 
-// Automatically revalidate Steam credentials for PRO users
+// Automatically revalidate Steam credentials
 export async function autoRevalidateSteamCredentials(
   setUserSettings: (value: UserSettings) => void,
 ) {

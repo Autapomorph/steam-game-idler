@@ -1,14 +1,17 @@
 import React from 'react';
 import { FaArrowRight } from 'react-icons/fa6';
 
-interface Props {
+export default function CardLink({
+  icon,
+  title,
+  href,
+  description,
+}: {
   icon: React.ElementType;
   title: string;
   href: string;
   description?: string;
-}
-
-export default function CardLink({ icon, title, href, description }: Props) {
+}) {
   return (
     <div className="bg-fd-card border border-fd-border hover:bg-fd-accent/80 p-4 rounded-lg w-full duration-150 group">
       <a href={href} className="flex items-center gap-2 no-underline">

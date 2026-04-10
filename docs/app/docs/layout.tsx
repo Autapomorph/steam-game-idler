@@ -1,12 +1,14 @@
-import { type PropsWithChildren } from 'react';
-import Image from 'next/image';
+import { FaDiscord, FaGithub } from 'react-icons/fa6';
+import { baseOptions } from '../../lib/layout.shared';
+import { source } from '../../lib/source';
 import { DocsLayout } from 'fumadocs-ui/layouts/docs';
-import { FaGithub } from 'react-icons/fa6';
+import Image from 'next/image';
 
-import { source } from '@lib/source';
-import { baseOptions } from '@lib/layout.shared';
+interface LayoutProps {
+  children: React.ReactNode;
+}
 
-export default function Layout({ children }: PropsWithChildren) {
+export default function Layout({ children }: LayoutProps) {
   const base = baseOptions();
 
   return (
@@ -16,10 +18,18 @@ export default function Layout({ children }: PropsWithChildren) {
       links={[
         {
           type: 'icon',
-          url: 'https://github.com/Autapomorph/steam-game-idler',
+          url: 'https://github.com/zevnda/steam-game-idler',
           label: 'github',
           text: 'Github',
           icon: <FaGithub />,
+          external: true,
+        },
+        {
+          type: 'icon',
+          url: 'https://discord.com/invite/5kY2ZbVnZ8',
+          label: 'discord',
+          text: 'Discord',
+          icon: <FaDiscord />,
           external: true,
         },
       ]}

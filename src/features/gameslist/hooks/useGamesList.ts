@@ -1,8 +1,8 @@
 import type { Game, InvokeGamesList, SortStyleValue } from '@/shared/types';
 import { invoke } from '@tauri-apps/api/core';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { showDangerToast } from '@/shared/components';
+import { showDangerToast, showPrimaryToast } from '@/shared/components';
 import { useSearchStore, useUserStore } from '@/shared/stores';
 import { decrypt, logEvent } from '@/shared/utils';
 
@@ -25,6 +25,58 @@ export function useGamesList() {
   const [visibleGames, setVisibleGames] = useState<Game[]>([]);
   const [refreshKey, setRefreshKey] = useState(0);
   const previousRefreshKeyRef = useRef(refreshKey);
+  const gamesListRef = useRef<Game[]>(gamesList);
+  const AUTO_UPDATE_COOLDOWN_MS = 15 * 60 * 1000;
+  const AUTO_UPDATE_STORAGE_KEY = 'gamesListLastAutoUpdate';
+
+  // Keep ref in sync with latest gamesList to avoid stale closures in auto-update
+  useEffect(() => {
+    gamesListRef.current = gamesList;
+  }, [gamesList]);
+
+  const silentlyUpdateGamesList = useCallback(
+    async (showToast: boolean) => {
+      if (!userSummary?.steamId || !userSettings.general?.autoUpdateGamesList) return;
+
+      // Respect the shared 15-minute cooldown regardless of how this was triggered
+      const lastUpdate = Number(localStorage.getItem(AUTO_UPDATE_STORAGE_KEY) || 0);
+      if (Date.now() - lastUpdate < AUTO_UPDATE_COOLDOWN_MS) return;
+
+      try {
+        const apiKey = userSettings.general?.apiKey || undefined;
+        const gamesListResponse = await invoke<InvokeGamesList>('get_games_list', {
+          steamId: userSummary.steamId,
+          apiKey: apiKey ? decrypt(apiKey) : null,
+        });
+        const newGamesList = gamesListResponse.games_list;
+        const currentIds = new Set(gamesListRef.current.map(g => g.appid));
+        const newIds = new Set(newGamesList.map(g => g.appid));
+        const hasChanges =
+          newGamesList.some(g => !currentIds.has(g.appid)) ||
+          gamesListRef.current.some(g => !newIds.has(g.appid));
+
+        // Always update the timestamp so both paths share the same cooldown
+        localStorage.setItem(AUTO_UPDATE_STORAGE_KEY, String(Date.now()));
+
+        if (hasChanges) {
+          setGamesList(newGamesList);
+          if (showToast) showPrimaryToast(t($ => $['toast.gamesListUpdated']));
+        }
+      } catch (error) {
+        console.error('Error in (silentlyUpdateGamesList):', error);
+        logEvent(`[Error] in (silentlyUpdateGamesList): ${error}`);
+      }
+    },
+    [
+      userSummary?.steamId,
+      userSettings.general?.autoUpdateGamesList,
+      userSettings.general?.apiKey,
+      AUTO_UPDATE_COOLDOWN_MS,
+      AUTO_UPDATE_STORAGE_KEY,
+      setGamesList,
+      t,
+    ],
+  );
 
   useEffect(() => {
     const getGamesList = async () => {
@@ -95,6 +147,19 @@ export function useGamesList() {
     // Clear search input when sort style changes
     setGameQueryValue('');
   }, [sortStyle, setGameQueryValue]);
+
+  // Auto-update games list when the setting is enabled
+  useEffect(() => {
+    if (isLoading) return;
+    if (!userSettings.general?.autoUpdateGamesList) return;
+
+    // Check on mount — runs if >15 mins have passed since the last update (or never updated)
+    silentlyUpdateGamesList(true);
+
+    // Also check periodically in case the user stays on the page the whole time
+    const interval = setInterval(() => silentlyUpdateGamesList(false), 15 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, [isLoading, userSettings.general?.autoUpdateGamesList, silentlyUpdateGamesList]);
 
   return {
     isLoading,

@@ -171,17 +171,17 @@ export default function TermsOfService() {
 
             <h3 className="text-xl font-medium mb-3">6.2 Subscription Tiers and Pricing</h3>
             <p className="mb-4">
-              PRO is available in three subscription tiers, all offering the same benefits:
+              PRO is available in two subscription tiers, each offering a different set of benefits:
             </p>
             <ul className="list-disc pl-6 space-y-2 mb-4">
               <li>
-                <strong>Casual:</strong> $2 USD per month
+                <strong>Casual:</strong> $2 USD per month — ad-free experience, exclusive themes,
+                Discord role
               </li>
               <li>
-                <strong>Gamer:</strong> $4 USD per month
-              </li>
-              <li>
-                <strong>Legendary:</strong> $6 USD per month
+                <strong>Gamer:</strong> $4 USD per month — everything in Casual, plus automated
+                Steam credentials, games list updates, free game redemption, and sell duplicate
+                inventory items
               </li>
             </ul>
             <p className="mb-4">
@@ -423,7 +423,7 @@ export default function TermsOfService() {
               SGI is developed as an open-source project. You can contribute to its development,
               report issues, or suggest improvements through our{' '}
               <a
-                href="https://github.com/Autapomorph/steam-game-idler"
+                href="https://github.com/zevnda/steam-game-idler"
                 className="text-blue-400 hover:text-blue-300 underline"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -466,7 +466,7 @@ export default function TermsOfService() {
               <li>
                 <strong>GitHub Issues:</strong>{' '}
                 <a
-                  href="https://github.com/Autapomorph/steam-game-idler/issues"
+                  href="https://github.com/zevnda/steam-game-idler/issues"
                   className="text-blue-400 hover:text-blue-300 underline"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -477,7 +477,7 @@ export default function TermsOfService() {
               <li>
                 <strong>GitHub Discussions:</strong>{' '}
                 <a
-                  href="https://github.com/Autapomorph/steam-game-idler/discussions"
+                  href="https://github.com/zevnda/steam-game-idler/discussions"
                   className="text-blue-400 hover:text-blue-300 underline"
                   target="_blank"
                   rel="noopener noreferrer"

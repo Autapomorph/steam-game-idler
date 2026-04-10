@@ -27,7 +27,7 @@ export const startCardFarming = async () => {
     // Retrieve Steam cookies from local storage
     let { credentials } = userSettings.cardFarming;
 
-    // Attempt to automatically revalidate Steam credentials for PRO users
+    // Attempt to automatically revalidate Steam credentials
     const autoRevalidateResult = await autoRevalidateSteamCredentials(setUserSettings);
     if (autoRevalidateResult?.credentials) {
       credentials = autoRevalidateResult.credentials;

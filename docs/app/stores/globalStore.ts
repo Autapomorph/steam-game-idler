@@ -10,7 +10,7 @@ interface globalStore {
 }
 
 export const useGlobalStore = create<globalStore>(set => ({
-  downloadUrl: 'https://github.com/Autapomorph/steam-game-idler/releases/latest',
+  downloadUrl: 'https://github.com/zevnda/steam-game-idler/releases/latest',
   setDownloadUrl: value =>
     set(state => ({
       downloadUrl: typeof value === 'function' ? value(state.downloadUrl) : value,

@@ -58,6 +58,7 @@ export interface GeneralSettings {
   closeToTray: boolean;
   theme?: string | null;
   autoRedeemFreeGames: boolean;
+  autoUpdateGamesList: boolean;
   showRecommendedCarousel: boolean;
   showRecentCarousel: boolean;
   showCardDropsCarousel: boolean;

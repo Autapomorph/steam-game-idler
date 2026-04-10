@@ -1,9 +1,8 @@
 'use client';
 
-import Link from 'next/link';
 import { FaWindows } from 'react-icons/fa6';
-
 import { useGlobalStore } from '@docs/stores/globalStore';
+import Link from 'next/link';
 
 export default function CTASection() {
   const { downloadUrl } = useGlobalStore(state => state);

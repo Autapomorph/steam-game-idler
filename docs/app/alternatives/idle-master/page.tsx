@@ -1,10 +1,9 @@
-import type { Metadata } from 'next';
-import Link from 'next/link';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { FiBook, FiCheck, FiDownload, FiRefreshCw, FiX } from 'react-icons/fi';
 import { TbCards, TbEye, TbShield } from 'react-icons/tb';
+import Link from 'next/link';
 
-export const metadata: Metadata = {
+export const metadata = {
   title: 'Idle Master Feature Comparison',
   description:
     'See why Steam Game Idler is the best alternative to Idle Master for Steam automation. Compare features like card farming, achievement management, and user experience',
@@ -32,7 +31,7 @@ export const metadata: Metadata = {
     title: 'Idle Master Feature Comparison | Steam Game Idler',
     description:
       'See why Steam Game Idler is the best alternative to Idle Master for Steam automation. Compare features like card farming, achievement management, and user experience',
-    images: 'https://steamgameidler.com/im-og-image.png',
+    image: 'https://steamgameidler.com/im-og-image.png',
   },
   alternates: {
     canonical: '/alternatives/idle-master',
@@ -83,11 +82,10 @@ function ComparisonIcon({ value }: { value: boolean | string }) {
       </div>
     );
   }
-
   return <span className="text-sm font-medium text-gray-700">{value}</span>;
 }
 
-export default function Page() {
+export default function page() {
   return (
     <div className="min-h-screen bg-linear-to-b from-white via-gray-50 to-white">
       {/* Hero Section */}
@@ -264,7 +262,7 @@ export default function Page() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 prefetch={false}
-                href="https://github.com/Autapomorph/steam-game-idler/releases/latest"
+                href="https://github.com/zevnda/steam-game-idler/releases/latest"
                 className="inline-flex items-center justify-center px-8 py-4 bg-white text-orange-700 font-bold rounded-xl hover:bg-gray-100 transition-colors duration-200 shadow-lg"
               >
                 <FiDownload className="w-5 h-5 mr-3" />

@@ -1,13 +1,16 @@
-import { type PropsWithChildren } from 'react';
-import { type Metadata } from 'next';
-import Script from 'next/script';
-import { Geist, Geist_Mono } from 'next/font/google';
-import { RootProvider } from 'fumadocs-ui/provider/next';
-
-import StoreLoader from '@docs/components/StoreLoader';
+import AdOverlay from '@docs/components/AdOverlay';
+import HelpDesk from '@docs/components/HelpDesk';
 import SearchDialog from '@docs/components/search';
-
+import StoreLoader from '@docs/components/StoreLoader';
+import TelemetryLoader from '@docs/components/TelemetryLoader';
+import { RootProvider } from 'fumadocs-ui/provider/next';
+import { Geist, Geist_Mono } from 'next/font/google';
+import Script from 'next/script';
 import './globals.css';
+
+interface LayoutProps {
+  children: React.ReactNode;
+}
 
 const geist = Geist({
   variable: '--font-sans',
@@ -19,10 +22,15 @@ const mono = Geist_Mono({
   subsets: ['latin'],
 });
 
-export const metadata: Metadata = {
+declare global {
+  interface Window {
+    adsbygoogle: Record<string, unknown>[];
+  }
+}
+
+export const metadata = {
   title: {
     default: 'Steam Game Idler - Farm Cards, Unlock Achievements & Idle Games',
-    template: 'Steam Game Idler - %s',
   },
   description:
     'Free Steam automation tool to farm trading cards, unlock achievements, boost playtime, and idle games. Modern alternative to SAM, ASF, and Idle Master.',
@@ -42,8 +50,8 @@ export const metadata: Metadata = {
     'Steam Achievement Manager Alternative',
     'Idle Master Alternative',
   ],
-  authors: [{ name: 'Autapomorph', url: 'https://github.com/Autapomorph' }],
-  creator: 'Autapomorph',
+  authors: [{ name: 'zevnda', url: 'https://github.com/zevnda' }],
+  creator: 'zevnda',
   generator: 'Next.js',
   applicationName: 'Steam Game Idler',
   appleWebApp: {
@@ -63,10 +71,13 @@ export const metadata: Metadata = {
       'Steam Game Idler – The best alternative to ArchiSteamFarm, Steam Achievement Manager, and Idle Master',
     description:
       'The best Steam card farmer and achievement manager in 2026. Farm trading cards, manage achievements, and idle games automatically. A great alternative to ArchiSteamFarm, Steam Achievement Manager, and Idle Master.',
-    images: 'https://steamgameidler.com/og-image.png',
+    image: 'https://steamgameidler.com/og-image.png',
   },
   other: {
     'msapplication-TileColor': '#fff',
+    'google-site-verification': 'gOZEIhRh4BCNzE1r4etZeuJoex3aVaUrATjMnsnyYuY',
+    'google-adsense-account': 'ca-pub-8915288433444527',
+    bdbfaa2fd4578c4db1970a32318ef980869bbd26: 'bdbfaa2fd4578c4db1970a32318ef980869bbd26',
     referrer: 'strict-origin-when-cross-origin',
   },
   alternates: {
@@ -122,15 +133,22 @@ const schemaData = [
   },
 ];
 
-export default function Layout({ children }: PropsWithChildren) {
+export default function Layout({ children }: LayoutProps) {
   return (
     <html lang="en" className={`${geist.variable} ${mono.variable}`} suppressHydrationWarning>
       <head>
         <Script
-          id="schema_data"
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
         />
+
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8915288433444527"
+          crossOrigin="anonymous"
+        />
+
+        <HelpDesk />
       </head>
 
       <body className="flex flex-col min-h-screen">
@@ -142,6 +160,8 @@ export default function Layout({ children }: PropsWithChildren) {
           {children}
         </RootProvider>
 
+        <AdOverlay />
+        <TelemetryLoader />
         <StoreLoader />
       </body>
     </html>

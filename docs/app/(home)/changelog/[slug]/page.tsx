@@ -1,8 +1,8 @@
 import path from 'node:path';
+import { blog } from '../../../../lib/source';
+import { getMDXComponents } from '../../../../mdx-components';
 import { notFound } from 'next/navigation';
 
-import { blog } from '@lib/source';
-import { getMDXComponents } from 'mdx-components';
 interface PageProps {
   params: {
     slug: string;
@@ -17,12 +17,8 @@ export default async function Page(props: PageProps) {
   const params = await props.params;
   const page = blog.getPage([params.slug]);
 
-  if (!page) {
-    notFound();
-  }
-
+  if (!page) notFound();
   const { body: Mdx } = await page.data.load();
-
   const data = page.data as {
     title: string;
     date: string | Date;

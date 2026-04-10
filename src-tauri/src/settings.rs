@@ -18,6 +18,7 @@ fn get_default_settings() -> Value {
             "startMinimized": false,
             "closeToTray": true,
             "autoRedeemFreeGames": false,
+            "autoUpdateGamesList": false,
             "showRecommendedCarousel": true,
             "showRecentCarousel": true,
             "showCardDropsCarousel": false

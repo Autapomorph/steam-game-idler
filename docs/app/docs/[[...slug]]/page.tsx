@@ -1,10 +1,8 @@
-import { type Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import { getMDXComponents } from '../../..//mdx-components';
+import { getPageImage, source } from '../../../lib/source';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import { DocsBody, DocsPage } from 'fumadocs-ui/page';
-
-import { getMDXComponents } from 'mdx-components';
-import { getPageImage, source } from '@lib/source';
+import { notFound } from 'next/navigation';
 
 interface PageProps {
   params: {
@@ -38,13 +36,10 @@ export async function generateStaticParams() {
   return source.generateParams();
 }
 
-export async function generateMetadata(props: PageProps): Promise<Metadata> {
+export async function generateMetadata(props: PageProps) {
   const params = await props.params;
   const page = source.getPage(params.slug);
-
-  if (!page) {
-    notFound();
-  }
+  if (!page) notFound();
 
   return {
     title: page.data.title,

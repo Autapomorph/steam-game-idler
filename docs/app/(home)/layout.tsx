@@ -1,5 +1,7 @@
-import { type PropsWithChildren } from 'react';
+interface LayoutProps {
+  children: React.ReactNode;
+}
 
-export default function Layout({ children }: PropsWithChildren) {
+export default function Layout({ children }: LayoutProps) {
   return <div>{children}</div>;
 }

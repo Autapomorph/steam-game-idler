@@ -1,8 +1,8 @@
 'use client';
 
-import Link from 'next/link';
 import { FiArrowRight, FiClock, FiX } from 'react-icons/fi';
 import { TbAward, TbSettings2, TbTerminal2 } from 'react-icons/tb';
+import Link from 'next/link';
 
 const competitors = [
   {
@@ -143,7 +143,7 @@ export default function ComparisonSection() {
 
         {/* Competitor Cards */}
         <div className="grid lg:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto">
-          {competitors.map(competitor => (
+          {competitors.map((competitor, index) => (
             <article key={competitor.name}>
               <Link
                 prefetch={false}
