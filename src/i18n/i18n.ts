@@ -23,8 +23,6 @@ i18n
     defaultNS,
     resources,
 
-    partialBundledLanguages: true,
-
     fallbackLng: {
       default: ['en-US'],
       en: ['en-US'],
