@@ -15,7 +15,7 @@ import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Alert, Button, cn } from '@heroui/react';
 import { RecommendedCardDropsCarousel } from '@/features/card-farming';
-import { EditListModal, ManualAddModal, useCustomList } from '@/features/customlists';
+import { EditListModal, ManualAddModal, useCustomList } from '@/features/custom-lists';
 import { GameCard } from '@/shared/components';
 import { useNavigationStore, useStateStore, useUserStore } from '@/shared/stores';
 import {
@@ -335,7 +335,7 @@ export const CustomList = ({ type }: CustomListProps) => {
 
         {list.length > 0 && (
           <div>
-            <p className="text-lg font-black px-6">{t($ => $['customLists.yourList'])}</p>
+            <p className="text-lg font-black px-6 pb-3">{t($ => $['customLists.yourList'])}</p>
           </div>
         )}
         <DndContext onDragEnd={handleDragEnd}>

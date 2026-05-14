@@ -9,7 +9,7 @@ import {
 } from 'react-icons/tb';
 import { Button } from '@heroui/react';
 import Image from 'next/image';
-import { CardMenu } from '@/features/gameslist';
+import { CardMenu } from '@/features/games-list';
 import { ExtLink } from '@/shared/components/ExtLink';
 import { IdleTimer } from '@/shared/components/IdleTimer';
 import { useIdleStore, useStateStore } from '@/shared/stores';

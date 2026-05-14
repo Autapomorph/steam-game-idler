@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 
-import { useGamesList } from '@/features/gameslist';
+import { useGamesList } from '@/features/games-list';
 import { useUserStore } from '@/shared/stores';
 import { autoRedeemFreeGames, checkForFreeGames } from '@/shared/utils';
 
