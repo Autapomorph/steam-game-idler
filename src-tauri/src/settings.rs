@@ -19,6 +19,7 @@ fn get_default_settings() -> Value {
             "closeToTray": true,
             "autoRedeemFreeGames": false,
             "autoUpdateGamesList": false,
+            "discordPresence": true,
             "showRecommendedCarousel": true,
             "showRecentCarousel": true,
             "showCardDropsCarousel": false

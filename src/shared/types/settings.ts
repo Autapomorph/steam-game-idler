@@ -59,6 +59,7 @@ export interface GeneralSettings {
   theme?: string | null;
   autoRedeemFreeGames: boolean;
   autoUpdateGamesList: boolean;
+  discordPresence: boolean;
   showRecommendedCarousel: boolean;
   showRecentCarousel: boolean;
   showCardDropsCarousel: boolean;

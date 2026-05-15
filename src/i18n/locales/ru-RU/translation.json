@@ -173,6 +173,8 @@
   "settings.general.webApi.descriptionTwo": "Получите ключ Steam Web API по ссылке <1>https://steamcommunity.com/dev/apikey</1>",
   "settings.general.autoRedeemFreeGames": "Авто-активация бесплатных игр",
   "settings.general.autoRedeemFreeGames.description": "Автоматическая активация бесплатных игр в Steam по мере их появления",
+  "settings.general.discordPresence": "Discord Rich Presence",
+  "settings.general.discordPresence.description": "Показывать SGI активность в Discord статусе",
   "settings.general.showRecommendedCarousel": "Показать рекомендуемые игры",
   "settings.general.showRecommendedCarousel.description": "Показывать карусель рекомендуемых игр на странице \"Ваши игры\"",
   "settings.general.autoUpdateGamesList": "Автоматически обновлять список игр",

@@ -6,7 +6,7 @@ import { Button, cn } from '@heroui/react';
 import Image from 'next/image';
 import { useAchievementUnlocker } from '@/features/achievement-unlocker';
 import { useStateStore } from '@/shared/stores';
-import { startCardFarming, stopIdle, updateTrayIcon } from '@/shared/utils';
+import { startCardFarming, stopIdle, updateDiscordPresence, updateTrayIcon } from '@/shared/utils';
 
 export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType }) => {
   const { t } = useTranslation();
@@ -52,7 +52,7 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
   }, []);
 
   useEffect(() => {
-    if (isAchievementUnlocker && currentGame) {
+    if (isAchievementUnlocker && currentGame && achievementCount) {
       updateTrayIcon(
         t($ => $['trayIcon.achievementUnlocker'], {
           total: achievementCount,
@@ -60,10 +60,12 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
         }),
         true,
       );
+      updateDiscordPresence(currentGame?.name, `Unlocking ${achievementCount} achievements`);
     }
   }, [isAchievementUnlocker, currentGame, achievementCount, t]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setImageLoaded(false);
     setFallbackImage('');
   }, [currentGame?.appid]);
@@ -138,6 +140,7 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
                     stopIdle(currentGame?.appid, currentGame?.name);
                     setIsAchievementUnlocker(false);
                     updateTrayIcon();
+                    updateDiscordPresence();
                   }}
                 >
                   {isComplete ? (
