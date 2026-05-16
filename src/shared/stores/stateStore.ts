@@ -32,6 +32,8 @@ interface StateStore {
   setTransitionDuration: (value: string | ((prev: string) => string)) => void;
   loadingUserSummary: boolean;
   setLoadingUserSummary: (value: boolean | ((prev: boolean) => boolean)) => void;
+  gamesListSessionUpdatedSet: Set<string>;
+  setGamesListSessionUpdated: (steamId: string) => void;
 }
 
 export const useStateStore = create<StateStore>(set => ({
@@ -101,5 +103,10 @@ export const useStateStore = create<StateStore>(set => ({
   setLoadingUserSummary: value =>
     set(state => ({
       loadingUserSummary: typeof value === 'function' ? value(state.loadingUserSummary) : value,
+    })),
+  gamesListSessionUpdatedSet: new Set(),
+  setGamesListSessionUpdated: steamId =>
+    set(state => ({
+      gamesListSessionUpdatedSet: new Set([...state.gamesListSessionUpdatedSet, steamId]),
     })),
 }));
