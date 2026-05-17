@@ -169,9 +169,9 @@ export function useGamesList() {
 
   // Auto-update once per session for non-pro users on app open
   useEffect(() => {
-    if (isLoading || gamesListSessionUpdatedSet.has(userSummary?.steamId ?? '')) return;
+    if (isLoading || !userSummary || gamesListSessionUpdatedSet.has(userSummary.steamId)) return;
 
-    setGamesListSessionUpdated(userSummary!.steamId);
+    setGamesListSessionUpdated(userSummary.steamId);
 
     const runSessionUpdate = async () => {
       if (!userSummary?.steamId) return;

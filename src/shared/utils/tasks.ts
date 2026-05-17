@@ -24,6 +24,7 @@ import {
   showIncorrectCredentialsToast,
   showSteamNotRunningToast,
 } from '@/shared/components';
+import { useUserStore } from '@/shared/stores/userStore';
 
 export async function checkSteamStatus(showToast: boolean) {
   try {
@@ -286,6 +287,8 @@ export async function updateTrayIcon(tooltip?: string, runningStatus?: boolean) 
 
 export async function updateDiscordPresence(details?: string, state?: string) {
   try {
+    const { discordPresence } = useUserStore.getState().userSettings.general;
+    if (!discordPresence) return;
     if (state) {
       await invoke('update_drp', { details, state });
     } else {

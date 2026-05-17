@@ -57,7 +57,7 @@ export const useUserStore = create<UserStore>(set => ({
       closeToTray: true,
       autoRedeemFreeGames: false,
       autoUpdateGamesList: false,
-      discordPresence: true,
+      discordPresence: false,
       showRecommendedCarousel: true,
       showRecentCarousel: true,
       showCardDropsCarousel: false,
