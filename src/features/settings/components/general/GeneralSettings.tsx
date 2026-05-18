@@ -43,7 +43,7 @@ export const GeneralSettings = () => {
             <p className="text-xs text-altwhite font-bold">
               {t($ => $['settings.general.displayName'])}
             </p>
-            <p className="py-1.5 px-2 bg-input rounded-lg text-content text-sm font-semibold w-64">
+            <p className="py-1.5 px-2 bg-input rounded-lg text-content text-sm font-semibold w-58">
               <span className="transition-all duration-200">{userSummary?.personaName}</span>
             </p>
           </div>
@@ -51,7 +51,7 @@ export const GeneralSettings = () => {
             <p className="text-xs text-altwhite font-bold">
               {t($ => $['settings.general.steamId'])}
             </p>
-            <p className="py-1.5 px-2 bg-input rounded-lg text-content text-sm font-semibold w-64">
+            <p className="py-1.5 px-2 bg-input rounded-lg text-content text-sm font-semibold w-58">
               <span className="transition-all duration-200">{userSummary?.steamId}</span>
             </p>
           </div>
