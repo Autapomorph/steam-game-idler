@@ -309,7 +309,7 @@
   "errorBoundary.stack.title": "Стек-трейс",
   "errorBoundary.report": "Сообщить о проблеме",
   "errorBoundary.reload": "Перезагрузить",
-  "common.updateReady": "Обновление загружено",
+  "common.updateReady": "Доступно обновление",
   "common.refresh": "Обновить",
   "common.needHelp": "Нужна помощь?",
   "common.cardFarming": "Сбор карточек",
