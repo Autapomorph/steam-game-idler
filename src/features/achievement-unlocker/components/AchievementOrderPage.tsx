@@ -10,11 +10,12 @@ import { DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Button, Checkbox, cn, Input, Spinner } from '@heroui/react';
+import { Button, Checkbox, cn, Input, Spinner, useDisclosure } from '@heroui/react';
 import Image from 'next/image';
 import { ExtLink, showAccountMismatchToast, showDangerToast } from '@/shared/components';
 import { useStateStore, useUserStore } from '@/shared/stores';
 import { checkSteamStatus, logEvent } from '@/shared/utils';
+import { ImportTimingsModal } from './ImportTimingsModal';
 
 interface SortableAchievementProps {
   appid: number;
@@ -135,7 +136,7 @@ const SortableAchievement = memo(function SortableAchievement({
           step={0.1}
           placeholder="0"
           isDisabled={achievement.achieved}
-          className="w-16"
+          className="w-24"
           value={delayValue.toString()}
           onChange={handleDelayChange}
           size="sm"
@@ -207,6 +208,11 @@ export const AchievementOrderPage = () => {
   const transitionDuration = useStateStore(state => state.transitionDuration);
   const achievementOrderGame = useStateStore(state => state.achievementOrderGame);
   const setShowAchievementOrder = useStateStore(state => state.setShowAchievementOrder);
+  const {
+    isOpen: isImportOpen,
+    onOpen: onImportOpen,
+    onOpenChange: onImportOpenChange,
+  } = useDisclosure();
 
   const item = achievementOrderGame!;
 
@@ -489,6 +495,13 @@ export const AchievementOrderPage = () => {
             <Button
               className="bg-btn-secondary text-btn-text font-bold"
               radius="full"
+              onPress={onImportOpen}
+            >
+              {t($ => $['customLists.achievementUnlocker.importTimings.title'])}
+            </Button>
+            <Button
+              className="bg-btn-secondary text-btn-text font-bold"
+              radius="full"
               onPress={handleSave}
             >
               {t($ => $['common.save'])}
@@ -587,6 +600,13 @@ export const AchievementOrderPage = () => {
           </div>
         </div>
       </div>
+      <ImportTimingsModal
+        isOpen={isImportOpen}
+        onOpenChange={onImportOpenChange}
+        appId={item.appid}
+        achievements={achievements}
+        onImport={setAchievements}
+      />
     </div>
   );
 };

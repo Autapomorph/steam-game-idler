@@ -3,7 +3,7 @@ import { TbChevronRight } from 'react-icons/tb';
 import { Button, Divider } from '@heroui/react';
 
 import { handleShowStoreLoginWindow, handleSignOutCurrentStoreUser } from '@/features/settings';
-import { Beta, ExtLink, SettingsSwitch } from '@/shared/components';
+import { ExtLink, SettingsSwitch } from '@/shared/components';
 import { useUserStore } from '@/shared/stores';
 
 export const FreeGamesSettings = () => {
@@ -44,7 +44,6 @@ export const FreeGamesSettings = () => {
               <p className="text-sm text-content font-bold">
                 {t($ => $['settings.general.autoRedeemFreeGames'])}
               </p>
-              <Beta />
             </div>
             <p className="text-xs text-altwhite">
               {t($ => $['settings.general.autoRedeemFreeGames.description'])}
