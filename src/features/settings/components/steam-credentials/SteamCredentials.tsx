@@ -14,6 +14,7 @@ import { handleSaveCredentials } from '@/features/settings/utils/steam-credentia
 import { CustomModal, ExtLink, showDangerToast } from '@/shared/components';
 import { useUserStore } from '@/shared/stores';
 import { logEvent } from '@/shared/utils';
+import { OpenDocs } from '@/shared/components/OpenDocs';
 
 export const SteamCredentials = () => {
   const { t } = useTranslation();
@@ -94,19 +95,14 @@ export const SteamCredentials = () => {
         <div className="flex justify-between items-start">
           <div className="flex flex-col gap-2 w-1/2">
             <div className="flex items-center">
-              <p className="text-sm text-content font-bold">
+              <p className="flex items-center gap-2 text-sm text-content font-bold">
                 {t($ => $['settings.steamCredentials.automated'])}
+                <OpenDocs path="/steam-credentials#automated-method" />
               </p>
             </div>
             <p className="text-xs text-altwhite">
               {t($ => $['settings.steamCredentials.automated.description'])}
             </p>
-            <ExtLink
-              href="https://steamgameidler.com/docs/steam-credentials#automated-method"
-              className="text-xs text-dynamic hover:text-dynamic-hover duration-150"
-            >
-              {t($ => $['common.learnMore'])}
-            </ExtLink>
           </div>
 
           <div className="flex flex-col justify-end gap-2">
@@ -136,20 +132,12 @@ export const SteamCredentials = () => {
 
         <div className="flex justify-between items-start">
           <div className="flex flex-col gap-2 w-1/2">
-            <p className="text-sm text-content font-bold">
+            <p className="flex items-center gap-2 text-sm text-content font-bold">
               {t($ => $['settings.steamCredentials.manual'])}
+              <OpenDocs path="/steam-credentials#manual-method" />
             </p>
             <p className="text-xs text-altwhite">
-              <Trans i18nKey={$ => $['settings.cardFarming.steamCredentials']}>
-                Steam credentials are required in order to use the Card Farming and Trading Card
-                Manager features.&nbsp;
-                <ExtLink
-                  href="https://steamgameidler.com/docs/steam-credentials#manual-method"
-                  className="text-dynamic hover:text-dynamic-hover duration-150"
-                >
-                  Learn more
-                </ExtLink>
-              </Trans>
+              {t($ => $['settings.cardFarming.steamCredentials'])}
             </p>
             <p className="text-xs text-altwhite">
               <Trans i18nKey={$ => $['settings.cardFarming.steamCredentialsTwo']}>

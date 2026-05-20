@@ -2,9 +2,12 @@ import type { Achievement } from '@/shared/types';
 import { invoke } from '@tauri-apps/api/core';
 import { useState } from 'react';
 import type { SelectorParam } from 'i18next';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { Button, cn, Input } from '@heroui/react';
-import { CustomModal, showDangerToast, showSuccessToast } from '@/shared/components';
+import { CustomModal, ExtLink, showDangerToast, showSuccessToast } from '@/shared/components';
+import { useUserStore } from '@/shared/stores';
+import { decrypt } from '@/shared/utils';
+import { OpenDocs } from '@/shared/components/OpenDocs';
 
 interface ImportTimingsModalProps {
   isOpen: boolean;
@@ -35,6 +38,7 @@ export const ImportTimingsModal = ({
   onImport,
 }: ImportTimingsModalProps) => {
   const { t } = useTranslation();
+  const userSettings = useUserStore(state => state.userSettings);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -47,9 +51,11 @@ export const ImportTimingsModal = ({
     if (!inputValue.trim()) return;
     setIsLoading(true);
     try {
+      const apiKey = userSettings.general?.apiKey || undefined;
       const result = await invoke<{ achievements: RawAchievement[] }>('get_player_achievements', {
         appId,
         steamInput: inputValue.trim(),
+        apiKey: apiKey ? decrypt(apiKey) : null,
       });
 
       const raw = [...result.achievements].sort((a, b) => a.unlocktime - b.unlocktime);
@@ -96,12 +102,30 @@ export const ImportTimingsModal = ({
     <CustomModal
       isOpen={isOpen}
       onOpenChange={handleClose}
-      title={t($ => $['customLists.achievementUnlocker.importTimings.title'])}
+      title={
+        <div className="flex items-center gap-2">
+          <p>{t($ => $['customLists.achievementUnlocker.importTimings.title'])}</p>
+          <OpenDocs path="/features/achievement-unlocker/import-timings" />
+        </div>
+      }
       body={
         <div className="flex flex-col gap-3">
           <p className="text-sm text-altwhite">
-            {t($ => $['customLists.achievementUnlocker.importTimings.inputDescription'])}
+            {t($ => $['customLists.achievementUnlocker.importTimings.description'])}
           </p>
+          <p className="text-sm text-altwhite">
+            <Trans i18nKey={$ => $['customLists.achievementUnlocker.importTimings.descriptionTwo']}>
+              Use achievement tracking sites like{' '}
+              <ExtLink
+                href={`https://steamhunters.com/apps/${appId}/users?sort=achievements`}
+                className="text-dynamic hover:text-dynamic-hover duration-150"
+              >
+                Steam Hunters
+              </ExtLink>{' '}
+              to find users with legitimate achievements
+            </Trans>
+          </p>
+
           <Input
             autoFocus
             placeholder={t(

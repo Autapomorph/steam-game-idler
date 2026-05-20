@@ -1,4 +1,4 @@
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { TbChevronRight, TbEraser, TbUpload } from 'react-icons/tb';
 import { Button, cn, Divider, Input } from '@heroui/react';
 import Image from 'next/image';
@@ -8,8 +8,9 @@ import {
   handleSteamWebAPIKeySave,
   useGeneralSettings,
 } from '@/features/settings';
-import { ExtLink, LanguageSwitch, SettingsSwitch } from '@/shared/components';
+import { LanguageSwitch, SettingsSwitch } from '@/shared/components';
 import { useUserStore } from '@/shared/stores';
+import { OpenDocs } from '@/shared/components/OpenDocs';
 
 export const GeneralSettings = () => {
   const { t } = useTranslation();
@@ -156,6 +157,9 @@ export const GeneralSettings = () => {
             <p className="text-sm text-content font-bold">
               {t($ => $['settings.general.language'])}
             </p>
+            <p className="text-xs text-altwhite">
+              {t($ => $['settings.general.language.description'])}
+            </p>
           </div>
           <LanguageSwitch />
         </div>
@@ -178,28 +182,12 @@ export const GeneralSettings = () => {
 
         <div className="flex justify-between items-start">
           <div className="flex flex-col gap-2 w-1/2">
-            <p className="text-sm text-content font-bold">{t($ => $['settings.general.webApi'])}</p>
-            <p className="text-xs text-altwhite">
-              <Trans i18nKey={$ => $['settings.general.webApi.description']}>
-                Use your own Steam Web API Key.&nbsp;
-                <ExtLink
-                  href="https://steamgameidler.com/docs/settings/general#steam-web-api-key"
-                  className="text-dynamic hover:text-dynamic-hover duration-150"
-                >
-                  Learn more
-                </ExtLink>
-              </Trans>
+            <p className="flex items-center gap-2 text-sm text-content font-bold">
+              {t($ => $['settings.general.webApi'])}
+              <OpenDocs path="/settings/general#steam-web-api-key" />
             </p>
             <p className="text-xs text-altwhite">
-              <Trans i18nKey={$ => $['settings.general.webApi.descriptionTwo']}>
-                Get your Steam Web API key from.&nbsp;
-                <ExtLink
-                  href="https://steamcommunity.com/dev/apikey"
-                  className="text-dynamic hover:text-dynamic-hover duration-150"
-                >
-                  https://steamcommunity.com/dev/apikey
-                </ExtLink>
-              </Trans>
+              {t($ => $['settings.general.webApi.description'])}
             </p>
           </div>
           <div className="flex flex-col gap-4 w-62.5">

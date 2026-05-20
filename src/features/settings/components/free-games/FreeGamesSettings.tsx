@@ -3,8 +3,9 @@ import { TbChevronRight } from 'react-icons/tb';
 import { Button, Divider } from '@heroui/react';
 
 import { handleShowStoreLoginWindow, handleSignOutCurrentStoreUser } from '@/features/settings';
-import { ExtLink, SettingsSwitch } from '@/shared/components';
+import { SettingsSwitch } from '@/shared/components';
 import { useUserStore } from '@/shared/stores';
+import { OpenDocs } from '@/shared/components/OpenDocs';
 
 export const FreeGamesSettings = () => {
   const { t } = useTranslation();
@@ -41,19 +42,14 @@ export const FreeGamesSettings = () => {
         <div className="flex justify-between items-center">
           <div className="flex flex-col gap-2 w-1/2">
             <div className="flex items-center">
-              <p className="text-sm text-content font-bold">
+              <p className="flex items-center gap-2 text-sm text-content font-bold">
                 {t($ => $['settings.general.autoRedeemFreeGames'])}
+                <OpenDocs path="/features/free-games#automated-redemption" />
               </p>
             </div>
             <p className="text-xs text-altwhite">
               {t($ => $['settings.general.autoRedeemFreeGames.description'])}
             </p>
-            <ExtLink
-              href="https://steamgameidler.com/docs/settings/free-games#auto-redeem-free-games"
-              className="text-xs text-dynamic hover:text-dynamic-hover duration-150"
-            >
-              {t($ => $['common.learnMore'])}
-            </ExtLink>
           </div>
 
           <div className="flex flex-col justify-end gap-2">
