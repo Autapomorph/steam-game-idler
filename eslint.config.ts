@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 import globals from 'globals';
 import js from '@eslint/js';
 import { defineConfig, globalIgnores } from 'eslint/config';
-import { includeIgnoreFile } from '@eslint/compat';
+import { includeIgnoreFile } from '@eslint/config-helpers';
 import { configs, plugins, rules } from 'eslint-config-airbnb-extended';
 import reactRefreshPlugin from 'eslint-plugin-react-refresh';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
