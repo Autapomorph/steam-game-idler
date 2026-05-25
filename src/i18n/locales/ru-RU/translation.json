@@ -246,7 +246,7 @@
   "confirmation.resetStatistics": "Вы уверены, что хотите <1>сбросить</1> всю статистику?",
   "confirmation.resetSettings": "Вы уверены, что хотите сбросить настройки до значений по умолчанию?",
   "confirmation.clearData": "Вы уверены, что хотите очистить все данные?",
-  "confirmation.steamClosed": "Steam не запущен. Откройте клиент Steam для продолжения",
+  "confirmation.steamClosed": "Steam не запущен. Нажмите \"Продолжить\", чтобы запустить Steam",
   "toast.steam": "Steam не запущен",
   "toast.mismatch": "Несоответствие учетных записей Steam и SGI",
   "toast.missingCredentials": "Отсутствуют учётные данные для сбора карточек в разделе \"Настройки → Учётные данные Steam\"",

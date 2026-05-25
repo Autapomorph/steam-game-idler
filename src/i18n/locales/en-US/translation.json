@@ -246,7 +246,7 @@
   "confirmation.resetStatistics": "Are you sure you want to <1>reset</1> all statistics?",
   "confirmation.resetSettings": "Are you sure you want to reset settings to default?",
   "confirmation.clearData": "Are you sure you want to clear all data?",
-  "confirmation.steamClosed": "Steam is not running. Open the Steam client to continue",
+  "confirmation.steamClosed": "Steam is not running. Click 'Continue' to launch Steam",
   "toast.steam": "Steam is not running",
   "toast.mismatch": "Account mismatch between Steam and SGI",
   "toast.missingCredentials": "Missing card farming credentials in \"Settings → Steam Credentials\"",
