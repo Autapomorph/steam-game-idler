@@ -1,3 +1,4 @@
+export { Key, Keybind } from './Key';
 export { Beta } from './Beta';
 
 export { ChangelogModal } from './ChangelogModal';

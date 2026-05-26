@@ -7,6 +7,7 @@ import {
   useFreeGames,
   useInit,
   useInitSettings,
+  useKeyboardShortcuts,
   useSteamMonitor,
   useThemes,
   useZoomControls,
@@ -25,6 +26,7 @@ const Index = () => {
   useFreeGames();
   useZoomControls();
   useContextMenu();
+  useKeyboardShortcuts();
   useSteamMonitor();
   useDiscordPresence();
 

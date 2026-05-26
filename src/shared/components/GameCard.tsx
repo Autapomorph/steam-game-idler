@@ -8,7 +8,7 @@ import {
   TbPlayerPlayFilled,
   TbPlayerStopFilled,
 } from 'react-icons/tb';
-import { Button } from '@heroui/react';
+import { Button, Checkbox, cn } from '@heroui/react';
 import Image from 'next/image';
 import { CardMenu } from '@/features/games-list';
 import { ExtLink } from '@/shared/components/ExtLink';
@@ -21,6 +21,9 @@ interface GameCardProps {
   isFreeGame?: boolean;
   isCustomList?: boolean;
   isAchievementUnlocker?: boolean;
+  isAutoIdleList?: boolean;
+  autoIdleEnabled?: boolean;
+  onToggleAutoIdle?: () => void;
   onOpen?: () => void;
   handleRemoveGame?: (game: Game) => Promise<void>;
 }
@@ -30,6 +33,9 @@ export const GameCard = memo(function GameCard({
   isFreeGame = false,
   isCustomList = false,
   isAchievementUnlocker = false,
+  isAutoIdleList = false,
+  autoIdleEnabled,
+  onToggleAutoIdle,
   onOpen,
   handleRemoveGame,
 }: GameCardProps) {
@@ -48,7 +54,12 @@ export const GameCard = memo(function GameCard({
 
   if (isFreeGame) {
     return (
-      <div className="relative group select-none">
+      <div
+        className={cn(
+          'relative group select-none',
+          isAutoIdleList && autoIdleEnabled === false && 'opacity-50',
+        )}
+      >
         <div className="overflow-hidden will-change-transform transition-transform duration-150">
           <div className="aspect-460/215 relative overflow-hidden">
             <Image
@@ -120,15 +131,17 @@ export const GameCard = memo(function GameCard({
               {isIdling ? <TbPlayerStopFilled size={18} /> : <TbPlayerPlayFilled size={18} />}
             </Button>
 
-            <Button
-              isIconOnly
-              size="sm"
-              radius="full"
-              className="bg-transparent hover:bg-item-hover text-altwhite hover:text-content transition-colors duration-150"
-              onPress={() => viewAchievments(item, setAppId, setAppName, setShowAchievements)}
-            >
-              <TbAwardFilled size={18} />
-            </Button>
+            {!isAutoIdleList && (
+              <Button
+                isIconOnly
+                size="sm"
+                radius="full"
+                className="bg-transparent hover:bg-item-hover text-altwhite hover:text-content transition-colors duration-150"
+                onPress={() => viewAchievments(item, setAppId, setAppName, setShowAchievements)}
+              >
+                <TbAwardFilled size={18} />
+              </Button>
+            )}
 
             {isAchievementUnlocker && (
               <Button
@@ -142,6 +155,19 @@ export const GameCard = memo(function GameCard({
               >
                 <TbArrowsSort size={18} />
               </Button>
+            )}
+
+            {isAutoIdleList && (
+              <div className="flex items-center" onPointerDown={e => e.stopPropagation()}>
+                <Checkbox
+                  size="sm"
+                  isSelected={autoIdleEnabled !== false}
+                  classNames={{
+                    wrapper: cn('group-data-[selected=true]:!bg-dynamic'),
+                  }}
+                  onValueChange={() => onToggleAutoIdle?.()}
+                />
+              </div>
             )}
           </div>
         </div>
