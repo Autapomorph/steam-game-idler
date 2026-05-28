@@ -1,13 +1,12 @@
-use crate::utils::{get_cache_dir, get_lib_path};
+use crate::utils::{atomic_write_json, get_cache_dir, get_lib_path};
 use reqwest::Client;
 use scraper::{Html, Selector};
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use std::collections::HashMap;
 use std::fs::File;
-use std::fs::{create_dir_all, remove_dir_all, remove_file, OpenOptions};
+use std::fs::{create_dir_all, remove_dir_all, remove_file};
 use std::io::Read;
-use std::io::Write;
 use std::os::windows::process::CommandExt;
 use tauri::Manager;
 
@@ -46,14 +45,9 @@ pub async fn get_games_list(
         .map_err(|e| format!("Failed to execute check_ownership: {}", e))?;
 
     let output_str = String::from_utf8_lossy(&output.stdout);
-    let error_str = String::from_utf8_lossy(&output.stderr);
 
-    let cs_result: Value = serde_json::from_str(&output_str).map_err(|e| {
-        format!(
-            "Failed to parse output: {}\nSTDOUT: {}\nSTDERR: {}",
-            e, output_str, error_str
-        )
-    })?;
+    let cs_result: Value =
+        serde_json::from_str(&output_str).map_err(|e| format!("Failed to parse output: {}", e))?;
 
     if !cs_result["success"].as_bool().unwrap_or(false) {
         return Err(format!(
@@ -138,16 +132,7 @@ pub async fn get_games_list(
 
     let file_name = format!("games_list.json");
     let games_file_path = app_data_dir.join(file_name);
-    let mut file = OpenOptions::new()
-        .write(true)
-        .create(true)
-        .truncate(true)
-        .open(&games_file_path)
-        .map_err(|e| format!("Failed to open games list file: {}", e))?;
-
-    let json_string = serde_json::to_string_pretty(&game_data)
-        .map_err(|e| format!("Failed to serialize games list: {}", e))?;
-    file.write_all(json_string.as_bytes())
+    atomic_write_json(&games_file_path, &game_data)
         .map_err(|e| format!("Failed to write games list to file: {}", e))?;
 
     let _ = std::fs::remove_file(&temp_games_file);
@@ -189,16 +174,7 @@ pub async fn get_recent_games(
             // Save the filtered response to recent_games.json
             let file_name = format!("recent_games.json");
             let recent_games_file_path = app_data_dir.join(file_name);
-            let mut file = OpenOptions::new()
-                .write(true)
-                .create(true)
-                .truncate(true)
-                .open(&recent_games_file_path)
-                .map_err(|e| format!("Failed to open recent games file: {}", e))?;
-
-            let json_string = serde_json::to_string_pretty(&game_data)
-                .map_err(|e| format!("Failed to serialize recent games: {}", e))?;
-            file.write_all(json_string.as_bytes())
+            atomic_write_json(&recent_games_file_path, &game_data)
                 .map_err(|e| format!("Failed to write recent games to file: {}", e))?;
 
             Ok(game_data)
@@ -355,6 +331,7 @@ pub async fn get_free_games() -> Result<serde_json::Value, String> {
 
     Ok(json!({ "games": free_games }))
 }
+
 #[tauri::command]
 pub async fn get_player_achievements(
     app_id: u32,

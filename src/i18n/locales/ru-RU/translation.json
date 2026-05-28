@@ -362,6 +362,7 @@
   "common.continue": "Продолжить",
   "common.minutes": "минут",
   "common.viewList": "Список",
+  "common.downloadingUpdate": "Загрузка обновления...",
   "common.import": "Импорт",
   "changelog.star": "GitHub",
   "tray.show": "Показать",

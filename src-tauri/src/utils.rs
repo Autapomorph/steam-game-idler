@@ -43,7 +43,7 @@ pub async fn start_drp(state: tauri::State<'_, DrpClient>) -> Result<(), String>
         .timestamps(activity::Timestamps::new().start(start_ts))
         .buttons(vec![
             activity::Button::new("Download", "https://www.steamgameidler.com"),
-            activity::Button::new("GitHub", "https://github.com/Autapomorph/steam-game-idler"),
+            activity::Button::new("GitHub", "https://github.com/zevnda/steam-game-idler"),
         ]);
     client.set_activity(payload).map_err(|e| e.to_string())?;
 
@@ -64,7 +64,7 @@ pub async fn update_drp(
             .timestamps(activity::Timestamps::new().start(*start_ts))
             .buttons(vec![
                 activity::Button::new("Download", "https://www.steamgameidler.com"),
-                activity::Button::new("GitHub", "https://github.com/Autapomorph/steam-game-idler"),
+                activity::Button::new("GitHub", "https://github.com/zevnda/steam-game-idler"),
             ]);
         if let Some(ref d) = details {
             payload = payload.details(d);
@@ -214,6 +214,18 @@ pub fn get_tray_icon(default: bool) -> String {
         include_bytes!("../icons/32x32_running.png")
     };
     base64::engine::general_purpose::STANDARD.encode(icon_bytes)
+}
+
+pub fn atomic_write_json<T: serde::Serialize>(
+    path: &std::path::Path,
+    value: &T,
+) -> std::io::Result<()> {
+    let json = serde_json::to_string_pretty(value)
+        .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e))?;
+    let tmp_path = path.with_extension("tmp");
+    std::fs::write(&tmp_path, &json)?;
+    std::fs::rename(&tmp_path, path)?;
+    Ok(())
 }
 
 pub fn get_lib_path() -> Result<String, String> {

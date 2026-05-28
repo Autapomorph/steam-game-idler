@@ -1,4 +1,4 @@
-import { ChangelogModal, Dashboard, SignIn, SteamWarning } from '@/shared/components';
+import { ChangelogModal, Dashboard, SignIn, SteamWarning, UpdateLoader } from '@/shared/components';
 import {
   useAutoIdleGames,
   useCheckForUpdates,
@@ -12,11 +12,12 @@ import {
   useThemes,
   useZoomControls,
 } from '@/shared/hooks';
-import { useLoaderStore, useUserStore } from '@/shared/stores';
+import { useLoaderStore, useUpdateStore, useUserStore } from '@/shared/stores';
 
 const Index = () => {
   const userSummary = useUserStore(state => state.userSummary);
   const { loaderVisible } = useLoaderStore();
+  const isUpdating = useUpdateStore(state => state.isUpdating);
 
   useInit();
   useThemes();
@@ -31,6 +32,7 @@ const Index = () => {
   useDiscordPresence();
 
   if (loaderVisible) return null;
+  if (isUpdating) return <UpdateLoader />;
 
   if (!userSummary) {
     return (

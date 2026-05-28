@@ -65,7 +65,6 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
   }, [isAchievementUnlocker, currentGame, achievementCount, t]);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setImageLoaded(false);
     setFallbackImage('');
   }, [currentGame?.appid]);
@@ -113,7 +112,7 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
 
       <div
         className={cn(
-          'relative w-[calc(100vw-227px)] pl-6 pt-2 pr-12 mt-9 ease-in-out',
+          'relative w-[calc(100vw-227px)] pl-6 pt-2 pr-12 mt-12 ease-in-out',
           sidebarCollapsed ? 'ml-14' : 'ml-62.5',
         )}
         style={{
@@ -156,7 +155,7 @@ export const AchievementUnlocker = ({ activePage }: { activePage: ActivePageType
 
         <div
           className={cn(
-            'flex max-h-[calc(100vh-92px)] ease-in-out pt-10 overflow-hidden',
+            'flex max-h-[calc(100vh-104px)] ease-in-out pt-10 overflow-hidden',
             sidebarCollapsed ? 'w-[calc(100vw-106px)]' : 'w-[calc(100vw-300px)]',
           )}
           style={{
