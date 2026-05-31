@@ -304,4 +304,4 @@ export const faqData = [
       '>\n' +
       '> To avoid hitting the rate limit in the future, consider increasing the [Sell Delay](/docs/settings/inventory-manager#sell-delay) in [Settings > Inventory Manager](/docs/settings/inventory-manager).',
   },
-];
+]

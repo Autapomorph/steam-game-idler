@@ -1,120 +1,308 @@
-'use client';
+'use client'
 
-import { useEffect, useState } from 'react';
-import { FiDownload, FiGlobe, FiStar } from 'react-icons/fi';
-import { TbCode } from 'react-icons/tb';
+import { useEffect, useRef, useState } from 'react'
+import { FaQuoteRight } from 'react-icons/fa6'
+import { FiDownload, FiGlobe, FiStar } from 'react-icons/fi'
+import { TbCode } from 'react-icons/tb'
+import SpotlightCard from '@docs/components/home/SpotlightCard'
+import { ease } from '@docs/lib/motion'
+import { useGlobalStore } from '@docs/stores/globalStore'
+import { motion, useInView } from 'motion/react'
 
-export default function StatsSection() {
-  const [githubStars, setGithubStars] = useState(999);
-  const [isLoading, setIsLoading] = useState(true);
+function easeInOut(t: number) {
+  return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
+}
+
+function Counter({ target, suffix = '' }: { target: number; suffix: string }) {
+  const ref = useRef<HTMLSpanElement>(null)
+  const isInView = useInView(ref, { once: true })
+  const [count, setCount] = useState(0)
+  const rafRef = useRef<number | null>(null)
 
   useEffect(() => {
-    const loadGitHubStars = async () => {
-      try {
-        const response = await fetch('https://api.github.com/repos/zevnda/steam-game-idler');
-        const data = await response.json();
-        setGithubStars(data.stargazers_count || 999);
-      } catch (error) {
-        setGithubStars(999);
-        console.error('Failed to fetch GitHub stars:', error);
-      } finally {
-        setIsLoading(false);
+    if (!isInView) return
+    const duration = 1800
+    const startTime = performance.now()
+
+    const animate = (now: number) => {
+      const elapsed = now - startTime
+      const progress = Math.min(elapsed / duration, 1)
+      setCount(Math.round(target * easeInOut(progress)))
+      if (progress < 1) {
+        rafRef.current = requestAnimationFrame(animate)
       }
-    };
-    loadGitHubStars();
-  }, []);
+    }
+
+    rafRef.current = requestAnimationFrame(animate)
+    return () => {
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current)
+    }
+  }, [isInView, target])
+
+  return (
+    <span ref={ref}>
+      {count.toLocaleString()}
+      {suffix}
+    </span>
+  )
+}
+
+function TestimonialCard({
+  content,
+  username,
+  platform,
+}: {
+  content: string
+  username: string
+  platform: string
+}) {
+  return (
+    <SpotlightCard className='h-full'>
+      <div className='flex flex-col h-full p-6'>
+        <p className='text-text-primary text-sm leading-relaxed flex-1 mb-5'>{content}</p>
+        <div className='flex items-center justify-end'>
+          {/* <div className='flex gap-0.5'>
+            {[1, 2, 3, 4, 5].map(n => (
+              <FaStar key={n} className='w-3 h-3 text-amber-400' />
+            ))}
+          </div> */}
+          <div className='flex flex-col items-end gap-0.5'>
+            <span className='text-text-primary text-xs'>{username}</span>
+            <span className='text-text-muted text-xs'>{platform}</span>
+          </div>
+        </div>
+        <FaQuoteRight
+          className='absolute bottom-3 left-3 w-16 h-16 text-white/4 select-none pointer-events-none'
+          aria-hidden='true'
+        />
+      </div>
+    </SpotlightCard>
+  )
+}
+
+const testimonials = [
+  {
+    content:
+      "All the other idlers cost more — monthly and yearly — while SGI is free and includes features that others either don't offer or lock behind paywalls.",
+    username: 'Proxii',
+    platform: 'Discord',
+  },
+  {
+    content: "Just hopping in to say that @zevnda ... you are doing the lord's work!",
+    username: 'DrSadistic',
+    platform: 'Discord',
+  },
+  {
+    content:
+      'I am always looking forward to any and all new features being added. SGI is great btw.',
+    username: 'Spectro',
+    platform: 'Discord',
+  },
+  {
+    content: 'I supported with PRO purely just to auto-claim free games.',
+    username: 'Zayne',
+    platform: 'Discord',
+  },
+  {
+    content: "Thanks for this app — well done, it's brilliant work",
+    username: 'B N Y',
+    platform: 'Discord',
+  },
+  {
+    content:
+      'Thank you to all the developers (or just one) and contributors that have made SGI into a reality. SO many people appreciate what you guys do <3',
+    username: '*✦bunnish',
+    platform: 'Discord',
+  },
+  {
+    content:
+      'Switched from Idle Master Extended after it broke with newer titles, and I was always put off by the setup process of ArchiSteamFarm — I love your app, it looks really modern and is working for the newer games.',
+    username: 'Deathwalker',
+    platform: 'Discord',
+  },
+  {
+    content:
+      "Thank you so much! So far, I've found the Trading Card Manager to be very useful. Thank you for working on this all-in-one software. It's an amazing tool, all the better for being open source.",
+    username: 'Raggart',
+    platform: 'steamgifts.com',
+  },
+  {
+    content:
+      'I have 2,903 games and farmed 1,600 of them in 2 weeks — made around $150 from card sales and grabbed Stellar Blade Complete Edition for free. Better than nothing!',
+    username: 'Mazewaliztli47',
+    platform: 'steamgifts.com',
+  },
+  {
+    content:
+      'This is a great utility. It makes the nightmare of managing steam cards actually managable.',
+    username: 'Nogift4u',
+    platform: 'steamgifts.com',
+  },
+  {
+    content:
+      "Downloaded and idling cards with this for about 24 hours so far. I've used ASF in the past, but this is friendlier and I like it so far.",
+    username: 'DrR0Ck',
+    platform: 'steamgifts.com',
+  },
+  {
+    content:
+      'Thanks for the tool. Being able to simultaneously idle up to 32 games is great; only took a few days to get through all my remaining card drops.',
+    username: 'BarbaricGenie',
+    platform: 'steamgifts.com',
+  },
+  {
+    content: 'Thank you very much! A very good alternative with a ton of useful features.',
+    username: 'rashka',
+    platform: 'steamgifts.com',
+  },
+]
+
+const container = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.1 } },
+}
+
+const cardVariant = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease } },
+}
+
+export default function StatsSection() {
+  const { repoStars, totalDownloads } = useGlobalStore(state => state)
+  const [shuffled] = useState(() => [...testimonials].sort(() => Math.random() - 0.5))
+
+  const dlMatch = totalDownloads.match(/^(\d+(?:\.\d+)?)([A-Za-z+]*)$/)
+  const dlTarget = dlMatch ? parseFloat(dlMatch[1]) : 0
+  const dlSuffix = dlMatch ? dlMatch[2] : ''
 
   const stats = [
     {
-      value: '70K+',
+      value:
+        dlTarget > 0 ? (
+          <Counter target={dlTarget} suffix={dlSuffix} />
+        ) : (
+          <span className='opacity-40'>…</span>
+        ),
       label: 'Downloads',
-      icon: <FiDownload className="w-6 h-6" />,
       description: 'Active installations worldwide',
+      icon: <FiDownload />,
+      accent: 'bg-sky-400/70',
+      iconColor: 'text-sky-400',
     },
     {
-      value: '150K+',
+      value: <Counter target={150} suffix='K+' />,
       label: 'Supported Games',
-      icon: <FiGlobe className="w-6 h-6" />,
-      description: 'Game compatibility',
+      description: 'Compatible with your entire library',
+      icon: <FiGlobe />,
+      accent: 'bg-teal-400/70',
+      iconColor: 'text-teal-400',
     },
     {
-      value: isLoading ? '...' : githubStars.toString(),
+      value:
+        repoStars !== null ? (
+          <Counter target={repoStars} suffix='' />
+        ) : (
+          <span className='opacity-40'>…</span>
+        ),
       label: 'GitHub Stars',
-      icon: <FiStar className="w-6 h-6" />,
-      description: 'Community recognition',
+      description: 'Community-backed open source project',
+      icon: <FiStar />,
+      accent: 'bg-amber-400/70',
+      iconColor: 'text-amber-400',
     },
     {
-      value: '100%',
+      value: <Counter target={100} suffix='%' />,
       label: 'Open Source',
-      icon: <TbCode className="w-6 h-6" />,
-      description: 'Transparent development',
+      description: 'No hidden code, no secrets',
+      icon: <TbCode />,
+      accent: 'bg-violet-400/70',
+      iconColor: 'text-violet-400',
     },
-  ];
+  ]
+
+  const headerRef = useRef<HTMLDivElement>(null)
+  const headerInView = useInView(headerRef, { once: true, margin: '-60px' })
+
+  const gridRef = useRef<HTMLDivElement>(null)
+  const gridInView = useInView(gridRef, { once: true, margin: '-60px' })
 
   return (
-    <section
-      className="py-12 sm:py-16 md:py-20 lg:py-24 relative overflow-hidden"
-      aria-labelledby="stats-heading"
-    >
-      {/* Top transition border */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-blue-300 to-transparent" />
+    <section className='py-20 sm:py-24 lg:py-32 relative' aria-labelledby='stats-heading'>
+      <div className='container mx-auto relative z-10 px-4 sm:px-6 md:px-8'>
+        <motion.div
+          ref={headerRef}
+          className='max-w-2xl mx-auto text-center mb-16 sm:mb-20'
+          initial={{ opacity: 0, y: 24 }}
+          animate={headerInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, ease }}
+        >
+          <h2
+            id='stats-heading'
+            className='text-3xl sm:text-4xl md:text-5xl text-text-primary mb-6 leading-tight tracking-tight'
+          >
+            Backed by a <span className='gradient-text'>community</span>
+          </h2>
+          <p className='text-lg text-text-muted leading-relaxed'>
+            Join thousands of Steam users who automate their entire library with Steam Game Idler
+            every day — for free.
+          </p>
+        </motion.div>
 
-      {/* Bottom transition overlay */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-b from-transparent to-purple-100/50" />
+        <motion.div
+          ref={gridRef}
+          className='grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5'
+          variants={container}
+          initial='hidden'
+          animate={gridInView ? 'show' : 'hidden'}
+        >
+          {stats.map(stat => (
+            <motion.article key={stat.label} variants={cardVariant} className='h-full'>
+              <div className='relative h-full rounded-(--radius-card) bg-surface border border-white/6 overflow-hidden p-4 sm:p-6 lg:p-8'>
+                <div className={`absolute inset-x-0 top-0 h-0.5 ${stat.accent}`} />
 
-      <div className="container mx-auto relative z-10 px-4 sm:px-6 md:px-8">
-        {/* Header with side-by-side layout */}
-        <header className="grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-center mb-12 sm:mb-16 lg:mb-20">
-          <div>
-            <h2
-              id="stats-heading"
-              className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-800 mb-4 sm:mb-6 leading-tight"
-            >
-              THE #1 STEAM IDLE{' '}
-              <span className="block text-transparent bg-clip-text bg-linear-to-r from-pink-500 to-orange-500">
-                TOOL WORLDWIDE
-              </span>
-            </h2>
-          </div>
-          <div>
-            <p className="text-base sm:text-lg text-gray-700 leading-relaxed">
-              Steam Game Idler is the go-to choice for users looking to automate their Steam
-              experience. Our Steam card farmer is trusted by thousands of users worldwide, with
-              support for 150,000+ Steam games.
-            </p>
-          </div>
-        </header>
-
-        {/* Stats in horizontal cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          {stats.map((stat, index) => (
-            <article key={stat.label} className="group">
-              <div className="bg-white border-2 border-indigo-200 p-6 sm:p-8 hover:border-indigo-400 hover:bg-white/90 transition-all duration-200 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-2">
-                <div className="flex items-start justify-between mb-4 sm:mb-6">
+                <div className='flex items-center justify-between mb-3'>
                   <div
-                    className="text-indigo-500 group-hover:text-purple-500 transition-colors duration-200"
-                    aria-hidden="true"
+                    className='text-2xl sm:text-3xl lg:text-4xl font-bold text-text-primary tabular-nums leading-none'
+                    aria-label={`${stat.label} statistic`}
                   >
-                    {stat.icon}
+                    {stat.value}
                   </div>
-                  <div className="text-right">
-                    <div
-                      className="text-2xl sm:text-3xl font-black text-gray-800 mb-1"
-                      aria-label={`${stat.value} ${stat.label}`}
-                    >
-                      {stat.value}
-                    </div>
-                    <div className="text-xs text-indigo-600 uppercase tracking-widest font-bold">
-                      {stat.label}
-                    </div>
-                  </div>
+                  <div className={`${stat.iconColor} text-xl`}>{stat.icon}</div>
                 </div>
-                <p className="text-sm text-gray-600 leading-relaxed">{stat.description}</p>
+
+                <div className='text-xs text-text-muted uppercase tracking-widest font-medium mb-3'>
+                  {stat.label}
+                </div>
+
+                <p className='text-sm text-text-muted leading-relaxed'>{stat.description}</p>
               </div>
-            </article>
+            </motion.article>
+          ))}
+        </motion.div>
+      </div>
+
+      <div
+        className='testimonials-container w-full overflow-hidden mt-16 sm:mt-20'
+        style={{
+          maskImage:
+            'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)',
+          WebkitMaskImage:
+            'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)',
+        }}
+      >
+        <div className='testimonials-track flex items-stretch gap-5 w-max'>
+          {shuffled.map(t => (
+            <div key={t.username} className='w-72 shrink-0'>
+              <TestimonialCard content={t.content} username={t.username} platform={t.platform} />
+            </div>
+          ))}
+          {shuffled.map(t => (
+            <div key={`dup-${t.username}`} aria-hidden='true' className='w-72 shrink-0'>
+              <TestimonialCard content={t.content} username={t.username} platform={t.platform} />
+            </div>
           ))}
         </div>
       </div>
     </section>
-  );
+  )
 }

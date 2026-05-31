@@ -1,21 +1,21 @@
-import { getMDXComponents } from '../../..//mdx-components';
-import { getPageImage, source } from '../../../lib/source';
-import { createRelativeLink } from 'fumadocs-ui/mdx';
-import { DocsBody, DocsPage } from 'fumadocs-ui/page';
-import { notFound } from 'next/navigation';
+import { getMDXComponents } from '../../..//mdx-components'
+import { source } from '../../../lib/source'
+import { createRelativeLink } from 'fumadocs-ui/mdx'
+import { DocsBody, DocsPage } from 'fumadocs-ui/page'
+import { notFound } from 'next/navigation'
 
 interface PageProps {
   params: {
-    slug: string[];
-  };
+    slug: string[]
+  }
 }
 
 export default async function Page(props: PageProps) {
-  const params = await props.params;
-  const page = source.getPage(params.slug);
-  if (!page) notFound();
+  const params = await props.params
+  const page = source.getPage(params.slug)
+  if (!page) notFound()
 
-  const MDX = page.data.body;
+  const MDX = page.data.body
 
   return (
     <DocsPage toc={page.data.toc} full={page.data.full} tableOfContent={{ style: 'clerk' }}>
@@ -29,24 +29,37 @@ export default async function Page(props: PageProps) {
         />
       </DocsBody>
     </DocsPage>
-  );
+  )
 }
 
 export async function generateStaticParams() {
-  return source.generateParams();
+  return source.generateParams()
 }
 
 export async function generateMetadata(props: PageProps) {
-  const params = await props.params;
-  const page = source.getPage(params.slug);
-  if (!page) notFound();
+  const params = await props.params
+  const page = source.getPage(params.slug)
+  if (!page) notFound()
+  const slugPath = (params.slug ?? []).join('/')
 
   return {
     title: page.data.title,
     description: page.data.description,
     keywords: page.data.keywords,
     openGraph: {
-      images: getPageImage(page).url,
+      url: `https://steamgameidler.com/docs/${slugPath}`,
+      title: page.data.title,
+      description: page.data.description,
+      images: 'https://steamgameidler.com/og-image.png',
+      type: 'article',
     },
-  };
+    twitter: {
+      title: page.data.title,
+      description: page.data.description,
+      image: 'https://steamgameidler.com/og-image.png',
+    },
+    alternates: {
+      canonical: `/docs/${slugPath}`,
+    },
+  }
 }

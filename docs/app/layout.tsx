@@ -1,36 +1,37 @@
-import AdOverlay from '@docs/components/AdOverlay';
-import HelpDesk from '@docs/components/HelpDesk';
-import SearchDialog from '@docs/components/search';
-import StoreLoader from '@docs/components/StoreLoader';
-import TelemetryLoader from '@docs/components/TelemetryLoader';
-import { RootProvider } from 'fumadocs-ui/provider/next';
-import { Geist, Geist_Mono } from 'next/font/google';
-import Script from 'next/script';
-import './globals.css';
+import AdOverlay from '@docs/components/AdOverlay'
+import HelpDesk from '@docs/components/HelpDesk'
+import SearchDialog from '@docs/components/search'
+import StoreLoader from '@docs/components/StoreLoader'
+import TelemetryLoader from '@docs/components/TelemetryLoader'
+import { RootProvider } from 'fumadocs-ui/provider/next'
+import { Geist, Geist_Mono } from 'next/font/google'
+import Script from 'next/script'
+import './globals.css'
 
 interface LayoutProps {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
 const geist = Geist({
   variable: '--font-sans',
   subsets: ['latin'],
-});
+})
 
 const mono = Geist_Mono({
   variable: '--font-mono',
   subsets: ['latin'],
-});
+})
 
 declare global {
   interface Window {
-    adsbygoogle: Record<string, unknown>[];
+    adsbygoogle: Record<string, unknown>[]
   }
 }
 
 export const metadata = {
   title: {
     default: 'Steam Game Idler - Farm Cards, Unlock Achievements & Idle Games',
+    template: '%s | Steam Game Idler',
   },
   description:
     'Free Steam automation tool to farm trading cards, unlock achievements, boost playtime, and idle games. Modern alternative to SAM, ASF, and Idle Master.',
@@ -77,81 +78,98 @@ export const metadata = {
     'msapplication-TileColor': '#fff',
     'google-site-verification': 'gOZEIhRh4BCNzE1r4etZeuJoex3aVaUrATjMnsnyYuY',
     'google-adsense-account': 'ca-pub-8915288433444527',
-    bdbfaa2fd4578c4db1970a32318ef980869bbd26: 'bdbfaa2fd4578c4db1970a32318ef980869bbd26',
-    referrer: 'strict-origin-when-cross-origin',
+    'bdbfaa2fd4578c4db1970a32318ef980869bbd26': 'bdbfaa2fd4578c4db1970a32318ef980869bbd26',
+    'referrer': 'strict-origin-when-cross-origin',
   },
   alternates: {
-    canonical: './',
+    canonical: 'https://steamgameidler.com/',
   },
-};
+}
 
 const schemaData = [
   {
     '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    'name': 'Steam Game Idler',
+    'url': 'https://steamgameidler.com',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    'name': 'Steam Game Idler',
+    'url': 'https://steamgameidler.com',
+    'logo': 'https://steamgameidler.com/logo.png',
+    'sameAs': ['https://github.com/zevnda/steam-game-idler'],
+  },
+  {
+    '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
-    name: 'Steam Game Idler',
-    url: 'https://steamgameidler.com/',
-    description:
+    'name': 'Steam Game Idler',
+    'url': 'https://steamgameidler.com/',
+    'description':
       'Farm Steam trading cards, manage achievements, and idle games automatically — an all-in-one alternative to ArchiSteamFarm, Steam Achievement Manager, and Idle Master.',
-    applicationCategory: 'UtilitiesApplication',
-    operatingSystem: 'Windows',
-    offers: {
+    'applicationCategory': 'UtilitiesApplication',
+    'operatingSystem': 'Windows',
+    'offers': {
       '@type': 'Offer',
-      price: '0',
-      priceCurrency: 'USD',
+      'price': '0',
+      'priceCurrency': 'USD',
     },
   },
   {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    mainEntity: [
+    'mainEntity': [
       {
         '@type': 'Question',
-        name: 'What is a Steam achievement manager?',
-        acceptedAnswer: {
+        'name': 'What is a Steam achievement manager?',
+        'acceptedAnswer': {
           '@type': 'Answer',
-          text: "A Steam achievement manager is a tool that allows you to unlock, lock, and manage achievements for Steam games. SGI's Steam achievement manager provides a safe, intuitive interface for achievement management.",
+          'text':
+            "A Steam achievement manager is a tool that allows you to unlock, lock, and manage achievements for Steam games. SGI's Steam achievement manager provides a safe, intuitive interface for achievement management.",
         },
       },
       {
         '@type': 'Question',
-        name: 'What is a Steam achievement unlocker?',
-        acceptedAnswer: {
+        'name': 'What is a Steam achievement unlocker?',
+        'acceptedAnswer': {
           '@type': 'Answer',
-          text: "A Steam achievement unlocker is a tool that lets you automatically unlock Steam achievements for your games. SGI's Steam achievement unlocker uses human-like timing and methods for safety.",
+          'text':
+            "A Steam achievement unlocker is a tool that lets you automatically unlock Steam achievements for your games. SGI's Steam achievement unlocker uses human-like timing and methods for safety.",
         },
       },
       {
         '@type': 'Question',
-        name: 'What is a Steam idle tool?',
-        acceptedAnswer: {
+        'name': 'What is a Steam idle tool?',
+        'acceptedAnswer': {
           '@type': 'Answer',
-          text: "A Steam idle tool lets you simulate playing games to boost playtime and earn trading cards. SGI's Steam idle feature is fast, safe, and easy to use.",
+          'text':
+            "A Steam idle tool lets you simulate playing games to boost playtime and earn trading cards. SGI's Steam idle feature is fast, safe, and easy to use.",
         },
       },
     ],
   },
-];
+]
 
 export default function Layout({ children }: LayoutProps) {
   return (
-    <html lang="en" className={`${geist.variable} ${mono.variable}`} suppressHydrationWarning>
+    <html lang='en' className={`${geist.variable} ${mono.variable}`} suppressHydrationWarning>
       <head>
         <Script
-          type="application/ld+json"
+          type='application/ld+json'
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
         />
 
         <script
           async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8915288433444527"
-          crossOrigin="anonymous"
+          src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8915288433444527'
+          crossOrigin='anonymous'
         />
 
         <HelpDesk />
       </head>
 
-      <body className="flex flex-col min-h-screen">
+      <body className='flex flex-col min-h-screen'>
         <RootProvider
           search={{
             SearchDialog,
@@ -165,5 +183,5 @@ export default function Layout({ children }: LayoutProps) {
         <StoreLoader />
       </body>
     </html>
-  );
+  )
 }

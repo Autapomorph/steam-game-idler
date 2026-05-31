@@ -1,67 +1,67 @@
-'use client';
+'use client'
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react'
 
 declare global {
   interface Window {
-    adsbygoogle: Record<string, unknown>[];
+    adsbygoogle: Record<string, unknown>[]
   }
 }
 
 export default function AdComponentTwo() {
-  const [adKey, setAdKey] = useState(0);
-  const [ready, setReady] = useState(false);
+  const [adKey, setAdKey] = useState(0)
+  const [ready, setReady] = useState(false)
 
   useEffect(() => {
     const initialDelay = setTimeout(() => {
-      setReady(true);
-    }, 5000);
+      setReady(true)
+    }, 5000)
 
     return () => {
-      clearTimeout(initialDelay);
-    };
-  }, []);
+      clearTimeout(initialDelay)
+    }
+  }, [])
 
   useEffect(() => {
-    if (!ready) return;
+    if (!ready) return
 
     try {
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
+      ;(window.adsbygoogle = window.adsbygoogle || []).push({})
     } catch (err) {
-      console.error('AdSense error:', err);
+      console.error('AdSense error:', err)
     }
 
     const scheduleNextRefresh = () => {
       const interval = setTimeout(
         () => {
-          setAdKey(prev => prev + 1);
-          scheduleNextRefresh();
+          setAdKey(prev => prev + 1)
+          scheduleNextRefresh()
         },
         3 * 60 * 1000,
-      );
+      )
 
-      return interval;
-    };
+      return interval
+    }
 
-    const timeoutId = scheduleNextRefresh();
+    const timeoutId = scheduleNextRefresh()
 
     return () => {
-      clearTimeout(timeoutId);
-    };
-  }, [adKey, ready]);
+      clearTimeout(timeoutId)
+    }
+  }, [adKey, ready])
 
-  if (!ready) return null;
+  if (!ready) return null
 
   return (
-    <div className="flex fixed top-0 left-0 flex-col gap-4 z-40 bg-[#121316]">
+    <div className='flex fixed top-0 left-0 flex-col gap-4 z-40 bg-[#121316]'>
       <ins
         key={adKey}
-        className="adsbygoogle"
-        data-ad-client="ca-pub-8915288433444527"
-        data-ad-slot="3005445709"
-        data-full-width-responsive="true"
+        className='adsbygoogle'
+        data-ad-client='ca-pub-8915288433444527'
+        data-ad-slot='3005445709'
+        data-full-width-responsive='true'
         style={{ display: 'block', width: '300px', height: '250px' }}
       />
     </div>
-  );
+  )
 }

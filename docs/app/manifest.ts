@@ -1,4 +1,4 @@
-export const dynamic = 'force-static';
+export const dynamic = 'force-static'
 
 export default function manifest() {
   return {
@@ -18,5 +18,5 @@ export default function manifest() {
         type: 'image/x-icon',
       },
     ],
-  };
+  }
 }
