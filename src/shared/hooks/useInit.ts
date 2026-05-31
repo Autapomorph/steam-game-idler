@@ -5,6 +5,7 @@ import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLoaderStore, useStateStore, useUserStore } from '@/shared/stores';
+import { initializeEncryptionKey } from '@/shared/utils';
 
 export function useInit() {
   const setLoadingUserSummary = useStateStore(state => state.setLoadingUserSummary);
@@ -15,12 +16,14 @@ export function useInit() {
   console.debug('Monitor for rerenders');
 
   useEffect(() => {
-    // Emit ready event to backend
-    emit('ready');
-    // Start the Steam status monitor once globally
-    invoke('start_steam_status_monitor');
-    // Start the processes monitor once globally
-    invoke('start_processes_monitor');
+    initializeEncryptionKey().then(() => {
+      // Emit ready event to backend
+      emit('ready');
+      // Start the Steam status monitor once globally
+      invoke('start_steam_status_monitor');
+      // Start the processes monitor once globally
+      invoke('start_processes_monitor');
+    });
   }, []);
 
   useEffect(() => {

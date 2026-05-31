@@ -217,6 +217,21 @@ export const getAppVersion = async () => {
   }
 };
 
+let cachedFingerprintKey = '';
+
+export async function initializeEncryptionKey() {
+  try {
+    const fingerprint = await invoke<string>('get_device_fingerprint');
+
+    if (fingerprint) {
+      const hash = crypto.createHash('sha256').update(fingerprint).digest('hex');
+      cachedFingerprintKey = hash.substring(0, 32);
+    }
+  } catch (error) {
+    console.error('Failed to initialize encryption key:', error);
+  }
+}
+
 // Log event
 export async function logEvent(message: string) {
   try {
@@ -229,8 +244,13 @@ export async function logEvent(message: string) {
 
 export function encrypt(string: string) {
   try {
+    if (!cachedFingerprintKey) {
+      console.error('Encryption key not initialized!');
+      return '';
+    }
+
     const iv = crypto.randomBytes(16);
-    const cipher = crypto.createCipheriv('aes-256-gcm', '7k9m2n8q4r6t1u3w5y7z9a2c4e6g8h0j', iv);
+    const cipher = crypto.createCipheriv('aes-256-gcm', cachedFingerprintKey, iv);
     let encrypted = cipher.update(string, 'utf8', 'hex');
     encrypted += cipher.final('hex');
     const authTag = cipher.getAuthTag();
@@ -243,11 +263,21 @@ export function encrypt(string: string) {
 
 export function decrypt(string: string) {
   try {
+    if (!cachedFingerprintKey) {
+      console.error('Decryption key not initialized!');
+      return '';
+    }
+
     const parts = string.split(':');
+
+    if (parts.length !== 3) {
+      return '';
+    }
+
     const iv = Buffer.from(parts[0], 'hex');
     const authTag = Buffer.from(parts[1], 'hex');
     const encrypted = parts[2];
-    const decipher = crypto.createDecipheriv('aes-256-gcm', '7k9m2n8q4r6t1u3w5y7z9a2c4e6g8h0j', iv);
+    const decipher = crypto.createDecipheriv('aes-256-gcm', cachedFingerprintKey, iv);
     decipher.setAuthTag(authTag);
     let decrypted = decipher.update(encrypted, 'hex', 'utf8');
     decrypted += decipher.final('utf8');
