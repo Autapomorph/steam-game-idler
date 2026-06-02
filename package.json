@@ -22,11 +22,11 @@
     "lint:docs": "npm run lint -w steam-game-idler-docs",
     "lint:all": "run-s -c lint lint:docs",
     "lint:staged": "lint-staged --relative",
+    "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
     "tauri": "tauri",
     "tauri:dev": "tauri dev",
     "tauri:build": "tauri build",
-    "prettier": "prettier --write .",
     "prepare": "husky || true"
   },
   "dependencies": {
