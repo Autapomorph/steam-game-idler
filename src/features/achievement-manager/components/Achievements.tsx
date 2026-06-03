@@ -1,30 +1,30 @@
-import type { Achievement, CurrentTabType, Statistic } from '@/shared/types';
-import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { cn, Tab, Tabs } from '@heroui/react';
-import Image from 'next/image';
+import type { Achievement, CurrentTabType, Statistic } from '@/shared/types'
+import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { cn, Tab, Tabs } from '@heroui/react'
+import Image from 'next/image'
 import {
   AchievementsList,
   PageHeader,
   StatisticsList,
   useAchievements,
-} from '@/features/achievement-manager';
-import { Loader } from '@/shared/components';
-import { useNavigationStore, useStateStore } from '@/shared/stores';
+} from '@/features/achievement-manager'
+import { Loader } from '@/shared/components'
+import { useNavigationStore, useStateStore } from '@/shared/stores'
 
 export const Achievements = () => {
-  const { t } = useTranslation();
-  const setCurrentTab = useNavigationStore(state => state.setCurrentTab);
-  const appId = useStateStore(state => state.appId);
-  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed);
-  const transitionDuration = useStateStore(state => state.transitionDuration);
-  const [isLoading, setIsLoading] = useState(true);
-  const [achievements, setAchievements] = useState<Achievement[]>([]);
-  const [statistics, setStatistics] = useState<Statistic[]>([]);
-  const [protectedAchievements, setProtectedAchievements] = useState(false);
-  const [protectedStatistics, setProtectedStatistics] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const [fallbackImage, setFallbackImage] = useState('');
+  const { t } = useTranslation()
+  const setCurrentTab = useNavigationStore(state => state.setCurrentTab)
+  const appId = useStateStore(state => state.appId)
+  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
+  const transitionDuration = useStateStore(state => state.transitionDuration)
+  const [isLoading, setIsLoading] = useState(true)
+  const [achievements, setAchievements] = useState<Achievement[]>([])
+  const [statistics, setStatistics] = useState<Statistic[]>([])
+  const [protectedAchievements, setProtectedAchievements] = useState(false)
+  const [protectedStatistics, setProtectedStatistics] = useState(false)
+  const [imageLoaded, setImageLoaded] = useState(false)
+  const [fallbackImage, setFallbackImage] = useState('')
   const achievementStates = useAchievements(
     achievements,
     setIsLoading,
@@ -32,15 +32,15 @@ export const Achievements = () => {
     setStatistics,
     setProtectedAchievements,
     setProtectedStatistics,
-  );
+  )
 
   const handleImageLoad = () => {
-    setImageLoaded(true);
-  };
+    setImageLoaded(true)
+  }
 
   const handleImageError = () => {
-    setFallbackImage(`https://cdn.steamstatic.com/steam/apps/${appId}/header.jpg`);
-  };
+    setFallbackImage(`https://cdn.steamstatic.com/steam/apps/${appId}/header.jpg`)
+  }
 
   return (
     <div
@@ -56,7 +56,7 @@ export const Achievements = () => {
       <Image
         src={fallbackImage || `https://cdn.steamstatic.com/steam/apps/${appId}/library_hero.jpg`}
         className={cn('absolute top-0 left-0 w-full', !imageLoaded && 'hidden')}
-        alt="background"
+        alt='background'
         width={1920}
         height={1080}
         priority
@@ -67,7 +67,7 @@ export const Achievements = () => {
             'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 70%)',
         }}
       />
-      {imageLoaded && <div className="absolute top-0 left-0 w-full h-screen bg-base/70" />}
+      {imageLoaded && <div className='absolute top-0 left-0 w-full h-screen bg-base/70' />}
 
       {/* Loader overlay */}
       {(isLoading || (!imageLoaded && !fallbackImage && !isLoading)) && (
@@ -78,22 +78,22 @@ export const Achievements = () => {
         </div>
       )}
 
-      <div className="p-4">
+      <div className='p-4'>
         <PageHeader
           protectedAchievements={protectedAchievements}
           protectedStatistics={protectedStatistics}
         />
       </div>
 
-      <div className="relative flex flex-wrap gap-4 mt-2">
-        <div className="flex flex-col w-full">
+      <div className='relative flex flex-wrap gap-4 mt-2'>
+        <div className='flex flex-col w-full'>
           <Tabs
-            size="lg"
-            aria-label="Achievements tabs"
-            color="default"
-            variant="solid"
-            radius="full"
-            className="max-w-75 ml-5"
+            size='lg'
+            aria-label='Achievements tabs'
+            color='default'
+            variant='solid'
+            radius='full'
+            className='max-w-75 ml-5'
             classNames={{
               tabList: 'gap-0 w-full bg-btn-achievement-header ml-7 mt-4',
               tab: cn(
@@ -106,7 +106,7 @@ export const Achievements = () => {
             }}
             onSelectionChange={e => setCurrentTab(e as CurrentTabType)}
           >
-            <Tab key="achievements" title={t($ => $['achievementManager.achievements.title'])}>
+            <Tab key='achievements' title={t('achievementManager.achievements.title')}>
               <AchievementsList
                 achievements={achievements}
                 setAchievements={setAchievements}
@@ -115,7 +115,7 @@ export const Achievements = () => {
                 setRefreshKey={achievementStates.setRefreshKey}
               />
             </Tab>
-            <Tab key="statistics" title={t($ => $['achievementManager.statistics.title'])}>
+            <Tab key='statistics' title={t('achievementManager.statistics.title')}>
               <StatisticsList
                 statistics={statistics}
                 setStatistics={setStatistics}
@@ -128,5 +128,5 @@ export const Achievements = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

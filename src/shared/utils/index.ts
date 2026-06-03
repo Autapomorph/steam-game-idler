@@ -1,16 +1,16 @@
-export * from './handleAchievements';
+export * from './handleAchievements'
 
-export * from './handleAutomation';
+export * from './handleAutomation'
 
-export * from './handleIdle';
+export * from './handleIdle'
 
-export * from './tasks';
+export * from './tasks'
 
-export * from './handleStartAutoIdleGames';
+export * from './handleStartAutoIdleGames'
 
-export * from './handleCheckForFreeGames';
+export * from './handleCheckForFreeGames'
 
-export { startCardFarming } from './handleStartCardFarming';
-
-export { startAchievementUnlocker } from './handleStartAchievementUnlocker';
-export { handleNextTaskChange } from './handleNextTaskChange';
+export { startCardFarming } from './handleStartCardFarming'
+export { handleAutoFarmCards } from './handleAutoFarmCards'
+export { startAchievementUnlocker } from './handleStartAchievementUnlocker'
+export { handleNextTaskChange } from './handleNextTaskChange'

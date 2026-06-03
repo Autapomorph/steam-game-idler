@@ -1,31 +1,31 @@
-export { Key, Keybind } from './Key';
-export { Beta } from './Beta';
-export { ChangelogModal } from './ChangelogModal';
-export { CustomModal } from './CustomModal';
-export { CustomTooltip } from './CustomTooltip';
-export { ErrorToast } from './ErrorToast';
-export { ExtLink } from './ExtLink';
-export { GameCard } from './GameCard';
-export { IdleTimer } from './IdleTimer';
-export { LanguageSwitch } from './LanguageSwitch';
-export { Loader } from './Loader';
-export { SearchModal } from './SearchModal';
-export { SettingsSwitch } from './SettingsSwitch';
-export { SignInHero } from './SignInHero';
-export { SocialButtons } from './SocialButtons';
-export { SteamWarning } from './SteamWarning';
-export { UpdateButton } from './UpdateButton';
-export { UpdateLoader } from './UpdateLoader';
+export { Key, Keybind } from './Key'
+export { Beta } from './Beta'
+export { ChangelogModal } from './ChangelogModal'
+export { CustomModal } from './CustomModal'
+export { CustomTooltip } from './CustomTooltip'
+export { ErrorToast } from './ErrorToast'
+export { ExtLink } from './ExtLink'
+export { GameCard } from './GameCard'
+export { IdleTimer } from './IdleTimer'
+export { LanguageSwitch } from './LanguageSwitch'
+export { Loader } from './Loader'
+export { SearchModal } from './SearchModal'
+export { SettingsSwitch } from './SettingsSwitch'
+export { SignInHero } from './SignInHero'
+export { SocialButtons } from './SocialButtons'
+export { SteamWarning } from './SteamWarning'
+export { UpdateButton } from './UpdateButton'
+export { UpdateLoader } from './UpdateLoader'
 
-export { Dashboard } from './layouts/Dashboard';
-export { SignIn } from './layouts/SignIn';
-export { Layout } from './layouts/Layout';
-export { FullscreenLoader } from './FullscreenLoader';
-export { Notifications } from './titlebar/Notifications';
-export { Sidebar } from './Sidebar';
-export { Brand } from './titlebar/Brand';
-export { Logo } from './titlebar/Logo';
-export { Menu } from './titlebar/Menu';
-export { Titlebar } from './titlebar/Titlebar';
+export { Dashboard } from './layouts/Dashboard'
+export { SignIn } from './layouts/SignIn'
+export { Layout } from './layouts/Layout'
+export { FullscreenLoader } from './FullscreenLoader'
+export { Notifications } from './titlebar/Notifications'
+export { Sidebar } from './Sidebar'
+export { Brand } from './titlebar/Brand'
+export { Logo } from './titlebar/Logo'
+export { Menu } from './titlebar/Menu'
+export { Titlebar } from './titlebar/Titlebar'
 
-export * from './Toasts';
+export * from './Toasts'

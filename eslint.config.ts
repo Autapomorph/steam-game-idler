@@ -1,18 +1,18 @@
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import globals from 'globals';
-import js from '@eslint/js';
-import { defineConfig, globalIgnores } from 'eslint/config';
-import { includeIgnoreFile } from '@eslint/config-helpers';
-import { configs, plugins, rules } from 'eslint-config-airbnb-extended';
-import reactRefreshPlugin from 'eslint-plugin-react-refresh';
-import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
-import { createTypeScriptImportResolver } from 'eslint-import-resolver-typescript';
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+import globals from 'globals'
+import js from '@eslint/js'
+import { defineConfig, globalIgnores } from 'eslint/config'
+import { includeIgnoreFile } from '@eslint/config-helpers'
+import { configs, plugins, rules } from 'eslint-config-airbnb-extended'
+import reactRefreshPlugin from 'eslint-plugin-react-refresh'
+import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
+import { createTypeScriptImportResolver } from 'eslint-import-resolver-typescript'
 
-const dirname = path.dirname(fileURLToPath(import.meta.url));
+const dirname = path.dirname(fileURLToPath(import.meta.url))
 
-export const projectRoot = path.resolve(dirname);
-export const gitignorePath = path.resolve(projectRoot, '.gitignore');
+export const projectRoot = path.resolve(dirname)
+export const gitignorePath = path.resolve(projectRoot, '.gitignore')
 
 export default defineConfig([
   globalIgnores(['docs/**']),
@@ -153,4 +153,4 @@ export default defineConfig([
       // ],
     },
   },
-]);
+])

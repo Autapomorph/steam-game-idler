@@ -6,8 +6,8 @@ import type {
   InvokeCustomList,
   InvokeSettings,
   UserSummary,
-} from '@/shared/types';
-import { invoke } from '@tauri-apps/api/core';
+} from '@/shared/types'
+import { invoke } from '@tauri-apps/api/core'
 import {
   checkDrops,
   getAllGamesWithDrops,
@@ -15,25 +15,25 @@ import {
   startAutoIdleGames,
   startFarmIdle,
   stopFarmIdle,
-} from '@/shared/utils';
+} from '@/shared/utils'
 
 export interface GameForFarming {
-  appid: number;
-  name: string;
-  dropsToCount?: number;
-  initialDrops?: number;
+  appid: number
+  name: string
+  dropsToCount?: number
+  initialDrops?: number
 }
 
 export interface GameWithDrops extends GameForFarming {
-  appid: number;
-  name: string;
-  dropsToCount: number;
-  initialDrops: number;
+  appid: number
+  name: string
+  dropsToCount: number
+  initialDrops: number
 }
 
 interface CycleStep {
-  action: (gamesSet: Set<GameWithDrops>) => Promise<boolean>;
-  delay: number;
+  action: (gamesSet: Set<GameWithDrops>) => Promise<boolean>
+  delay: number
 }
 
 export const useCardFarming = async (
@@ -46,92 +46,92 @@ export const useCardFarming = async (
   abortControllerRef: React.RefObject<AbortController>,
 ) => {
   const cleanup = () => {
-    isMountedRef.current = false;
+    isMountedRef.current = false
     if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
+      abortControllerRef.current.abort()
     }
-  };
+  }
 
   const startCardFarming = async () => {
     try {
-      if (!isMountedRef.current) return;
+      if (!isMountedRef.current) return
 
-      const { totalDrops, gamesSet } = await checkGamesForDrops();
+      const { totalDrops, gamesSet } = await checkGamesForDrops()
 
-      if (!isMountedRef.current) return;
+      if (!isMountedRef.current) return
 
-      setTotalDropsRemaining(totalDrops);
-      setGamesWithDrops(gamesSet);
+      setTotalDropsRemaining(totalDrops)
+      setGamesWithDrops(gamesSet)
 
       if (isMountedRef.current && gamesSet.size > 0) {
-        const success = await beginFarmingCycle(gamesSet, isMountedRef, abortControllerRef);
+        const success = await beginFarmingCycle(gamesSet, isMountedRef, abortControllerRef)
         if (!success) {
-          logEvent('[Card Farming] An error occurred (this error can often be ignored) - stopping');
-          return setIsComplete(true);
+          logEvent('[Card Farming] An error occurred (this error can often be ignored) - stopping')
+          return setIsComplete(true)
         }
       } else {
-        const nextTask = await checkForNextTask();
+        const nextTask = await checkForNextTask()
 
         if (nextTask.shouldStartNextTask) {
           if (nextTask.task && nextTask.task === 'achievementUnlocker') {
-            await stopFarmIdle(gamesSet);
-            setIsCardFarming(false);
-            await startAchievementUnlocker();
-            logEvent(`[Card Farming] No drops remaining - moving to next task: ${nextTask.task}`);
+            await stopFarmIdle(gamesSet)
+            setIsCardFarming(false)
+            await startAchievementUnlocker()
+            logEvent(`[Card Farming] No drops remaining - moving to next task: ${nextTask.task}`)
           }
 
           if (nextTask.task && nextTask.task === 'autoIdle') {
-            await stopFarmIdle(gamesSet);
-            setIsCardFarming(false);
-            await startAutoIdleGames();
-            logEvent(`[Card Farming] No drops remaining - moving to next task: ${nextTask.task}`);
+            await stopFarmIdle(gamesSet)
+            setIsCardFarming(false)
+            await startAutoIdleGames()
+            logEvent(`[Card Farming] No drops remaining - moving to next task: ${nextTask.task}`)
           }
 
-          return setIsComplete(true);
+          return setIsComplete(true)
         }
-        logEvent('[Card Farming] No games left - stopping');
-        return setIsComplete(true);
+        logEvent('[Card Farming] No games left - stopping')
+        return setIsComplete(true)
       }
 
       if (isMountedRef.current) {
-        await startCardFarming();
+        await startCardFarming()
       }
     } catch (error) {
-      handleError('startCardFarming', error);
+      handleError('startCardFarming', error)
     }
-  };
-
-  if (isMountedRef.current) {
-    startCardFarming().catch(error => handleError('useCardFarming', error));
   }
 
-  return cleanup;
-};
+  if (isMountedRef.current) {
+    startCardFarming().catch(error => handleError('useCardFarming', error))
+  }
+
+  return cleanup
+}
 
 // Check games for drops and return total drops and games set
 const checkGamesForDrops = async () => {
-  const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary;
+  const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
 
   const response = await invoke<InvokeSettings>('get_user_settings', {
     steamId: userSummary?.steamId,
-  });
+  })
 
-  const gameSettings = response.settings.gameSettings || {};
-  const { credentials } = response.settings.cardFarming;
-  const { allGames } = response.settings.cardFarming;
-  const blacklist = response.settings.cardFarming.blacklist || [];
-  const skipNoPlaytime = response.settings.cardFarming.skipNoPlaytime || false;
-  const farmUnplayedOnly = response.settings.cardFarming.farmUnplayedOnly || false;
-  const sortByHighestDrops = response.settings.cardFarming.sortByHighestDrops || false;
-  const sortByLowestDrops = response.settings.cardFarming.sortByLowestDrops || false;
+  const gameSettings = response.settings.gameSettings || {}
+  const { credentials } = response.settings.cardFarming
+  const { allGames } = response.settings.cardFarming
+  const blacklist = response.settings.cardFarming.blacklist || []
+  const skipNoPlaytime = response.settings.cardFarming.skipNoPlaytime || false
+  const farmUnplayedOnly = response.settings.cardFarming.farmUnplayedOnly || false
+  const sortByHighestDrops = response.settings.cardFarming.sortByHighestDrops || false
+  const sortByLowestDrops = response.settings.cardFarming.sortByLowestDrops || false
 
   const cardFarmingList = await invoke<InvokeCustomList>('get_custom_lists', {
     steamId: userSummary?.steamId,
     list: 'cardFarmingList',
-  });
+  })
 
-  const gamesSet = new Set<GameWithDrops>();
-  let totalDrops = 0;
+  const gamesSet = new Set<GameWithDrops>()
+  let totalDrops = 0
 
   try {
     if (allGames) {
@@ -140,7 +140,7 @@ const checkGamesForDrops = async () => {
         credentials?.sid,
         credentials?.sls,
         credentials?.sma,
-      );
+      )
 
       totalDrops = processGamesWithDrops(
         gamesWithDrops,
@@ -151,7 +151,7 @@ const checkGamesForDrops = async () => {
         farmUnplayedOnly,
         sortByHighestDrops,
         sortByLowestDrops,
-      );
+      )
     } else {
       totalDrops = await processIndividualGames(
         cardFarmingList.list_data,
@@ -160,14 +160,14 @@ const checkGamesForDrops = async () => {
         userSummary,
         credentials,
         blacklist,
-      );
+      )
     }
   } catch (error) {
-    handleError('checkGamesForDrops', error);
+    handleError('checkGamesForDrops', error)
   }
 
-  return { totalDrops, gamesSet };
-};
+  return { totalDrops, gamesSet }
+}
 
 const processGamesWithDrops = (
   gamesWithDrops: GameWithRemainingDrops[] | Game[],
@@ -179,79 +179,79 @@ const processGamesWithDrops = (
   sortByHighestDrops: boolean,
   sortByLowestDrops: boolean,
 ) => {
-  let totalDrops = 0;
+  let totalDrops = 0
 
   // Sort the games list by drop count if a sort option is enabled
-  const sortedGames = gamesWithDrops ? [...gamesWithDrops] : [];
+  const sortedGames = gamesWithDrops ? [...gamesWithDrops] : []
   if (sortByHighestDrops) {
     sortedGames.sort((a, b) => {
-      const aRemaining = 'remaining' in a ? (a.remaining ?? 0) : 0;
-      const bRemaining = 'remaining' in b ? (b.remaining ?? 0) : 0;
-      return bRemaining - aRemaining;
-    });
+      const aRemaining = 'remaining' in a ? (a.remaining ?? 0) : 0
+      const bRemaining = 'remaining' in b ? (b.remaining ?? 0) : 0
+      return bRemaining - aRemaining
+    })
   } else if (sortByLowestDrops) {
     sortedGames.sort((a, b) => {
-      const aRemaining = 'remaining' in a ? (a.remaining ?? 0) : 0;
-      const bRemaining = 'remaining' in b ? (b.remaining ?? 0) : 0;
-      return aRemaining - bRemaining;
-    });
+      const aRemaining = 'remaining' in a ? (a.remaining ?? 0) : 0
+      const bRemaining = 'remaining' in b ? (b.remaining ?? 0) : 0
+      return aRemaining - bRemaining
+    })
   }
 
   if (sortedGames.length > 0) {
     for (const gameData of sortedGames) {
       if (gamesSet.size < 32) {
         // Check if this is a GameWithRemainingDrops or a Game
-        const isGameWithDrops = 'remaining' in gameData && 'id' in gameData;
-        const gameId = isGameWithDrops ? Number(gameData.id) : Number(gameData.appid);
-        const gameName = gameData.name;
-        const remaining = isGameWithDrops ? gameData.remaining : 0;
-        const playtime = isGameWithDrops ? gameData.playtime : 0;
+        const isGameWithDrops = 'remaining' in gameData && 'id' in gameData
+        const gameId = isGameWithDrops ? Number(gameData.id) : Number(gameData.appid)
+        const gameName = gameData.name
+        const remaining = isGameWithDrops ? gameData.remaining : 0
+        const playtime = isGameWithDrops ? gameData.playtime : 0
 
         // Skip if game is blacklisted
         if (blacklist.includes(gameId)) {
-          logEvent(`[Card Farming] Skipping ${gameName} (${gameId}) because it is blacklisted`);
-          continue;
+          logEvent(`[Card Farming] Skipping ${gameName} (${gameId}) because it is blacklisted`)
+          continue
         }
 
         // Remove games with 0 playtime if 'skipNoPlaytime' is enabled
         if (skipNoPlaytime && playtime <= 0) {
-          logEvent(`[Card Farming] Skipping ${gameName} (${gameId}) due to zero playtime`);
-          continue;
+          logEvent(`[Card Farming] Skipping ${gameName} (${gameId}) due to zero playtime`)
+          continue
         }
 
         // Only farm games with 0 playtime if 'farmUnplayedOnly' is enabled
         if (farmUnplayedOnly && playtime > 0) {
-          logEvent(`[Card Farming] Skipping ${gameName} (${gameId}) - only farming unplayed games`);
-          continue;
+          logEvent(`[Card Farming] Skipping ${gameName} (${gameId}) - only farming unplayed games`)
+          continue
         }
 
-        const gameSetting = gameSettings[gameId];
-        let maxCardDrops = remaining;
+        const gameSetting = gameSettings[gameId]
+        let maxCardDrops = remaining
         if (
           typeof gameSetting === 'object' &&
           gameSetting !== null &&
           !Array.isArray(gameSetting)
         ) {
-          maxCardDrops = gameSetting.maxCardDrops ?? remaining;
+          maxCardDrops = gameSetting.maxCardDrops ?? remaining
         }
-        const dropsToCount = Math.min(remaining, maxCardDrops);
+        const dropsToCount = Math.min(remaining, maxCardDrops)
 
         gamesSet.add({
           appid: gameId,
           name: gameName,
           dropsToCount,
           initialDrops: remaining,
-        });
+        })
 
-        totalDrops += dropsToCount;
-        logEvent(`[Card Farming] ${dropsToCount} drops remaining for ${gameName} - starting`);
+        totalDrops += dropsToCount
+        logEvent(`[Card Farming] ${dropsToCount} drops remaining for ${gameName} - starting`)
       } else {
-        break;
+        break
       }
     }
   }
-  return totalDrops;
-};
+  return totalDrops
+}
 
 const processIndividualGames = async (
   cardFarmingList: Game[],
@@ -261,21 +261,21 @@ const processIndividualGames = async (
   credentials: CardFarmingSettings['credentials'],
   blacklist: number[],
 ) => {
-  let totalDrops = 0;
-  const TIMEOUT = 30000;
+  let totalDrops = 0
+  const TIMEOUT = 30000
 
   const checkGame = async (gameData: Game) => {
-    if (gamesSet.size >= 32) return;
+    if (gamesSet.size >= 32) return
 
     // Skip if game is blacklisted
     if (blacklist.includes(gameData.appid)) {
       logEvent(
         `[Card Farming] Skipping ${gameData.name} (${gameData.appid}) because it is blacklisted`,
-      );
-      return;
+      )
+      return
     }
 
-    const timeoutPromise = new Promise<number>((_, reject) => setTimeout(() => reject(), TIMEOUT));
+    const timeoutPromise = new Promise<number>((_, reject) => setTimeout(() => reject(), TIMEOUT))
 
     try {
       const dropsRemaining = await Promise.race<number>([
@@ -287,43 +287,43 @@ const processIndividualGames = async (
           credentials?.sma,
         ),
         timeoutPromise,
-      ]);
+      ])
 
       if (dropsRemaining > 0) {
-        const gameSetting = gameSettings[gameData.appid];
-        let maxCardDrops = dropsRemaining;
+        const gameSetting = gameSettings[gameData.appid]
+        let maxCardDrops = dropsRemaining
         if (
           typeof gameSetting === 'object' &&
           gameSetting !== null &&
           !Array.isArray(gameSetting)
         ) {
-          maxCardDrops = gameSetting.maxCardDrops ?? dropsRemaining;
+          maxCardDrops = gameSetting.maxCardDrops ?? dropsRemaining
         }
-        const dropsToCount = Math.min(Number(dropsRemaining), Number(maxCardDrops));
+        const dropsToCount = Math.min(Number(dropsRemaining), Number(maxCardDrops))
 
         gamesSet.add({
           appid: gameData.appid,
           name: gameData.name,
           dropsToCount,
           initialDrops: dropsRemaining,
-        });
+        })
 
-        totalDrops += dropsToCount;
-        logEvent(`[Card Farming] ${dropsToCount} drops remaining for ${gameData.name} - starting`);
+        totalDrops += dropsToCount
+        logEvent(`[Card Farming] ${dropsToCount} drops remaining for ${gameData.name} - starting`)
       } else {
         logEvent(
           `[Card Farming] ${dropsRemaining} drops remaining for ${gameData.name} - removed from list`,
-        );
-        removeGameFromFarmingList(gameData.appid);
+        )
+        removeGameFromFarmingList(gameData.appid)
       }
     } catch (error) {
-      handleError('checkGame', error);
+      handleError('checkGame', error)
     }
-  };
+  }
 
-  await Promise.all(cardFarmingList.map(checkGame));
-  return totalDrops;
-};
+  await Promise.all(cardFarmingList.map(checkGame))
+  return totalDrops
+}
 
 // Begin the cycle of farming for all games in the set
 export const beginFarmingCycle = async (
@@ -336,10 +336,10 @@ export const beginFarmingCycle = async (
     short: 15000,
     medium: 60000,
     long: 60000 * 5,
-  };
+  }
 
   if (!isMountedRef.current || gamesSet.size < 1) {
-    return false;
+    return false
   }
 
   const cycleSteps: CycleStep[] = [
@@ -351,58 +351,58 @@ export const beginFarmingCycle = async (
     { action: stopFarmIdle, delay: delays.medium },
     { action: startFarmIdle, delay: delays.short },
     { action: stopFarmIdle, delay: delays.medium },
-  ];
+  ]
 
   try {
     for (const step of cycleSteps) {
       if (!isMountedRef.current) {
-        return false;
+        return false
       }
 
-      const success = await step.action(gamesSet);
+      const success = await step.action(gamesSet)
 
       if (success) {
-        await delay(step.delay, isMountedRef, abortControllerRef);
+        await delay(step.delay, isMountedRef, abortControllerRef)
 
         if (step.action === stopFarmIdle) {
-          gamesSet = await checkDropsRemaining(gamesSet);
+          gamesSet = await checkDropsRemaining(gamesSet)
 
           // Check if we should add more games to the list
           if (gamesSet.size < 32) {
-            const { gamesSet: refreshedSet } = await checkGamesForDrops();
+            const { gamesSet: refreshedSet } = await checkGamesForDrops()
             for (const game of refreshedSet) {
-              if (gamesSet.size >= 32) break;
+              if (gamesSet.size >= 32) break
               if (![...gamesSet].some(g => g.appid === game.appid)) {
-                gamesSet.add(game);
+                gamesSet.add(game)
               }
             }
           }
         }
       } else {
-        return false;
+        return false
       }
     }
-    return true;
+    return true
   } catch (error) {
-    console.error('Error in (beginFarmingCycle) - "undefined" can be ignored', error);
-    await stopFarmIdle(gamesSet);
-    return false;
+    console.error('Error in (beginFarmingCycle) - "undefined" can be ignored', error)
+    await stopFarmIdle(gamesSet)
+    return false
   }
-};
+}
 
 // Periodically check if there are still drops remaining for each game
 const checkDropsRemaining = async (gameSet: Set<GameWithDrops>) => {
-  const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary;
+  const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
 
-  const updatedGameSet = new Set<GameWithDrops>();
-  const gameArray = Array.from(gameSet);
+  const updatedGameSet = new Set<GameWithDrops>()
+  const gameArray = Array.from(gameSet)
 
   const checkDropsPromises = gameArray.map(async game => {
     try {
       const response = await invoke<InvokeSettings>('get_user_settings', {
         steamId: userSummary?.steamId,
-      });
-      const { credentials } = response.settings.cardFarming;
+      })
+      const { credentials } = response.settings.cardFarming
 
       const dropsRemaining = await checkDrops(
         userSummary?.steamId,
@@ -410,80 +410,80 @@ const checkDropsRemaining = async (gameSet: Set<GameWithDrops>) => {
         credentials?.sid,
         credentials?.sls,
         credentials?.sma,
-      );
+      )
 
       if (dropsRemaining <= 0) {
-        removeGameFromFarmingList(Number(game.appid));
-        logEvent(`[Card Farming] Farmed all drops for ${game.name} - removed from list`);
+        removeGameFromFarmingList(Number(game.appid))
+        logEvent(`[Card Farming] Farmed all drops for ${game.name} - removed from list`)
       } else if (game.initialDrops - dropsRemaining >= game.dropsToCount) {
-        removeGameFromFarmingList(Number(game.appid));
+        removeGameFromFarmingList(Number(game.appid))
         logEvent(
           `[Card Farming- maxCardDrops] Farmed ${game.initialDrops - dropsRemaining}/${dropsRemaining} cards for ${game.name} - removed from list`,
-        );
+        )
       } else {
-        updatedGameSet.add(game);
+        updatedGameSet.add(game)
       }
     } catch (error) {
-      handleError('checkDropsRemaining', error);
-      updatedGameSet.add(game); // Keep the game in the set if there was an error checking
+      handleError('checkDropsRemaining', error)
+      updatedGameSet.add(game) // Keep the game in the set if there was an error checking
     }
-  });
+  })
 
-  await Promise.all(checkDropsPromises);
+  await Promise.all(checkDropsPromises)
 
-  return updatedGameSet;
-};
+  return updatedGameSet
+}
 
 // Remove game from farming list
 const removeGameFromFarmingList = async (gameId: number) => {
   try {
-    const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary;
+    const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
 
     const cardFarmingList = await invoke<InvokeCustomList>('get_custom_lists', {
       steamId: userSummary?.steamId,
       list: 'cardFarmingList',
-    });
+    })
 
-    const updatedCardFarming = cardFarmingList.list_data.filter(arr => arr.appid !== gameId);
+    const updatedCardFarming = cardFarmingList.list_data.filter(arr => arr.appid !== gameId)
 
     await invoke<InvokeCustomList>('update_custom_list', {
       steamId: userSummary?.steamId,
       list: 'cardFarmingList',
       newList: updatedCardFarming,
-    });
+    })
   } catch (error) {
-    handleError('removeGameFromFarmingList', error);
+    handleError('removeGameFromFarmingList', error)
   }
-};
+}
 
 // Check for next task to move on to once farming is complete
 const checkForNextTask = async () => {
   try {
-    const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary;
+    const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
 
     const response = await invoke<InvokeSettings>('get_user_settings', {
       steamId: userSummary?.steamId,
-    });
+    })
 
     if (!response.settings.cardFarming?.nextTaskCheckbox) {
-      return { shouldStartNextTask: false, task: null };
+      return { shouldStartNextTask: false, task: null }
     }
 
     if (!response.settings.cardFarming?.nextTask) {
-      return { shouldStartNextTask: false, task: null };
+      return { shouldStartNextTask: false, task: null }
     }
 
-    const task = response.settings.cardFarming?.nextTask;
+    const task = response.settings.cardFarming?.nextTask
 
     return {
       shouldStartNextTask: Boolean(task),
       task,
-    };
+    }
   } catch (error) {
-    handleError('checkForNextTask', error);
-    return { shouldStartNextTask: false, task: null };
+    handleError('checkForNextTask', error)
+    return { shouldStartNextTask: false, task: null }
   }
-};
+}
 
 // Delay function
 const delay = (
@@ -493,41 +493,41 @@ const delay = (
 ) => {
   return new Promise<void>((resolve, reject) => {
     if (!isMountedRef.current) {
-      return reject();
+      return reject()
     }
 
-    const checkInterval = 1000;
-    let elapsedTime = 0;
+    const checkInterval = 1000
+    let elapsedTime = 0
     const intervalId = setInterval(() => {
       if (!isMountedRef.current) {
-        clearInterval(intervalId);
-        reject();
+        clearInterval(intervalId)
+        reject()
       } else if (elapsedTime >= ms) {
-        clearInterval(intervalId);
-        resolve();
+        clearInterval(intervalId)
+        resolve()
       }
-      elapsedTime += checkInterval;
-    }, checkInterval);
+      elapsedTime += checkInterval
+    }, checkInterval)
 
     const abortHandler = () => {
-      clearInterval(intervalId);
-      reject();
-    };
+      clearInterval(intervalId)
+      reject()
+    }
 
     const timeoutId = setTimeout(() => {
-      clearInterval(intervalId);
-      resolve();
-    }, ms);
+      clearInterval(intervalId)
+      resolve()
+    }, ms)
 
-    abortControllerRef.current.signal.addEventListener('abort', abortHandler);
+    abortControllerRef.current.signal.addEventListener('abort', abortHandler)
 
     return () => {
-      clearInterval(intervalId);
-      clearTimeout(timeoutId);
-      abortControllerRef.current.signal.removeEventListener('abort', abortHandler);
-    };
-  });
-};
+      clearInterval(intervalId)
+      clearTimeout(timeoutId)
+      abortControllerRef.current.signal.removeEventListener('abort', abortHandler)
+    }
+  })
+}
 
 // Handle cancel action
 export const handleCancel = async (
@@ -536,18 +536,18 @@ export const handleCancel = async (
   abortControllerRef: React.RefObject<AbortController>,
 ) => {
   try {
-    await stopFarmIdle(gamesWithDrops);
+    await stopFarmIdle(gamesWithDrops)
   } catch (error) {
-    handleError('handleCancel', error);
+    handleError('handleCancel', error)
   } finally {
-    isMountedRef.current = false;
-    abortControllerRef.current.abort();
+    isMountedRef.current = false
+    abortControllerRef.current.abort()
   }
-};
+}
 
 // Handle errors
 const handleError = (functionName: string, error: unknown) => {
-  if (!error) return;
-  console.error(`Error in (${functionName}):`, error);
-  logEvent(`[Error] in (${functionName}) ${error}`);
-};
+  if (!error) return
+  console.error(`Error in (${functionName}):`, error)
+  logEvent(`[Error] in (${functionName}) ${error}`)
+}

@@ -1,23 +1,23 @@
-import type { useTradingCardsList } from '@/features/inventory-manager';
-import type { TradingCard } from '@/shared/types';
-import { useTranslation } from 'react-i18next';
-import { TbPackageExport } from 'react-icons/tb';
-import { Button, cn, NumberInput } from '@heroui/react';
-import { CustomTooltip } from '@/shared/components';
+import type { useTradingCardsList } from '@/features/inventory-manager'
+import type { TradingCard } from '@/shared/types'
+import { useTranslation } from 'react-i18next'
+import { TbPackageExport } from 'react-icons/tb'
+import { Button, cn, NumberInput } from '@heroui/react'
+import { CustomTooltip } from '@/shared/components'
 
 interface PriceInputProps {
-  item: TradingCard;
-  isLocked?: boolean;
-  tradingCardContext: ReturnType<typeof useTradingCardsList>;
+  item: TradingCard
+  isLocked?: boolean
+  tradingCardContext: ReturnType<typeof useTradingCardsList>
 }
 
 export const PriceInput = ({ item, isLocked, tradingCardContext }: PriceInputProps) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   return (
-    <div className="flex items-center justify-center gap-1 mt-2">
+    <div className='flex items-center justify-center gap-1 mt-2'>
       <NumberInput
-        size="sm"
+        size='sm'
         isDisabled={isLocked}
         isInvalid={
           tradingCardContext.selectedCards[item.assetid] &&
@@ -32,8 +32,8 @@ export const PriceInput = ({ item, isLocked, tradingCardContext }: PriceInputPro
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
         }}
-        aria-label="statistic value"
-        className="w-21.25"
+        aria-label='statistic value'
+        className='w-21.25'
         classNames={{
           inputWrapper: cn(
             'bg-input data-[hover=true]:!bg-inputhover border-none',
@@ -49,11 +49,11 @@ export const PriceInput = ({ item, isLocked, tradingCardContext }: PriceInputPro
         onValueChange={value => tradingCardContext.updateCardPrice(item.assetid, value)}
       />
 
-      <CustomTooltip content={t($ => $['common.list'])} placement="top">
+      <CustomTooltip content={t('common.list')} placement='top'>
         <Button
           isIconOnly
-          className="bg-btn-secondary text-btn-text font-bold"
-          radius="full"
+          className='bg-btn-secondary text-btn-text font-bold'
+          radius='full'
           isLoading={tradingCardContext.loadingListButton}
           isDisabled={
             tradingCardContext.loadingListButton ||
@@ -65,10 +65,10 @@ export const PriceInput = ({ item, isLocked, tradingCardContext }: PriceInputPro
               item.assetid,
               item.id,
               tradingCardContext.getCardPriceValue(item.assetid),
-            );
+            )
           }}
         />
       </CustomTooltip>
     </div>
-  );
-};
+  )
+}

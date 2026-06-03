@@ -1,12 +1,12 @@
-import { create } from 'zustand';
+import { create } from 'zustand'
 
 interface UpdateStore {
-  updateAvailable: boolean;
-  setUpdateAvailable: (value: boolean | ((prev: boolean) => boolean)) => void;
-  showChangelog: boolean;
-  setShowChangelog: (value: boolean | ((prev: boolean) => boolean)) => void;
-  isUpdating: boolean;
-  setIsUpdating: (value: boolean) => void;
+  updateAvailable: boolean
+  setUpdateAvailable: (value: boolean | ((prev: boolean) => boolean)) => void
+  showChangelog: boolean
+  setShowChangelog: (value: boolean | ((prev: boolean) => boolean)) => void
+  isUpdating: boolean
+  setIsUpdating: (value: boolean) => void
 }
 
 export const useUpdateStore = create<UpdateStore>(set => ({
@@ -22,4 +22,4 @@ export const useUpdateStore = create<UpdateStore>(set => ({
     })),
   isUpdating: false,
   setIsUpdating: value => set({ isUpdating: value }),
-}));
+}))

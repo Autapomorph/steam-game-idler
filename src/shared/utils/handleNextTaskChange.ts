@@ -1,5 +1,5 @@
-import type { InvokeSettings, UserSettings, UserSummary } from '@/shared/types';
-import { invoke } from '@tauri-apps/api/core';
+import type { InvokeSettings, UserSettings, UserSummary } from '@/shared/types'
+import { invoke } from '@tauri-apps/api/core'
 
 export const handleNextTaskChange = async (
   feature: 'cardFarming' | 'achievementUnlocker',
@@ -11,7 +11,7 @@ export const handleNextTaskChange = async (
     steamId: userSummary?.steamId,
     key: `${feature}.nextTask`,
     value: currentKey,
-  });
+  })
 
-  setUserSettings(response.settings);
-};
+  setUserSettings(response.settings)
+}

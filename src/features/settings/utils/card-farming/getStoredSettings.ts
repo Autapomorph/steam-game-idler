@@ -1,7 +1,7 @@
-import type { CardFarmingUser, UserSettings } from '@/shared/types';
-import i18next from 'i18next';
-import { showDangerToast } from '@/shared/components';
-import { logEvent } from '@/shared/utils';
+import type { CardFarmingUser, UserSettings } from '@/shared/types'
+import i18next from 'i18next'
+import { showDangerToast } from '@/shared/components'
+import { logEvent } from '@/shared/utils'
 
 export const getStoredSettings = async (
   userSettings: UserSettings,
@@ -14,27 +14,27 @@ export const getStoredSettings = async (
   setCardFarmingUser: React.Dispatch<React.SetStateAction<CardFarmingUser | null>>,
 ) => {
   try {
-    const { credentials } = userSettings.cardFarming;
-    const cardFarmingUser = userSettings.cardFarming.userSummary;
-    const { gamesWithDrops } = userSettings.cardFarming;
-    const { totalDropsRemaining } = userSettings.cardFarming;
+    const { credentials } = userSettings.cardFarming
+    const cardFarmingUser = userSettings.cardFarming.userSummary
+    const { gamesWithDrops } = userSettings.cardFarming
+    const { totalDropsRemaining } = userSettings.cardFarming
 
     if (credentials?.sid && credentials.sls) {
-      setHasCookies(true);
-      setSidValue(credentials.sid);
-      setSlsValue(credentials.sls);
-      setSmaValue(credentials?.sma || '');
+      setHasCookies(true)
+      setSidValue(credentials.sid)
+      setSlsValue(credentials.sls)
+      setSmaValue(credentials?.sma || '')
     }
     if (cardFarmingUser?.steamId) {
-      setCardFarmingUser(cardFarmingUser);
+      setCardFarmingUser(cardFarmingUser)
     }
     if (gamesWithDrops > 0 && totalDropsRemaining > 0) {
-      setGamesWithDrops(gamesWithDrops);
-      setTotalDropsRemaining(totalDropsRemaining);
+      setGamesWithDrops(gamesWithDrops)
+      setTotalDropsRemaining(totalDropsRemaining)
     }
   } catch (error) {
-    showDangerToast(i18next.t($ => $['common.error']));
-    console.error('Error in (getStoredSettings):', error);
-    logEvent(`[Error] in (getStoredSettings): ${error}`);
+    showDangerToast(i18next.t('common.error'))
+    console.error('Error in (getStoredSettings):', error)
+    logEvent(`[Error] in (getStoredSettings): ${error}`)
   }
-};
+}

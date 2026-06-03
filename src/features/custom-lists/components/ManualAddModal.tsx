@@ -1,39 +1,39 @@
-import type { Game } from '@/shared/types';
-import { Trans, useTranslation } from 'react-i18next';
-import { TbPlus } from 'react-icons/tb';
-import { Button, cn, Input, NumberInput, useDisclosure } from '@heroui/react';
-import { useManualAdd } from '@/features/custom-lists';
-import { CustomModal } from '@/shared/components';
-import { OpenDocs } from '@/shared/components/OpenDocs';
+import type { Game } from '@/shared/types'
+import { Trans, useTranslation } from 'react-i18next'
+import { TbPlus } from 'react-icons/tb'
+import { Button, cn, Input, NumberInput, useDisclosure } from '@heroui/react'
+import { useManualAdd } from '@/features/custom-lists'
+import { CustomModal } from '@/shared/components'
+import { OpenDocs } from '@/shared/components/OpenDocs'
 
 interface ManualAddModalProps {
-  listTitle: string;
-  listName: string;
-  setList: React.Dispatch<React.SetStateAction<Game[]>>;
+  listTitle: string
+  listName: string
+  setList: React.Dispatch<React.SetStateAction<Game[]>>
 }
 
 export const ManualAddModal = ({ listTitle, listName, setList }: ManualAddModalProps) => {
-  const { t } = useTranslation();
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const manualAdd = useManualAdd(listName, setList);
+  const { t } = useTranslation()
+  const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const manualAdd = useManualAdd(listName, setList)
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>, onClose: () => void) => {
     if (e.key === 'Enter') {
-      manualAdd.handleAdd(onClose);
+      manualAdd.handleAdd(onClose)
     }
-  };
+  }
 
   const handleClose = () => {
-    manualAdd.setAppNameValue('');
-    manualAdd.setAppIdValue(0);
-  };
+    manualAdd.setAppNameValue('')
+    manualAdd.setAppIdValue(0)
+  }
 
   return (
     <>
       <Button
         isIconOnly
-        className="bg-btn-secondary text-btn-text font-bold"
-        radius="full"
+        className='bg-btn-secondary text-btn-text font-bold'
+        radius='full'
         startContent={<TbPlus fontSize={18} />}
         onPress={onOpen}
       />
@@ -41,26 +41,23 @@ export const ManualAddModal = ({ listTitle, listName, setList }: ManualAddModalP
       <CustomModal
         isOpen={isOpen}
         onOpenChange={() => {
-          onOpenChange();
-          handleClose();
+          onOpenChange()
+          handleClose()
         }}
         title={
-          <div className="flex items-center gap-2">
-            <p>{t($ => $['customLists.manualAdd.title'])}</p>
-            <OpenDocs path="/features/manual-add" />
+          <div className='flex items-center gap-2'>
+            <p>{t('customLists.manualAdd.title')}</p>
+            <OpenDocs path='/features/manual-add' />
           </div>
         }
         body={
           <>
-            <p className="text-sm text-altwhite">
-              <Trans
-                i18nKey={$ => $['customLists.manualAdd.description']}
-                values={{ listType: listTitle }}
-              />
+            <p className='text-sm text-altwhite'>
+              <Trans i18nKey='customLists.manualAdd.description' values={{ listType: listTitle }} />
             </p>
             <Input
               autoFocus
-              placeholder={t($ => $['customLists.manualAdd.gameName'])}
+              placeholder={t('customLists.manualAdd.gameName')}
               value={manualAdd.appNameValue || ''}
               classNames={{
                 inputWrapper: cn(
@@ -77,10 +74,10 @@ export const ManualAddModal = ({ listTitle, listName, setList }: ManualAddModalP
 
             <NumberInput
               hideStepper
-              label={t($ => $['customLists.manualAdd.gameId'])}
+              label={t('customLists.manualAdd.gameId')}
               value={Number(manualAdd.appIdValue)}
               formatOptions={{ useGrouping: false }}
-              aria-label="manual add"
+              aria-label='manual add'
               classNames={{
                 inputWrapper: cn(
                   'bg-input data-[hover=true]:!bg-inputhover',
@@ -98,28 +95,28 @@ export const ManualAddModal = ({ listTitle, listName, setList }: ManualAddModalP
         buttons={
           <>
             <Button
-              size="sm"
-              color="danger"
-              variant="light"
-              radius="full"
-              className="font-semibold"
+              size='sm'
+              color='danger'
+              variant='light'
+              radius='full'
+              className='font-semibold'
               onPress={onOpenChange}
             >
-              {t($ => $['common.cancel'])}
+              {t('common.cancel')}
             </Button>
             <Button
-              size="sm"
-              className="bg-btn-secondary text-btn-text font-bold"
-              radius="full"
+              size='sm'
+              className='bg-btn-secondary text-btn-text font-bold'
+              radius='full'
               isLoading={manualAdd.isLoading}
               isDisabled={!manualAdd.appNameValue || !manualAdd.appIdValue}
               onPress={() => manualAdd.handleAdd(onOpenChange)}
             >
-              {t($ => $['common.add'])}
+              {t('common.add')}
             </Button>
           </>
         }
       />
     </>
-  );
-};
+  )
+}

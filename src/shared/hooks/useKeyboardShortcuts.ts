@@ -1,6 +1,6 @@
-import type { ActivePageType } from '@/shared/types';
-import { useCallback, useEffect } from 'react';
-import { useNavigationStore, useStateStore } from '@/shared/stores';
+import type { ActivePageType } from '@/shared/types'
+import { useCallback, useEffect } from 'react'
+import { useNavigationStore, useStateStore } from '@/shared/stores'
 
 const SIDEBAR_PAGES: ActivePageType[] = [
   'games',
@@ -11,13 +11,13 @@ const SIDEBAR_PAGES: ActivePageType[] = [
   'customlists/achievement-unlocker',
   'customlists/auto-idle',
   'inventoryManager',
-];
+]
 
 export function useKeyboardShortcuts() {
   const handleKeydown = useCallback((e: KeyboardEvent) => {
-    const target = e.target as HTMLElement;
+    const target = e.target as HTMLElement
     if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)
-      return;
+      return
 
     const {
       activePage,
@@ -25,7 +25,7 @@ export function useKeyboardShortcuts() {
       setActivePage,
       setPreviousActivePage,
       setCurrentSettingsTab,
-    } = useNavigationStore.getState();
+    } = useNavigationStore.getState()
     const {
       setShowSearchModal,
       sidebarCollapsed,
@@ -35,56 +35,56 @@ export function useKeyboardShortcuts() {
       isAchievementUnlocker,
       setShowAchievements,
       setShowAchievementOrder,
-    } = useStateStore.getState();
+    } = useStateStore.getState()
 
     if (e.key === '/' && !e.ctrlKey && !e.metaKey) {
-      if (activePage === 'idling' || activePage === 'freeGames') return;
-      e.preventDefault();
-      setShowSearchModal(true);
-      return;
+      if (activePage === 'idling' || activePage === 'freeGames') return
+      e.preventDefault()
+      setShowSearchModal(true)
+      return
     }
 
-    if (!e.ctrlKey && !e.metaKey) return;
+    if (!e.ctrlKey && !e.metaKey) return
 
-    const effectivePage = activePage === 'settings' ? previousActivePage : activePage;
+    const effectivePage = activePage === 'settings' ? previousActivePage : activePage
 
     if (e.key === ']') {
-      e.preventDefault();
-      const currentIndex = SIDEBAR_PAGES.indexOf(effectivePage);
-      const nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % SIDEBAR_PAGES.length;
-      setActivePage(SIDEBAR_PAGES[nextIndex]);
+      e.preventDefault()
+      const currentIndex = SIDEBAR_PAGES.indexOf(effectivePage)
+      const nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % SIDEBAR_PAGES.length
+      setActivePage(SIDEBAR_PAGES[nextIndex])
     } else if (e.key === '[') {
-      e.preventDefault();
-      const currentIndex = SIDEBAR_PAGES.indexOf(effectivePage);
+      e.preventDefault()
+      const currentIndex = SIDEBAR_PAGES.indexOf(effectivePage)
       const prevIndex =
-        currentIndex === -1 ? 0 : (currentIndex - 1 + SIDEBAR_PAGES.length) % SIDEBAR_PAGES.length;
-      setActivePage(SIDEBAR_PAGES[prevIndex]);
+        currentIndex === -1 ? 0 : (currentIndex - 1 + SIDEBAR_PAGES.length) % SIDEBAR_PAGES.length
+      setActivePage(SIDEBAR_PAGES[prevIndex])
     } else if (e.key === ',') {
-      e.preventDefault();
-      if (isCardFarming || isAchievementUnlocker) return;
+      e.preventDefault()
+      if (isCardFarming || isAchievementUnlocker) return
       if (activePage === 'settings') {
-        setActivePage(previousActivePage);
-        setCurrentSettingsTab('general');
-        setPreviousActivePage('games');
+        setActivePage(previousActivePage)
+        setCurrentSettingsTab('general')
+        setPreviousActivePage('games')
       } else {
-        setShowAchievements(false);
-        setShowAchievementOrder(false);
-        setPreviousActivePage(activePage);
-        setActivePage('settings');
+        setShowAchievements(false)
+        setShowAchievementOrder(false)
+        setPreviousActivePage(activePage)
+        setActivePage('settings')
       }
     } else if ((e.key === 'w' || e.key === 'W') && !e.shiftKey) {
-      e.preventDefault();
-      setTransitionDuration('300ms');
-      setSidebarCollapsed(!sidebarCollapsed);
-      localStorage.setItem('sidebarCollapsed', String(!sidebarCollapsed));
-      setTimeout(() => setTransitionDuration('0ms'), 100);
+      e.preventDefault()
+      setTransitionDuration('300ms')
+      setSidebarCollapsed(!sidebarCollapsed)
+      localStorage.setItem('sidebarCollapsed', String(!sidebarCollapsed))
+      setTimeout(() => setTransitionDuration('0ms'), 100)
     } else if ((e.key === 'h' || e.key === 'H') && e.shiftKey) {
-      e.preventDefault();
+      e.preventDefault()
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
-    document.addEventListener('keydown', handleKeydown);
-    return () => document.removeEventListener('keydown', handleKeydown);
-  }, [handleKeydown]);
+    document.addEventListener('keydown', handleKeydown)
+    return () => document.removeEventListener('keydown', handleKeydown)
+  }, [handleKeydown])
 }

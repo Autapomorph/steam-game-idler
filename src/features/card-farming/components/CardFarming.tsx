@@ -1,30 +1,30 @@
-import type { GameWithDrops } from '@/features/card-farming';
-import type { ActivePageType } from '@/shared/types';
-import { useEffect, useRef, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import { TbCheck, TbPlayerStopFilled } from 'react-icons/tb';
-import { Button, cn, Spinner } from '@heroui/react';
-import Image from 'next/image';
-import { handleCancel, useCardFarming } from '@/features/card-farming';
-import { useStateStore } from '@/shared/stores';
-import { startAchievementUnlocker, updateDiscordPresence, updateTrayIcon } from '@/shared/utils';
+import type { GameWithDrops } from '@/features/card-farming'
+import type { ActivePageType } from '@/shared/types'
+import { useEffect, useRef, useState } from 'react'
+import { Trans, useTranslation } from 'react-i18next'
+import { TbCheck, TbPlayerStopFilled } from 'react-icons/tb'
+import { Button, cn, Spinner } from '@heroui/react'
+import Image from 'next/image'
+import { handleCancel, useCardFarming } from '@/features/card-farming'
+import { useStateStore } from '@/shared/stores'
+import { startAchievementUnlocker, updateDiscordPresence, updateTrayIcon } from '@/shared/utils'
 
 export const CardFarming = ({ activePage }: { activePage: ActivePageType }) => {
-  const { t } = useTranslation();
-  const isCardFarming = useStateStore(state => state.isCardFarming);
-  const setIsCardFarming = useStateStore(state => state.setIsCardFarming);
-  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed);
-  const transitionDuration = useStateStore(state => state.transitionDuration);
+  const { t } = useTranslation()
+  const isCardFarming = useStateStore(state => state.isCardFarming)
+  const setIsCardFarming = useStateStore(state => state.setIsCardFarming)
+  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
+  const transitionDuration = useStateStore(state => state.transitionDuration)
 
-  const isMountedRef = useRef(true);
-  const abortControllerRef = useRef(new AbortController());
+  const isMountedRef = useRef(true)
+  const abortControllerRef = useRef(new AbortController())
 
-  const [isComplete, setIsComplete] = useState(false);
-  const [totalDropsRemaining, setTotalDropsRemaining] = useState(0);
-  const [gamesWithDrops, setGamesWithDrops] = useState<Set<GameWithDrops>>(new Set());
-  const [disableStopButton, setDisableStopButton] = useState(true);
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const [fallbackImage, setFallbackImage] = useState('');
+  const [isComplete, setIsComplete] = useState(false)
+  const [totalDropsRemaining, setTotalDropsRemaining] = useState(0)
+  const [gamesWithDrops, setGamesWithDrops] = useState<Set<GameWithDrops>>(new Set())
+  const [disableStopButton, setDisableStopButton] = useState(true)
+  const [imageLoaded, setImageLoaded] = useState(false)
+  const [fallbackImage, setFallbackImage] = useState('')
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -36,54 +36,54 @@ export const CardFarming = ({ activePage }: { activePage: ActivePageType }) => {
       startAchievementUnlocker,
       isMountedRef,
       abortControllerRef,
-    );
+    )
 
-    const abortController = abortControllerRef.current;
+    const abortController = abortControllerRef.current
 
     return () => {
-      isMountedRef.current = false;
-      abortController.abort();
-    };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+      isMountedRef.current = false
+      abortController.abort()
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (isCardFarming && gamesWithDrops.size > 0 && totalDropsRemaining > 0) {
       updateTrayIcon(
-        t($ => $['trayIcon.cardFarming'], {
+        t('trayIcon.cardFarming', {
           count: totalDropsRemaining,
           total: gamesWithDrops.size,
         }),
         true,
-      );
+      )
       updateDiscordPresence(
         'Farming Cards',
         `${gamesWithDrops.size} games with ${totalDropsRemaining} drops remaining`,
-      );
+      )
     }
-  }, [isCardFarming, gamesWithDrops.size, totalDropsRemaining, t]);
+  }, [isCardFarming, gamesWithDrops.size, totalDropsRemaining, t])
 
   useEffect(() => {
     setTimeout(() => {
-      setDisableStopButton(false);
-    }, 5000);
-  }, []);
+      setDisableStopButton(false)
+    }, 5000)
+  }, [])
 
-  const firstGame = [...gamesWithDrops][0];
+  const firstGame = [...gamesWithDrops][0]
 
   useEffect(() => {
-    setImageLoaded(false);
-    setFallbackImage('');
-  }, [firstGame?.appid]);
+    setImageLoaded(false)
+    setFallbackImage('')
+  }, [firstGame?.appid])
 
   const renderGamesList = () => {
     if (!gamesWithDrops.size) {
       return (
         <Spinner
-          variant="simple"
-          label={t($ => $['automation.cardFarming.initialDelay'])}
+          variant='simple'
+          label={t('automation.cardFarming.initialDelay')}
           classNames={{ label: 'text-content' }}
         />
-      );
+      )
     }
 
     return (
@@ -91,57 +91,57 @@ export const CardFarming = ({ activePage }: { activePage: ActivePageType }) => {
         {!isComplete && (
           <p>
             <Trans
-              i18nKey={$ => $['automation.cardFarming.progress']}
+              i18nKey='automation.cardFarming.progress'
               values={{
                 count: gamesWithDrops.size,
                 total: totalDropsRemaining,
               }}
               components={{
-                1: <span className="font-bold text-dynamic" />,
-                3: <span className="font-bold text-dynamic" />,
+                1: <span className='font-bold text-dynamic' />,
+                3: <span className='font-bold text-dynamic' />,
               }}
             />
           </p>
         )}
 
-        <div className="p-2 rounded-lg w-full max-h-[calc(100vh-392px)] overflow-y-auto">
-          <div className="grid grid-cols-2 gap-2 px-2 overflow-y-auto">
+        <div className='p-2 rounded-lg w-full max-h-[calc(100vh-392px)] overflow-y-auto'>
+          <div className='grid grid-cols-2 gap-2 px-2 overflow-y-auto'>
             {[...Array.from(gamesWithDrops)].map(item => (
-              <div key={item.appid} className="flex gap-1 border border-border rounded-lg p-1">
+              <div key={item.appid} className='flex gap-1 border border-border rounded-lg p-1'>
                 <Image
                   src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${item.appid}/header.jpg`}
-                  className="aspect-62/36 rounded"
+                  className='aspect-62/36 rounded'
                   width={62}
                   height={36}
                   alt={`${item.name} image`}
                   priority
                 />
-                <div className="flex flex-col px-2 max-w-[80%]">
-                  <p className="text-sm font-semibold truncate">{item.name}</p>
-                  <p className="text-xs text-altwhite">{item.appid}</p>
+                <div className='flex flex-col px-2 max-w-[80%]'>
+                  <p className='text-sm font-semibold truncate'>{item.name}</p>
+                  <p className='text-xs text-altwhite'>{item.appid}</p>
                 </div>
               </div>
             ))}
           </div>
         </div>
       </>
-    );
-  };
+    )
+  }
 
   const renderContent = () => {
     if (isComplete) {
       return (
-        <div className="flex flex-col items-center justify-center">
-          <div className="border border-border rounded-full inline-block p-2 w-fit">
-            <TbCheck className="text-green-400" fontSize={50} />
+        <div className='flex flex-col items-center justify-center'>
+          <div className='border border-border rounded-full inline-block p-2 w-fit'>
+            <TbCheck className='text-green-400' fontSize={50} />
           </div>
-          <p className="mt-4">{t($ => $['common.done'])}</p>
+          <p className='mt-4'>{t('common.done')}</p>
         </div>
-      );
+      )
     }
 
-    return renderGamesList();
-  };
+    return renderGamesList()
+  }
 
   return (
     <div
@@ -162,7 +162,7 @@ export const CardFarming = ({ activePage }: { activePage: ActivePageType }) => {
             `https://cdn.steamstatic.com/steam/apps/${firstGame.appid}/library_hero.jpg`
           }
           className={cn('absolute top-0 left-0 w-full', !imageLoaded && 'hidden')}
-          alt="background"
+          alt='background'
           width={1920}
           height={1080}
           priority
@@ -176,7 +176,7 @@ export const CardFarming = ({ activePage }: { activePage: ActivePageType }) => {
           }}
         />
       )}
-      {imageLoaded && <div className="absolute top-0 left-0 w-full h-screen bg-base/70" />}
+      {imageLoaded && <div className='absolute top-0 left-0 w-full h-screen bg-base/70' />}
 
       <div
         className={cn(
@@ -188,34 +188,28 @@ export const CardFarming = ({ activePage }: { activePage: ActivePageType }) => {
           transitionProperty: 'margin-left',
         }}
       >
-        <div className="flex justify-between items-center pb-3">
-          <div className="flex items-center gap-1 select-none">
-            <div className="flex flex-col justify-center">
-              <p className="text-3xl font-black">{t($ => $['common.cardFarming'])}</p>
+        <div className='flex justify-between items-center pb-3'>
+          <div className='flex items-center gap-1 select-none'>
+            <div className='flex flex-col justify-center'>
+              <p className='text-3xl font-black'>{t('common.cardFarming')}</p>
 
-              <p className="text-xs text-altwhite my-2">
-                {t($ => $['automation.cardFarming.running'])}
-              </p>
+              <p className='text-xs text-altwhite my-2'>{t('automation.cardFarming.running')}</p>
 
-              <div className="flex items-center gap-2 mt-1">
+              <div className='flex items-center gap-2 mt-1'>
                 <Button
-                  color="danger"
-                  radius="full"
-                  className="font-bold"
+                  color='danger'
+                  radius='full'
+                  className='font-bold'
                   startContent={<TbPlayerStopFilled size={18} />}
                   isDisabled={!isComplete && disableStopButton}
                   onPress={() => {
-                    handleCancel(gamesWithDrops, isMountedRef, abortControllerRef);
-                    setIsCardFarming(false);
-                    updateTrayIcon();
-                    updateDiscordPresence();
+                    handleCancel(gamesWithDrops, isMountedRef, abortControllerRef)
+                    setIsCardFarming(false)
+                    updateTrayIcon()
+                    updateDiscordPresence()
                   }}
                 >
-                  {isComplete ? (
-                    <p>{t($ => $['common.close'])}</p>
-                  ) : (
-                    <p>{t($ => $['common.stop'])}</p>
-                  )}
+                  {isComplete ? <p>{t('common.close')}</p> : <p>{t('common.stop')}</p>}
                 </Button>
               </div>
             </div>
@@ -232,11 +226,11 @@ export const CardFarming = ({ activePage }: { activePage: ActivePageType }) => {
             transitionProperty: 'width',
           }}
         >
-          <div className="flex justify-center items-center flex-col p-6 bg-tab-panel rounded-4xl border border-border">
+          <div className='flex justify-center items-center flex-col p-6 bg-tab-panel rounded-4xl border border-border'>
             {renderContent()}
           </div>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

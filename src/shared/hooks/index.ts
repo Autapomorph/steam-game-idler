@@ -1,17 +1,17 @@
-export { useInit } from './useInit';
+export { useInit } from './useInit'
 
-export { useThemes } from './useThemes';
-export { useInitSettings } from './useInitSettings';
-export { useCheckForUpdates } from './useCheckForUpdates';
-export { useFreeGames } from './useFreeGames';
-export { useZoomControls } from './useZoomControls';
-export { useContextMenu } from './useContextMenu';
-export { useKeyboardShortcuts } from './useKeyboardShortcuts';
-export { useSteamMonitor } from './useSteamMonitor';
-export { useDiscordPresence } from './useDiscordPresence';
-export * from './useAutoIdleGames';
+export { useThemes } from './useThemes'
+export { useInitSettings } from './useInitSettings'
+export { useCheckForUpdates } from './useCheckForUpdates'
+export { useFreeGames } from './useFreeGames'
+export { useZoomControls } from './useZoomControls'
+export { useContextMenu } from './useContextMenu'
+export { useKeyboardShortcuts } from './useKeyboardShortcuts'
+export { useSteamMonitor } from './useSteamMonitor'
+export { useDiscordPresence } from './useDiscordPresence'
+export * from './useAutoIdleGames'
 
-export { useSignIn } from './layouts/useSignIn';
-export { useSidebar } from './sidebar/useSidebar';
-export { useTitlebar } from './titlebar/useTitlebar';
-export * from './notifications/useNotifications';
+export { useSignIn } from './layouts/useSignIn'
+export { useSidebar } from './sidebar/useSidebar'
+export { useTitlebar } from './titlebar/useTitlebar'
+export * from './notifications/useNotifications'

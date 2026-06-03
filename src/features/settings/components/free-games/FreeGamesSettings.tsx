@@ -1,80 +1,80 @@
-import { useTranslation } from 'react-i18next';
-import { TbChevronRight } from 'react-icons/tb';
-import { Button, Divider } from '@heroui/react';
+import { useTranslation } from 'react-i18next'
+import { TbChevronRight } from 'react-icons/tb'
+import { Button, Divider } from '@heroui/react'
 
-import { handleShowStoreLoginWindow, handleSignOutCurrentStoreUser } from '@/features/settings';
-import { SettingsSwitch } from '@/shared/components';
-import { useUserStore } from '@/shared/stores';
-import { OpenDocs } from '@/shared/components/OpenDocs';
+import { handleShowStoreLoginWindow, handleSignOutCurrentStoreUser } from '@/features/settings'
+import { SettingsSwitch } from '@/shared/components'
+import { useUserStore } from '@/shared/stores'
+import { OpenDocs } from '@/shared/components/OpenDocs'
 
 export const FreeGamesSettings = () => {
-  const { t } = useTranslation();
-  const userSettings = useUserStore(state => state.userSettings);
-  const setUserSettings = useUserStore(state => state.setUserSettings);
+  const { t } = useTranslation()
+  const userSettings = useUserStore(state => state.userSettings)
+  const setUserSettings = useUserStore(state => state.setUserSettings)
 
   return (
-    <div className="relative flex flex-col gap-4 mt-9 pb-16 w-4/5">
-      <div className="flex flex-col gap-0 select-none">
-        <p className="flex items-center text-xs text-altwhite font-bold">
-          {t($ => $['settings.title'])}
+    <div className='relative flex flex-col gap-4 mt-9 pb-16 w-4/5'>
+      <div className='flex flex-col gap-0 select-none'>
+        <p className='flex items-center text-xs text-altwhite font-bold'>
+          {t('settings.title')}
           <span>
             <TbChevronRight size={12} />
           </span>
         </p>
-        <p className="text-3xl font-black">{t($ => $['freeGames.title'])}</p>
+        <p className='text-3xl font-black'>{t('freeGames.title')}</p>
       </div>
 
-      <div className="flex flex-col gap-3 mt-4">
-        <div className="flex justify-between items-center">
-          <div className="flex flex-col gap-2 w-1/2">
-            <p className="text-sm text-content font-bold">
-              {t($ => $['settings.general.freeGameNotifications'])}
+      <div className='flex flex-col gap-3 mt-4'>
+        <div className='flex justify-between items-center'>
+          <div className='flex flex-col gap-2 w-1/2'>
+            <p className='text-sm text-content font-bold'>
+              {t('settings.general.freeGameNotifications')}
             </p>
-            <p className="text-xs text-altwhite">
-              {t($ => $['settings.general.freeGameNotifications.description'])}
+            <p className='text-xs text-altwhite'>
+              {t('settings.general.freeGameNotifications.description')}
             </p>
           </div>
-          <SettingsSwitch type="general" name="freeGameNotifications" />
+          <SettingsSwitch type='general' name='freeGameNotifications' />
         </div>
 
-        <Divider className="bg-border/70 my-4" />
+        <Divider className='bg-border/70 my-4' />
 
-        <div className="flex justify-between items-center">
-          <div className="flex flex-col gap-2 w-1/2">
-            <div className="flex items-center">
-              <p className="flex items-center gap-2 text-sm text-content font-bold">
-                {t($ => $['settings.general.autoRedeemFreeGames'])}
-                <OpenDocs path="/features/free-games#automated-redemption" />
+        <div className='flex justify-between items-center'>
+          <div className='flex flex-col gap-2 w-1/2'>
+            <div className='flex items-center'>
+              <p className='flex items-center gap-2 text-sm text-content font-bold'>
+                {t('settings.general.autoRedeemFreeGames')}
+                <OpenDocs path='/features/free-games#automated-redemption' />
               </p>
             </div>
-            <p className="text-xs text-altwhite">
-              {t($ => $['settings.general.autoRedeemFreeGames.description'])}
+            <p className='text-xs text-altwhite'>
+              {t('settings.general.autoRedeemFreeGames.description')}
             </p>
           </div>
 
-          <div className="flex flex-col justify-end gap-2">
+          <div className='flex flex-col justify-end gap-2'>
             <Button
-              size="sm"
-              className="bg-btn-secondary text-btn-text font-bold"
-              radius="full"
+              size='sm'
+              className='bg-btn-secondary text-btn-text font-bold'
+              radius='full'
               onPress={() => handleShowStoreLoginWindow(setUserSettings)}
             >
               {userSettings.general?.autoRedeemFreeGames
-                ? t($ => $['common.reauthenticate'])
-                : t($ => $['common.signInSteam'])}
+                ? t('common.reauthenticate')
+                : t('common.signInSteam')}
             </Button>
             <Button
-              size="sm"
-              variant="light"
-              radius="full"
-              color="danger"
+              size='sm'
+              variant='light'
+              radius='full'
+              color='danger'
               onPress={() => handleSignOutCurrentStoreUser(setUserSettings)}
             >
-              {t($ => $['common.signOut'])}
+              {t('common.signOut')}
             </Button>
           </div>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

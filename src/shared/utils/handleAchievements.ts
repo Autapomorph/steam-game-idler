@@ -5,11 +5,11 @@ import type {
   InvokeAchievementUnlock,
   InvokeStatUpdate,
   StatValue,
-} from '@/shared//types';
-import { invoke } from '@tauri-apps/api/core';
-import i18next from 'i18next';
-import { showDangerToast, showSuccessToast } from '@/shared/components';
-import { checkSteamStatus, logEvent } from '@/shared/utils';
+} from '@/shared//types'
+import { invoke } from '@tauri-apps/api/core'
+import i18next from 'i18next'
+import { showDangerToast, showSuccessToast } from '@/shared/components'
+import { checkSteamStatus, logEvent } from '@/shared/utils'
 
 // Unlock a single achievement for a game
 export async function unlockAchievement(
@@ -22,28 +22,28 @@ export async function unlockAchievement(
     const response = await invoke<InvokeAchievementUnlock>('unlock_achievement', {
       appId,
       achievementId: achievementName,
-    });
+    })
 
     await invoke<InvokeAchievementData>('get_achievement_data', {
       steamId,
       appId,
       refetch: true,
-    });
+    })
 
-    const status = JSON.parse(String(response)) as InvokeAchievementUnlock;
+    const status = JSON.parse(String(response)) as InvokeAchievementUnlock
 
     if (status.success) {
-      logEvent(`[Achievement Manager] Unlocked ${achievementName} for ${appName} (${appId})`);
-      return true;
+      logEvent(`[Achievement Manager] Unlocked ${achievementName} for ${appName} (${appId})`)
+      return true
     }
     logEvent(
       `[Error] [Achievement Manager] Failed to unlock ${achievementName} for ${appName} (${appId})`,
-    );
-    return false;
+    )
+    return false
   } catch (error) {
-    console.error('Error in unlockAchievement util: ', error);
-    logEvent(`[Error] in (unlockAchievement) util: ${error}`);
-    return false;
+    console.error('Error in unlockAchievement util: ', error)
+    logEvent(`[Error] in (unlockAchievement) util: ${error}`)
+    return false
   }
 }
 
@@ -59,34 +59,32 @@ export async function toggleAchievement(
     const response = await invoke<InvokeAchievementUnlock>('toggle_achievement', {
       appId,
       achievementId: achievementName,
-    });
+    })
 
-    await invoke('get_achievement_data', { steamId, appId, refetch: true });
+    await invoke('get_achievement_data', { steamId, appId, refetch: true })
 
-    const status = JSON.parse(String(response)) as InvokeAchievementUnlock;
+    const status = JSON.parse(String(response)) as InvokeAchievementUnlock
 
     if (status.success) {
-      showSuccessToast(
-        i18next.t($ => $['toast.toggle.success'], { type, achievementName, appName }),
-      );
-      logEvent(`[Achievement Manager] ${type} ${achievementName} for ${appName} (${appId})`);
-      return true;
+      showSuccessToast(i18next.t('toast.toggle.success', { type, achievementName, appName }))
+      logEvent(`[Achievement Manager] ${type} ${achievementName} for ${appName} (${appId})`)
+      return true
     }
     showDangerToast(
-      i18next.t($ => $['toast.toggle.error'], {
+      i18next.t('toast.toggle.error', {
         type: type.replace('ed', '').toLowerCase(),
         achievementName,
         appName,
       }),
-    );
+    )
     logEvent(
       `[Error] [Achievement Manager] Failed to ${type.replace('ed', '').toLowerCase()} ${achievementName} for ${appName} (${appId})`,
-    );
-    return false;
+    )
+    return false
   } catch (error) {
-    console.error('Error in toggleAchievement util: ', error);
-    logEvent(`[Error] in (toggleAchievement) util: ${error}`);
-    return false;
+    console.error('Error in toggleAchievement util: ', error)
+    logEvent(`[Error] in (toggleAchievement) util: ${error}`)
+    return false
   }
 }
 
@@ -98,30 +96,30 @@ export async function unlockAllAchievements(
   appName: string,
 ) {
   try {
-    const response = await invoke<InvokeAchievementUnlock>('unlock_all_achievements', { appId });
+    const response = await invoke<InvokeAchievementUnlock>('unlock_all_achievements', { appId })
 
     await invoke<InvokeAchievementData>('get_achievement_data', {
       steamId,
       appId,
       refetch: true,
-    });
+    })
 
-    const status = JSON.parse(String(response)) as InvokeAchievementUnlock;
+    const status = JSON.parse(String(response)) as InvokeAchievementUnlock
 
     if (status.success) {
       logEvent(
         `[Achievement Manager] Unlocked ${achievementsArr.length} achievements for ${appName} (${appId})`,
-      );
-      return true;
+      )
+      return true
     }
     logEvent(
       `[Error] [Achievement Manager] Failed to unlock all achievements for ${appName} (${appId})`,
-    );
-    return false;
+    )
+    return false
   } catch (error) {
-    console.error('Error in unlockAllAchievements util: ', error);
-    logEvent(`[Error] in (unlockAllAchievements) util: ${error}`);
-    return false;
+    console.error('Error in unlockAllAchievements util: ', error)
+    logEvent(`[Error] in (unlockAllAchievements) util: ${error}`)
+    return false
   }
 }
 
@@ -133,30 +131,30 @@ export async function lockAllAchievements(
   appName: string,
 ) {
   try {
-    const response = await invoke<InvokeAchievementUnlock>('lock_all_achievements', { appId });
+    const response = await invoke<InvokeAchievementUnlock>('lock_all_achievements', { appId })
 
     await invoke<InvokeAchievementData>('get_achievement_data', {
       steamId,
       appId,
       refetch: true,
-    });
+    })
 
-    const status = JSON.parse(String(response)) as InvokeAchievementUnlock;
+    const status = JSON.parse(String(response)) as InvokeAchievementUnlock
 
     if (status.success) {
       logEvent(
         `[Achievement Manager] Locked ${achievementsArr.length} achievements for ${appName} (${appId})`,
-      );
-      return true;
+      )
+      return true
     }
     logEvent(
       `[Error] [Achievement Manager] Failed to lock all achievements for ${appName} (${appId})`,
-    );
-    return false;
+    )
+    return false
   } catch (error) {
-    console.error('Error in lockAllAchievements util: ', error);
-    logEvent(`[Error] in (lockAllAchievements) util: ${error}`);
-    return false;
+    console.error('Error in lockAllAchievements util: ', error)
+    logEvent(`[Error] in (lockAllAchievements) util: ${error}`)
+    return false
   }
 }
 
@@ -172,30 +170,30 @@ export async function updateStats(
     const response = await invoke<InvokeStatUpdate>('update_stats', {
       appId,
       statsArr: JSON.stringify(valuesArr),
-    });
+    })
 
-    const statusStr = String(response).split(/(?<=})\s*(?={)/)[0];
+    const statusStr = String(response).split(/(?<=})\s*(?={)/)[0]
 
-    const status = JSON.parse(statusStr) as InvokeStatUpdate;
+    const status = JSON.parse(statusStr) as InvokeStatUpdate
 
     const newData = await invoke<InvokeAchievementData>('get_achievement_data', {
       steamId,
       appId,
       refetch: true,
-    });
+    })
 
-    setAchievements(newData?.achievement_data?.achievements);
+    setAchievements(newData?.achievement_data?.achievements)
 
     if (status.success) {
-      logEvent(`[Statistics Manager] Updated ${valuesArr.length} stats for ${appName} (${appId})`);
-      return true;
+      logEvent(`[Statistics Manager] Updated ${valuesArr.length} stats for ${appName} (${appId})`)
+      return true
     }
-    logEvent(`[Error] [Statistics Manager] Failed to update stats for ${appName} (${appId})`);
-    return false;
+    logEvent(`[Error] [Statistics Manager] Failed to update stats for ${appName} (${appId})`)
+    return false
   } catch (error) {
-    console.error('Error in updateStats util: ', error);
-    logEvent(`[Error] in (updateStats) util: ${error}`);
-    return false;
+    console.error('Error in updateStats util: ', error)
+    logEvent(`[Error] in (updateStats) util: ${error}`)
+    return false
   }
 }
 
@@ -207,10 +205,10 @@ export const viewAchievments = async (
   setShowAchievements: (value: boolean) => void,
 ) => {
   // Make sure Steam client is running
-  const isSteamRunning = await checkSteamStatus(true);
-  if (!isSteamRunning) return;
+  const isSteamRunning = await checkSteamStatus(true)
+  if (!isSteamRunning) return
 
-  setAppId(item.appid);
-  setAppName(item.name);
-  setShowAchievements(true);
-};
+  setAppId(item.appid)
+  setAppName(item.name)
+  setShowAchievements(true)
+}

@@ -1,16 +1,16 @@
-import { cn } from '@heroui/react';
-import { Unbounded } from 'next/font/google';
+import { cn } from '@heroui/react'
+import { Unbounded } from 'next/font/google'
 
-import { Logo } from '@/shared/components';
-import { useStateStore } from '@/shared/stores';
+import { Logo } from '@/shared/components'
+import { useStateStore } from '@/shared/stores'
 
 const unbounded = Unbounded({
   subsets: ['latin'],
   variable: '--font-unbounded',
-});
+})
 
 export const Brand = () => {
-  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed);
+  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
 
   return (
     <div
@@ -38,5 +38,5 @@ export const Brand = () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}

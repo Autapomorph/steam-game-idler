@@ -5,10 +5,10 @@ import type {
   InvokeRemoveListings,
   InvokeValidateSession,
   TradingCard,
-} from '@/shared/types';
-import { invoke } from '@tauri-apps/api/core';
-import { useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+} from '@/shared/types'
+import { invoke } from '@tauri-apps/api/core'
+import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   showDangerToast,
   showIncorrectCredentialsToast,
@@ -16,78 +16,78 @@ import {
   showPriceFetchRateLimitToast,
   showPrimaryToast,
   showSuccessToast,
-} from '@/shared/components';
-import { useStateStore, useUserStore } from '@/shared/stores';
-import { decrypt, logEvent } from '@/shared/utils';
+} from '@/shared/components'
+import { useStateStore, useUserStore } from '@/shared/stores'
+import { decrypt, logEvent } from '@/shared/utils'
 
 export function useTradingCardsList() {
-  const { t } = useTranslation();
-  const userSummary = useUserStore(state => state.userSummary);
-  const userSettings = useUserStore(state => state.userSettings);
-  const loadingItemPrice = useStateStore(state => state.loadingItemPrice);
-  const setLoadingItemPrice = useStateStore(state => state.setLoadingItemPrice);
-  const loadingListButton = useStateStore(state => state.loadingListButton);
-  const setLoadingListButton = useStateStore(state => state.setLoadingListButton);
-  const loadingRemoveListings = useStateStore(state => state.loadingRemoveListings);
-  const setLoadingRemoveListings = useStateStore(state => state.setLoadingRemoveListings);
-  const [tradingCardsList, setTradingCardsList] = useState<TradingCard[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [changedCardPrices, setChangedCardPrices] = useState<Record<string, number>>({});
-  const [selectedCards, setSelectedCards] = useState<Record<string, boolean>>({});
-  const [refreshKey, setRefreshKey] = useState(0);
-  const [cardSortStyle, setCardSortStyle] = useState('a-z');
+  const { t } = useTranslation()
+  const userSummary = useUserStore(state => state.userSummary)
+  const userSettings = useUserStore(state => state.userSettings)
+  const loadingItemPrice = useStateStore(state => state.loadingItemPrice)
+  const setLoadingItemPrice = useStateStore(state => state.setLoadingItemPrice)
+  const loadingListButton = useStateStore(state => state.loadingListButton)
+  const setLoadingListButton = useStateStore(state => state.setLoadingListButton)
+  const loadingRemoveListings = useStateStore(state => state.loadingRemoveListings)
+  const setLoadingRemoveListings = useStateStore(state => state.setLoadingRemoveListings)
+  const [tradingCardsList, setTradingCardsList] = useState<TradingCard[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [changedCardPrices, setChangedCardPrices] = useState<Record<string, number>>({})
+  const [selectedCards, setSelectedCards] = useState<Record<string, boolean>>({})
+  const [refreshKey, setRefreshKey] = useState(0)
+  const [cardSortStyle, setCardSortStyle] = useState('a-z')
 
   // Sorting logic
   const sortedTradingCardsList = useMemo(() => {
-    const list = tradingCardsList.slice();
+    const list = tradingCardsList.slice()
     switch (cardSortStyle) {
       case 'a-z':
-        return list.sort((a, b) => a.full_name.localeCompare(b.full_name));
+        return list.sort((a, b) => a.full_name.localeCompare(b.full_name))
       case 'z-a':
-        return list.sort((a, b) => b.full_name.localeCompare(a.full_name));
+        return list.sort((a, b) => b.full_name.localeCompare(a.full_name))
       case 'aa-zz':
-        return list.sort((a, b) => a.appname.localeCompare(b.appname));
+        return list.sort((a, b) => a.appname.localeCompare(b.appname))
       case 'zz-aa':
-        return list.sort((a, b) => b.appname.localeCompare(a.appname));
+        return list.sort((a, b) => b.appname.localeCompare(a.appname))
       case 'badge-desc':
         return list.sort((a, b) => {
-          const levelA = a.badge_level || 0;
-          const levelB = b.badge_level || 0;
-          return levelB - levelA;
-        });
+          const levelA = a.badge_level || 0
+          const levelB = b.badge_level || 0
+          return levelB - levelA
+        })
       default:
-        return list;
+        return list
     }
-  }, [tradingCardsList, cardSortStyle]);
+  }, [tradingCardsList, cardSortStyle])
 
   useEffect(() => {
     const getTradingCards = async () => {
       try {
-        const { credentials } = userSettings.cardFarming;
-        const apiKey = userSettings.general?.apiKey;
+        const { credentials } = userSettings.cardFarming
+        const apiKey = userSettings.general?.apiKey
 
-        if (!credentials?.sid || !credentials?.sls) return;
+        if (!credentials?.sid || !credentials?.sls) return
 
-        setIsLoading(true);
+        setIsLoading(true)
 
         const cachedCards = await invoke<InvokeCardData>('get_trading_cards_cache', {
           steamId: userSummary?.steamId,
-        });
+        })
 
         if (cachedCards?.card_data && cachedCards.card_data.length > 0) {
           // Stale-cache guard: if items are missing item_type the cache was written
           // by an older version that only stored trading cards — force a re-fetch.
-          const isStale = cachedCards.card_data.every(c => c.item_type === undefined);
+          const isStale = cachedCards.card_data.every(c => c.item_type === undefined)
           if (!isStale) {
             const sortedCards = cachedCards.card_data.sort((a, b) =>
               a.appname.localeCompare(b.appname),
-            );
-            setTradingCardsList(sortedCards);
-            setIsLoading(false);
-            return;
+            )
+            setTradingCardsList(sortedCards)
+            setIsLoading(false)
+            return
           }
           // Stale — delete so the fresh fetch below saves clean data
-          await invoke('delete_user_trading_card_file', { steamId: userSummary?.steamId });
+          await invoke('delete_user_trading_card_file', { steamId: userSummary?.steamId })
         }
 
         // Validate credentials
@@ -96,9 +96,9 @@ export function useTradingCardsList() {
           sls: decrypt(credentials.sls),
           sma: credentials?.sma,
           steamid: userSummary?.steamId,
-        });
+        })
 
-        if (!validate.user) return showIncorrectCredentialsToast();
+        if (!validate.user) return showIncorrectCredentialsToast()
 
         const response = await invoke<InvokeCardData>('get_trading_cards', {
           sid: decrypt(credentials.sid),
@@ -107,23 +107,23 @@ export function useTradingCardsList() {
           steamId: userSummary?.steamId,
           includePrices: true,
           apiKey: apiKey ? decrypt(apiKey) : null,
-        });
+        })
 
         if (response.card_data.length > 0) {
-          const sortedCards = response.card_data.sort((a, b) => a.appname.localeCompare(b.appname));
-          setTradingCardsList(sortedCards);
+          const sortedCards = response.card_data.sort((a, b) => a.appname.localeCompare(b.appname))
+          setTradingCardsList(sortedCards)
         } else {
-          setTradingCardsList([]);
-          showPrimaryToast(t($ => $['toast.tradingCards.noCards']));
+          setTradingCardsList([])
+          showPrimaryToast(t('toast.tradingCards.noCards'))
         }
       } catch (error) {
-        console.error('Error in getTradingCards:', error);
-        logEvent(`[Error] in getTradingCards: ${error}`);
+        console.error('Error in getTradingCards:', error)
+        logEvent(`[Error] in getTradingCards: ${error}`)
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
-    };
-    getTradingCards();
+    }
+    getTradingCards()
   }, [
     refreshKey,
     t,
@@ -131,17 +131,17 @@ export function useTradingCardsList() {
     userSummary?.steamId,
     userSettings.general?.apiKey,
     userSettings.cardFarming,
-  ]);
+  ])
 
   const fetchCardPrices = async (hash: string) => {
-    setLoadingItemPrice(prev => ({ ...prev, [hash]: true }));
+    setLoadingItemPrice(prev => ({ ...prev, [hash]: true }))
 
     try {
-      const { credentials } = userSettings.cardFarming;
+      const { credentials } = userSettings.cardFarming
 
       if (!credentials?.sid || !credentials?.sls) {
-        showMissingCredentialsToast();
-        return { success: false };
+        showMissingCredentialsToast()
+        return { success: false }
       }
 
       // Validate credentials
@@ -150,38 +150,38 @@ export function useTradingCardsList() {
         sls: decrypt(credentials.sls),
         sma: credentials?.sma,
         steamid: userSummary?.steamId,
-      });
+      })
 
       if (!validate.user) {
-        showIncorrectCredentialsToast();
-        return { success: false };
+        showIncorrectCredentialsToast()
+        return { success: false }
       }
 
       const cardPrices = await invoke<InvokeCardPrice>('get_card_price', {
         marketHashName: hash,
         currency: localStorage.getItem('currency') || '1',
-      });
+      })
 
       if (cardPrices.error?.includes('HTTP 429')) {
-        showPriceFetchRateLimitToast();
-        logEvent(`[Error] in (fetchCardPrices): Rate limited when fetching price for card ${hash}`);
-        return { success: false, rateLimited: true };
+        showPriceFetchRateLimitToast()
+        logEvent(`[Error] in (fetchCardPrices): Rate limited when fetching price for card ${hash}`)
+        return { success: false, rateLimited: true }
       }
 
       if (!cardPrices.success) {
-        return { success: false };
+        return { success: false }
       }
 
-      const highestBuyOrder = cardPrices?.buy_order_graph?.[0]?.[0];
-      const lowestSellOrder = cardPrices?.sell_order_graph?.[0]?.[0];
-      let price: string | undefined;
+      const highestBuyOrder = cardPrices?.buy_order_graph?.[0]?.[0]
+      const lowestSellOrder = cardPrices?.sell_order_graph?.[0]?.[0]
+      let price: string | undefined
       if (userSettings.tradingCards?.sellOptions === 'lowestSellOrder') {
-        price = lowestSellOrder?.toString();
+        price = lowestSellOrder?.toString()
       } else {
         price =
           highestBuyOrder !== null && highestBuyOrder !== undefined
             ? highestBuyOrder.toString()
-            : lowestSellOrder?.toString();
+            : lowestSellOrder?.toString()
       }
 
       const priceDataCleaned = {
@@ -191,112 +191,112 @@ export function useTradingCardsList() {
         lowest_sell_order: cardPrices?.sell_order_graph?.[0]?.[0],
         buy_order_summary: cardPrices?.buy_order_summary,
         sell_order_summary: cardPrices?.sell_order_summary,
-      };
+      }
 
       const response = await invoke<InvokeCardData>('update_card_data', {
         steamId: userSummary?.steamId,
         key: hash,
         data: priceDataCleaned,
-      });
+      })
 
       if (response.card_data.length > 0) {
-        const sortedCards = response.card_data.sort((a, b) => a.appname.localeCompare(b.appname));
-        setTradingCardsList(sortedCards);
+        const sortedCards = response.card_data.sort((a, b) => a.appname.localeCompare(b.appname))
+        setTradingCardsList(sortedCards)
       }
 
-      return { success: true, price };
+      return { success: true, price }
     } catch (error) {
-      console.error('Error fetching card prices:', error);
-      logEvent(`[Error] in fetchCardPrices: ${error}`);
-      return { success: false };
+      console.error('Error fetching card prices:', error)
+      logEvent(`[Error] in fetchCardPrices: ${error}`)
+      return { success: false }
     } finally {
-      setLoadingItemPrice(prev => ({ ...prev, [hash]: false }));
+      setLoadingItemPrice(prev => ({ ...prev, [hash]: false }))
     }
-  };
+  }
 
   const updateCardPrice = (assetId: string, value: number) => {
     setChangedCardPrices(prev => {
-      const updated = { ...prev };
+      const updated = { ...prev }
       if (value > 0) {
-        updated[assetId] = value;
+        updated[assetId] = value
       } else {
-        delete updated[assetId];
+        delete updated[assetId]
       }
-      return updated;
-    });
+      return updated
+    })
 
     // Enable checkbox when a price is entered or deselect price is 0
     setSelectedCards(prev => {
-      const updated = { ...prev };
-      updated[assetId] = value > 0;
-      return updated;
-    });
-  };
+      const updated = { ...prev }
+      updated[assetId] = value > 0
+      return updated
+    })
+  }
 
   const toggleCardSelection = (assetId: string) => {
     setSelectedCards(prev => {
-      const updated = { ...prev };
-      updated[assetId] = !prev[assetId];
-      return updated;
-    });
-  };
+      const updated = { ...prev }
+      updated[assetId] = !prev[assetId]
+      return updated
+    })
+  }
 
   const isWithinSellLimits = (finalPrice: number) => {
-    const sellLimit = userSettings?.tradingCards?.sellLimit;
-    if (!sellLimit) return true;
+    const sellLimit = userSettings?.tradingCards?.sellLimit
+    if (!sellLimit) return true
 
-    const { min, max } = sellLimit;
-    return finalPrice >= min && finalPrice <= max;
-  };
+    const { min, max } = sellLimit
+    return finalPrice >= min && finalPrice <= max
+  }
 
   const isCardLocked = (cardId: string) => {
-    const storedLockedCards = localStorage.getItem('lockedTradingCards');
-    if (!storedLockedCards) return false;
+    const storedLockedCards = localStorage.getItem('lockedTradingCards')
+    if (!storedLockedCards) return false
 
     try {
-      const lockedCards: string[] = JSON.parse(storedLockedCards);
-      return lockedCards.includes(cardId);
+      const lockedCards: string[] = JSON.parse(storedLockedCards)
+      return lockedCards.includes(cardId)
     } catch {
-      return false;
+      return false
     }
-  };
+  }
 
   const handleSellSingleCard = async (assetId: string, itemId: string, price: number) => {
     try {
-      const card = tradingCardsList.find(c => c.assetid === assetId);
+      const card = tradingCardsList.find(c => c.assetid === assetId)
       if (card && isCardLocked(card.id)) {
-        showDangerToast(t($ => $['toast.tradingCards.cardLocked']));
-        return;
+        showDangerToast(t('toast.tradingCards.cardLocked'))
+        return
       }
 
-      const credentials = userSettings?.cardFarming.credentials;
+      const credentials = userSettings?.cardFarming.credentials
 
-      if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast();
+      if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast()
 
-      const priceAdjustment = userSettings?.tradingCards?.priceAdjustment || 0.0;
-      const adjustedPrice = price + priceAdjustment;
+      const priceAdjustment = userSettings?.tradingCards?.priceAdjustment || 0.0
+      const adjustedPrice = price + priceAdjustment
 
       // Check if price is within sell limits
       if (!isWithinSellLimits(adjustedPrice)) {
-        const sellLimit = userSettings?.tradingCards?.sellLimit;
+        const sellLimit = userSettings?.tradingCards?.sellLimit
         showDangerToast(
-          t($ => $['toast.tradingCards.priceOutOfRange'], {
+          t('toast.tradingCards.priceOutOfRange', {
             price: adjustedPrice.toFixed(2),
             min: sellLimit?.min?.toFixed(2) || '0.00',
             max: sellLimit?.max?.toFixed(2) || '∞',
           }),
-        );
+        )
         logEvent(
           `[Info] Card ${assetId} price ${adjustedPrice} is outside sell limits (${sellLimit?.min}-${sellLimit?.max})`,
-        );
-        return;
+        )
+        return
       }
 
-      setLoadingListButton(true);
+      setLoadingListButton(true)
 
       // Format for the API - single card as an array item
-      const cardForListing: [string, string] = [assetId, adjustedPrice.toString()];
-      logEvent(`Card for listing: ${JSON.stringify(cardForListing)}`);
+      const cardForListing: [string, string] = [assetId, adjustedPrice.toString()]
+      logEvent(`Card for listing: ${JSON.stringify(cardForListing)}`)
 
       const response = await invoke<InvokeListCards>('list_trading_cards', {
         sid: decrypt(credentials.sid),
@@ -305,102 +305,100 @@ export function useTradingCardsList() {
         steamId: userSummary?.steamId,
         cards: [cardForListing],
         currency: localStorage.getItem('currency') || '1',
-      });
+      })
 
       if (response.successful && response.results && response.results.length > 0) {
-        const result = response.results[0];
+        const result = response.results[0]
 
         if (result.success) {
           if (result.data?.needs_email_confirmation) {
-            showSuccessToast(t($ => $['toast.tradingCards.emailConfirm'], { count: 1 }));
+            showSuccessToast(t('toast.tradingCards.emailConfirm', { count: 1 }))
           } else if (result.data?.needs_mobile_confirmation) {
-            showSuccessToast(t($ => $['toast.tradingCards.mobileConfirm'], { count: 1 }));
+            showSuccessToast(t('toast.tradingCards.mobileConfirm', { count: 1 }))
           } else {
-            showSuccessToast(t($ => $['toast.tradingCards.listed'], { count: 1 }));
+            showSuccessToast(t('toast.tradingCards.listed', { count: 1 }))
           }
         } else {
-          showDangerToast(t($ => $['common.error']));
-          logEvent(`[Error] Failed to list trading card ${assetId}: ${result.message}`);
+          showDangerToast(t('common.error'))
+          logEvent(`[Error] Failed to list trading card ${assetId}: ${result.message}`)
         }
       } else {
-        showDangerToast(t($ => $['common.error']));
-        logEvent(`[Error] Failed to list trading card: ${JSON.stringify(response)}`);
+        showDangerToast(t('common.error'))
+        logEvent(`[Error] Failed to list trading card: ${JSON.stringify(response)}`)
       }
 
-      logEvent(`Complete listing result: ${JSON.stringify(response)}`);
+      logEvent(`Complete listing result: ${JSON.stringify(response)}`)
     } catch (error) {
-      showDangerToast(t($ => $['common.error']));
-      console.error('Error in handleSellSingleCard:', error);
-      logEvent(`[Error] in handleSellSingleCard: ${error}`);
+      showDangerToast(t('common.error'))
+      console.error('Error in handleSellSingleCard:', error)
+      logEvent(`[Error] in handleSellSingleCard: ${error}`)
     } finally {
-      setSelectedCards({});
-      setChangedCardPrices({});
-      setLoadingListButton(false);
+      setSelectedCards({})
+      setChangedCardPrices({})
+      setLoadingListButton(false)
     }
-  };
+  }
 
   const handleSellSelectedCards = async () => {
     try {
-      const { credentials } = userSettings.cardFarming;
-      const sellDelay = userSettings?.tradingCards?.sellDelay || 10;
+      const { credentials } = userSettings.cardFarming
+      const sellDelay = userSettings?.tradingCards?.sellDelay || 10
 
-      if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast();
+      if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast()
 
-      const selectedAssetIds = Object.keys(selectedCards).filter(assetId => selectedCards[assetId]);
-      const cardsToSell = selectedAssetIds.filter(assetId => changedCardPrices[assetId] > 0);
+      const selectedAssetIds = Object.keys(selectedCards).filter(assetId => selectedCards[assetId])
+      const cardsToSell = selectedAssetIds.filter(assetId => changedCardPrices[assetId] > 0)
 
       if (cardsToSell.length === 0) {
-        return;
+        return
       }
 
       // Filter out locked cards
       const unlockedCards = cardsToSell.filter(assetId => {
-        const card = tradingCardsList.find(c => c.assetid === assetId);
-        return !card || !isCardLocked(card.id);
-      });
+        const card = tradingCardsList.find(c => c.assetid === assetId)
+        return !card || !isCardLocked(card.id)
+      })
 
-      const lockedCardsCount = cardsToSell.length - unlockedCards.length;
+      const lockedCardsCount = cardsToSell.length - unlockedCards.length
 
       if (lockedCardsCount > 0) {
-        showPrimaryToast(
-          t($ => $['toast.tradingCards.skippedLockedCards'], { count: lockedCardsCount }),
-        );
-        logEvent(`[Info] Skipped ${lockedCardsCount} locked cards`);
+        showPrimaryToast(t('toast.tradingCards.skippedLockedCards', { count: lockedCardsCount }))
+        logEvent(`[Info] Skipped ${lockedCardsCount} locked cards`)
       }
 
       if (unlockedCards.length === 0) {
-        showDangerToast(t($ => $['toast.tradingCards.allCardsLocked']));
-        return;
+        showDangerToast(t('toast.tradingCards.allCardsLocked'))
+        return
       }
 
-      const priceAdjustment = userSettings?.tradingCards?.priceAdjustment || 0.0;
+      const priceAdjustment = userSettings?.tradingCards?.priceAdjustment || 0.0
 
       // Filter cards based on sell limits
       const validCards = unlockedCards.filter(assetId => {
-        const finalPrice = changedCardPrices[assetId] + priceAdjustment;
-        return isWithinSellLimits(finalPrice);
-      });
+        const finalPrice = changedCardPrices[assetId] + priceAdjustment
+        return isWithinSellLimits(finalPrice)
+      })
 
-      const skippedCards = cardsToSell.length - validCards.length;
+      const skippedCards = cardsToSell.length - validCards.length
 
       if (validCards.length === 0) {
-        showDangerToast(t($ => $['toast.tradingCards.allCardsOutOfRange']));
-        return;
+        showDangerToast(t('toast.tradingCards.allCardsOutOfRange'))
+        return
       }
 
       if (skippedCards > 0) {
-        showPrimaryToast(t($ => $['toast.tradingCards.skippedCards'], { count: skippedCards }));
-        logEvent(`[Info] Skipped ${skippedCards} cards due to sell limit restrictions`);
+        showPrimaryToast(t('toast.tradingCards.skippedCards', { count: skippedCards }))
+        logEvent(`[Info] Skipped ${skippedCards} cards due to sell limit restrictions`)
       }
 
       const cardsForBulkListing = validCards.map(assetId => [
         assetId,
         (changedCardPrices[assetId] + priceAdjustment).toString(),
-      ]);
+      ])
 
-      setLoadingListButton(true);
-      showPrimaryToast(t($ => $['toast.tradingCards.processing']));
-      logEvent(`Cards for listing: ${JSON.stringify(cardsForBulkListing)}`);
+      setLoadingListButton(true)
+      showPrimaryToast(t('toast.tradingCards.processing'))
+      logEvent(`Cards for listing: ${JSON.stringify(cardsForBulkListing)}`)
 
       const response = await invoke<InvokeListCards>('list_trading_cards', {
         sid: decrypt(credentials.sid),
@@ -410,121 +408,119 @@ export function useTradingCardsList() {
         cards: cardsForBulkListing,
         currency: localStorage.getItem('currency') || '1',
         delay: sellDelay,
-      });
+      })
 
       if (response.successful && response.results && response.results.length > 0) {
-        const successfulCards = response.results.filter(card => card.success);
-        const failedCards = response.results.filter(card => !card.success);
+        const successfulCards = response.results.filter(card => card.success)
+        const failedCards = response.results.filter(card => !card.success)
         const needsEmailConfirmation = response.results.filter(
           card => card.data?.needs_email_confirmation,
-        );
+        )
         const needsMobileConfirmation = response.results.filter(
           card => card.data?.needs_mobile_confirmation,
-        );
+        )
 
         if (successfulCards.length > 0) {
           if (needsEmailConfirmation.length > 0) {
             showSuccessToast(
-              t($ => $['toast.tradingCards.emailConfirm'], { count: successfulCards.length }),
-            );
+              t('toast.tradingCards.emailConfirm', { count: successfulCards.length }),
+            )
           } else if (needsMobileConfirmation.length > 0) {
             showSuccessToast(
-              t($ => $['toast.tradingCards.mobileConfirm'], { count: successfulCards.length }),
-            );
+              t('toast.tradingCards.mobileConfirm', { count: successfulCards.length }),
+            )
           } else {
-            showSuccessToast(
-              t($ => $['toast.tradingCards.listed'], { count: successfulCards.length }),
-            );
+            showSuccessToast(t('toast.tradingCards.listed', { count: successfulCards.length }))
           }
         }
 
         for (const card of failedCards) {
-          logEvent(`[Error] Failed to list trading card ${card.assetid}: ${card.message}`);
+          logEvent(`[Error] Failed to list trading card ${card.assetid}: ${card.message}`)
         }
       } else {
-        showDangerToast(t($ => $['common.error']));
-        logEvent(`[Error] Failed to list trading cards: ${JSON.stringify(response)}`);
+        showDangerToast(t('common.error'))
+        logEvent(`[Error] Failed to list trading cards: ${JSON.stringify(response)}`)
       }
 
-      logEvent(`Complete listing results: ${JSON.stringify(response)}`);
+      logEvent(`Complete listing results: ${JSON.stringify(response)}`)
     } catch (error) {
-      showDangerToast(t($ => $['common.error']));
-      console.error('Error in handleSellSelectedCards:', error);
-      logEvent(`[Error] in handleSellSelectedCards: ${error}`);
+      showDangerToast(t('common.error'))
+      console.error('Error in handleSellSelectedCards:', error)
+      logEvent(`[Error] in handleSellSelectedCards: ${error}`)
     } finally {
-      setSelectedCards({});
-      setChangedCardPrices({});
-      setLoadingListButton(false);
+      setSelectedCards({})
+      setChangedCardPrices({})
+      setLoadingListButton(false)
     }
-  };
+  }
 
   // Shared helper: fetch price and list a batch of items sequentially with rate-limit handling
   const sellCardsList = async (items: TradingCard[], context: string) => {
-    const credentials = userSettings?.cardFarming.credentials;
-    if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast();
+    const credentials = userSettings?.cardFarming.credentials
+    if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast()
 
-    const priceAdjustment = userSettings?.tradingCards?.priceAdjustment || 0.0;
-    const sellDelay = userSettings?.tradingCards?.sellDelay || 10;
-    const successfulCards: string[] = [];
-    const failedCards: { assetid: string; message?: string }[] = [];
-    const skippedCards: string[] = [];
+    const priceAdjustment = userSettings?.tradingCards?.priceAdjustment || 0.0
+    const sellDelay = userSettings?.tradingCards?.sellDelay || 10
+    const successfulCards: string[] = []
+    const failedCards: { assetid: string; message?: string }[] = []
+    const skippedCards: string[] = []
 
     for (let i = 0; i < items.length; i += 1) {
-      const card = items[i];
+      const card = items[i]
 
       // Apply delay before each item except the first to space out all requests
       if (i > 0) {
-        await new Promise(resolve => setTimeout(resolve, sellDelay * 1000));
+        await new Promise(resolve => setTimeout(resolve, sellDelay * 1000))
       }
 
       // Skip locked cards
       if (isCardLocked(card.id)) {
-        skippedCards.push(card.assetid);
-        logEvent(`[Info] in (${context}): Skipped locked item ${card.assetid}`);
-        continue;
+        skippedCards.push(card.assetid)
+        logEvent(`[Info] in (${context}): Skipped locked item ${card.assetid}`)
+        continue
       }
 
       if (!card.market_hash_name) {
         logEvent(
           `[Error] in (${context}): Item ${card.assetid} missing market_hash_name - skipping`,
-        );
-        continue;
+        )
+        continue
       }
 
       try {
-        const priceResult = await fetchCardPrices(card.market_hash_name);
+        const priceResult = await fetchCardPrices(card.market_hash_name)
 
         if (!priceResult.success) {
           if (priceResult.rateLimited) {
             logEvent(
               `[Error] in (${context}): Rate limited fetching price for ${card.assetid} (${card.market_hash_name}) - stopping`,
-            );
-            break;
+            )
+            break
           }
           logEvent(
             `[Error] in (${context}): Failed to fetch price for ${card.assetid} (${card.market_hash_name}) - skipping`,
-          );
-          continue;
+          )
+          continue
         }
 
         if (!priceResult.price) {
           logEvent(
             `[Error] in (${context}): No price determined for ${card.assetid} (${card.market_hash_name}) - skipping`,
-          );
-          continue;
+          )
+          continue
         }
 
-        const finalPrice = parseFloat(priceResult.price) + priceAdjustment;
+        const finalPrice = parseFloat(priceResult.price) + priceAdjustment
 
         if (!isWithinSellLimits(finalPrice)) {
-          skippedCards.push(card.assetid);
+          skippedCards.push(card.assetid)
           logEvent(
             `[Info] in (${context}): Skipped ${card.assetid} (${card.market_hash_name}) - price ${finalPrice} outside sell limits`,
-          );
-          continue;
+          )
+          continue
         }
 
-        const cardForListing: [string, string] = [card.assetid, finalPrice.toString()];
+        const cardForListing: [string, string] = [card.assetid, finalPrice.toString()]
         const response = await invoke<InvokeListCards>('list_trading_cards', {
           sid: decrypt(credentials.sid),
           sls: decrypt(credentials.sls),
@@ -532,107 +528,105 @@ export function useTradingCardsList() {
           steamId: userSummary?.steamId,
           cards: [cardForListing],
           currency: localStorage.getItem('currency') || '1',
-        });
+        })
 
         if (response.successful && response.results && response.results.length > 0) {
-          const result = response.results[0];
+          const result = response.results[0]
           if (result.success) {
-            successfulCards.push(card.assetid);
+            successfulCards.push(card.assetid)
           } else {
-            failedCards.push({ assetid: card.assetid, message: result.message });
+            failedCards.push({ assetid: card.assetid, message: result.message })
             if (result.message?.toLowerCase().includes('rate limit')) {
-              showPriceFetchRateLimitToast();
+              showPriceFetchRateLimitToast()
               logEvent(
                 `[Error] in (${context}): Rate limited listing ${card.assetid} (${card.market_hash_name}) - stopping`,
-              );
-              break;
+              )
+              break
             }
           }
         }
       } catch (error) {
-        failedCards.push({ assetid: card.assetid, message: String(error) });
-        console.error(`Error processing item ${card.assetid}:`, error);
+        failedCards.push({ assetid: card.assetid, message: String(error) })
+        console.error(`Error processing item ${card.assetid}:`, error)
         logEvent(
           `[Error] in (${context}): processing ${card.assetid} (${card.market_hash_name}): ${error}`,
-        );
+        )
       }
     }
 
     if (successfulCards.length > 0) {
-      showSuccessToast(t($ => $['toast.tradingCards.listed'], { count: successfulCards.length }));
+      showSuccessToast(t('toast.tradingCards.listed', { count: successfulCards.length }))
     }
 
     if (skippedCards.length > 0) {
-      showPrimaryToast(
-        t($ => $['toast.tradingCards.skippedCards'], { count: skippedCards.length }),
-      );
-      logEvent(`[Info] in (${context}): Skipped ${skippedCards.length} items`);
+      showPrimaryToast(t('toast.tradingCards.skippedCards', { count: skippedCards.length }))
+      logEvent(`[Info] in (${context}): Skipped ${skippedCards.length} items`)
     }
 
     for (const failed of failedCards) {
-      logEvent(`[Error] in (${context}): Failed to list ${failed.assetid}: ${failed.message}`);
+      logEvent(`[Error] in (${context}): Failed to list ${failed.assetid}: ${failed.message}`)
     }
-  };
+  }
 
   const handleSellAllCards = async (list?: TradingCard[]) => {
     try {
-      const credentials = userSettings?.cardFarming.credentials;
-      if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast();
+      const credentials = userSettings?.cardFarming.credentials
+      if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast()
 
-      setLoadingListButton(true);
-      showPrimaryToast(t($ => $['toast.tradingCards.processing']));
-      await sellCardsList(list ?? tradingCardsList, 'handleSellAllCards');
+      setLoadingListButton(true)
+      showPrimaryToast(t('toast.tradingCards.processing'))
+      await sellCardsList(list ?? tradingCardsList, 'handleSellAllCards')
     } catch (error) {
-      showDangerToast(t($ => $['common.error']));
-      console.error('Error in handleSellAllCards:', error);
-      logEvent(`[Error] in handleSellAllCards: ${error}`);
+      showDangerToast(t('common.error'))
+      console.error('Error in handleSellAllCards:', error)
+      logEvent(`[Error] in handleSellAllCards: ${error}`)
     } finally {
-      setLoadingListButton(false);
+      setLoadingListButton(false)
     }
-  };
+  }
 
   const handleSellAllDupes = async () => {
     try {
-      const credentials = userSettings?.cardFarming.credentials;
-      if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast();
+      const credentials = userSettings?.cardFarming.credentials
+      if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast()
 
       // Group items by market_hash_name, keep 1 per group, collect the rest as dupes
-      const groups = new Map<string, TradingCard[]>();
+      const groups = new Map<string, TradingCard[]>()
       for (const card of tradingCardsList) {
-        const group = groups.get(card.market_hash_name) || [];
-        group.push(card);
-        groups.set(card.market_hash_name, group);
+        const group = groups.get(card.market_hash_name) || []
+        group.push(card)
+        groups.set(card.market_hash_name, group)
       }
 
-      const dupesToSell: TradingCard[] = [];
+      const dupesToSell: TradingCard[] = []
       for (const cards of groups.values()) {
         if (cards.length > 1) {
-          dupesToSell.push(...cards.slice(1));
+          dupesToSell.push(...cards.slice(1))
         }
       }
 
       if (dupesToSell.length === 0) {
-        showPrimaryToast(t($ => $['toast.tradingCards.noDupes']));
-        return;
+        showPrimaryToast(t('toast.tradingCards.noDupes'))
+        return
       }
 
-      setLoadingListButton(true);
-      showPrimaryToast(t($ => $['toast.tradingCards.processing']));
-      await sellCardsList(dupesToSell, 'handleSellAllDupes');
+      setLoadingListButton(true)
+      showPrimaryToast(t('toast.tradingCards.processing'))
+      await sellCardsList(dupesToSell, 'handleSellAllDupes')
     } catch (error) {
-      showDangerToast(t($ => $['common.error']));
-      console.error('Error in handleSellAllDupes:', error);
-      logEvent(`[Error] in handleSellAllDupes: ${error}`);
+      showDangerToast(t('common.error'))
+      console.error('Error in handleSellAllDupes:', error)
+      logEvent(`[Error] in handleSellAllDupes: ${error}`)
     } finally {
-      setLoadingListButton(false);
+      setLoadingListButton(false)
     }
-  };
+  }
 
   const handleRemoveActiveListings = async () => {
     try {
-      const { credentials } = userSettings.cardFarming;
+      const { credentials } = userSettings.cardFarming
 
-      if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast();
+      if (!credentials?.sid || !credentials?.sls) return showMissingCredentialsToast()
 
       // Validate credentials
       const validate = await invoke<InvokeValidateSession>('validate_session', {
@@ -640,63 +634,63 @@ export function useTradingCardsList() {
         sls: decrypt(credentials.sls),
         sma: credentials?.sma,
         steamid: userSummary?.steamId,
-      });
+      })
 
-      if (!validate.user) return showIncorrectCredentialsToast();
+      if (!validate.user) return showIncorrectCredentialsToast()
 
-      setLoadingRemoveListings(true);
-      showPrimaryToast(t($ => $['toast.tradingCards.processing']));
+      setLoadingRemoveListings(true)
+      showPrimaryToast(t('toast.tradingCards.processing'))
 
       const response = await invoke<InvokeRemoveListings>('remove_market_listings', {
         sid: decrypt(credentials.sid),
         sls: decrypt(credentials.sls),
         sma: credentials?.sma,
         steamId: userSummary?.steamId,
-      });
+      })
 
       if (response.successful_removals > 0) {
         showSuccessToast(
-          t($ => $['toast.tradingCards.removedListings'], {
+          t('toast.tradingCards.removedListings', {
             count: response.successful_removals,
             total: response.processed_listings,
           }),
-        );
+        )
 
         // Refresh the trading cards list after removing listings
-        await handleRefresh();
+        await handleRefresh()
       } else if (response.processed_listings === 0) {
-        showPrimaryToast(t($ => $['toast.tradingCards.noListings']));
+        showPrimaryToast(t('toast.tradingCards.noListings'))
       } else {
-        showDangerToast(t($ => $['toast.tradingCards.failedRemove']));
+        showDangerToast(t('toast.tradingCards.failedRemove'))
       }
 
-      logEvent(`Remove listings result: ${JSON.stringify(response)}`);
+      logEvent(`Remove listings result: ${JSON.stringify(response)}`)
     } catch (error) {
-      showDangerToast(t($ => $['common.error']));
-      console.error('Error in handleRemoveActiveListings:', error);
-      logEvent(`[Error] in handleRemoveActiveListings: ${error}`);
+      showDangerToast(t('common.error'))
+      console.error('Error in handleRemoveActiveListings:', error)
+      logEvent(`[Error] in handleRemoveActiveListings: ${error}`)
     } finally {
-      setLoadingRemoveListings(false);
+      setLoadingRemoveListings(false)
     }
-  };
+  }
 
   const getCardPriceValue = (assetId: string) => {
-    return changedCardPrices[assetId] || 0;
-  };
+    return changedCardPrices[assetId] || 0
+  }
 
   const handleRefresh = async () => {
     try {
       await invoke('delete_user_trading_card_file', {
         steamId: userSummary?.steamId,
-      });
+      })
 
-      setRefreshKey(prev => prev + 1);
+      setRefreshKey(prev => prev + 1)
     } catch (error) {
-      showDangerToast(t($ => $['common.error']));
-      console.error('Error in handleRefresh:', error);
-      logEvent(`[Error] in handleRefresh: ${error}`);
+      showDangerToast(t('common.error'))
+      console.error('Error in handleRefresh:', error)
+      logEvent(`[Error] in handleRefresh: ${error}`)
     }
-  };
+  }
 
   return {
     tradingCardsList: sortedTradingCardsList,
@@ -719,5 +713,5 @@ export function useTradingCardsList() {
     handleRemoveActiveListings,
     cardSortStyle,
     setCardSortStyle,
-  };
+  }
 }

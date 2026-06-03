@@ -1,31 +1,26 @@
-import type { Game } from '@/shared/types';
-import { memo } from 'react';
-import { FaSteam } from 'react-icons/fa';
-import { FaX } from 'react-icons/fa6';
-import {
-  TbArrowsSort,
-  TbAwardFilled,
-  TbPlayerPlayFilled,
-  TbPlayerStopFilled,
-} from 'react-icons/tb';
-import { Button, Checkbox, cn } from '@heroui/react';
-import Image from 'next/image';
-import { CardMenu } from '@/features/games-list';
-import { ExtLink } from '@/shared/components/ExtLink';
-import { IdleTimer } from '@/shared/components/IdleTimer';
-import { useIdleStore, useStateStore } from '@/shared/stores';
-import { handleIdle, handleStopIdle, viewAchievments } from '@/shared/utils';
+import type { Game } from '@/shared/types'
+import { memo } from 'react'
+import { FaSteam } from 'react-icons/fa'
+import { FaX } from 'react-icons/fa6'
+import { TbArrowsSort, TbAwardFilled, TbPlayerPlayFilled, TbPlayerStopFilled } from 'react-icons/tb'
+import { Button, Checkbox, cn } from '@heroui/react'
+import Image from 'next/image'
+import { CardMenu } from '@/features/games-list'
+import { ExtLink } from '@/shared/components/ExtLink'
+import { IdleTimer } from '@/shared/components/IdleTimer'
+import { useIdleStore, useStateStore } from '@/shared/stores'
+import { handleIdle, handleStopIdle, viewAchievments } from '@/shared/utils'
 
 interface GameCardProps {
-  item: Game;
-  isFreeGame?: boolean;
-  isCustomList?: boolean;
-  isAchievementUnlocker?: boolean;
-  isAutoIdleList?: boolean;
-  autoIdleEnabled?: boolean;
-  onToggleAutoIdle?: () => void;
-  onOpen?: () => void;
-  handleRemoveGame?: (game: Game) => Promise<void>;
+  item: Game
+  isFreeGame?: boolean
+  isCustomList?: boolean
+  isAchievementUnlocker?: boolean
+  isAutoIdleList?: boolean
+  autoIdleEnabled?: boolean
+  onToggleAutoIdle?: () => void
+  onOpen?: () => void
+  handleRemoveGame?: (game: Game) => Promise<void>
 }
 
 export const GameCard = memo(function GameCard({
@@ -39,18 +34,18 @@ export const GameCard = memo(function GameCard({
   onOpen,
   handleRemoveGame,
 }: GameCardProps) {
-  const idleGamesList = useIdleStore(state => state.idleGamesList);
-  const setIdleGamesList = useIdleStore(state => state.setIdleGamesList);
-  const setAppId = useStateStore(state => state.setAppId);
-  const setAppName = useStateStore(state => state.setAppName);
-  const setShowAchievements = useStateStore(state => state.setShowAchievements);
+  const idleGamesList = useIdleStore(state => state.idleGamesList)
+  const setIdleGamesList = useIdleStore(state => state.setIdleGamesList)
+  const setAppId = useStateStore(state => state.setAppId)
+  const setAppName = useStateStore(state => state.setAppName)
+  const setShowAchievements = useStateStore(state => state.setShowAchievements)
 
-  const idlingGame = idleGamesList.find(game => game.appid === item.appid);
-  const isIdling = idlingGame !== undefined;
+  const idlingGame = idleGamesList.find(game => game.appid === item.appid)
+  const isIdling = idlingGame !== undefined
 
   const handleImageError = (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    (event.target as HTMLImageElement).src = '/fallback.webp';
-  };
+    ;(event.target as HTMLImageElement).src = '/fallback.webp'
+  }
 
   if (isFreeGame) {
     return (
@@ -60,8 +55,8 @@ export const GameCard = memo(function GameCard({
           isAutoIdleList && autoIdleEnabled === false && 'opacity-50',
         )}
       >
-        <div className="overflow-hidden will-change-transform transition-transform duration-150">
-          <div className="aspect-460/215 relative overflow-hidden">
+        <div className='overflow-hidden will-change-transform transition-transform duration-150'>
+          <div className='aspect-460/215 relative overflow-hidden'>
             <Image
               src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${item.appid}/header.jpg`}
               width={460}
@@ -69,21 +64,21 @@ export const GameCard = memo(function GameCard({
               alt={`${item.name} image`}
               priority
               onError={handleImageError}
-              className="w-full h-full object-cover rounded-lg duration-150"
+              className='w-full h-full object-cover rounded-lg duration-150'
             />
             <div
-              className="pointer-events-none absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150"
+              className='pointer-events-none absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150'
               style={{ boxShadow: 'inset 0 0 0 2px hsl(var(--heroui-dynamic))' }}
             />
           </div>
-          <div className="flex justify-between items-center pt-3">
-            <h3 className="text-xs font-bold text-altwhite group-hover:text-content truncate duration-150">
+          <div className='flex justify-between items-center pt-3'>
+            <h3 className='text-xs font-bold text-altwhite group-hover:text-content truncate duration-150'>
               {item.name}
             </h3>
 
-            <div className="flex gap-1">
+            <div className='flex gap-1'>
               <ExtLink href={`https://store.steampowered.com/app/${item.appid}`}>
-                <div className="bg-transparent hover:bg-item-hover text-altwhite hover:text-content p-2 rounded-full transition-colors duration-150">
+                <div className='bg-transparent hover:bg-item-hover text-altwhite hover:text-content p-2 rounded-full transition-colors duration-150'>
                   <FaSteam size={18} />
                 </div>
               </ExtLink>
@@ -91,13 +86,13 @@ export const GameCard = memo(function GameCard({
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   return (
-    <div className="relative group select-none">
-      <div className="overflow-hidden will-change-transform transition-transform duration-150">
-        <div className="aspect-460/215 relative overflow-hidden">
+    <div className='relative group select-none'>
+      <div className='overflow-hidden will-change-transform transition-transform duration-150'>
+        <div className='aspect-460/215 relative overflow-hidden'>
           {isIdling && <IdleTimer startTime={idlingGame.startTime ?? 0} />}
           <Image
             src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${item.appid}/header.jpg`}
@@ -106,24 +101,24 @@ export const GameCard = memo(function GameCard({
             alt={`${item.name} image`}
             priority
             onError={handleImageError}
-            className="w-full h-full object-cover rounded-lg duration-150"
+            className='w-full h-full object-cover rounded-lg duration-150'
           />
           <div
-            className="pointer-events-none absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150"
+            className='pointer-events-none absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-150'
             style={{ boxShadow: 'inset 0 0 0 2px hsl(var(--heroui-dynamic))' }}
           />
         </div>
-        <div className="flex justify-between items-center pt-3">
-          <h3 className="text-xs font-bold text-altwhite group-hover:text-content truncate duration-150">
+        <div className='flex justify-between items-center pt-3'>
+          <h3 className='text-xs font-bold text-altwhite group-hover:text-content truncate duration-150'>
             {item.name}
           </h3>
 
-          <div className="flex gap-1">
+          <div className='flex gap-1'>
             <Button
               isIconOnly
-              size="sm"
-              radius="full"
-              className="bg-transparent hover:bg-item-hover text-altwhite hover:text-content transition-colors duration-150"
+              size='sm'
+              radius='full'
+              className='bg-transparent hover:bg-item-hover text-altwhite hover:text-content transition-colors duration-150'
               onPress={() =>
                 isIdling ? handleStopIdle(item, idleGamesList, setIdleGamesList) : handleIdle(item)
               }
@@ -134,9 +129,9 @@ export const GameCard = memo(function GameCard({
             {!isAutoIdleList && (
               <Button
                 isIconOnly
-                size="sm"
-                radius="full"
-                className="bg-transparent hover:bg-item-hover text-altwhite hover:text-content transition-colors duration-150"
+                size='sm'
+                radius='full'
+                className='bg-transparent hover:bg-item-hover text-altwhite hover:text-content transition-colors duration-150'
                 onPress={() => viewAchievments(item, setAppId, setAppName, setShowAchievements)}
               >
                 <TbAwardFilled size={18} />
@@ -146,11 +141,11 @@ export const GameCard = memo(function GameCard({
             {isAchievementUnlocker && (
               <Button
                 isIconOnly
-                size="sm"
-                radius="full"
-                className="bg-transparent hover:bg-item-hover text-altwhite hover:text-content transition-colors duration-150"
+                size='sm'
+                radius='full'
+                className='bg-transparent hover:bg-item-hover text-altwhite hover:text-content transition-colors duration-150'
                 onPress={() => {
-                  if (onOpen) onOpen();
+                  if (onOpen) onOpen()
                 }}
               >
                 <TbArrowsSort size={18} />
@@ -158,9 +153,9 @@ export const GameCard = memo(function GameCard({
             )}
 
             {isAutoIdleList && (
-              <div className="flex items-center" onPointerDown={e => e.stopPropagation()}>
+              <div className='flex items-center' onPointerDown={e => e.stopPropagation()}>
                 <Checkbox
-                  size="sm"
+                  size='sm'
                   isSelected={autoIdleEnabled !== false}
                   classNames={{
                     wrapper: cn('group-data-[selected=true]:!bg-dynamic'),
@@ -174,17 +169,17 @@ export const GameCard = memo(function GameCard({
       </div>
 
       {!isCustomList ? (
-        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+        <div className='absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-150'>
           <CardMenu item={item} />
         </div>
       ) : (
-        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+        <div className='absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-150'>
           <div
-            className="bg-danger hover:opacity-90 rounded-full cursor-pointer p-1.5 duration-150"
+            className='bg-danger hover:opacity-90 rounded-full cursor-pointer p-1.5 duration-150'
             onPointerDown={e => e.stopPropagation()}
             onClick={() => {
               if (handleRemoveGame) {
-                handleRemoveGame(item);
+                handleRemoveGame(item)
               }
             }}
           >
@@ -193,5 +188,5 @@ export const GameCard = memo(function GameCard({
         </div>
       )}
     </div>
-  );
-});
+  )
+})

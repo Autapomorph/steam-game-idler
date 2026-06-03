@@ -5,6 +5,6 @@ declare module 'i18next' {
     resources: typeof resources['en-US'];
     ns: typeof ns;
     defaultNS: typeof defaultNS;
-    enableSelector: true,
+    // enableSelector: true,
   }
 }

@@ -1,44 +1,44 @@
-import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { RiSearchLine } from 'react-icons/ri';
-import { TbLayoutSidebar, TbLayoutSidebarFilled, TbX } from 'react-icons/tb';
-import { VscChromeClose, VscChromeMaximize, VscChromeMinimize } from 'react-icons/vsc';
-import { cn } from '@heroui/react';
+import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { RiSearchLine } from 'react-icons/ri'
+import { TbLayoutSidebar, TbLayoutSidebarFilled, TbX } from 'react-icons/tb'
+import { VscChromeClose, VscChromeMaximize, VscChromeMinimize } from 'react-icons/vsc'
+import { cn } from '@heroui/react'
 
-import { Menu, Notifications, SearchModal, UpdateButton } from '@/shared/components';
-import { useTitlebar } from '@/shared/hooks';
+import { Menu, Notifications, SearchModal, UpdateButton } from '@/shared/components'
+import { useTitlebar } from '@/shared/hooks'
 import {
   useLoaderStore,
   useNavigationStore,
   useSearchStore,
   useStateStore,
   useUpdateStore,
-} from '@/shared/stores';
-import { isPortableCheck } from '@/shared/utils';
+} from '@/shared/stores'
+import { isPortableCheck } from '@/shared/utils'
 
 export const Titlebar = () => {
-  const { t } = useTranslation();
-  const { windowMinimize, windowToggleMaximize, windowClose } = useTitlebar();
-  const loaderVisible = useLoaderStore(state => state.loaderVisible);
-  const updateAvailable = useUpdateStore(state => state.updateAvailable);
-  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed);
-  const transitionDuration = useStateStore(state => state.transitionDuration);
-  const setSidebarCollapsed = useStateStore(state => state.setSidebarCollapsed);
-  const setTransitionDuration = useStateStore(state => state.setTransitionDuration);
-  const showSearchModal = useStateStore(state => state.showSearchModal);
-  const setShowSearchModal = useStateStore(state => state.setShowSearchModal);
-  const showAchievements = useStateStore(state => state.showAchievements);
-  const searchContent = useSearchStore();
-  const activePage = useNavigationStore(state => state.activePage);
+  const { t } = useTranslation()
+  const { windowMinimize, windowToggleMaximize, windowClose } = useTitlebar()
+  const loaderVisible = useLoaderStore(state => state.loaderVisible)
+  const updateAvailable = useUpdateStore(state => state.updateAvailable)
+  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
+  const transitionDuration = useStateStore(state => state.transitionDuration)
+  const setSidebarCollapsed = useStateStore(state => state.setSidebarCollapsed)
+  const setTransitionDuration = useStateStore(state => state.setTransitionDuration)
+  const showSearchModal = useStateStore(state => state.showSearchModal)
+  const setShowSearchModal = useStateStore(state => state.setShowSearchModal)
+  const showAchievements = useStateStore(state => state.showAchievements)
+  const searchContent = useSearchStore()
+  const activePage = useNavigationStore(state => state.activePage)
 
-  const [isPortable, setIsPortable] = useState<boolean | null>(null);
+  const [isPortable, setIsPortable] = useState<boolean | null>(null)
 
   useEffect(() => {
-    (async () => {
-      const portable = await isPortableCheck();
-      setIsPortable(portable);
-    })();
-  }, []);
+    ;(async () => {
+      const portable = await isPortableCheck()
+      setIsPortable(portable)
+    })()
+  }, [])
 
   const hasActiveQuery = !!(
     searchContent.gameQueryValue ||
@@ -46,7 +46,7 @@ export const Titlebar = () => {
     searchContent.achievementQueryValue ||
     searchContent.statisticQueryValue ||
     searchContent.customListQueryValue
-  );
+  )
 
   const currentQueryValue =
     searchContent.gameQueryValue ||
@@ -54,9 +54,9 @@ export const Titlebar = () => {
     searchContent.achievementQueryValue ||
     searchContent.statisticQueryValue ||
     searchContent.customListQueryValue ||
-    '';
+    ''
 
-  const showSearch = !loaderVisible && activePage !== 'setup';
+  const showSearch = !loaderVisible && activePage !== 'setup'
 
   return (
     <>
@@ -71,9 +71,9 @@ export const Titlebar = () => {
         }}
         data-tauri-drag-region
       >
-        <div className="flex items-center h-12 w-full" data-tauri-drag-region>
+        <div className='flex items-center h-12 w-full' data-tauri-drag-region>
           {/* Left: sidebar toggle */}
-          <div className="flex items-center h-full shrink-0">
+          <div className='flex items-center h-full shrink-0'>
             {showSearch && (
               <div
                 className={cn(
@@ -87,12 +87,12 @@ export const Titlebar = () => {
                   transitionTimingFunction: 'ease-in-out, ease, ease',
                 }}
                 onClick={() => {
-                  setTransitionDuration('300ms');
-                  setSidebarCollapsed(!sidebarCollapsed);
-                  localStorage.setItem('sidebarCollapsed', String(!sidebarCollapsed));
+                  setTransitionDuration('300ms')
+                  setSidebarCollapsed(!sidebarCollapsed)
+                  localStorage.setItem('sidebarCollapsed', String(!sidebarCollapsed))
                   setTimeout(() => {
-                    setTransitionDuration('0ms');
-                  }, 100);
+                    setTransitionDuration('0ms')
+                  }, 100)
                 }}
               >
                 {sidebarCollapsed ? (
@@ -105,10 +105,10 @@ export const Titlebar = () => {
           </div>
 
           {/* Spacer — fills the middle so left/right sections stay flush */}
-          <div className="flex-1" data-tauri-drag-region />
+          <div className='flex-1' data-tauri-drag-region />
 
           {/* Right: action buttons + window controls */}
-          <div className="flex justify-end items-center h-full shrink-0">
+          <div className='flex justify-end items-center h-full shrink-0'>
             {isPortable === false && updateAvailable && <UpdateButton />}
 
             {showSearch && (
@@ -118,7 +118,7 @@ export const Titlebar = () => {
               </>
             )}
 
-            <div className="flex justify-center items-center">
+            <div className='flex justify-center items-center'>
               <div
                 className={cn(
                   'flex justify-center items-center',
@@ -127,11 +127,11 @@ export const Titlebar = () => {
                 )}
                 onClick={windowMinimize}
               >
-                <VscChromeMinimize fontSize={16} className="text-content" />
+                <VscChromeMinimize fontSize={16} className='text-content' />
               </div>
             </div>
 
-            <div className="flex justify-center items-center">
+            <div className='flex justify-center items-center'>
               <div
                 className={cn(
                   'flex justify-center items-center',
@@ -140,11 +140,11 @@ export const Titlebar = () => {
                 )}
                 onClick={windowToggleMaximize}
               >
-                <VscChromeMaximize fontSize={16} className="text-content" />
+                <VscChromeMaximize fontSize={16} className='text-content' />
               </div>
             </div>
 
-            <div className="flex justify-center items-center">
+            <div className='flex justify-center items-center'>
               <div
                 className={cn(
                   'flex justify-center items-center',
@@ -153,7 +153,7 @@ export const Titlebar = () => {
                 )}
                 onClick={windowClose}
               >
-                <VscChromeClose fontSize={16} className="text-content" />
+                <VscChromeClose fontSize={16} className='text-content' />
               </div>
             </div>
           </div>
@@ -162,7 +162,7 @@ export const Titlebar = () => {
         {/* Search button — absolutely centered on the full viewport so it aligns with the modal */}
         {showSearch && activePage !== 'idling' && activePage !== 'freeGames' && (
           <div
-            className="absolute inset-y-0 flex items-center pointer-events-none ease-in-out"
+            className='absolute inset-y-0 flex items-center pointer-events-none ease-in-out'
             style={{
               left: sidebarCollapsed ? 'calc(50vw - 56px)' : 'calc(50vw - 250px)',
               transform: 'translateX(-50%)',
@@ -180,22 +180,22 @@ export const Titlebar = () => {
               )}
               onClick={() => setShowSearchModal(true)}
             >
-              <span className="flex items-center gap-2 text-sm font-semibold truncate flex-1">
-                <RiSearchLine fontSize={18} className="shrink-0 text-altwhite" />
-                {currentQueryValue || t($ => $['common.search'])}
+              <span className='flex items-center gap-2 text-sm font-semibold truncate flex-1'>
+                <RiSearchLine fontSize={18} className='shrink-0 text-altwhite' />
+                {currentQueryValue || t('common.search')}
               </span>
 
               {hasActiveQuery && (
                 <div
-                  className="shrink-0 flex items-center justify-center rounded-full hover:bg-item-active p-1 duration-150"
+                  className='shrink-0 flex items-center justify-center rounded-full hover:bg-item-active p-1 duration-150'
                   onClick={e => {
-                    e.stopPropagation();
-                    searchContent.setGameQueryValue('');
-                    searchContent.setTradingCardQueryValue('');
-                    searchContent.setAchievementQueryValue('');
-                    searchContent.setStatisticQueryValue('');
-                    searchContent.setCustomListQueryValue('');
-                    searchContent.setIsQuery(false);
+                    e.stopPropagation()
+                    searchContent.setGameQueryValue('')
+                    searchContent.setTradingCardQueryValue('')
+                    searchContent.setAchievementQueryValue('')
+                    searchContent.setStatisticQueryValue('')
+                    searchContent.setCustomListQueryValue('')
+                    searchContent.setIsQuery(false)
                   }}
                 >
                   <TbX fontSize={14} />
@@ -208,5 +208,5 @@ export const Titlebar = () => {
 
       <SearchModal isModalOpen={showSearchModal} onModalClose={() => setShowSearchModal(false)} />
     </>
-  );
-};
+  )
+}

@@ -1,4 +1,4 @@
-import { ChangelogModal, Dashboard, SignIn, SteamWarning, UpdateLoader } from '@/shared/components';
+import { ChangelogModal, Dashboard, SignIn, SteamWarning, UpdateLoader } from '@/shared/components'
 import {
   useAutoIdleGames,
   useCheckForUpdates,
@@ -11,28 +11,28 @@ import {
   useSteamMonitor,
   useThemes,
   useZoomControls,
-} from '@/shared/hooks';
-import { useLoaderStore, useUpdateStore, useUserStore } from '@/shared/stores';
+} from '@/shared/hooks'
+import { useLoaderStore, useUpdateStore, useUserStore } from '@/shared/stores'
 
 const Index = () => {
-  const userSummary = useUserStore(state => state.userSummary);
-  const { loaderVisible } = useLoaderStore();
-  const isUpdating = useUpdateStore(state => state.isUpdating);
+  const userSummary = useUserStore(state => state.userSummary)
+  const { loaderVisible } = useLoaderStore()
+  const isUpdating = useUpdateStore(state => state.isUpdating)
 
-  useInit();
-  useThemes();
-  useInitSettings();
-  useCheckForUpdates();
-  useAutoIdleGames();
-  useFreeGames();
-  useZoomControls();
-  useContextMenu();
-  useKeyboardShortcuts();
-  useSteamMonitor();
-  useDiscordPresence();
+  useInit()
+  useThemes()
+  useInitSettings()
+  useCheckForUpdates()
+  useAutoIdleGames()
+  useFreeGames()
+  useZoomControls()
+  useContextMenu()
+  useKeyboardShortcuts()
+  useSteamMonitor()
+  useDiscordPresence()
 
-  if (loaderVisible) return null;
-  if (isUpdating) return <UpdateLoader />;
+  if (loaderVisible) return null
+  if (isUpdating) return <UpdateLoader />
 
   if (!userSummary) {
     return (
@@ -40,16 +40,16 @@ const Index = () => {
         <SignIn />
         <ChangelogModal />
       </>
-    );
+    )
   }
 
   return (
-    <div className="min-h-calc">
+    <div className='min-h-calc'>
       <Dashboard />
       <SteamWarning />
       <ChangelogModal />
     </div>
-  );
-};
+  )
+}
 
-export default Index;
+export default Index

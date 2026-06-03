@@ -1,48 +1,48 @@
-import { invoke } from '@tauri-apps/api/core';
-import { Menu, MenuItem } from '@tauri-apps/api/menu';
-import { readText, writeText } from '@tauri-apps/plugin-clipboard-manager';
-import { useEffect } from 'react';
+import { invoke } from '@tauri-apps/api/core'
+import { Menu, MenuItem } from '@tauri-apps/api/menu'
+import { readText, writeText } from '@tauri-apps/plugin-clipboard-manager'
+import { useEffect } from 'react'
 
 export function useContextMenu() {
   // Disable context menu and refresh actions
   useEffect(() => {
     const disableContextMenuAndRefresh = async () => {
-      const isDev = await invoke<boolean>('is_dev');
+      const isDev = await invoke<boolean>('is_dev')
       if (!isDev) {
-        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.addEventListener('contextmenu', event => event.preventDefault())
 
         document.addEventListener('keydown', event => {
           if (event.key === 'F5') {
-            event.preventDefault();
+            event.preventDefault()
           }
 
           if (event.ctrlKey && (event.key === 'r' || event.key === 'R')) {
-            event.preventDefault();
+            event.preventDefault()
           }
 
           if (event.ctrlKey && event.shiftKey && (event.key === 'R' || event.key === 'r')) {
-            event.preventDefault();
+            event.preventDefault()
           }
 
           if (event.ctrlKey && event.altKey && event.shiftKey && event.key === 'F5') {
-            globalThis.location.reload();
+            globalThis.location.reload()
           }
-        });
+        })
       }
-    };
-    disableContextMenuAndRefresh();
-  }, []);
+    }
+    disableContextMenuAndRefresh()
+  }, [])
 
   // Create the context menu once on mount
   useEffect(() => {
     const handleGlobalContextMenu = async (e: MouseEvent) => {
-      e.preventDefault();
+      e.preventDefault()
 
       try {
-        const hasSelection = !!window.getSelection()?.toString();
-        const { activeElement } = document;
+        const hasSelection = !!window.getSelection()?.toString()
+        const { activeElement } = document
         const canPaste =
-          activeElement instanceof HTMLInputElement || activeElement instanceof HTMLTextAreaElement;
+          activeElement instanceof HTMLInputElement || activeElement instanceof HTMLTextAreaElement
 
         // Create menu dynamically based on current state
         const menu = await Menu.new({
@@ -53,12 +53,12 @@ export function useContextMenu() {
               enabled: hasSelection,
               action: async () => {
                 try {
-                  const selectedText = window.getSelection()?.toString();
+                  const selectedText = window.getSelection()?.toString()
                   if (selectedText) {
-                    await writeText(selectedText);
+                    await writeText(selectedText)
                   }
                 } catch (error) {
-                  console.error('Copy failed:', error);
+                  console.error('Copy failed:', error)
                 }
               },
             }),
@@ -68,60 +68,60 @@ export function useContextMenu() {
               enabled: canPaste,
               action: async () => {
                 try {
-                  const text = await readText();
+                  const text = await readText()
                   if (text) {
                     // Insert text at cursor pos of input/textarea
-                    const { activeElement } = document;
+                    const { activeElement } = document
                     if (
                       activeElement instanceof HTMLInputElement ||
                       activeElement instanceof HTMLTextAreaElement
                     ) {
-                      const start = activeElement.selectionStart || 0;
-                      const end = activeElement.selectionEnd || 0;
-                      const currentValue = activeElement.value;
+                      const start = activeElement.selectionStart || 0
+                      const end = activeElement.selectionEnd || 0
+                      const currentValue = activeElement.value
                       const newValue =
-                        currentValue.substring(0, start) + text + currentValue.substring(end);
+                        currentValue.substring(0, start) + text + currentValue.substring(end)
 
                       // Ensure setter works properly for React controlled inputs
                       const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
                         window.HTMLInputElement.prototype,
                         'value',
-                      )?.set;
+                      )?.set
 
                       if (nativeInputValueSetter) {
-                        nativeInputValueSetter.call(activeElement, newValue);
+                        nativeInputValueSetter.call(activeElement, newValue)
                       }
 
                       // Set cursor pos
-                      const newPos = start + text.length;
-                      activeElement.selectionStart = newPos;
-                      activeElement.selectionEnd = newPos;
+                      const newPos = start + text.length
+                      activeElement.selectionStart = newPos
+                      activeElement.selectionEnd = newPos
 
                       // Trigger both input chaneg events
-                      const inputEvent = new Event('input', { bubbles: true });
-                      const changeEvent = new Event('change', { bubbles: true });
-                      activeElement.dispatchEvent(inputEvent);
-                      activeElement.dispatchEvent(changeEvent);
+                      const inputEvent = new Event('input', { bubbles: true })
+                      const changeEvent = new Event('change', { bubbles: true })
+                      activeElement.dispatchEvent(inputEvent)
+                      activeElement.dispatchEvent(changeEvent)
                     }
                   }
                 } catch (error) {
-                  console.error('Paste failed:', error);
+                  console.error('Paste failed:', error)
                 }
               },
             }),
           ],
-        });
+        })
 
-        await menu.popup();
+        await menu.popup()
       } catch (error) {
-        console.error('Error showing context menu:', error);
+        console.error('Error showing context menu:', error)
       }
-    };
+    }
 
-    document.addEventListener('contextmenu', handleGlobalContextMenu);
+    document.addEventListener('contextmenu', handleGlobalContextMenu)
 
     return () => {
-      document.removeEventListener('contextmenu', handleGlobalContextMenu);
-    };
-  }, []);
+      document.removeEventListener('contextmenu', handleGlobalContextMenu)
+    }
+  }, [])
 }

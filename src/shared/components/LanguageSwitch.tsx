@@ -1,39 +1,39 @@
-import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { TbLanguage } from 'react-icons/tb';
-import { cn, Select, SelectItem } from '@heroui/react';
+import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { TbLanguage } from 'react-icons/tb'
+import { cn, Select, SelectItem } from '@heroui/react'
 
 export const LanguageSwitch = ({
   className,
   classNames,
 }: {
-  className?: string;
-  classNames?: Record<string, string[]>;
+  className?: string
+  classNames?: Record<string, string[]>
 }) => {
-  const { i18n } = useTranslation();
-  const [mounted, setMounted] = useState(false);
+  const { i18n } = useTranslation()
+  const [mounted, setMounted] = useState(false)
 
   const languages = [
     { key: 'en-US', label: 'English' },
     { key: 'ru-RU', label: 'Русский' },
-  ];
+  ]
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMounted(true);
-  }, [i18n]);
+    setMounted(true)
+  }, [i18n])
 
-  if (!mounted) return null;
+  if (!mounted) return null
 
   const currentLanguage = languages.find(lang => lang.key === i18n.language)
     ? i18n.language
-    : 'en-US';
+    : 'en-US'
 
   return (
     <Select
-      aria-label="language"
+      aria-label='language'
       disallowEmptySelection
-      radius="none"
+      radius='none'
       startContent={<TbLanguage />}
       items={languages}
       className={cn('w-62.5', className)}
@@ -47,8 +47,8 @@ export const LanguageSwitch = ({
       }}
       defaultSelectedKeys={[currentLanguage]}
       onSelectionChange={e => {
-        const selectedLanguage = e.currentKey;
-        i18n.changeLanguage(selectedLanguage);
+        const selectedLanguage = e.currentKey
+        i18n.changeLanguage(selectedLanguage)
       }}
     >
       {language => (
@@ -61,5 +61,5 @@ export const LanguageSwitch = ({
         </SelectItem>
       )}
     </Select>
-  );
-};
+  )
+}

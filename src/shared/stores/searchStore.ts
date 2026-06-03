@@ -1,22 +1,22 @@
-import { create } from 'zustand';
+import { create } from 'zustand'
 
 interface SearchStore {
-  isQuery: boolean;
-  setIsQuery: (value: boolean | ((prev: boolean) => boolean)) => void;
-  gameQueryValue: string;
-  setGameQueryValue: (value: string | ((prev: string) => string)) => void;
-  tradingCardQueryValue: string;
-  setTradingCardQueryValue: (value: string | ((prev: string) => string)) => void;
-  achievementQueryValue: string;
-  setAchievementQueryValue: (value: string | ((prev: string) => string)) => void;
-  statisticQueryValue: string;
-  setStatisticQueryValue: (value: string | ((prev: string) => string)) => void;
-  customListQueryValue: string;
-  setCustomListQueryValue: (value: string | ((prev: string) => string)) => void;
-  recentSearches: string[];
-  addRecentSearch: (value: string) => void;
-  removeRecentSearch: (value: string) => void;
-  clearRecentSearches: () => void;
+  isQuery: boolean
+  setIsQuery: (value: boolean | ((prev: boolean) => boolean)) => void
+  gameQueryValue: string
+  setGameQueryValue: (value: string | ((prev: string) => string)) => void
+  tradingCardQueryValue: string
+  setTradingCardQueryValue: (value: string | ((prev: string) => string)) => void
+  achievementQueryValue: string
+  setAchievementQueryValue: (value: string | ((prev: string) => string)) => void
+  statisticQueryValue: string
+  setStatisticQueryValue: (value: string | ((prev: string) => string)) => void
+  customListQueryValue: string
+  setCustomListQueryValue: (value: string | ((prev: string) => string)) => void
+  recentSearches: string[]
+  addRecentSearch: (value: string) => void
+  removeRecentSearch: (value: string) => void
+  clearRecentSearches: () => void
 }
 
 export const useSearchStore = create<SearchStore>(set => ({
@@ -55,14 +55,14 @@ export const useSearchStore = create<SearchStore>(set => ({
   recentSearches: [],
   addRecentSearch: value =>
     set(state => {
-      const filtered = state.recentSearches.filter(search => search !== value);
-      return { recentSearches: [value, ...filtered].slice(0, 10) };
+      const filtered = state.recentSearches.filter(search => search !== value)
+      return { recentSearches: [value, ...filtered].slice(0, 10) }
     }),
   removeRecentSearch: value =>
     set(state => {
-      const filtered = state.recentSearches.filter(search => search !== value);
-      localStorage.setItem('searchQueries', JSON.stringify(filtered));
-      return { recentSearches: filtered };
+      const filtered = state.recentSearches.filter(search => search !== value)
+      localStorage.setItem('searchQueries', JSON.stringify(filtered))
+      return { recentSearches: filtered }
     }),
   clearRecentSearches: () => set({ recentSearches: [] }),
-}));
+}))

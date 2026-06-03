@@ -1,35 +1,35 @@
-import type { Game } from '@/shared/types';
-import { memo, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { RiSearchLine } from 'react-icons/ri';
-import { TbChevronRight } from 'react-icons/tb';
-import { FixedSizeList as List } from 'react-window';
-import { cn, Divider, Input, NumberInput } from '@heroui/react';
-import Image from 'next/image';
-import { useGameSettings } from '@/features/settings';
-import { useUserStore } from '@/shared/stores';
+import type { Game } from '@/shared/types'
+import { memo, useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { RiSearchLine } from 'react-icons/ri'
+import { TbChevronRight } from 'react-icons/tb'
+import { FixedSizeList as List } from 'react-window'
+import { cn, Divider, Input, NumberInput } from '@heroui/react'
+import Image from 'next/image'
+import { useGameSettings } from '@/features/settings'
+import { useUserStore } from '@/shared/stores'
 
 interface RowData {
-  filteredGamesList: Game[];
-  selectedGame: Game | null;
-  onGameSelect: (game: Game) => void;
+  filteredGamesList: Game[]
+  selectedGame: Game | null
+  onGameSelect: (game: Game | null) => void
 }
 
 interface RowProps {
-  index: number;
-  style: React.CSSProperties;
-  data: RowData;
+  index: number
+  style: React.CSSProperties
+  data: RowData
 }
 
 const Row = memo(({ index, style, data }: RowProps) => {
-  const { filteredGamesList, selectedGame, onGameSelect } = data;
-  const item = filteredGamesList[index];
+  const { filteredGamesList, selectedGame, onGameSelect } = data
+  const item = filteredGamesList[index]
 
   const handleImageError = (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    (event.target as HTMLImageElement).src = '/fallback.webp';
-  };
+    ;(event.target as HTMLImageElement).src = '/fallback.webp'
+  }
 
-  const isSelected = selectedGame?.appid === item.appid;
+  const isSelected = selectedGame?.appid === item.appid
 
   return (
     <div
@@ -40,32 +40,32 @@ const Row = memo(({ index, style, data }: RowProps) => {
         'duration-150 select-none',
         isSelected && 'bg-item-hover border-l-2 border-blue-500',
       )}
-      onClick={() => onGameSelect(item)}
+      onClick={() => onGameSelect(isSelected ? null : item)}
     >
-      <div className="flex items-center gap-3 max-w-[90%]">
+      <div className='flex items-center gap-3 max-w-[90%]'>
         <Image
           src={`https://cdn.cloudflare.steamstatic.com/steam/apps/${item.appid}/header.jpg`}
-          className="aspect-62/29 rounded-sm"
+          className='aspect-62/29 rounded-sm'
           width={62}
           height={29}
           alt={`${item.name} image`}
           priority
           onError={handleImageError}
         />
-        <p className="text-sm truncate mr-8">{item.name}</p>
+        <p className='text-sm truncate mr-8'>{item.name}</p>
       </div>
     </div>
-  );
-});
+  )
+})
 
-Row.displayName = 'Row';
+Row.displayName = 'Row'
 
 export const GameSettings = () => {
-  const { t } = useTranslation();
-  const gamesList = useUserStore(state => state.gamesList);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [windowInnerHeight, setWindowInnerHeight] = useState(window.innerHeight);
-  const [selectedGame, setSelectedGame] = useState<Game | null>(null);
+  const { t } = useTranslation()
+  const gamesList = useUserStore(state => state.gamesList)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [windowInnerHeight, setWindowInnerHeight] = useState(window.innerHeight)
+  const [selectedGame, setSelectedGame] = useState<Game | null>(null)
 
   const {
     globalMaxIdleTime,
@@ -76,47 +76,47 @@ export const GameSettings = () => {
     handleMaxIdleTimeChange,
     handleMaxCardDropsChange,
     handleMaxAchievementUnlocksChange,
-  } = useGameSettings({ appId: selectedGame?.appid });
+  } = useGameSettings({ appId: selectedGame?.appid })
 
   const filteredGamesList = useMemo(() => {
-    if (!searchTerm) return gamesList;
-    return gamesList.filter(game => game.name.toLowerCase().includes(searchTerm.toLowerCase()));
-  }, [gamesList, searchTerm]);
+    if (!searchTerm) return gamesList
+    return gamesList.filter(game => game.name.toLowerCase().includes(searchTerm.toLowerCase()))
+  }, [gamesList, searchTerm])
 
   const itemData = {
     filteredGamesList,
     selectedGame,
     onGameSelect: setSelectedGame,
-  };
+  }
 
   useEffect(() => {
     const handleResize = () => {
-      setWindowInnerHeight(window.innerHeight);
-    };
-    window.addEventListener('resize', handleResize);
-    handleResize();
+      setWindowInnerHeight(window.innerHeight)
+    }
+    window.addEventListener('resize', handleResize)
+    handleResize()
     return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [])
 
   return (
-    <div className="relative flex flex-col gap-4 mt-9 w-4/5">
-      <div className="flex flex-col gap-0 select-none">
-        <p className="flex items-center text-xs text-altwhite font-bold">
-          {t($ => $['settings.title'])}
+    <div className='relative flex flex-col gap-4 mt-9 w-4/5'>
+      <div className='flex flex-col gap-0 select-none'>
+        <p className='flex items-center text-xs text-altwhite font-bold'>
+          {t('settings.title')}
           <span>
             <TbChevronRight size={12} />
           </span>
         </p>
-        <p className="text-3xl font-black">{t($ => $['common.gameSettings'])}</p>
+        <p className='text-3xl font-black'>{t('common.gameSettings')}</p>
       </div>
 
-      <div className="flex flex-col gap-3 mt-4">
+      <div className='flex flex-col gap-3 mt-4'>
         <Input
           isClearable
-          placeholder={t($ => $['common.search'])}
-          startContent={<RiSearchLine size={20} className="text-content/60" />}
+          placeholder={t('common.search')}
+          startContent={<RiSearchLine size={20} className='text-content/60' />}
           classNames={{
             inputWrapper: cn(
               'bg-input data-[hover=true]:!bg-inputhover',
@@ -130,35 +130,34 @@ export const GameSettings = () => {
           onClear={() => setSearchTerm('')}
         />
 
-        <div className="border border-border/70 rounded-lg mb-2 overflow-hidden bg-popover/80">
+        <div className='border border-border/70 rounded-lg mb-2 overflow-hidden bg-popover/80'>
           <List
             height={windowInnerHeight - 610}
             itemCount={filteredGamesList.length}
             itemSize={37}
-            width="100%"
+            width='100%'
             itemData={itemData}
           >
             {Row}
           </List>
         </div>
 
-        <Divider className="bg-border/70 my-4" />
+        <Divider className='bg-border/70 my-4' />
 
-        <div className="flex justify-between items-center">
-          <div className="flex flex-col gap-2 w-1/2">
-            <p className="text-sm text-content font-bold">
-              {t($ => $['gameSettings.globalMaxIdle'])}
-            </p>
-            <p className="text-xs text-altwhite">{t($ => $['gameSettings.globalMaxIdleSub'])}</p>
+        <div className='flex justify-between items-center'>
+          <div className='flex flex-col gap-2 w-1/2'>
+            <p className='text-sm text-content font-bold'>{t('gameSettings.globalMaxIdle')}</p>
+            <p className='text-xs text-altwhite'>{t('gameSettings.globalMaxIdleSub')}</p>
           </div>
           <NumberInput
-            size="sm"
+            size='sm'
             value={globalMaxIdleTime}
+            isDisabled={!!selectedGame}
             step={1}
             minValue={0}
             maxValue={99999}
-            aria-label="max idle time"
-            className="w-22.5"
+            aria-label='max idle time'
+            className='w-22.5'
             classNames={{
               inputWrapper: cn(
                 'bg-input data-[hover=true]:!bg-inputhover border-none',
@@ -167,7 +166,6 @@ export const GameSettings = () => {
                 'group-data-[focus-within=true]:!bg-inputhover',
                 'border group-data-[invalid=true]:border-red-500!',
                 'border group-data-[invalid=true]:bg-red-500/10!',
-                !selectedGame && 'opacity-50',
               ),
               input: ['text-sm !text-content'],
               stepperButton: ['!text-content', 'text-sm'],
@@ -176,21 +174,21 @@ export const GameSettings = () => {
           />
         </div>
 
-        <Divider className="bg-border/70 my-4" />
+        <Divider className='bg-border/70 my-4' />
 
-        <div className="flex justify-between items-center">
-          <div className="flex flex-col gap-2 w-1/2">
-            <p className="text-sm text-content font-bold">{t($ => $['gameSettings.idle'])}</p>
-            <p className="text-xs text-altwhite">{t($ => $['gameSettings.idleSub'])}</p>
+        <div className='flex justify-between items-center'>
+          <div className='flex flex-col gap-2 w-1/2'>
+            <p className='text-sm text-content font-bold'>{t('gameSettings.idle')}</p>
+            <p className='text-xs text-altwhite'>{t('gameSettings.idleSub')}</p>
           </div>
           <NumberInput
-            size="sm"
+            size='sm'
             value={maxIdleTime}
             step={1}
             minValue={0}
             maxValue={99999}
-            aria-label="max idle time"
-            className="w-22.5"
+            aria-label='max idle time'
+            className='w-22.5'
             isDisabled={!selectedGame}
             classNames={{
               inputWrapper: cn(
@@ -209,21 +207,21 @@ export const GameSettings = () => {
           />
         </div>
 
-        <Divider className="bg-border/70 my-4" />
+        <Divider className='bg-border/70 my-4' />
 
-        <div className="flex justify-between items-center">
-          <div className="flex flex-col gap-2 w-1/2">
-            <p className="text-sm text-content font-bold">{t($ => $['gameSettings.drops'])}</p>
-            <p className="text-xs text-altwhite">{t($ => $['gameSettings.dropsSub'])}</p>
+        <div className='flex justify-between items-center'>
+          <div className='flex flex-col gap-2 w-1/2'>
+            <p className='text-sm text-content font-bold'>{t('gameSettings.drops')}</p>
+            <p className='text-xs text-altwhite'>{t('gameSettings.dropsSub')}</p>
           </div>
           <NumberInput
-            size="sm"
+            size='sm'
             value={maxCardDrops}
             step={1}
             minValue={0}
             maxValue={99999}
-            aria-label="max card drops"
-            className="w-22.5"
+            aria-label='max card drops'
+            className='w-22.5'
             isDisabled={!selectedGame}
             classNames={{
               inputWrapper: cn(
@@ -242,23 +240,21 @@ export const GameSettings = () => {
           />
         </div>
 
-        <Divider className="bg-border/70 my-4" />
+        <Divider className='bg-border/70 my-4' />
 
-        <div className="flex justify-between items-center">
-          <div className="flex flex-col gap-2 w-1/2">
-            <p className="text-sm text-content font-bold">
-              {t($ => $['gameSettings.achievements'])}
-            </p>
-            <p className="text-xs text-altwhite">{t($ => $['gameSettings.achievementsSub'])}</p>
+        <div className='flex justify-between items-center'>
+          <div className='flex flex-col gap-2 w-1/2'>
+            <p className='text-sm text-content font-bold'>{t('gameSettings.achievements')}</p>
+            <p className='text-xs text-altwhite'>{t('gameSettings.achievementsSub')}</p>
           </div>
           <NumberInput
-            size="sm"
+            size='sm'
             value={maxAchievementUnlocks}
             step={1}
             minValue={0}
             maxValue={99999}
-            aria-label="max achievement unlocks"
-            className="w-22.5"
+            aria-label='max achievement unlocks'
+            className='w-22.5'
             isDisabled={!selectedGame}
             classNames={{
               inputWrapper: cn(
@@ -278,5 +274,5 @@ export const GameSettings = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

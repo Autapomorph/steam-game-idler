@@ -4,12 +4,12 @@ import type {
   Game,
   InvokeSettings,
   UserSummary,
-} from '@/shared/types';
-import type { DragEndEvent } from '@dnd-kit/core';
-import { invoke } from '@tauri-apps/api/core';
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import { FaMinus, FaPlus } from 'react-icons/fa6';
+} from '@/shared/types'
+import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core'
+import { invoke } from '@tauri-apps/api/core'
+import { memo, useCallback, useEffect, useMemo, useState } from 'react'
+import { Trans, useTranslation } from 'react-i18next'
+import { FaMinus, FaPlus } from 'react-icons/fa6'
 import {
   TbAward,
   TbCards,
@@ -17,55 +17,55 @@ import {
   TbHourglassLow,
   TbSettings,
   TbSortDescending2,
-} from 'react-icons/tb';
-import { FixedSizeList as List } from 'react-window';
-import { DndContext } from '@dnd-kit/core';
-import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import { Button, cn, Select, SelectItem, Tab, Tabs } from '@heroui/react';
-import i18next from 'i18next';
-import Image from 'next/image';
-import { RecommendedCardDropsCarousel } from '@/features/card-farming';
-import { ManualAddModal, useCustomList } from '@/features/custom-lists';
-import { GameCard } from '@/shared/components';
-import { useNavigationStore, useSearchStore, useStateStore, useUserStore } from '@/shared/stores';
+} from 'react-icons/tb'
+import { FixedSizeList as List } from 'react-window'
+import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
+import { arrayMove, SortableContext, useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
+import { Button, cn, Select, SelectItem, Tab, Tabs } from '@heroui/react'
+import i18next from 'i18next'
+import Image from 'next/image'
+import { RecommendedCardDropsCarousel } from '@/features/card-farming'
+import { ManualAddModal, useCustomList } from '@/features/custom-lists'
+import { GameCard } from '@/shared/components'
+import { useNavigationStore, useSearchStore, useStateStore, useUserStore } from '@/shared/stores'
 import {
   getAllGamesWithDrops,
   startAchievementUnlocker,
   startAutoIdleGamesImpl,
   startCardFarming,
-} from '@/shared/utils';
+} from '@/shared/utils'
 
 type CustomListType =
   | 'cardFarmingList'
   | 'achievementUnlockerList'
   | 'autoIdleList'
-  | 'favoritesList';
+  | 'favoritesList'
 
 interface CustomListProps {
-  type: CustomListType;
+  type: CustomListType
 }
 
 interface GameWithDropsData {
-  id: string;
-  name: string;
-  remaining: number;
+  id: string
+  name: string
+  remaining: number
 }
 
 interface ListTypeConfig {
-  title: string;
-  tabTitle: string;
-  description: string;
-  icon: React.ReactNode;
-  startButton: 'startCardFarming' | 'startAchievementUnlocker' | 'startAutoIdleGamesImpl' | null;
-  buttonLabel: string | null;
-  settingsButton?: boolean;
-  settingsButtonLink?: string;
-  switches?: boolean;
+  title: string
+  tabTitle: string
+  description: string
+  icon: React.ReactNode
+  startButton: 'startCardFarming' | 'startAchievementUnlocker' | 'startAutoIdleGamesImpl' | null
+  buttonLabel: string | null
+  settingsButton?: boolean
+  settingsButtonLink?: string
+  switches?: boolean
 }
 
 export const CustomList = ({ type }: CustomListProps) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   const {
     list,
     setList,
@@ -84,45 +84,38 @@ export const CustomList = ({ type }: CustomListProps) => {
     handleBlacklistGame,
     disabledAutoIdleGames,
     handleToggleAutoIdleGame,
-  } = useCustomList(type);
-  const setCustomListQueryValue = useSearchStore(state => state.setCustomListQueryValue);
-  const [gamesWithDrops, setGamesWithDrops] = useState<Game[]>([]);
-  const [isLoadingDrops, setIsLoadingDrops] = useState(false);
-  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed);
-  const transitionDuration = useStateStore(state => state.transitionDuration);
-  const isCardFarming = useStateStore(state => state.isCardFarming);
-  const isAchievementUnlocker = useStateStore(state => state.isAchievementUnlocker);
-  const setShowAchievementOrder = useStateStore(state => state.setShowAchievementOrder);
-  const setAchievementOrderGame = useStateStore(state => state.setAchievementOrderGame);
-  const setActivePage = useNavigationStore(state => state.setActivePage);
-  const setPreviousActivePage = useNavigationStore(state => state.setPreviousActivePage);
-  const setCurrentSettingsTab = useNavigationStore(state => state.setCurrentSettingsTab);
-  const userSummary = useUserStore(state => state.userSummary);
-  const userSettings = useUserStore(state => state.userSettings);
-  const [columnCount, setColumnCount] = useState(5);
-  const [windowInnerHeight, setWindowInnerHeight] = useState(window.innerHeight);
-  const [sortStyle, setSortStyle] = useState('a-z');
+  } = useCustomList(type)
+  const setCustomListQueryValue = useSearchStore(state => state.setCustomListQueryValue)
+  const [gamesWithDrops, setGamesWithDrops] = useState<Game[]>([])
+  const [isLoadingDrops, setIsLoadingDrops] = useState(false)
+  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
+  const transitionDuration = useStateStore(state => state.transitionDuration)
+  const isCardFarming = useStateStore(state => state.isCardFarming)
+  const isAchievementUnlocker = useStateStore(state => state.isAchievementUnlocker)
+  const setShowAchievementOrder = useStateStore(state => state.setShowAchievementOrder)
+  const setAchievementOrderGame = useStateStore(state => state.setAchievementOrderGame)
+  const setActivePage = useNavigationStore(state => state.setActivePage)
+  const setPreviousActivePage = useNavigationStore(state => state.setPreviousActivePage)
+  const setCurrentSettingsTab = useNavigationStore(state => state.setCurrentSettingsTab)
+  const userSummary = useUserStore(state => state.userSummary)
+  const userSettings = useUserStore(state => state.userSettings)
+  const [columnCount, setColumnCount] = useState(5)
+  const [windowInnerHeight, setWindowInnerHeight] = useState(window.innerHeight)
+  const [sortStyle, setSortStyle] = useState('a-z')
+  const [activeId, setActiveId] = useState<number | null>(null)
+  const [rowHeight, setRowHeight] = useState(220)
 
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowInnerHeight(window.innerHeight);
-    };
-    window.addEventListener('resize', handleResize);
-    handleResize();
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }))
 
   const blacklist = useMemo(
     () => userSettings.cardFarming.blacklist || [],
     [userSettings.cardFarming.blacklist],
-  );
+  )
 
   const blacklistedGames = useMemo(
     () => filteredGamesList.filter(g => blacklist.includes(g.appid)),
     [filteredGamesList, blacklist],
-  );
+  )
 
   const filteredList = useMemo(
     () =>
@@ -130,106 +123,123 @@ export const CustomList = ({ type }: CustomListProps) => {
         ? list.filter(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()))
         : list,
     [list, searchTerm],
-  );
+  )
 
   const sortOptions = [
-    { key: 'a-z', label: t($ => $['gamesList.sort.titleAsc']) },
-    { key: 'z-a', label: t($ => $['gamesList.sort.titleDesc']) },
-    { key: '1-0', label: t($ => $['gamesList.sort.playtimeDesc']) },
-    { key: '0-1', label: t($ => $['gamesList.sort.playtimeAsc']) },
-    ...(list.length > 0 ? [{ key: 'list', label: t($ => $['common.list']) }] : []),
-  ];
+    { key: 'a-z', label: t('gamesList.sort.titleAsc') },
+    { key: 'z-a', label: t('gamesList.sort.titleDesc') },
+    { key: '1-0', label: t('gamesList.sort.playtimeDesc') },
+    { key: '0-1', label: t('gamesList.sort.playtimeAsc') },
+    ...(list.length > 0 ? [{ key: 'list', label: t('common.list') }] : []),
+  ]
 
   const sortedFilteredGamesList = useMemo(() => {
-    const sorted = [...filteredGamesList];
+    const sorted = [...filteredGamesList]
+    // eslint-disable-next-line default-case
     switch (sortStyle) {
       case 'a-z':
-        sorted.sort((a, b) => a.name.localeCompare(b.name));
-        break;
+        sorted.sort((a, b) => a.name.localeCompare(b.name))
+        break
       case 'z-a':
-        sorted.sort((a, b) => b.name.localeCompare(a.name));
-        break;
+        sorted.sort((a, b) => b.name.localeCompare(a.name))
+        break
       case '1-0':
-        sorted.sort((a, b) => (b.playtime_forever ?? 0) - (a.playtime_forever ?? 0));
-        break;
+        sorted.sort((a, b) => (b.playtime_forever ?? 0) - (a.playtime_forever ?? 0))
+        break
       case '0-1':
-        sorted.sort((a, b) => (a.playtime_forever ?? 0) - (b.playtime_forever ?? 0));
-        break;
+        sorted.sort((a, b) => (a.playtime_forever ?? 0) - (b.playtime_forever ?? 0))
+        break
       case 'list': {
-        const listIds = new Set(list.map(g => g.appid));
+        const listIds = new Set(list.map(g => g.appid))
         sorted.sort((a, b) => {
-          const aIn = listIds.has(a.appid);
-          const bIn = listIds.has(b.appid);
-          if (aIn !== bIn) return aIn ? -1 : 1;
-          return a.name.localeCompare(b.name);
-        });
-        break;
+          const aIn = listIds.has(a.appid)
+          const bIn = listIds.has(b.appid)
+          if (aIn !== bIn) return aIn ? -1 : 1
+          return a.name.localeCompare(b.name)
+        })
+        break
       }
-      default:
-        break;
     }
-    return sorted;
-  }, [filteredGamesList, sortStyle, list]);
+    return sorted
+  }, [filteredGamesList, sortStyle, list])
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (list.length === 0 && sortStyle === 'list') setSortStyle('a-z');
-  }, [list.length, sortStyle]);
+    if (list.length === 0 && sortStyle === 'list') setSortStyle('a-z')
+  }, [list.length, sortStyle])
+
+  const rows = useMemo(() => {
+    const result: Game[][] = []
+    for (let i = 0; i < list.length; i += columnCount) {
+      result.push(list.slice(i, i + columnCount))
+    }
+    return result
+  }, [list, columnCount])
+
+  const activeItem = useMemo(
+    () => (activeId !== null ? (list.find(item => item.appid === activeId) ?? null) : null),
+    [activeId, list],
+  )
 
   useEffect(() => {
-    return () => setCustomListQueryValue('');
-  }, [setCustomListQueryValue]);
+    return () => setCustomListQueryValue('')
+  }, [setCustomListQueryValue])
 
   const handleResize = useCallback(() => {
-    if (window.innerWidth >= 3200) {
-      setColumnCount(12);
-    } else if (window.innerWidth >= 2300) {
-      setColumnCount(10);
-    } else if (window.innerWidth >= 2000) {
-      setColumnCount(8);
-    } else if (window.innerWidth >= 1500) {
-      setColumnCount(7);
-    } else {
-      setColumnCount(5);
-    }
-  }, []);
+    let cols = 5
+    if (window.innerWidth >= 3200) cols = 12
+    else if (window.innerWidth >= 2300) cols = 10
+    else if (window.innerWidth >= 2000) cols = 8
+    else if (window.innerWidth >= 1500) cols = 7
+    setColumnCount(cols)
+    setWindowInnerHeight(window.innerHeight)
+    const sidebarWidth = sidebarCollapsed ? 56 : 250
+    const availableWidth = window.innerWidth - sidebarWidth - 48
+    const colWidth = (availableWidth - (cols - 1) * 20) / cols
+    setRowHeight(Math.ceil(colWidth * (215 / 460) + 70))
+  }, [sidebarCollapsed])
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [handleResize]);
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [handleResize])
+
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveId(event.active.id as number)
+  }
 
   const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
+    setActiveId(null)
+    const { active, over } = event
     if (over && active.id !== over.id) {
       setList(items => {
-        const oldIndex = items.findIndex(item => item.appid === active.id);
-        const newIndex = items.findIndex(item => item.appid === over.id);
-        const newList = arrayMove(items, oldIndex, newIndex);
-        handleUpdateListOrder(newList);
-        return newList;
-      });
+        const oldIndex = items.findIndex(item => item.appid === active.id)
+        const newIndex = items.findIndex(item => item.appid === over.id)
+        const newList = arrayMove(items, oldIndex, newIndex)
+        handleUpdateListOrder(newList)
+        return newList
+      })
     }
-  };
+  }
 
   useEffect(() => {
     const getGamesWithDrops = async () => {
       if (type === 'cardFarmingList' && userSettings?.general?.showCardDropsCarousel) {
-        const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary;
+        const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
 
         const cachedUserSettings = await invoke<InvokeSettings>('get_user_settings', {
           steamId: userSummary?.steamId,
-        });
+        })
 
-        setIsLoadingDrops(true);
+        setIsLoadingDrops(true)
 
-        const { credentials } = cachedUserSettings.settings.cardFarming;
+        const { credentials } = cachedUserSettings.settings.cardFarming
 
         if (!credentials?.sid || !credentials?.sls) {
-          setIsLoadingDrops(false);
-          return;
+          setIsLoadingDrops(false)
+          return
         }
 
         const gamesWithDropsData = (await getAllGamesWithDrops(
@@ -237,7 +247,7 @@ export const CustomList = ({ type }: CustomListProps) => {
           credentials.sid,
           credentials.sls,
           credentials?.sma,
-        )) as unknown as GameWithDropsData[];
+        )) as unknown as GameWithDropsData[]
 
         const parsedGamesData: Game[] = gamesWithDropsData.map((game: GameWithDropsData) => ({
           appid: Number.parseInt(game.id, 10),
@@ -246,78 +256,78 @@ export const CustomList = ({ type }: CustomListProps) => {
           img_icon_url: '',
           has_community_visible_stats: false,
           remaining: game.remaining,
-        }));
+        }))
 
         const shuffledAndLimitedGames = [...parsedGamesData]
           .sort(() => Math.random() - 0.5)
-          .slice(0, 10);
+          .slice(0, 10)
 
-        setGamesWithDrops(shuffledAndLimitedGames);
-        setIsLoadingDrops(false);
+        setGamesWithDrops(shuffledAndLimitedGames)
+        setIsLoadingDrops(false)
       }
-    };
-    getGamesWithDrops();
-  }, [type, userSettings?.general?.showCardDropsCarousel]);
+    }
+    getGamesWithDrops()
+  }, [type, userSettings?.general?.showCardDropsCarousel])
 
   const listTypes: Record<CustomListType, ListTypeConfig> = {
     cardFarmingList: {
-      title: t($ => $['customLists.cardFarming.title']),
-      tabTitle: t($ => $['customLists.cardFarming.title.tab']),
-      description: t($ => $['customLists.cardFarming.subtitle']),
+      title: t('customLists.cardFarming.title'),
+      tabTitle: t('customLists.cardFarming.title.tab'),
+      description: t('customLists.cardFarming.subtitle'),
       icon: <TbCards fontSize={20} />,
       startButton: 'startCardFarming',
-      buttonLabel: t($ => $['customLists.cardFarming.buttonLabel']),
+      buttonLabel: t('customLists.cardFarming.buttonLabel'),
       settingsButton: true,
       settingsButtonLink: 'card-farming',
       switches: true,
     },
     achievementUnlockerList: {
-      title: t($ => $['customLists.achievementUnlocker.title']),
-      tabTitle: t($ => $['customLists.achievementUnlocker.title.tab']),
-      description: t($ => $['customLists.achievementUnlocker.subtitle']),
+      title: t('customLists.achievementUnlocker.title'),
+      tabTitle: t('customLists.achievementUnlocker.title.tab'),
+      description: t('customLists.achievementUnlocker.subtitle'),
       icon: <TbAward fontSize={20} />,
       startButton: 'startAchievementUnlocker',
-      buttonLabel: t($ => $['customLists.achievementUnlocker.buttonLabel']),
+      buttonLabel: t('customLists.achievementUnlocker.buttonLabel'),
       settingsButton: true,
       settingsButtonLink: 'achievement-unlocker',
     },
     autoIdleList: {
-      title: t($ => $['customLists.autoIdle.title']),
-      tabTitle: t($ => $['customLists.autoIdle.title.tab']),
-      description: t($ => $['customLists.autoIdle.subtitle']),
+      title: t('customLists.autoIdle.title'),
+      tabTitle: t('customLists.autoIdle.title.tab'),
+      description: t('customLists.autoIdle.subtitle'),
       icon: <TbHourglassLow fontSize={20} />,
       startButton: 'startAutoIdleGamesImpl',
-      buttonLabel: t($ => $['customLists.autoIdle.buttonLabel']),
+      buttonLabel: t('customLists.autoIdle.buttonLabel'),
     },
     favoritesList: {
-      title: t($ => $['customLists.favorites.title']),
-      tabTitle: t($ => $['customLists.favorites.title.tab']),
-      description: t($ => $['customLists.favorites.subtitle']),
+      title: t('customLists.favorites.title'),
+      tabTitle: t('customLists.favorites.title.tab'),
+      description: t('customLists.favorites.subtitle'),
       icon: <TbHeart fontSize={20} />,
       startButton: null,
       buttonLabel: null,
     },
-  };
+  }
 
-  const listType = listTypes[type];
+  const listType = listTypes[type]
 
   if (!listType) {
-    return <p>{t($ => $['customLists.invalid'])}</p>;
+    return <p>{t('customLists.invalid')}</p>
   }
 
   const handleAddGameFromCarousel = (game: Game) => {
-    handleAddGame(game);
-  };
+    handleAddGame(game)
+  }
 
   const handleGameClick = (game: Game) => {
-    setAchievementOrderGame(game);
-    setShowAchievementOrder(true);
-  };
+    setAchievementOrderGame(game)
+    setShowAchievementOrder(true)
+  }
 
   const carouselVisible =
     type === 'cardFarmingList' &&
     !!userSettings?.general?.showCardDropsCarousel &&
-    (isLoadingDrops || gamesWithDrops.length > 0);
+    (isLoadingDrops || gamesWithDrops.length > 0)
 
   return (
     <div
@@ -331,13 +341,13 @@ export const CustomList = ({ type }: CustomListProps) => {
       }}
     >
       <div className={cn('w-[calc(100vw-227px)] z-50 pl-6 pt-2')}>
-        <div className="flex justify-between items-center pb-1.5">
-          <div className="flex items-center gap-1 select-none">
-            <div className="flex flex-col justify-center">
-              <p className="text-3xl font-black">{listType.title}</p>
-              <p className="text-xs text-altwhite my-2">{listType.description}</p>
+        <div className='flex justify-between items-center pb-1.5'>
+          <div className='flex items-center gap-1 select-none'>
+            <div className='flex flex-col justify-center'>
+              <p className='text-3xl font-black'>{listType.title}</p>
+              <p className='text-xs text-altwhite my-2'>{listType.description}</p>
 
-              <div className="flex items-center gap-2 mt-1">
+              <div className='flex items-center gap-2 mt-1'>
                 {listType.startButton && (
                   <Button
                     className={cn(
@@ -349,21 +359,21 @@ export const CustomList = ({ type }: CustomListProps) => {
                     style={{
                       backgroundImage: 'var(--gradient-btn)',
                     }}
-                    radius="full"
+                    radius='full'
                     startContent={listType.icon}
                     onPress={
                       listType.startButton === 'startCardFarming'
                         ? () => {
-                            startCardFarming();
+                            startCardFarming()
                           }
                         : listType.startButton === 'startAchievementUnlocker'
                           ? () => {
-                              startAchievementUnlocker();
+                              startAchievementUnlocker()
                             }
                           : listType.startButton === 'startAutoIdleGamesImpl'
                             ? () => {
                                 if (userSummary?.steamId)
-                                  startAutoIdleGamesImpl(userSummary.steamId, true);
+                                  startAutoIdleGamesImpl(userSummary.steamId, true)
                               }
                             : undefined
                     }
@@ -377,30 +387,28 @@ export const CustomList = ({ type }: CustomListProps) => {
                 {listType.settingsButton && listType.settingsButtonLink && (
                   <Button
                     isIconOnly
-                    radius="full"
-                    className="bg-btn-secondary text-btn-text font-bold"
+                    radius='full'
+                    className='bg-btn-secondary text-btn-text font-bold'
                     startContent={<TbSettings size={20} />}
                     isDisabled={isCardFarming || isAchievementUnlocker}
                     onPress={() => {
                       setPreviousActivePage(
                         `customlists/${listType.settingsButtonLink}` as ActivePageType,
-                      );
-                      setActivePage('settings');
+                      )
+                      setActivePage('settings')
                       if (listType.settingsButtonLink) {
-                        setCurrentSettingsTab(
-                          listType.settingsButtonLink as CurrentSettingsTabType,
-                        );
+                        setCurrentSettingsTab(listType.settingsButtonLink as CurrentSettingsTabType)
                       }
                     }}
                   />
                 )}
 
                 <Tabs
-                  size="lg"
-                  aria-label="Custom list tabs"
-                  color="default"
-                  variant="solid"
-                  radius="full"
+                  size='lg'
+                  aria-label='Custom list tabs'
+                  color='default'
+                  variant='solid'
+                  radius='full'
                   selectedKey={activeTab}
                   onSelectionChange={key => setActiveTab(key as 'all' | 'list' | 'blacklist')}
                   classNames={{
@@ -414,21 +422,21 @@ export const CustomList = ({ type }: CustomListProps) => {
                       'text-sm group-data-[selected=true]:text-content text-altwhite font-bold',
                   }}
                 >
-                  <Tab key="all" title={t($ => $['gamesList.allGames'])} />
-                  <Tab key="list" title={listType.tabTitle} />
+                  <Tab key='all' title={t('gamesList.allGames')} />
+                  <Tab key='list' title={listType.tabTitle} />
                   {type === 'cardFarmingList' && (
-                    <Tab key="blacklist" title={t($ => $['customLists.blacklist.title'])} />
+                    <Tab key='blacklist' title={t('customLists.blacklist.title')} />
                   )}
                 </Tabs>
 
                 {activeTab === 'all' && (
                   <Select
-                    aria-label="sort"
+                    aria-label='sort'
                     disallowEmptySelection
-                    radius="full"
+                    radius='full'
                     startContent={<TbSortDescending2 fontSize={26} />}
                     items={sortOptions}
-                    className="w-57.5 h-11"
+                    className='w-57.5 h-11'
                     classNames={{
                       value: ['text-sm !text-content'],
                       trigger: cn(
@@ -439,7 +447,7 @@ export const CustomList = ({ type }: CustomListProps) => {
                     }}
                     defaultSelectedKeys={['a-z']}
                     onSelectionChange={e => {
-                      if (e.currentKey) setSortStyle(e.currentKey);
+                      if (e.currentKey) setSortStyle(e.currentKey)
                     }}
                   >
                     {item => (
@@ -460,19 +468,19 @@ export const CustomList = ({ type }: CustomListProps) => {
                   <div>
                     {searchTerm === '' ? (
                       <Button
-                        className="bg-btn-secondary text-btn-text font-bold"
-                        radius="full"
+                        className='bg-btn-secondary text-btn-text font-bold'
+                        radius='full'
                         isDisabled={
                           filteredGamesList.length === 0 || list.length === filteredGamesList.length
                         }
                         onPress={() => handleAddAllGames(filteredGamesList)}
                       >
-                        {t($ => $['customLists.addAll'])}
+                        {t('customLists.addAll')}
                       </Button>
                     ) : (
                       <Button
-                        className="bg-btn-secondary text-btn-text font-bold"
-                        radius="full"
+                        className='bg-btn-secondary text-btn-text font-bold'
+                        radius='full'
                         isDisabled={
                           filteredGamesList.length === 0 ||
                           filteredGamesList.every(game =>
@@ -481,7 +489,7 @@ export const CustomList = ({ type }: CustomListProps) => {
                         }
                         onPress={() => handleAddAllResults(filteredGamesList)}
                       >
-                        {t($ => $['customLists.addAllResults'])}
+                        {t('customLists.addAllResults')}
                       </Button>
                     )}
                   </div>
@@ -490,12 +498,12 @@ export const CustomList = ({ type }: CustomListProps) => {
                 {((activeTab === 'list' && list.length > 0) ||
                   (activeTab === 'blacklist' && blacklist.length > 0)) && (
                   <Button
-                    color="danger"
-                    radius="full"
-                    className="font-semibold"
+                    color='danger'
+                    radius='full'
+                    className='font-semibold'
                     onPress={activeTab === 'blacklist' ? handleClearBlacklist : handleClearList}
                   >
-                    {t($ => $['common.clear'])}
+                    {t('common.clear')}
                   </Button>
                 )}
               </div>
@@ -505,12 +513,12 @@ export const CustomList = ({ type }: CustomListProps) => {
       </div>
 
       {activeTab === 'all' && (
-        <div className="mt-4">
+        <div className='mt-4'>
           <List
             height={windowInnerHeight - 194}
             itemCount={filteredGamesList.length}
             itemSize={56}
-            width="100%"
+            width='100%'
             itemData={{
               filteredGamesList: sortedFilteredGamesList,
               list,
@@ -527,7 +535,7 @@ export const CustomList = ({ type }: CustomListProps) => {
       )}
 
       {activeTab === 'list' && (
-        <div className="mt-4">
+        <div className='mt-4'>
           {carouselVisible && (
             <RecommendedCardDropsCarousel
               gamesWithDrops={type === 'cardFarmingList' ? gamesWithDrops : []}
@@ -538,14 +546,14 @@ export const CustomList = ({ type }: CustomListProps) => {
 
           {!isLoading && list.length === 0 ? (
             <div
-              className="flex flex-col justify-center items-center gap-2"
+              className='flex flex-col justify-center items-center gap-2'
               style={{ height: windowInnerHeight - 269 - (carouselVisible ? 266 : 0) }}
             >
-              <p className="text-sm text-altwhite px-6">
+              <p className='text-sm text-altwhite px-6'>
                 <Trans
-                  i18nKey={$ => $['customLists.emptyList']}
+                  i18nKey='customLists.emptyList'
                   values={{ title: listType.title }}
-                  components={{ 1: <span className="font-black" /> }}
+                  components={{ 1: <span className='font-black' /> }}
                 />
               </p>
             </div>
@@ -576,30 +584,49 @@ export const CustomList = ({ type }: CustomListProps) => {
                   ))}
                 </div>
               ) : (
-                <DndContext onDragEnd={handleDragEnd}>
+                <DndContext
+                  sensors={sensors}
+                  onDragStart={handleDragStart}
+                  onDragEnd={handleDragEnd}
+                >
                   <SortableContext items={list.map(item => item.appid)}>
-                    <div
-                      className={cn(
-                        'grid gap-x-5 gap-y-4 px-6',
-                        columnCount === 7 ? 'grid-cols-7' : 'grid-cols-5',
-                        columnCount === 8 ? 'grid-cols-8' : '',
-                        columnCount === 10 ? 'grid-cols-10' : '',
-                        columnCount === 12 ? 'grid-cols-12' : '',
-                      )}
+                    <List
+                      height={windowInnerHeight - 209 - (carouselVisible ? 266 : 0)}
+                      itemCount={rows.length}
+                      itemSize={rowHeight}
+                      width='100%'
+                      itemData={{
+                        rows,
+                        type,
+                        activeId,
+                        disabledAutoIdleGames,
+                        handleGameClick,
+                        handleRemoveGame,
+                        handleToggleAutoIdleGame,
+                      }}
                     >
-                      {list.map(item => (
-                        <SortableGameCard
-                          key={item.appid}
-                          item={item}
-                          type={type}
-                          onOpen={() => handleGameClick(item)}
-                          handleRemoveGame={() => handleRemoveGame(item)}
-                          disabledAutoIdleGames={disabledAutoIdleGames}
-                          handleToggleAutoIdleGame={handleToggleAutoIdleGame}
-                        />
-                      ))}
-                    </div>
+                      {SortableRow}
+                    </List>
                   </SortableContext>
+                  <DragOverlay dropAnimation={null}>
+                    {activeItem ? (
+                      <div
+                        style={{
+                          width: `calc((100vw - ${sidebarCollapsed ? 56 : 250}px - 48px - ${(columnCount - 1) * 20}px) / ${columnCount})`,
+                        }}
+                      >
+                        <GameCard
+                          item={activeItem}
+                          isCustomList
+                          isAchievementUnlocker={type === 'achievementUnlockerList'}
+                          isAutoIdleList={type === 'autoIdleList'}
+                          autoIdleEnabled={!disabledAutoIdleGames.has(activeItem.appid)}
+                          onOpen={() => handleGameClick(activeItem)}
+                          handleRemoveGame={() => handleRemoveGame(activeItem)}
+                        />
+                      </div>
+                    ) : null}
+                  </DragOverlay>
                 </DndContext>
               )}
             </div>
@@ -608,14 +635,14 @@ export const CustomList = ({ type }: CustomListProps) => {
       )}
 
       {activeTab === 'blacklist' && type === 'cardFarmingList' && (
-        <div className="mt-4">
+        <div className='mt-4'>
           {blacklistedGames.length === 0 ? (
-            <div className="flex flex-col justify-center items-center gap-2 h-[calc(100vh-262px)]">
-              <p className="text-sm text-altwhite px-6">
+            <div className='flex flex-col justify-center items-center gap-2 h-[calc(100vh-262px)]'>
+              <p className='text-sm text-altwhite px-6'>
                 <Trans
-                  i18nKey={$ => $['customLists.emptyBlacklist']}
+                  i18nKey='customLists.emptyBlacklist'
                   values={{ title: listType.title }}
-                  components={{ 1: <span className="font-black" /> }}
+                  components={{ 1: <span className='font-black' /> }}
                 />
               </p>
             </div>
@@ -624,7 +651,7 @@ export const CustomList = ({ type }: CustomListProps) => {
               height={windowInnerHeight - 194}
               itemCount={blacklistedGames.length}
               itemSize={56}
-              width="100%"
+              width='100%'
               itemData={{
                 filteredGamesList: blacklistedGames,
                 list,
@@ -641,23 +668,23 @@ export const CustomList = ({ type }: CustomListProps) => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
 interface RowData {
-  filteredGamesList: Game[];
-  list: Game[];
-  handleAddGame: (game: Game) => void;
-  handleRemoveGame: (game: Game) => void;
-  type?: string;
-  handleBlacklistGame?: (game: Game) => void;
-  blacklist: number[];
+  filteredGamesList: Game[]
+  list: Game[]
+  handleAddGame: (game: Game) => void
+  handleRemoveGame: (game: Game) => void
+  type?: string
+  handleBlacklistGame?: (game: Game) => void
+  blacklist: number[]
 }
 
 interface RowProps {
-  index: number;
-  style: React.CSSProperties;
-  data: RowData;
+  index: number
+  style: React.CSSProperties
+  data: RowData
 }
 
 const Row = memo(({ index, style, data }: RowProps) => {
@@ -669,14 +696,14 @@ const Row = memo(({ index, style, data }: RowProps) => {
     type,
     handleBlacklistGame,
     blacklist,
-  } = data;
-  const item = filteredGamesList[index];
-  const isInList = list.some(g => g.appid === item.appid);
-  const isBlacklisted = blacklist.includes(item.appid);
+  } = data
+  const item = filteredGamesList[index]
+  const isInList = list.some(g => g.appid === item.appid)
+  const isBlacklisted = blacklist.includes(item.appid)
 
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    (e.target as HTMLImageElement).src = '/fallback.webp';
-  };
+    ;(e.target as HTMLImageElement).src = '/fallback.webp'
+  }
 
   return (
     <div
@@ -703,15 +730,15 @@ const Row = memo(({ index, style, data }: RowProps) => {
         height={43}
         alt={`${item.name} image`}
         priority
-        className="rounded shrink-0"
+        className='rounded shrink-0'
         onError={handleImageError}
       />
-      <p className="text-sm font-semibold flex-1 truncate">{item.name}</p>
-      <div className="flex items-center gap-2 shrink-0" onClick={e => e.stopPropagation()}>
+      <p className='text-sm font-semibold flex-1 truncate'>{item.name}</p>
+      <div className='flex items-center gap-2 shrink-0' onClick={e => e.stopPropagation()}>
         {type === 'cardFarmingList' && handleBlacklistGame && (
           <Button
-            size="sm"
-            radius="full"
+            size='sm'
+            radius='full'
             isDisabled={isInList}
             className={cn(
               'font-semibold min-w-25',
@@ -722,14 +749,14 @@ const Row = memo(({ index, style, data }: RowProps) => {
             onPress={() => handleBlacklistGame(item)}
           >
             {isBlacklisted
-              ? i18next.t($ => $['customLists.blacklisted'])
-              : i18next.t($ => $['customLists.blacklist'])}
+              ? i18next.t('customLists.blacklisted')
+              : i18next.t('customLists.blacklist')}
           </Button>
         )}
         <Button
-          size="sm"
+          size='sm'
           isIconOnly
-          radius="full"
+          radius='full'
           isDisabled={isBlacklisted && !isInList}
           color={isInList ? 'danger' : 'default'}
           className={cn(!isInList && 'bg-item-hover text-content')}
@@ -739,23 +766,25 @@ const Row = memo(({ index, style, data }: RowProps) => {
         </Button>
       </div>
     </div>
-  );
-});
+  )
+})
 
-Row.displayName = 'Row';
+Row.displayName = 'Row'
 
 interface SortableGameCardProps {
-  item: Game;
-  type: CustomListType;
-  onOpen: () => void;
-  handleRemoveGame: (game: Game) => Promise<void>;
-  disabledAutoIdleGames?: Set<number>;
-  handleToggleAutoIdleGame?: (appid: number) => void;
+  item: Game
+  type: CustomListType
+  isActive: boolean
+  onOpen: () => void
+  handleRemoveGame: (game: Game) => Promise<void>
+  disabledAutoIdleGames?: Set<number>
+  handleToggleAutoIdleGame?: (appid: number) => void
 }
 
-function SortableGameCard({
+const SortableGameCard = memo(function SortableGameCard({
   item,
   type,
+  isActive,
   onOpen,
   handleRemoveGame,
   disabledAutoIdleGames,
@@ -763,14 +792,20 @@ function SortableGameCard({
 }: SortableGameCardProps) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: item.appid,
-  });
+  })
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-  };
+  }
 
   return (
-    <div className="cursor-grab" ref={setNodeRef} style={style} {...attributes} {...listeners}>
+    <div
+      className={cn('cursor-grab', isActive && 'opacity-0')}
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+    >
       <GameCard
         item={item}
         isCustomList
@@ -782,5 +817,55 @@ function SortableGameCard({
         handleRemoveGame={() => handleRemoveGame(item)}
       />
     </div>
-  );
+  )
+})
+
+interface SortableRowData {
+  rows: Game[][]
+  type: CustomListType
+  activeId: number | null
+  disabledAutoIdleGames: Set<number>
+  handleGameClick: (game: Game) => void
+  handleRemoveGame: (game: Game) => Promise<void>
+  handleToggleAutoIdleGame: (appid: number) => void
 }
+
+interface SortableRowProps {
+  index: number
+  style: React.CSSProperties
+  data: SortableRowData
+}
+
+const SortableRow = memo(({ index, style, data }: SortableRowProps) => {
+  const {
+    rows,
+    type,
+    activeId,
+    disabledAutoIdleGames,
+    handleGameClick,
+    handleRemoveGame,
+    handleToggleAutoIdleGame,
+  } = data
+  const rowGames = rows[index]
+  if (!rowGames) return null
+
+  return (
+    <div style={style} className='flex items-start gap-5 px-6 pb-4'>
+      {rowGames.map(item => (
+        <div key={item.appid} className='flex-1 min-w-0'>
+          <SortableGameCard
+            item={item}
+            type={type}
+            isActive={activeId === item.appid}
+            onOpen={() => handleGameClick(item)}
+            handleRemoveGame={() => handleRemoveGame(item)}
+            disabledAutoIdleGames={disabledAutoIdleGames}
+            handleToggleAutoIdleGame={handleToggleAutoIdleGame}
+          />
+        </div>
+      ))}
+    </div>
+  )
+})
+
+SortableRow.displayName = 'SortableRow'

@@ -6,10 +6,10 @@ import type {
   InvokeCustomList,
   InvokeSettings,
   UserSummary,
-} from '@/shared/types';
-import type { TimeInputValue } from '@heroui/react';
-import { invoke } from '@tauri-apps/api/core';
-import { showAccountMismatchToast } from '@/shared/components';
+} from '@/shared/types'
+import type { TimeInputValue } from '@heroui/react'
+import { invoke } from '@tauri-apps/api/core'
+import { showAccountMismatchToast } from '@/shared/components'
 import {
   isWithinSchedule,
   logEvent,
@@ -17,17 +17,17 @@ import {
   startIdle,
   stopIdle,
   unlockAchievement,
-} from '@/shared/utils';
+} from '@/shared/utils'
 
 interface AchievementToUnlock {
-  appId: number;
-  id: string;
-  gameName: string;
-  percentage: number;
-  name?: string;
-  hidden?: boolean;
-  skip?: boolean;
-  delayNextUnlock?: number; // <-- add optional delayNextUnlock property
+  appId: number
+  id: string
+  gameName: string
+  percentage: number
+  name?: string
+  hidden?: boolean
+  skip?: boolean
+  delayNextUnlock?: number // <-- add optional delayNextUnlock property
 }
 
 export const useAchievementUnlocker = async (
@@ -42,71 +42,67 @@ export const useAchievementUnlocker = async (
   isMountedRef: React.RefObject<boolean>,
   abortControllerRef: React.RefObject<AbortController>,
 ) => {
-  let hasInitialDelayOccurred = !isInitialDelay;
+  let hasInitialDelayOccurred = !isInitialDelay
 
   const startAchievementUnlocker = async () => {
     try {
-      let currentGame: Game | null = null as Game | null;
+      let currentGame: Game | null = null as Game | null
 
-      const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary;
+      const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
 
       // Retrieve achievement unlocker games
       const achievementUnlockerList = await invoke<InvokeCustomList>('get_custom_lists', {
         steamId: userSummary?.steamId,
         list: 'achievementUnlockerList',
-      });
+      })
 
       // Set current game early so the background image renders during the initial delay
       if (!hasInitialDelayOccurred && achievementUnlockerList.list_data.length > 0) {
-        setCurrentGame(achievementUnlockerList.list_data[0]);
+        setCurrentGame(achievementUnlockerList.list_data[0])
       }
 
       // Delay for 10 seconds before starting
       if (!hasInitialDelayOccurred) {
-        startCountdown(10000 / 60000, setCountdownTimer);
-        await delay(10000, isMountedRef, abortControllerRef);
-        setIsInitialDelay(false);
-        hasInitialDelayOccurred = true;
+        startCountdown(10000 / 60000, setCountdownTimer)
+        await delay(10000, isMountedRef, abortControllerRef)
+        setIsInitialDelay(false)
+        hasInitialDelayOccurred = true
       }
 
       // Check if there are no games left to unlock achievements for
       if (achievementUnlockerList.list_data.length === 0) {
         if (currentGame !== null) {
-          await stopIdle(currentGame?.appid, currentGame.name);
+          await stopIdle(currentGame?.appid, currentGame.name)
         }
 
-        const nextTask = await checkForNextTask();
+        const nextTask = await checkForNextTask()
 
         if (nextTask.shouldStartNextTask) {
           if (nextTask.task && nextTask.task === 'cardFarming') {
-            await startCardFarming();
-            logEvent(
-              `[Achievement Unlocker] No games left - moving to next task: ${nextTask.task}`,
-            );
+            await startCardFarming()
+            logEvent(`[Achievement Unlocker] No games left - moving to next task: ${nextTask.task}`)
           }
 
           if (nextTask.task && nextTask.task === 'autoIdle') {
-            await startAutoIdleGames();
-            logEvent(
-              `[Achievement Unlocker] No games left - moving to next task: ${nextTask.task}`,
-            );
+            await startAutoIdleGames()
+            logEvent(`[Achievement Unlocker] No games left - moving to next task: ${nextTask.task}`)
           }
 
-          return setIsComplete(true);
+          return setIsComplete(true)
         }
-        logEvent('[Achievement Unlocker] No games left - stopping');
-        return setIsComplete(true);
+        logEvent('[Achievement Unlocker] No games left - stopping')
+        return setIsComplete(true)
       }
 
       // Fetch achievements for the current game
-      const achievementUnlockerGame = achievementUnlockerList.list_data[0];
+      const achievementUnlockerGame = achievementUnlockerList.list_data[0]
       const { achievements, game, delayBeforeFirstUnlock } = await fetchAchievements(
         achievementUnlockerGame,
         setAchievementCount,
-      );
+      )
 
-      currentGame = game;
-      setCurrentGame(game);
+      currentGame = game
+      setCurrentGame(game)
 
       // If there are achievements available, begin unlocking them
       if (achievements?.length > 0) {
@@ -119,12 +115,12 @@ export const useAchievementUnlocker = async (
           setIsWaitingForSchedule,
           isMountedRef,
           abortControllerRef,
-        );
+        )
       } else {
-        await removeGameFromUnlockerList(game.appid);
+        await removeGameFromUnlockerList(game.appid)
         logEvent(
           `[Achievement Unlocker] ${game.name} (${game.appid}) has no achievements remaining - removed`,
-        );
+        )
       }
 
       // Rerun if component is still mounted - needed check if user stops feature during loop
@@ -133,62 +129,62 @@ export const useAchievementUnlocker = async (
         const remainingList = await invoke<InvokeCustomList>('get_custom_lists', {
           steamId: userSummary?.steamId,
           list: 'achievementUnlockerList',
-        });
+        })
 
         if (remainingList.list_data.length > 0 && achievements.length > 0) {
           // Check if the next game has a delayBeforeFirstUnlock configured, which makes the 2-minute delay redundant
-          let nextGameHasPreDelay = false;
+          let nextGameHasPreDelay = false
           try {
-            const nextGame = remainingList.list_data[0];
+            const nextGame = remainingList.list_data[0]
             const nextCustomOrder = await invoke<{
               achievement_order: {
-                achievements: Achievement[];
-                delayBeforeFirstUnlock?: number;
-              } | null;
+                achievements: Achievement[]
+                delayBeforeFirstUnlock?: number
+              } | null
             }>('get_achievement_order', {
               steamId: userSummary?.steamId,
               appId: nextGame.appid,
-            });
-            const nextDelay = nextCustomOrder.achievement_order?.delayBeforeFirstUnlock;
-            nextGameHasPreDelay = typeof nextDelay === 'number' && nextDelay > 0;
+            })
+            const nextDelay = nextCustomOrder.achievement_order?.delayBeforeFirstUnlock
+            nextGameHasPreDelay = typeof nextDelay === 'number' && nextDelay > 0
           } catch {
             // If we can't check, assume no pre-delay
           }
 
           if (!nextGameHasPreDelay) {
             // Add 2-minute delay before switching to the next game to appear more human-like
-            logEvent('[Achievement Unlocker] Switching to next game in 2 minutes');
-            startCountdown(2, setCountdownTimer);
-            await delay(120000, isMountedRef, abortControllerRef);
+            logEvent('[Achievement Unlocker] Switching to next game in 2 minutes')
+            startCountdown(2, setCountdownTimer)
+            await delay(120000, isMountedRef, abortControllerRef)
           } else {
             logEvent(
               '[Achievement Unlocker] Skipping 2-minute delay - next game has a pre-unlock delay configured',
-            );
+            )
           }
         }
 
-        startAchievementUnlocker();
+        startAchievementUnlocker()
       }
     } catch (error) {
-      handleError('startAchievementUnlocker', error);
+      handleError('startAchievementUnlocker', error)
     }
-  };
+  }
 
-  startAchievementUnlocker();
-};
+  startAchievementUnlocker()
+}
 
 // Fetch achievements for the current game
 const fetchAchievements = async (
   game: Game,
   setAchievementCount: React.Dispatch<React.SetStateAction<number>>,
 ) => {
-  const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary;
-  const maxAchievementUnlocks = await getMaxAchievementUnlocks(userSummary?.steamId, game.appid);
+  const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
+  const maxAchievementUnlocks = await getMaxAchievementUnlocks(userSummary?.steamId, game.appid)
 
   const response = await invoke<InvokeSettings>('get_user_settings', {
     steamId: userSummary?.steamId,
-  });
-  const { hidden } = response.settings.achievementUnlocker;
+  })
+  const { hidden } = response.settings.achievementUnlocker
 
   try {
     const achievementResponse = await invoke<InvokeAchievementData | string>(
@@ -198,56 +194,56 @@ const fetchAchievements = async (
         appId: game.appid,
         refetch: true,
       },
-    );
+    )
 
     if (
       typeof achievementResponse === 'string' &&
       achievementResponse.includes('Failed to initialize Steam API')
     ) {
-      showAccountMismatchToast('danger');
-      handleError('fetchAchievements', 'Account mismatch between Steam and SGI');
-      return { achievements: [], game };
+      showAccountMismatchToast('danger')
+      handleError('fetchAchievements', 'Account mismatch between Steam and SGI')
+      return { achievements: [], game }
     }
 
-    const achievementData = achievementResponse as InvokeAchievementData;
-    const rawAchievements = achievementData?.achievement_data?.achievements;
+    const achievementData = achievementResponse as InvokeAchievementData
+    const rawAchievements = achievementData?.achievement_data?.achievements
 
     if (!rawAchievements) {
-      return { achievements: [], game };
+      return { achievements: [], game }
     }
 
     // Handle games with protected achievements
     if (rawAchievements.some(achievement => achievement.protected_achievement)) {
       logEvent(
         `[Error] [Achievement Unlocker] ${game.name} (${game.appid}) contains protected achievements`,
-      );
-      return { achievements: [], game };
+      )
+      return { achievements: [], game }
     }
 
     // First check if there's a custom order file
-    let orderedAchievements: AchievementToUnlock[] = [];
-    let delayBeforeFirstUnlock: number | undefined;
+    let orderedAchievements: AchievementToUnlock[] = []
+    let delayBeforeFirstUnlock: number | undefined
 
     try {
       const customOrder = await invoke<{
-        achievement_order: { achievements: Achievement[]; delayBeforeFirstUnlock?: number } | null;
+        achievement_order: { achievements: Achievement[]; delayBeforeFirstUnlock?: number } | null
       }>('get_achievement_order', {
         steamId: userSummary?.steamId,
         appId: game.appid,
-      });
+      })
 
       // If we have a custom order, use that order to sort achievements
       if (customOrder.achievement_order?.achievements) {
-        logEvent(`Custom achievement order found for ${game.name} (${game.appid}), applying order`);
+        logEvent(`Custom achievement order found for ${game.name} (${game.appid}), applying order`)
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        delayBeforeFirstUnlock = customOrder.achievement_order.delayBeforeFirstUnlock;
+        delayBeforeFirstUnlock = customOrder.achievement_order.delayBeforeFirstUnlock
 
         const customOrderMap = new Map(
           customOrder.achievement_order.achievements.map((achievement, index) => [
             achievement.name,
             index,
           ]),
-        );
+        )
 
         // Filter and map achievements
         orderedAchievements = rawAchievements
@@ -256,7 +252,7 @@ const fetchAchievements = async (
             // Get skip and delayNextUnlock from custom order if it exists
             const customAchievement = customOrder.achievement_order!.achievements.find(
               a => a.name === achievement.name,
-            );
+            )
             return {
               appId: game.appid,
               id: achievement.id,
@@ -266,31 +262,31 @@ const fetchAchievements = async (
               hidden: achievement.hidden,
               skip: customAchievement?.skip,
               delayNextUnlock: customAchievement?.delayNextUnlock,
-            };
+            }
           })
           // Filter out achievements with skip: true
           .filter(achievement => achievement.skip !== true)
           // Sort based on custom order if achievement is in the order, otherwise put at end and sort by percentage
           .sort((a, b) => {
-            const orderA = customOrderMap.get(a.name);
-            const orderB = customOrderMap.get(b.name);
+            const orderA = customOrderMap.get(a.name)
+            const orderB = customOrderMap.get(b.name)
 
             if (orderA !== undefined && orderB !== undefined) {
-              return orderA - orderB;
+              return orderA - orderB
             }
             if (orderA !== undefined) {
-              return -1;
+              return -1
             }
             if (orderB !== undefined) {
-              return 1;
+              return 1
             }
-            return b.percentage - a.percentage;
-          });
+            return b.percentage - a.percentage
+          })
       } else {
         // No custom order, use default percentage-based sorting
         logEvent(
           `No custom achievement order found for ${game.name} (${game.appid}), using default sorting`,
-        );
+        )
 
         orderedAchievements = rawAchievements
           .filter(achievement => !achievement.achieved && (!hidden || !achievement.hidden))
@@ -302,11 +298,11 @@ const fetchAchievements = async (
             name: achievement.name,
             hidden: achievement.hidden,
           }))
-          .sort((a, b) => b.percentage - a.percentage);
+          .sort((a, b) => b.percentage - a.percentage)
       }
     } catch (error) {
       // If there's any error getting custom order, fall back to percentage-based sorting
-      logEvent(`Error getting custom achievement order: ${error}`);
+      logEvent(`Error getting custom achievement order: ${error}`)
 
       orderedAchievements = rawAchievements
         .filter(achievement => !achievement.achieved && (!hidden || !achievement.hidden))
@@ -318,17 +314,17 @@ const fetchAchievements = async (
           name: achievement.name,
           hidden: achievement.hidden,
         }))
-        .sort((a, b) => b.percentage - a.percentage);
+        .sort((a, b) => b.percentage - a.percentage)
     }
 
-    setAchievementCount(maxAchievementUnlocks || orderedAchievements.length);
+    setAchievementCount(maxAchievementUnlocks || orderedAchievements.length)
 
-    return { achievements: [], game, delayBeforeFirstUnlock: undefined };
+    return { achievements: [], game, delayBeforeFirstUnlock: undefined }
   } catch (error) {
-    handleError('fetchAchievements', error);
-    return { achievements: [], game };
+    handleError('fetchAchievements', error)
+    return { achievements: [], game }
   }
-};
+}
 
 const unlockAchievements = async (
   achievements: AchievementToUnlock[],
@@ -341,18 +337,18 @@ const unlockAchievements = async (
   abortControllerRef: React.RefObject<AbortController>,
 ) => {
   try {
-    const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary;
+    const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
 
     const response = await invoke<InvokeSettings>('get_user_settings', {
       steamId: userSummary?.steamId,
-    });
+    })
 
-    const settings: AchievementUnlockerSettings = response.settings.achievementUnlocker;
-    const { hidden, interval, idle, schedule, scheduleFrom, scheduleTo } = settings;
-    let isGameIdling = false;
+    const settings: AchievementUnlockerSettings = response.settings.achievementUnlocker
+    const { hidden, interval, idle, schedule, scheduleFrom, scheduleTo } = settings
+    let isGameIdling = false
 
-    let achievementsRemaining = achievements.length;
-    const maxAchievementUnlocks = await getMaxAchievementUnlocks(userSummary?.steamId, game.appid);
+    let achievementsRemaining = achievements.length
+    const maxAchievementUnlocks = await getMaxAchievementUnlocks(userSummary?.steamId, game.appid)
 
     // Apply delay before first unlock if configured for this game
     if (
@@ -360,12 +356,12 @@ const unlockAchievements = async (
       delayBeforeFirstUnlock > 0 &&
       isMountedRef.current
     ) {
-      const firstDelayMs = delayBeforeFirstUnlock * 60 * 1000;
+      const firstDelayMs = delayBeforeFirstUnlock * 60 * 1000
       logEvent(
         `[Achievement Unlocker] Waiting ${delayBeforeFirstUnlock} minute(s) before first unlock for ${game.name} (${game.appid})`,
-      );
-      startCountdown(firstDelayMs / 60000, setCountdownTimer);
-      await delay(firstDelayMs, isMountedRef, abortControllerRef);
+      )
+      startCountdown(firstDelayMs / 60000, setCountdownTimer)
+      await delay(firstDelayMs, isMountedRef, abortControllerRef)
     }
 
     for (const achievement of achievements) {
@@ -373,8 +369,8 @@ const unlockAchievements = async (
         // Wait until within schedule if necessary
         if (schedule && !isWithinSchedule(scheduleFrom, scheduleTo)) {
           if (game && isGameIdling) {
-            await stopIdle(game.appid, game.name);
-            isGameIdling = false;
+            await stopIdle(game.appid, game.name)
+            isGameIdling = false
           }
           await waitUntilInSchedule(
             scheduleFrom,
@@ -382,26 +378,26 @@ const unlockAchievements = async (
             isMountedRef,
             setIsWaitingForSchedule,
             abortControllerRef,
-          );
+          )
         } else if (!isGameIdling && idle) {
-          await startIdle(game.appid, game.name, false);
-          isGameIdling = true;
+          await startIdle(game.appid, game.name, false)
+          isGameIdling = true
         }
 
-        if (!isMountedRef.current) break;
+        if (!isMountedRef.current) break
 
         // Skip hidden achievements if necessary
         if (hidden && achievement.hidden) {
-          achievementsRemaining -= 1;
-          setAchievementCount(prevCount => Math.max(prevCount - 1, 0));
-          continue;
+          achievementsRemaining -= 1
+          setAchievementCount(prevCount => Math.max(prevCount - 1, 0))
+          continue
         }
 
         // Unlock the achievement
-        await unlockAchievement(userSummary?.steamId, game.appid, achievement.id, game.name);
-        achievementsRemaining -= 1;
-        logEvent(`[Achievement Unlocker] Unlocked ${achievement.name} for ${game.name}`);
-        setAchievementCount(prevCount => Math.max(prevCount - 1, 0));
+        await unlockAchievement(userSummary?.steamId, game.appid, achievement.id, game.name)
+        achievementsRemaining -= 1
+        logEvent(`[Achievement Unlocker] Unlocked ${achievement.name} for ${game.name}`)
+        setAchievementCount(prevCount => Math.max(prevCount - 1, 0))
 
         // Stop idling and remove game from list if max achievement unlocks is reached
         if (
@@ -409,82 +405,82 @@ const unlockAchievements = async (
           (maxAchievementUnlocks &&
             achievementsRemaining <= achievements.length - maxAchievementUnlocks)
         ) {
-          await stopIdle(game.appid, game.name);
-          await removeGameFromUnlockerList(game.appid);
+          await stopIdle(game.appid, game.name)
+          await removeGameFromUnlockerList(game.appid)
           logEvent(
             `[Achievement Unlocker] Unlocked ${maxAchievementUnlocks !== null ? achievements.length - maxAchievementUnlocks : achievements.length}/${achievements.length} achievements for ${game.name} - removed`,
-          );
-          break;
+          )
+          break
         }
 
         // Stop idling and remove game from list if all achievements are unlocked
         if (achievementsRemaining === 0) {
-          await stopIdle(game.appid, game.name);
-          await removeGameFromUnlockerList(game.appid);
-          break;
+          await stopIdle(game.appid, game.name)
+          await removeGameFromUnlockerList(game.appid)
+          break
         }
 
         // Wait for a delay before unlocking the next achievement
         // Use delayNextUnlock from achievement if present, otherwise use a global unlock interval
-        let delayMs: number;
+        let delayMs: number
         if (typeof achievement.delayNextUnlock === 'number' && achievement.delayNextUnlock > 0) {
-          delayMs = achievement.delayNextUnlock * 60 * 1000;
+          delayMs = achievement.delayNextUnlock * 60 * 1000
         } else {
-          delayMs = getRandomDelay(interval[0], interval[1]);
+          delayMs = getRandomDelay(interval[0], interval[1])
         }
-        startCountdown(delayMs / 60000, setCountdownTimer);
-        await delay(delayMs, isMountedRef, abortControllerRef);
+        startCountdown(delayMs / 60000, setCountdownTimer)
+        await delay(delayMs, isMountedRef, abortControllerRef)
       }
     }
   } catch (error) {
-    handleError('unlockAchievements', error);
+    handleError('unlockAchievements', error)
   }
-};
+}
 
 const getMaxAchievementUnlocks = async (steamId: string | undefined, appId: number) => {
   try {
     const response = await invoke<InvokeSettings>('get_user_settings', {
       steamId,
-    });
-    const gameSettings = response.settings.gameSettings || {};
-    const perGameSetting = gameSettings[appId];
+    })
+    const gameSettings = response.settings.gameSettings || {}
+    const perGameSetting = gameSettings[appId]
     if (
       typeof perGameSetting === 'object' &&
       perGameSetting !== null &&
       !Array.isArray(perGameSetting)
     ) {
-      return perGameSetting.maxAchievementUnlocks || null;
+      return perGameSetting.maxAchievementUnlocks || null
     }
-    return null;
+    return null
   } catch (error) {
-    handleError('getMaxAchievementUnlocks', error);
-    return null;
+    handleError('getMaxAchievementUnlocks', error)
+    return null
   }
-};
+}
 
 // Remove a game from the unlocker list
 const removeGameFromUnlockerList = async (gameId: number) => {
   try {
-    const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary;
+    const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
 
     const achievementUnlockerList = await invoke<InvokeCustomList>('get_custom_lists', {
       steamId: userSummary?.steamId,
       list: 'achievementUnlockerList',
-    });
+    })
 
     const updatedAchievementUnlocker = achievementUnlockerList.list_data.filter(
       arr => arr.appid !== gameId,
-    );
+    )
 
     await invoke<InvokeCustomList>('update_custom_list', {
       steamId: userSummary?.steamId,
       list: 'achievementUnlockerList',
       newList: updatedAchievementUnlocker,
-    });
+    })
   } catch (error) {
-    handleError('removeGameFromUnlockerList', error);
+    handleError('removeGameFromUnlockerList', error)
   }
-};
+}
 
 // Start the countdown timer
 const startCountdown = (
@@ -492,22 +488,22 @@ const startCountdown = (
   setCountdownTimer: React.Dispatch<React.SetStateAction<string>>,
 ) => {
   try {
-    const durationInMilliseconds = durationInMinutes * 60000;
-    let remainingTime = durationInMilliseconds;
+    const durationInMilliseconds = durationInMinutes * 60000
+    let remainingTime = durationInMilliseconds
 
     const intervalId = setInterval(() => {
       if (remainingTime <= 0) {
-        clearInterval(intervalId);
-        return;
+        clearInterval(intervalId)
+        return
       }
 
-      setCountdownTimer(formatTime(remainingTime));
-      remainingTime -= 1000;
-    }, 1000);
+      setCountdownTimer(formatTime(remainingTime))
+      remainingTime -= 1000
+    }, 1000)
   } catch (error) {
-    handleError('startCountdown', error);
+    handleError('startCountdown', error)
   }
-};
+}
 
 // Wait until within the specified schedule
 const waitUntilInSchedule = async (
@@ -518,61 +514,61 @@ const waitUntilInSchedule = async (
   abortControllerRef: React.RefObject<AbortController>,
 ) => {
   try {
-    setIsWaitingForSchedule(true);
+    setIsWaitingForSchedule(true)
     while (!isWithinSchedule(scheduleFrom, scheduleTo)) {
       if (!isMountedRef.current) {
-        setIsWaitingForSchedule(false);
-        return;
+        setIsWaitingForSchedule(false)
+        return
       }
       await new Promise<void>((resolve, reject) => {
         const timeoutId = setTimeout(() => {
           if (!isMountedRef.current) {
-            clearTimeout(timeoutId);
-            reject();
+            clearTimeout(timeoutId)
+            reject()
           } else {
-            resolve();
+            resolve()
           }
-        }, 60000);
+        }, 60000)
         abortControllerRef.current.signal.addEventListener('abort', () => {
-          clearTimeout(timeoutId);
-          reject();
-        });
-      });
+          clearTimeout(timeoutId)
+          reject()
+        })
+      })
     }
-    setIsWaitingForSchedule(false);
+    setIsWaitingForSchedule(false)
   } catch (error) {
-    handleError('waitUntilInSchedule', error);
+    handleError('waitUntilInSchedule', error)
   }
-};
+}
 
 // Check for next task to move on to once farming is complete
 const checkForNextTask = async () => {
   try {
-    const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary;
+    const userSummary = JSON.parse(localStorage.getItem('userSummary') || '{}') as UserSummary
 
     const response = await invoke<InvokeSettings>('get_user_settings', {
       steamId: userSummary?.steamId,
-    });
+    })
 
     if (!response.settings.achievementUnlocker?.nextTaskCheckbox) {
-      return { shouldStartNextTask: false, task: null };
+      return { shouldStartNextTask: false, task: null }
     }
 
     if (!response.settings.achievementUnlocker?.nextTask) {
-      return { shouldStartNextTask: false, task: null };
+      return { shouldStartNextTask: false, task: null }
     }
 
-    const task = response.settings.achievementUnlocker?.nextTask;
+    const task = response.settings.achievementUnlocker?.nextTask
 
     return {
       shouldStartNextTask: Boolean(task),
       task,
-    };
+    }
   } catch (error) {
-    handleError('checkForNextTask', error);
-    return { shouldStartNextTask: false, task: null };
+    handleError('checkForNextTask', error)
+    return { shouldStartNextTask: false, task: null }
   }
-};
+}
 
 // Delay execution for a specified amount of time
 const delay = (
@@ -582,47 +578,47 @@ const delay = (
 ) => {
   try {
     return new Promise<void>((resolve, reject) => {
-      const checkInterval = 1000;
-      let elapsedTime = 0;
+      const checkInterval = 1000
+      let elapsedTime = 0
 
       const intervalId = setInterval(() => {
         if (!isMountedRef.current) {
-          clearInterval(intervalId);
-          reject();
+          clearInterval(intervalId)
+          reject()
         } else if (elapsedTime >= ms) {
-          clearInterval(intervalId);
-          resolve();
+          clearInterval(intervalId)
+          resolve()
         }
-        elapsedTime += checkInterval;
-      }, checkInterval);
+        elapsedTime += checkInterval
+      }, checkInterval)
 
       abortControllerRef.current.signal.addEventListener('abort', () => {
-        clearInterval(intervalId);
-        reject();
-      });
-    });
+        clearInterval(intervalId)
+        reject()
+      })
+    })
   } catch (error) {
-    handleError('delay', error);
-    return Promise.reject(error);
+    handleError('delay', error)
+    return Promise.reject(error)
   }
-};
+}
 
 // Get a random delay between a minimum and maximum value
 export function getRandomDelay(min: number, max: number) {
-  return Math.floor(Math.random() * ((max - min) * 60 * 1000 + 1)) + min * 60 * 1000;
+  return Math.floor(Math.random() * ((max - min) * 60 * 1000 + 1)) + min * 60 * 1000
 }
 
 // Format time in HH:MM:SS format
 export function formatTime(ms: number) {
-  const hours = Math.floor(ms / 3600000);
-  const minutes = Math.floor((ms % 3600000) / 60000);
-  const seconds = Math.floor((ms % 60000) / 1000);
-  return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  const hours = Math.floor(ms / 3600000)
+  const minutes = Math.floor((ms % 3600000) / 60000)
+  const seconds = Math.floor((ms % 60000) / 1000)
+  return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
 }
 
 // Handle errors
 const handleError = (functionName: string, error: unknown) => {
-  if (!error) return;
-  console.error(`Error in (${functionName}):`, error);
-  logEvent(`[Error] in (${functionName}) ${error}`);
-};
+  if (!error) return
+  console.error(`Error in (${functionName}):`, error)
+  logEvent(`[Error] in (${functionName}) ${error}`)
+}

@@ -1,41 +1,41 @@
-import type { Game } from '@/shared/types';
-import { create } from 'zustand';
+import type { Game } from '@/shared/types'
+import { create } from 'zustand'
 
 interface StateStore {
-  sidebarCollapsed: boolean;
-  setSidebarCollapsed: (value: boolean | ((prev: boolean) => boolean)) => void;
-  appId: number | null;
-  setAppId: (value: number | null | ((prev: number | null) => number | null)) => void;
-  appName: string | null;
-  setAppName: (value: string | null | ((prev: string | null) => string | null)) => void;
-  showAchievements: boolean;
-  setShowAchievements: (value: boolean | ((prev: boolean) => boolean)) => void;
-  showAchievementOrder: boolean;
-  setShowAchievementOrder: (value: boolean) => void;
-  achievementOrderGame: Game | null;
-  setAchievementOrderGame: (value: Game | null) => void;
-  isCardFarming: boolean;
-  setIsCardFarming: (value: boolean | ((prev: boolean) => boolean)) => void;
-  isAchievementUnlocker: boolean;
-  setIsAchievementUnlocker: (value: boolean | ((prev: boolean) => boolean)) => void;
-  showSteamWarning: boolean;
-  setShowSteamWarning: (value: boolean | ((prev: boolean) => boolean)) => void;
-  loadingItemPrice: Record<string, boolean>;
+  sidebarCollapsed: boolean
+  setSidebarCollapsed: (value: boolean | ((prev: boolean) => boolean)) => void
+  appId: number | null
+  setAppId: (value: number | null | ((prev: number | null) => number | null)) => void
+  appName: string | null
+  setAppName: (value: string | null | ((prev: string | null) => string | null)) => void
+  showAchievements: boolean
+  setShowAchievements: (value: boolean | ((prev: boolean) => boolean)) => void
+  showAchievementOrder: boolean
+  setShowAchievementOrder: (value: boolean) => void
+  achievementOrderGame: Game | null
+  setAchievementOrderGame: (value: Game | null) => void
+  isCardFarming: boolean
+  setIsCardFarming: (value: boolean | ((prev: boolean) => boolean)) => void
+  isAchievementUnlocker: boolean
+  setIsAchievementUnlocker: (value: boolean | ((prev: boolean) => boolean)) => void
+  showSteamWarning: boolean
+  setShowSteamWarning: (value: boolean | ((prev: boolean) => boolean)) => void
+  loadingItemPrice: Record<string, boolean>
   setLoadingItemPrice: (
     value: Record<string, boolean> | ((prev: Record<string, boolean>) => Record<string, boolean>),
-  ) => void;
-  loadingListButton: boolean;
-  setLoadingListButton: (value: boolean | ((prev: boolean) => boolean)) => void;
-  loadingRemoveListings: boolean;
-  setLoadingRemoveListings: (value: boolean | ((prev: boolean) => boolean)) => void;
-  transitionDuration: string;
-  setTransitionDuration: (value: string | ((prev: string) => string)) => void;
-  loadingUserSummary: boolean;
-  setLoadingUserSummary: (value: boolean | ((prev: boolean) => boolean)) => void;
-  gamesListSessionUpdatedSet: Set<string>;
-  setGamesListSessionUpdated: (steamId: string) => void;
-  showSearchModal: boolean;
-  setShowSearchModal: (value: boolean | ((prev: boolean) => boolean)) => void;
+  ) => void
+  loadingListButton: boolean
+  setLoadingListButton: (value: boolean | ((prev: boolean) => boolean)) => void
+  loadingRemoveListings: boolean
+  setLoadingRemoveListings: (value: boolean | ((prev: boolean) => boolean)) => void
+  transitionDuration: string
+  setTransitionDuration: (value: string | ((prev: string) => string)) => void
+  loadingUserSummary: boolean
+  setLoadingUserSummary: (value: boolean | ((prev: boolean) => boolean)) => void
+  gamesListSessionUpdatedSet: Set<string>
+  setGamesListSessionUpdated: (steamId: string) => void
+  showSearchModal: boolean
+  setShowSearchModal: (value: boolean | ((prev: boolean) => boolean)) => void
 }
 
 export const useStateStore = create<StateStore>(set => ({
@@ -116,4 +116,4 @@ export const useStateStore = create<StateStore>(set => ({
     set(state => ({
       showSearchModal: typeof value === 'function' ? value(state.showSearchModal) : value,
     })),
-}));
+}))

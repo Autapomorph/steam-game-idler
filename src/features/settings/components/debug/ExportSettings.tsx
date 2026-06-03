@@ -1,58 +1,58 @@
-import type { CardFarmingSettings, DeepPartial, UserSettings } from '@/shared/types';
-import { invoke } from '@tauri-apps/api/core';
-import { arch, locale, version } from '@tauri-apps/plugin-os';
-import { useTranslation } from 'react-i18next';
-import { TbArrowBarUp } from 'react-icons/tb';
-import { Button } from '@heroui/react';
+import type { CardFarmingSettings, DeepPartial, UserSettings } from '@/shared/types'
+import { invoke } from '@tauri-apps/api/core'
+import { arch, locale, version } from '@tauri-apps/plugin-os'
+import { useTranslation } from 'react-i18next'
+import { TbArrowBarUp } from 'react-icons/tb'
+import { Button } from '@heroui/react'
 
-import { showDangerToast, showSuccessToast } from '@/shared/components';
-import { useUserStore } from '@/shared/stores';
-import { getAppVersion } from '@/shared/utils';
+import { showDangerToast, showSuccessToast } from '@/shared/components'
+import { useUserStore } from '@/shared/stores'
+import { getAppVersion } from '@/shared/utils'
 
 interface SystemType {
-  version: string;
-  locale: string | null;
-  isPortable: boolean;
+  version: string
+  locale: string | null
+  isPortable: boolean
 }
 
 interface ExportedData {
-  version: string | undefined;
-  system: SystemType;
-  settings: Partial<UserSettings>;
-  [key: string]: unknown;
+  version: string | undefined
+  system: SystemType
+  settings: Partial<UserSettings>
+  [key: string]: unknown
 }
 
 const collectSystemInfo = async () => {
-  const system = {} as SystemType;
-  const osVersion = version();
-  const cpuArch = arch();
-  const isPortable = await invoke<boolean>('is_portable');
+  const system = {} as SystemType
+  const osVersion = version()
+  const cpuArch = arch()
+  const isPortable = await invoke<boolean>('is_portable')
 
-  let winVersion = 'Windows';
-  const buildMatch = /^10\.0\.(\d+)$/.exec(osVersion);
+  let winVersion = 'Windows'
+  const buildMatch = /^10\.0\.(\d+)$/.exec(osVersion)
   if (buildMatch?.[1]) {
-    const buildNumber = Number(buildMatch[1]);
-    winVersion = buildNumber >= 22000 ? 'Windows 11' : 'Windows 10';
+    const buildNumber = Number(buildMatch[1])
+    winVersion = buildNumber >= 22000 ? 'Windows 11' : 'Windows 10'
   }
 
-  const is64Bit = cpuArch === 'x86_64';
-  system.version = `${winVersion} ${is64Bit ? '64-bit' : '32-bit'} (${osVersion})`;
-  system.locale = await locale();
-  system.isPortable = isPortable;
+  const is64Bit = cpuArch === 'x86_64'
+  system.version = `${winVersion} ${is64Bit ? '64-bit' : '32-bit'} (${osVersion})`
+  system.locale = await locale()
+  system.isPortable = isPortable
 
-  return system;
-};
+  return system
+}
 
 const sanitizeUserSettings = (settings: UserSettings) => {
-  const sanitizedSettings = JSON.parse(JSON.stringify(settings)) as DeepPartial<UserSettings>;
+  const sanitizedSettings = JSON.parse(JSON.stringify(settings)) as DeepPartial<UserSettings>
 
   // Remove sensitive data before exporting
-  delete sanitizedSettings?.cardFarming?.credentials;
-  delete sanitizedSettings?.cardFarming?.userSummary?.steamId;
-  delete sanitizedSettings?.general?.apiKey;
+  delete sanitizedSettings?.cardFarming?.credentials
+  delete sanitizedSettings?.cardFarming?.userSummary?.steamId
+  delete sanitizedSettings?.general?.apiKey
 
-  return sanitizedSettings as UserSettings;
-};
+  return sanitizedSettings as UserSettings
+}
 
 const processLocalStorageItem = (key: string, value: string | null) => {
   // Skip specific keys
@@ -70,95 +70,95 @@ const processLocalStorageItem = (key: string, value: string | null) => {
     key.startsWith('ch_cw_') ||
     key.startsWith('emoji-mart')
   ) {
-    return null;
+    return null
   }
 
   if (value && (value.startsWith('{') || value.startsWith('['))) {
     try {
-      const parsedValue = JSON.parse(value);
+      const parsedValue = JSON.parse(value)
 
       // Sanitize sensitive data
       if (key === 'cardFarming' && parsedValue) {
         const sanitizedValue = JSON.parse(
           JSON.stringify(parsedValue),
-        ) as DeepPartial<CardFarmingSettings>;
-        delete sanitizedValue?.credentials;
-        return sanitizedValue;
+        ) as DeepPartial<CardFarmingSettings>
+        delete sanitizedValue?.credentials
+        return sanitizedValue
       }
 
-      return parsedValue;
+      return parsedValue
     } catch (error) {
-      console.error(`Error parsing JSON for key "${key}":`, error);
-      return value;
+      console.error(`Error parsing JSON for key "${key}":`, error)
+      return value
     }
   } else {
-    return value;
+    return value
   }
-};
+}
 
 const collectLocalStorageData = () => {
-  const storageData: Record<string, unknown> = {};
+  const storageData: Record<string, unknown> = {}
 
   for (let i = 0; i < localStorage.length; i += 1) {
-    const key = localStorage.key(i);
-    if (!key) continue;
-    const value = localStorage.getItem(key);
-    const processedValue = processLocalStorageItem(key, value);
+    const key = localStorage.key(i)
+    if (!key) continue
+    const value = localStorage.getItem(key)
+    const processedValue = processLocalStorageItem(key, value)
 
     if (processedValue !== null) {
-      storageData[key] = processedValue;
+      storageData[key] = processedValue
     }
   }
 
-  return storageData;
-};
+  return storageData
+}
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const getExportData = async (userSettings: UserSettings) => {
-  const allSettings: ExportedData = {} as ExportedData;
+  const allSettings: ExportedData = {} as ExportedData
 
   // Add app version
-  allSettings.version = await getAppVersion();
+  allSettings.version = await getAppVersion()
 
   // Collect system information
-  allSettings.system = await collectSystemInfo();
+  allSettings.system = await collectSystemInfo()
 
   // Process user settings
-  allSettings.settings = sanitizeUserSettings(userSettings);
+  allSettings.settings = sanitizeUserSettings(userSettings)
 
   // Process localStorage data
-  const localStorageData = collectLocalStorageData();
-  Object.assign(allSettings, localStorageData);
+  const localStorageData = collectLocalStorageData()
+  Object.assign(allSettings, localStorageData)
 
-  return allSettings;
-};
+  return allSettings
+}
 
 export const ExportSettings = () => {
-  const { t } = useTranslation();
-  const userSettings = useUserStore(state => state.userSettings);
+  const { t } = useTranslation()
+  const userSettings = useUserStore(state => state.userSettings)
 
   const exportSettings = async () => {
     try {
-      const allSettings = await getExportData(userSettings);
+      const allSettings = await getExportData(userSettings)
       // Copy to clipboard
-      const allSettingsString = JSON.stringify(allSettings, null, 2);
-      await navigator.clipboard.writeText(allSettingsString);
-      showSuccessToast(t($ => $['toast.exportData.success']));
+      const allSettingsString = JSON.stringify(allSettings, null, 2)
+      await navigator.clipboard.writeText(allSettingsString)
+      showSuccessToast(t('toast.exportData.success'))
     } catch (error) {
-      showDangerToast(t($ => $['toast.exportData.error']));
-      console.error('Export settings error:', error);
+      showDangerToast(t('toast.exportData.error'))
+      console.error('Export settings error:', error)
     }
-  };
+  }
 
   return (
     <Button
-      size="sm"
-      className="bg-btn-secondary text-btn-text font-bold"
-      radius="full"
+      size='sm'
+      className='bg-btn-secondary text-btn-text font-bold'
+      radius='full'
       onPress={exportSettings}
       startContent={<TbArrowBarUp size={20} />}
     >
-      {t($ => $['settings.exportData'])}
+      {t('settings.exportData')}
     </Button>
-  );
-};
+  )
+}

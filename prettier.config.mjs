@@ -6,10 +6,10 @@ export default {
   printWidth: 100,
   tabWidth: 2,
   useTabs: false,
-  semi: true,
+  semi: false,
   singleQuote: true,
-  quoteProps: 'as-needed',
-  jsxSingleQuote: false,
+  quoteProps: 'consistent',
+  jsxSingleQuote: true,
   trailingComma: 'all',
   bracketSpacing: true,
   bracketSameLine: false,
@@ -17,4 +17,4 @@ export default {
   arrowParens: 'avoid',
   vueIndentScriptAndStyle: true,
   endOfLine: 'lf',
-};
+}

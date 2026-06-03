@@ -1,23 +1,23 @@
-import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useUserStore } from '@/shared/stores';
+import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useUserStore } from '@/shared/stores'
 
 export const useAchievementSettings = () => {
-  const { t } = useTranslation();
-  const userSettings = useUserStore(state => state.userSettings);
-  const [sliderLabel, setSliderLabel] = useState('');
+  const { t } = useTranslation()
+  const userSettings = useUserStore(state => state.userSettings)
+  const [sliderLabel, setSliderLabel] = useState('')
 
   // Sync local settings with global settings when they change
   useEffect(() => {
-    const interval = userSettings.achievementUnlocker?.interval;
+    const interval = userSettings.achievementUnlocker?.interval
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setSliderLabel(
-      t($ => $['settings.achievementUnlocker.interval'], {
+      t('settings.achievementUnlocker.interval', {
         min: interval[0],
         max: interval[1],
       }),
-    );
-  }, [userSettings.achievementUnlocker?.interval, setSliderLabel, t]);
+    )
+  }, [userSettings.achievementUnlocker?.interval, setSliderLabel, t])
 
-  return { sliderLabel, setSliderLabel };
-};
+  return { sliderLabel, setSliderLabel }
+}

@@ -1,19 +1,19 @@
-import type { ActivePageType, CurrentSettingsTabType, CurrentTabType } from '@/shared//types';
-import { create } from 'zustand';
+import type { ActivePageType, CurrentSettingsTabType, CurrentTabType } from '@/shared//types'
+import { create } from 'zustand'
 
 interface NavigationStore {
-  activePage: ActivePageType;
-  setActivePage: (value: ActivePageType | ((prev: ActivePageType) => ActivePageType)) => void;
-  currentTab: CurrentTabType;
-  setCurrentTab: (value: CurrentTabType | ((prev: CurrentTabType) => CurrentTabType)) => void;
-  currentSettingsTab: CurrentSettingsTabType;
+  activePage: ActivePageType
+  setActivePage: (value: ActivePageType | ((prev: ActivePageType) => ActivePageType)) => void
+  currentTab: CurrentTabType
+  setCurrentTab: (value: CurrentTabType | ((prev: CurrentTabType) => CurrentTabType)) => void
+  currentSettingsTab: CurrentSettingsTabType
   setCurrentSettingsTab: (
     value: CurrentSettingsTabType | ((prev: CurrentSettingsTabType) => CurrentSettingsTabType),
-  ) => void;
-  previousActivePage: ActivePageType;
+  ) => void
+  previousActivePage: ActivePageType
   setPreviousActivePage: (
     value: ActivePageType | ((prev: ActivePageType) => ActivePageType),
-  ) => void;
+  ) => void
 }
 
 export const useNavigationStore = create<NavigationStore>(set => ({
@@ -37,4 +37,4 @@ export const useNavigationStore = create<NavigationStore>(set => ({
     set(state => ({
       previousActivePage: typeof value === 'function' ? value(state.previousActivePage) : value,
     })),
-}));
+}))

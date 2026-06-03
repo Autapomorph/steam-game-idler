@@ -1,72 +1,72 @@
-import { invoke } from '@tauri-apps/api/core';
-import { useEffect, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Button, useDisclosure } from '@heroui/react';
-import { CustomModal } from '@/shared/components';
-import { useStateStore, useUserStore } from '@/shared/stores';
+import { invoke } from '@tauri-apps/api/core'
+import { useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Button, useDisclosure } from '@heroui/react'
+import { CustomModal } from '@/shared/components'
+import { useStateStore, useUserStore } from '@/shared/stores'
 
 export const SteamWarning = () => {
-  const { t } = useTranslation();
-  const showSteamWarning = useStateStore(state => state.showSteamWarning);
-  const setShowSteamWarning = useStateStore(state => state.setShowSteamWarning);
-  const userSummary = useUserStore(state => state.userSummary);
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const { t } = useTranslation()
+  const showSteamWarning = useStateStore(state => state.showSteamWarning)
+  const setShowSteamWarning = useStateStore(state => state.setShowSteamWarning)
+  const userSummary = useUserStore(state => state.userSummary)
+  const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   useEffect(() => {
     const shouldShowWarning = async () => {
-      const devAccounts = JSON.parse(process.env.STEAM_DEV_ACCOUNTS ?? '[]') as string[];
-      const isDev = await invoke('is_dev');
-      const isDevAccount = devAccounts.includes(userSummary?.steamId ?? '');
+      const devAccounts = JSON.parse(process.env.STEAM_DEV_ACCOUNTS ?? '[]') as string[]
+      const isDev = await invoke('is_dev')
+      const isDevAccount = devAccounts.includes(userSummary?.steamId ?? '')
       if (showSteamWarning && !isDev && !isDevAccount) {
-        onOpen();
+        onOpen()
       }
-    };
-    shouldShowWarning();
-  }, [onOpen, showSteamWarning, userSummary?.steamId]);
+    }
+    shouldShowWarning()
+  }, [onOpen, showSteamWarning, userSummary?.steamId])
 
   // Poll every second while modal is open; auto-close when Steam is detected
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) return
 
     pollRef.current = setInterval(async () => {
-      const running = await invoke<boolean>('is_steam_running');
+      const running = await invoke<boolean>('is_steam_running')
       if (running) {
-        clearInterval(pollRef.current!);
-        pollRef.current = null;
-        setShowSteamWarning(false);
-        onOpenChange();
+        clearInterval(pollRef.current!)
+        pollRef.current = null
+        setShowSteamWarning(false)
+        onOpenChange()
       }
-    }, 1000);
+    }, 1000)
 
     return () => {
       if (pollRef.current) {
-        clearInterval(pollRef.current);
-        pollRef.current = null;
+        clearInterval(pollRef.current)
+        pollRef.current = null
       }
-    };
-  }, [isOpen, onOpenChange, setShowSteamWarning]);
+    }
+  }, [isOpen, onOpenChange, setShowSteamWarning])
 
   const launchAndWaitForSteam = async () => {
-    await invoke('launch_steam');
-  };
+    await invoke('launch_steam')
+  }
 
   return (
     <CustomModal
       hideCloseButton
       isOpen={isOpen}
-      title={t($ => $['common.notice'])}
-      body={t($ => $['confirmation.steamClosed'])}
+      title={t('common.notice')}
+      body={t('confirmation.steamClosed')}
       buttons={
         <Button
-          size="sm"
-          className="bg-btn-secondary text-btn-text font-bold"
-          radius="full"
+          size='sm'
+          className='bg-btn-secondary text-btn-text font-bold'
+          radius='full'
           onPress={launchAndWaitForSteam}
         >
-          {t($ => $['common.continue'])}
+          {t('common.continue')}
         </Button>
       }
     />
-  );
-};
+  )
+}

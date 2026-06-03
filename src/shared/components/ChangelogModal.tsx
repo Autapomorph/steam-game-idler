@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react'
 import {
   Button,
   Modal,
@@ -7,50 +7,50 @@ import {
   ModalFooter,
   Spinner,
   useDisclosure,
-} from '@heroui/react';
-import 'github-markdown-css/github-markdown-light.css';
-import { getVersion } from '@tauri-apps/api/app';
-import { useTranslation } from 'react-i18next';
-import { FaStar } from 'react-icons/fa6';
-import { useUpdateStore } from '@/shared/stores';
+} from '@heroui/react'
+import 'github-markdown-css/github-markdown-light.css'
+import { getVersion } from '@tauri-apps/api/app'
+import { useTranslation } from 'react-i18next'
+import { FaStar } from 'react-icons/fa6'
+import { useUpdateStore } from '@/shared/stores'
 
-import { openExternalLink } from '@/shared/utils';
+import { openExternalLink } from '@/shared/utils'
 
 export const ChangelogModal = () => {
-  const { t } = useTranslation();
-  const showChangelog = useUpdateStore(state => state.showChangelog);
-  const setShowChangelog = useUpdateStore(state => state.setShowChangelog);
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [appVersion, setAppVersion] = useState('');
-  const [isVersionLoaded, setIsVersionLoaded] = useState(false);
+  const { t } = useTranslation()
+  const showChangelog = useUpdateStore(state => state.showChangelog)
+  const setShowChangelog = useUpdateStore(state => state.setShowChangelog)
+  const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const [appVersion, setAppVersion] = useState('')
+  const [isVersionLoaded, setIsVersionLoaded] = useState(false)
 
   useEffect(() => {
     if (showChangelog && isVersionLoaded) {
-      onOpen();
-      setShowChangelog(false);
+      onOpen()
+      setShowChangelog(false)
     }
-  }, [onOpen, showChangelog, setShowChangelog, isVersionLoaded]);
+  }, [onOpen, showChangelog, setShowChangelog, isVersionLoaded])
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       try {
-        const version = await getVersion();
-        setAppVersion(version);
-        setIsVersionLoaded(true);
+        const version = await getVersion()
+        setAppVersion(version)
+        setIsVersionLoaded(true)
       } catch (error) {
-        console.error('Failed to get app version:', error);
-        setAppVersion('latest');
-        setIsVersionLoaded(true);
+        console.error('Failed to get app version:', error)
+        setAppVersion('latest')
+        setIsVersionLoaded(true)
       }
-    })();
-  }, []);
+    })()
+  }, [])
 
   return (
     <Modal
       isOpen={isOpen}
       onOpenChange={onOpenChange}
-      size="lg"
-      className="text-content bg-transparent border border-border rounded-4xl"
+      size='lg'
+      className='text-content bg-transparent border border-border rounded-4xl'
       classNames={{
         closeButton: 'mr-1.5 mt-1.5',
       }}
@@ -59,54 +59,54 @@ export const ChangelogModal = () => {
       }}
     >
       <ModalContent>
-        <ModalBody className="p-0">
+        <ModalBody className='p-0'>
           {isVersionLoaded ? (
             <iframe
-              title="changelog"
+              title='changelog'
               src={`https://steamgameidler.com/changelog/${appVersion}`}
-              className="min-h-125"
+              className='min-h-125'
             />
           ) : (
-            <div className="flex items-center justify-center min-h-125">
-              <Spinner variant="simple" className="m-10" />
+            <div className='flex items-center justify-center min-h-125'>
+              <Spinner variant='simple' className='m-10' />
             </div>
           )}
         </ModalBody>
 
-        <ModalFooter className="border-t border-border justify-between">
+        <ModalFooter className='border-t border-border justify-between'>
           <Button
-            size="sm"
-            color="warning"
-            variant="flat"
-            radius="full"
-            className="font-semibold"
+            size='sm'
+            color='warning'
+            variant='flat'
+            radius='full'
+            className='font-semibold'
             startContent={<FaStar size={20} />}
             onPress={() => openExternalLink('https://github.com/Autapomorph/steam-game-idler')}
           >
-            {t($ => $['changelog.star'])}
+            {t('changelog.star')}
           </Button>
-          <div className="flex gap-2">
+          <div className='flex gap-2'>
             <Button
-              size="sm"
-              color="danger"
-              variant="light"
-              radius="full"
-              className="font-semibold"
+              size='sm'
+              color='danger'
+              variant='light'
+              radius='full'
+              className='font-semibold'
               onPress={onOpenChange}
             >
-              {t($ => $['common.close'])}
+              {t('common.close')}
             </Button>
             <Button
-              size="sm"
-              radius="full"
-              className="bg-white text-black font-semibold"
+              size='sm'
+              radius='full'
+              className='bg-white text-black font-semibold'
               onPress={() => openExternalLink(`https://steamgameidler.com/changelog#${appVersion}`)}
             >
-              {t($ => $['menu.changelog'])}
+              {t('menu.changelog')}
             </Button>
           </div>
         </ModalFooter>
       </ModalContent>
     </Modal>
-  );
-};
+  )
+}

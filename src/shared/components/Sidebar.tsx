@@ -1,6 +1,6 @@
-import type { SidebarItem } from '@/shared/types';
-import { useTranslation } from 'react-i18next';
-import { FiLogOut } from 'react-icons/fi';
+import type { SidebarItem } from '@/shared/types'
+import { useTranslation } from 'react-i18next'
+import { FiLogOut } from 'react-icons/fi'
 import {
   TbAward,
   TbBuildingStore,
@@ -11,47 +11,47 @@ import {
   TbHourglassLow,
   TbPlayerPlay,
   TbSettings,
-} from 'react-icons/tb';
-import { Button, cn, Divider } from '@heroui/react';
-import Image from 'next/image';
+} from 'react-icons/tb'
+import { Button, cn, Divider } from '@heroui/react'
+import Image from 'next/image'
 
-import { Beta, Brand, CustomModal } from '@/shared/components';
-import { useSidebar } from '@/shared/hooks';
-import { useIdleStore, useNavigationStore, useStateStore, useUserStore } from '@/shared/stores';
+import { Beta, Brand, CustomModal } from '@/shared/components'
+import { useSidebar } from '@/shared/hooks'
+import { useIdleStore, useNavigationStore, useStateStore, useUserStore } from '@/shared/stores'
 
 export const Sidebar = () => {
-  const { t } = useTranslation();
-  const activePage = useNavigationStore(state => state.activePage);
-  const previousActivePage = useNavigationStore(state => state.previousActivePage);
-  const setActivePage = useNavigationStore(state => state.setActivePage);
-  const setPreviousActivePage = useNavigationStore(state => state.setPreviousActivePage);
-  const freeGamesList = useUserStore(state => state.freeGamesList);
-  const userSummary = useUserStore(state => state.userSummary);
-  const idleGamesList = useIdleStore(state => state.idleGamesList);
-  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed);
-  const isCardFarming = useStateStore(state => state.isCardFarming);
-  const isAchievementUnlocker = useStateStore(state => state.isAchievementUnlocker);
-  const transitionDuration = useStateStore(state => state.transitionDuration);
-  const setShowAchievements = useStateStore(state => state.setShowAchievements);
-  const setShowAchievementOrder = useStateStore(state => state.setShowAchievementOrder);
+  const { t } = useTranslation()
+  const activePage = useNavigationStore(state => state.activePage)
+  const previousActivePage = useNavigationStore(state => state.previousActivePage)
+  const setActivePage = useNavigationStore(state => state.setActivePage)
+  const setPreviousActivePage = useNavigationStore(state => state.setPreviousActivePage)
+  const freeGamesList = useUserStore(state => state.freeGamesList)
+  const userSummary = useUserStore(state => state.userSummary)
+  const idleGamesList = useIdleStore(state => state.idleGamesList)
+  const sidebarCollapsed = useStateStore(state => state.sidebarCollapsed)
+  const isCardFarming = useStateStore(state => state.isCardFarming)
+  const isAchievementUnlocker = useStateStore(state => state.isAchievementUnlocker)
+  const transitionDuration = useStateStore(state => state.transitionDuration)
+  const setShowAchievements = useStateStore(state => state.setShowAchievements)
+  const setShowAchievementOrder = useStateStore(state => state.setShowAchievementOrder)
   const { isOpen, onOpenChange, openConfirmation, handleLogout } = useSidebar(
     activePage,
     setActivePage,
-  );
+  )
 
-  const effectivePage = activePage === 'settings' ? previousActivePage : activePage;
+  const effectivePage = activePage === 'settings' ? previousActivePage : activePage
 
   const mainSidebarItems: SidebarItem[] = [
     {
       id: 'games',
       page: 'games',
-      title: t($ => $['gamesList.title']),
+      title: t('gamesList.title'),
       icon: TbDeviceGamepad2,
     },
     {
       id: 'idling',
       page: 'idling',
-      title: t($ => $['idlingGames.title']),
+      title: t('idlingGames.title'),
       icon: TbPlayerPlay,
       isActive: idleGamesList.length > 0,
       customClassName: idleGamesList.length > 0 ? 'text-dynamic animate-pulse' : '',
@@ -59,19 +59,19 @@ export const Sidebar = () => {
     {
       id: 'favorites',
       page: 'customlists/favorites',
-      title: t($ => $['customLists.favorites.title']),
+      title: t('customLists.favorites.title'),
       icon: TbHeart,
     },
     {
       id: 'free-games',
       page: 'freeGames',
-      title: t($ => $['freeGames.title']),
+      title: t('freeGames.title'),
       icon: TbGift,
     },
     {
       id: 'card-farming',
       page: 'customlists/card-farming',
-      title: t($ => $['common.cardFarming']),
+      title: t('common.cardFarming'),
       icon: TbCards,
       isActive: isCardFarming,
       customClassName: isCardFarming ? 'text-dynamic animate-pulse' : '',
@@ -79,7 +79,7 @@ export const Sidebar = () => {
     {
       id: 'achievement-unlocker',
       page: 'customlists/achievement-unlocker',
-      title: t($ => $['common.achievementUnlocker']),
+      title: t('common.achievementUnlocker'),
       icon: TbAward,
       isActive: isAchievementUnlocker,
       customClassName: isAchievementUnlocker ? 'text-dynamic animate-pulse' : '',
@@ -87,56 +87,56 @@ export const Sidebar = () => {
     {
       id: 'auto-idle',
       page: 'customlists/auto-idle',
-      title: t($ => $['customLists.autoIdle.title']),
+      title: t('customLists.autoIdle.title'),
       icon: TbHourglassLow,
     },
     {
       id: 'inventory-manager',
       page: 'inventoryManager',
-      title: t($ => $['tradingCards.title']),
+      title: t('tradingCards.title'),
       icon: TbBuildingStore,
     },
-  ];
+  ]
 
   // Section headers and their corresponding first item indices
   const sectionHeaders: Record<number, string> = {
-    0: t($ => $['sidebar.section.games']),
-    4: t($ => $['sidebar.section.automation']),
-    7: t($ => $['sidebar.section.misc']),
-  };
+    0: t('sidebar.section.games'),
+    4: t('sidebar.section.automation'),
+    7: t('sidebar.section.misc'),
+  }
 
   // Helper to render section header if needed
   const renderSectionHeader = (index: number) => {
-    const header = sectionHeaders[index];
-    if (!header) return null;
+    const header = sectionHeaders[index]
+    if (!header) return null
     if (sidebarCollapsed) {
-      return <Divider className="w-full bg-border/60 mt-0.5 mb-2" />;
+      return <Divider className='w-full bg-border/60 mt-0.5 mb-2' />
     }
     return (
       <div
         className={cn(
           'px-4 py-1 mb-0 text-[12px] font-bold text-content uppercase tracking-wider select-none',
           'transition-all ease-in-out whitespace-nowrap truncate',
-          header !== t($ => $['sidebar.section.games']) ? 'mt-4' : 'mt-0',
+          header !== t('sidebar.section.games') ? 'mt-4' : 'mt-0',
         )}
       >
         {header}
       </div>
-    );
-  };
+    )
+  }
 
   const renderSidebarItem = (item: SidebarItem, index: number) => {
-    const Icon = item.icon;
-    const isCurrentPage = effectivePage === item.page;
-    const isFreeGames = item.id === 'free-games';
-    const hasFreeGames = freeGamesList.length > 0;
-    const { isBeta } = item;
+    const Icon = item.icon
+    const isCurrentPage = effectivePage === item.page
+    const isFreeGames = item.id === 'free-games'
+    const hasFreeGames = freeGamesList.length > 0
+    const { isBeta } = item
 
     return (
       <div key={item.id}>
         {renderSectionHeader(index)}
 
-        <div className="flex w-full">
+        <div className='flex w-full'>
           {/* Left indicator */}
           {!sidebarCollapsed && (
             <div
@@ -159,9 +159,9 @@ export const Sidebar = () => {
               item.customClassName,
             )}
             onClick={() => {
-              setShowAchievements(false);
-              setShowAchievementOrder(false);
-              setActivePage(item.page);
+              setShowAchievements(false)
+              setShowAchievementOrder(false)
+              setActivePage(item.page)
             }}
           >
             <div
@@ -170,7 +170,7 @@ export const Sidebar = () => {
                 sidebarCollapsed ? 'justify-center' : 'justify-start',
               )}
             >
-              <div className="relative shrink-0">
+              <div className='relative shrink-0'>
                 <Icon
                   fontSize={20}
                   className={isFreeGames && hasFreeGames ? 'text-[#ffc700]' : undefined}
@@ -186,7 +186,7 @@ export const Sidebar = () => {
                       isFreeGames && hasFreeGames ? 'text-[#ffc700]' : undefined,
                     )}
                   >
-                    <span className="truncate">{item.title}</span>
+                    <span className='truncate'>{item.title}</span>
                     {isBeta && <Beta />}
                   </p>
                 </div>
@@ -195,8 +195,8 @@ export const Sidebar = () => {
           </div>
         </div>
       </div>
-    );
-  };
+    )
+  }
 
   return (
     <>
@@ -247,21 +247,21 @@ export const Sidebar = () => {
                 alt={userSummary?.personaName ?? 'User Avatar'}
                 width={sidebarCollapsed ? 28 : 32}
                 height={sidebarCollapsed ? 28 : 32}
-                className="rounded-full bg-white"
+                className='rounded-full bg-white'
               />
             </div>
 
             {!sidebarCollapsed && (
-              <div className="flex items-center justify-between w-full overflow-hidden">
-                <div className="flex flex-col overflow-hidden">
-                  <p className="text-sm leading-tight truncate whitespace-nowrap">
+              <div className='flex items-center justify-between w-full overflow-hidden'>
+                <div className='flex flex-col overflow-hidden'>
+                  <p className='text-sm leading-tight truncate whitespace-nowrap'>
                     {userSummary?.personaName}
                   </p>
-                  <p className="text-[10px] text-altwhite/70 leading-tight truncate whitespace-nowrap">
+                  <p className='text-[10px] text-altwhite/70 leading-tight truncate whitespace-nowrap'>
                     {userSummary?.steamId}
                   </p>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className='flex items-center gap-2'>
                   <div
                     className={cn(
                       'text-altwhite hover:bg-white/7 rounded-full p-1.5 duration-150',
@@ -272,10 +272,10 @@ export const Sidebar = () => {
                     onClick={
                       !(isCardFarming || isAchievementUnlocker)
                         ? () => {
-                            setShowAchievements(false);
-                            setShowAchievementOrder(false);
-                            setPreviousActivePage(activePage);
-                            setActivePage('settings');
+                            setShowAchievements(false)
+                            setShowAchievementOrder(false)
+                            setPreviousActivePage(activePage)
+                            setActivePage('settings')
                           }
                         : undefined
                     }
@@ -299,7 +299,7 @@ export const Sidebar = () => {
               </div>
             )}
             {sidebarCollapsed && (
-              <div className="flex flex-col items-center gap-2">
+              <div className='flex flex-col items-center gap-2'>
                 <div
                   className={cn(
                     'text-altwhite hover:bg-white/7 rounded-full p-1.5 duration-150',
@@ -310,9 +310,9 @@ export const Sidebar = () => {
                   onClick={
                     !(isCardFarming || isAchievementUnlocker)
                       ? () => {
-                          setShowAchievements(false);
-                          setShowAchievementOrder(false);
-                          setActivePage('settings');
+                          setShowAchievements(false)
+                          setShowAchievementOrder(false)
+                          setActivePage('settings')
                         }
                       : undefined
                   }
@@ -339,35 +339,35 @@ export const Sidebar = () => {
       <CustomModal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
-        title={t($ => $['common.confirm'])}
-        body={t($ => $['confirmation.logout'])}
+        title={t('common.confirm')}
+        body={t('confirmation.logout')}
         buttons={
           <>
             <Button
-              size="sm"
-              color="danger"
-              variant="light"
-              radius="full"
-              className="font-semibold"
+              size='sm'
+              color='danger'
+              variant='light'
+              radius='full'
+              className='font-semibold'
               onPress={onOpenChange}
             >
-              {t($ => $['common.cancel'])}
+              {t('common.cancel')}
             </Button>
             <Button
-              size="sm"
-              className="bg-btn-secondary text-btn-text font-bold"
-              radius="full"
+              size='sm'
+              className='bg-btn-secondary text-btn-text font-bold'
+              radius='full'
               onPress={() => {
-                setShowAchievements(false);
-                setShowAchievementOrder(false);
-                handleLogout(onOpenChange);
+                setShowAchievements(false)
+                setShowAchievementOrder(false)
+                handleLogout(onOpenChange)
               }}
             >
-              {t($ => $['common.confirm'])}
+              {t('common.confirm')}
             </Button>
           </>
         }
       />
     </>
-  );
-};
+  )
+}

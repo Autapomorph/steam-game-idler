@@ -1,7 +1,7 @@
-import { cn } from '@heroui/react';
+import { cn } from '@heroui/react'
 
 interface BetaProps {
-  className?: string;
+  className?: string
 }
 
 export const Beta = ({ className }: BetaProps) => {
@@ -15,5 +15,5 @@ export const Beta = ({ className }: BetaProps) => {
     >
       beta
     </span>
-  );
-};
+  )
+}

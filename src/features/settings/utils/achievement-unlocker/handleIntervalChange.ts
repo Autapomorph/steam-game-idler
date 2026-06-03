@@ -1,8 +1,8 @@
-import type { InvokeSettings, UserSettings, UserSummary } from '@/shared/types';
-import { invoke } from '@tauri-apps/api/core';
-import i18next from 'i18next';
-import { showDangerToast } from '@/shared/components';
-import { logEvent } from '@/shared/utils';
+import type { InvokeSettings, UserSettings, UserSummary } from '@/shared/types'
+import { invoke } from '@tauri-apps/api/core'
+import i18next from 'i18next'
+import { showDangerToast } from '@/shared/components'
+import { logEvent } from '@/shared/utils'
 
 export const handleIntervalChange = async (
   newInterval: [number, number] | number[] | number,
@@ -14,12 +14,12 @@ export const handleIntervalChange = async (
       steamId: userSummary?.steamId,
       key: 'achievementUnlocker.interval',
       value: newInterval,
-    });
-    setUserSettings(response.settings);
-    logEvent(`[Settings - Achievement Unlocker] Changed 'interval' to '${String(newInterval)}'`);
+    })
+    setUserSettings(response.settings)
+    logEvent(`[Settings - Achievement Unlocker] Changed 'interval' to '${String(newInterval)}'`)
   } catch (error) {
-    showDangerToast(i18next.t($ => $['common.error']));
-    console.error('Error in (handleIntervalChange  - Achievement Unlocker):', error);
-    logEvent(`[Error] in (handleIntervalChange  - Achievement Unlocker): ${error}`);
+    showDangerToast(i18next.t('common.error'))
+    console.error('Error in (handleIntervalChange  - Achievement Unlocker):', error)
+    logEvent(`[Error] in (handleIntervalChange  - Achievement Unlocker): ${error}`)
   }
-};
+}

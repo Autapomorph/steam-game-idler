@@ -1,5 +1,5 @@
-import type { InvokeSettings, UserSettings, UserSummary } from '@/shared/types';
-import { invoke } from '@tauri-apps/api/core';
+import type { InvokeSettings, UserSettings, UserSummary } from '@/shared/types'
+import { invoke } from '@tauri-apps/api/core'
 
 export const handleSellOptionChange = async (
   key: string,
@@ -10,10 +10,10 @@ export const handleSellOptionChange = async (
     steamId: userSummary?.steamId,
     key: 'tradingCards.sellOptions',
     value: key,
-  });
+  })
 
-  setUserSettings(updateResponse.settings);
-};
+  setUserSettings(updateResponse.settings)
+}
 
 export const handlePriceAdjustmentChange = async (
   value: number,
@@ -21,15 +21,15 @@ export const handlePriceAdjustmentChange = async (
   setUserSettings: (value: UserSettings | ((prev: UserSettings) => UserSettings)) => void,
   setPriceAdjustment: React.Dispatch<React.SetStateAction<number>>,
 ) => {
-  setPriceAdjustment(value);
+  setPriceAdjustment(value)
   const updateResponse = await invoke<InvokeSettings>('update_user_settings', {
     steamId: userSummary?.steamId,
     key: 'tradingCards.priceAdjustment',
     value,
-  });
+  })
 
-  setUserSettings(updateResponse.settings);
-};
+  setUserSettings(updateResponse.settings)
+}
 
 export const handleSellLimitMinChange = async (
   value: number,
@@ -38,7 +38,7 @@ export const handleSellLimitMinChange = async (
   sellLimitMax: number,
   setSellLimitMin: React.Dispatch<React.SetStateAction<number>>,
 ) => {
-  setSellLimitMin(value);
+  setSellLimitMin(value)
   const updateResponse = await invoke<InvokeSettings>('update_user_settings', {
     steamId: userSummary?.steamId,
     key: 'tradingCards.sellLimit',
@@ -46,10 +46,10 @@ export const handleSellLimitMinChange = async (
       min: value,
       max: sellLimitMax,
     },
-  });
+  })
 
-  setUserSettings(updateResponse.settings);
-};
+  setUserSettings(updateResponse.settings)
+}
 
 export const handleSellLimitMaxChange = async (
   value: number,
@@ -58,7 +58,7 @@ export const handleSellLimitMaxChange = async (
   sellLimitMin: number,
   setSellLimitMax: React.Dispatch<React.SetStateAction<number>>,
 ) => {
-  setSellLimitMax(value);
+  setSellLimitMax(value)
   const updateResponse = await invoke<InvokeSettings>('update_user_settings', {
     steamId: userSummary?.steamId,
     key: 'tradingCards.sellLimit',
@@ -66,10 +66,10 @@ export const handleSellLimitMaxChange = async (
       min: sellLimitMin,
       max: value,
     },
-  });
+  })
 
-  setUserSettings(updateResponse.settings);
-};
+  setUserSettings(updateResponse.settings)
+}
 
 export const handleSellDelayChange = async (
   value: number,
@@ -77,12 +77,12 @@ export const handleSellDelayChange = async (
   setUserSettings: (value: UserSettings | ((prev: UserSettings) => UserSettings)) => void,
   setSellDelay: React.Dispatch<React.SetStateAction<number>>,
 ) => {
-  setSellDelay(value);
+  setSellDelay(value)
   const updateResponse = await invoke<InvokeSettings>('update_user_settings', {
     steamId: userSummary?.steamId,
     key: 'tradingCards.sellDelay',
     value,
-  });
+  })
 
-  setUserSettings(updateResponse.settings);
-};
+  setUserSettings(updateResponse.settings)
+}

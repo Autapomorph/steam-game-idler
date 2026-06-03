@@ -1,7 +1,7 @@
-import Head from 'next/head';
-import localFont from 'next/font/local';
+import Head from 'next/head'
+import localFont from 'next/font/local'
 
-import { Titlebar } from '@/shared/components';
+import { Titlebar } from '@/shared/components'
 
 const inter = localFont({
   src: [
@@ -17,7 +17,7 @@ const inter = localFont({
     },
   ],
   variable: '--font-inter',
-});
+})
 
 export const Layout = ({ children }: React.PropsWithChildren) => {
   return (
@@ -32,5 +32,5 @@ export const Layout = ({ children }: React.PropsWithChildren) => {
         {children}
       </main>
     </>
-  );
-};
+  )
+}

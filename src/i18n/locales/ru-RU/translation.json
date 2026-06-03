@@ -188,6 +188,8 @@
   "settings.general.showCardDropsCarousel": "Показать игры, из которых выпадут карточки",
   "settings.general.showCardDropsCarousel.description": "Показывать карусель игр, в которых доступно выпадение карточек на странице \"Сбор карточек\"",
   "settings.cardFarming.alert": "Чтобы использовать функцию \"Сбор карточек\", добавьте свои учетные данные Steam в разделе \"Настройки\" → \"Учетные данные Steam\"",
+  "settings.cardFarming.autoFarmCards": "Автоматически собирать карточки",
+  "settings.cardFarming.autoFarmCards.description": "SGI автоматически собирает карточки в играх",
   "settings.cardFarming.listGames": "Сбор в играх из списка",
   "settings.cardFarming.listGames.description": "Собирать карточки только в играх из вашего списка",
   "settings.cardFarming.allGames": "Сбор во всех играх",

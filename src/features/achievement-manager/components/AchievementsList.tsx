@@ -1,32 +1,32 @@
-import type { Achievement, UserSummary } from '@/shared/types';
-import { memo, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { TbCancel, TbLock, TbLockOpen } from 'react-icons/tb';
-import { FixedSizeList as List } from 'react-window';
-import { Button, Checkbox, cn } from '@heroui/react';
-import i18next from 'i18next';
-import Image from 'next/image';
-import { AchievementButtons } from '@/features/achievement-manager';
-import { CustomTooltip } from '@/shared/components';
-import { useSearchStore, useStateStore, useUserStore } from '@/shared/stores';
-import { checkSteamStatus, toggleAchievement } from '@/shared/utils';
+import type { Achievement, UserSummary } from '@/shared/types'
+import { memo, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { TbCancel, TbLock, TbLockOpen } from 'react-icons/tb'
+import { FixedSizeList as List } from 'react-window'
+import { Button, Checkbox, cn } from '@heroui/react'
+import i18next from 'i18next'
+import Image from 'next/image'
+import { AchievementButtons } from '@/features/achievement-manager'
+import { CustomTooltip } from '@/shared/components'
+import { useSearchStore, useStateStore, useUserStore } from '@/shared/stores'
+import { checkSteamStatus, toggleAchievement } from '@/shared/utils'
 
 interface RowData {
-  userSummary: UserSummary;
-  appId: number;
-  appName: string;
-  filteredAchievements: Achievement[];
-  updateAchievement: (achievementId: string, newAchievedState: boolean) => void;
-  selectedToUnlock: Set<string>;
-  setSelectedToUnlock: React.Dispatch<React.SetStateAction<Set<string>>>;
-  selectedToLock: Set<string>;
-  setSelectedToLock: React.Dispatch<React.SetStateAction<Set<string>>>;
+  userSummary: UserSummary
+  appId: number
+  appName: string
+  filteredAchievements: Achievement[]
+  updateAchievement: (achievementId: string, newAchievedState: boolean) => void
+  selectedToUnlock: Set<string>
+  setSelectedToUnlock: React.Dispatch<React.SetStateAction<Set<string>>>
+  selectedToLock: Set<string>
+  setSelectedToLock: React.Dispatch<React.SetStateAction<Set<string>>>
 }
 
 interface RowProps {
-  index: number;
-  style: React.CSSProperties;
-  data: RowData;
+  index: number
+  style: React.CSSProperties
+  data: RowData
 }
 
 const Row = memo(({ index, style, data }: RowProps) => {
@@ -40,65 +40,65 @@ const Row = memo(({ index, style, data }: RowProps) => {
     setSelectedToUnlock,
     selectedToLock,
     setSelectedToLock,
-  } = data;
-  const item = filteredAchievements[index];
+  } = data
+  const item = filteredAchievements[index]
 
-  if (!item) return null;
+  if (!item) return null
 
-  const achieved = item.achieved || false;
-  const protectedAchievement = item.protected_achievement || false;
-  const percent = item.percent || 0;
-  const hidden = item.hidden || false;
+  const achieved = item.achieved || false
+  const protectedAchievement = item.protected_achievement || false
+  const percent = item.percent || 0
+  const hidden = item.hidden || false
 
-  const iconUrl = 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/';
+  const iconUrl = 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/'
   const icon = achieved
     ? `${iconUrl}${appId}/${item.iconNormal}`
-    : `${iconUrl}${appId}/${item.iconLocked}`;
+    : `${iconUrl}${appId}/${item.iconLocked}`
 
-  const isSelected = achieved ? !selectedToLock.has(item.id) : selectedToUnlock.has(item.id);
+  const isSelected = achieved ? !selectedToLock.has(item.id) : selectedToUnlock.has(item.id)
 
   const handleCheckboxChange = (checked: boolean) => {
     if (achieved) {
       setSelectedToLock(prev => {
-        const next = new Set(prev);
+        const next = new Set(prev)
         if (!checked) {
-          next.add(item.id);
+          next.add(item.id)
         } else {
-          next.delete(item.id);
+          next.delete(item.id)
         }
-        return next;
-      });
+        return next
+      })
     } else {
       setSelectedToUnlock(prev => {
-        const next = new Set(prev);
+        const next = new Set(prev)
         if (checked) {
-          next.add(item.id);
+          next.add(item.id)
         } else {
-          next.delete(item.id);
+          next.delete(item.id)
         }
-        return next;
-      });
+        return next
+      })
     }
-  };
+  }
 
   const handleToggle = async () => {
     // Make sure Steam client is running
-    const isSteamRunning = await checkSteamStatus(true);
-    if (!isSteamRunning) return;
+    const isSteamRunning = await checkSteamStatus(true)
+    if (!isSteamRunning) return
     const success = await toggleAchievement(
       userSummary?.steamId,
       appId,
       item.id,
       appName,
       achieved ? 'Locked' : 'Unlocked',
-    );
+    )
     if (success) {
-      updateAchievement(item.id, !achieved);
+      updateAchievement(item.id, !achieved)
     }
-  };
+  }
 
   return (
-    <div style={style} className="">
+    <div style={style} className=''>
       <div
         className={cn(
           'grid grid-cols-[28px_40px_1fr_auto] items-center gap-3 px-3 py-2.5',
@@ -107,18 +107,18 @@ const Row = memo(({ index, style, data }: RowProps) => {
         )}
       >
         {/* Checkbox */}
-        <div className="flex items-center justify-center">
+        <div className='flex items-center justify-center'>
           <Checkbox
             isSelected={isSelected}
             isDisabled={protectedAchievement}
             onValueChange={handleCheckboxChange}
-            size="sm"
+            size='sm'
           />
         </div>
 
         {/* Icon */}
         <Image
-          className="rounded-full select-none"
+          className='rounded-full select-none'
           src={icon}
           width={36}
           height={36}
@@ -127,13 +127,13 @@ const Row = memo(({ index, style, data }: RowProps) => {
         />
 
         {/* Name + description */}
-        <div className="min-w-0 select-none">
-          <div className="flex items-baseline gap-2 min-w-0">
-            <CustomTooltip placement="right" content={item.id}>
-              <p className="font-semibold truncate">{item.name}</p>
+        <div className='min-w-0 select-none'>
+          <div className='flex items-baseline gap-2 min-w-0'>
+            <CustomTooltip placement='right' content={item.id}>
+              <p className='font-semibold truncate'>{item.name}</p>
             </CustomTooltip>
             {percent !== undefined && percent > 0 && (
-              <span className="text-xs text-altwhite/60 shrink-0">{percent.toFixed(1)}%</span>
+              <span className='text-xs text-altwhite/60 shrink-0'>{percent.toFixed(1)}%</span>
             )}
           </div>
           <p
@@ -149,8 +149,8 @@ const Row = memo(({ index, style, data }: RowProps) => {
         {/* Action button */}
         <Button
           isDisabled={protectedAchievement}
-          size="sm"
-          radius="full"
+          size='sm'
+          radius='full'
           className={cn(
             'font-bold shrink-0',
             protectedAchievement
@@ -171,24 +171,24 @@ const Row = memo(({ index, style, data }: RowProps) => {
           }
         >
           {protectedAchievement
-            ? i18next.t($ => $['achievementManager.achievements.protected'])
+            ? i18next.t('achievementManager.achievements.protected')
             : achieved
-              ? i18next.t($ => $['achievementManager.achievements.lock'])
-              : i18next.t($ => $['achievementManager.achievements.unlock'])}
+              ? i18next.t('achievementManager.achievements.lock')
+              : i18next.t('achievementManager.achievements.unlock')}
         </Button>
       </div>
     </div>
-  );
-});
+  )
+})
 
-Row.displayName = 'Row';
+Row.displayName = 'Row'
 
 interface AchievementsListProps {
-  achievements: Achievement[];
-  setAchievements: React.Dispatch<React.SetStateAction<Achievement[]>>;
-  protectedAchievements: boolean;
-  windowInnerHeight: number;
-  setRefreshKey: React.Dispatch<React.SetStateAction<number>>;
+  achievements: Achievement[]
+  setAchievements: React.Dispatch<React.SetStateAction<Achievement[]>>
+  protectedAchievements: boolean
+  windowInnerHeight: number
+  setRefreshKey: React.Dispatch<React.SetStateAction<number>>
 }
 
 export const AchievementsList = ({
@@ -198,13 +198,13 @@ export const AchievementsList = ({
   windowInnerHeight,
   setRefreshKey,
 }: AchievementsListProps) => {
-  const { t } = useTranslation();
-  const [selectedToUnlock, setSelectedToUnlock] = useState<Set<string>>(new Set());
-  const [selectedToLock, setSelectedToLock] = useState<Set<string>>(new Set());
-  const userSummary = useUserStore(state => state.userSummary);
-  const achievementQueryValue = useSearchStore(state => state.achievementQueryValue);
-  const appId = useStateStore(state => state.appId);
-  const appName = useStateStore(state => state.appName);
+  const { t } = useTranslation()
+  const [selectedToUnlock, setSelectedToUnlock] = useState<Set<string>>(new Set())
+  const [selectedToLock, setSelectedToLock] = useState<Set<string>>(new Set())
+  const userSummary = useUserStore(state => state.userSummary)
+  const achievementQueryValue = useSearchStore(state => state.achievementQueryValue)
+  const appId = useStateStore(state => state.appId)
+  const appName = useStateStore(state => state.appName)
 
   const updateAchievement = (achievementId: string, newAchievedState: boolean) => {
     setAchievements(prevAchievements => {
@@ -212,23 +212,23 @@ export const AchievementsList = ({
         achievement.id === achievementId
           ? { ...achievement, achieved: newAchievedState }
           : achievement,
-      );
-    });
+      )
+    })
     // Clear from selection sets when manually toggled
     if (newAchievedState) {
       setSelectedToUnlock(prev => {
-        const next = new Set(prev);
-        next.delete(achievementId);
-        return next;
-      });
+        const next = new Set(prev)
+        next.delete(achievementId)
+        return next
+      })
     } else {
       setSelectedToLock(prev => {
-        const next = new Set(prev);
-        next.delete(achievementId);
-        return next;
-      });
+        const next = new Set(prev)
+        next.delete(achievementId)
+        return next
+      })
     }
-  };
+  }
 
   const filteredAchievements = useMemo(
     () =>
@@ -236,7 +236,7 @@ export const AchievementsList = ({
         achievement.name.toLowerCase().includes(achievementQueryValue.toLowerCase()),
       ),
     [achievements, achievementQueryValue],
-  );
+  )
 
   const itemData: RowData = {
     userSummary,
@@ -248,10 +248,10 @@ export const AchievementsList = ({
     setSelectedToUnlock,
     selectedToLock,
     setSelectedToLock,
-  };
+  }
 
   return (
-    <div className="flex flex-col gap-2 w-full scroll-smooth">
+    <div className='flex flex-col gap-2 w-full scroll-smooth'>
       <AchievementButtons
         achievements={achievements}
         setAchievements={setAchievements}
@@ -263,19 +263,17 @@ export const AchievementsList = ({
         setSelectedToLock={setSelectedToLock}
       />
 
-      <div className="border border-border/40 rounded-xl overflow-hidden bg-base/50">
+      <div className='border border-border/40 rounded-xl overflow-hidden bg-base/50'>
         {achievements.length === 0 ? (
-          <div className="flex justify-center items-center p-12">
-            <p className="text-center text-content">
-              {t($ => $['achievementManager.achievements.empty'])}
-            </p>
+          <div className='flex justify-center items-center p-12'>
+            <p className='text-center text-content'>{t('achievementManager.achievements.empty')}</p>
           </div>
         ) : (
           <>
             {/* Sticky column header */}
-            <div className="grid grid-cols-[28px_40px_1fr_auto] items-center gap-3 px-3 py-2 border-b border-border/40 sticky top-0 bg-sidebar z-10">
-              <span className="text-sm font-semibold text-content">
-                {t($ => $['achievementManager.achievements.title'])}
+            <div className='grid grid-cols-[28px_40px_1fr_auto] items-center gap-3 px-3 py-2 border-b border-border/40 sticky top-0 bg-sidebar z-10'>
+              <span className='text-sm font-semibold text-content'>
+                {t('achievementManager.achievements.title')}
               </span>
             </div>
 
@@ -284,7 +282,7 @@ export const AchievementsList = ({
               height={windowInnerHeight - 282}
               itemCount={filteredAchievements.length}
               itemSize={60}
-              width="100%"
+              width='100%'
               itemData={itemData}
             >
               {Row}
@@ -293,5 +291,5 @@ export const AchievementsList = ({
         )}
       </div>
     </div>
-  );
-};
+  )
+}

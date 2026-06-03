@@ -1,27 +1,27 @@
-import type { InvokeUsers, InvokeUserSummary, UserSummary } from '@/shared/types';
-import { invoke } from '@tauri-apps/api/core';
-import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { showDangerToast } from '@/shared/components';
-import { useUserStore } from '@/shared/stores';
-import { checkSteamStatus, decrypt, logEvent } from '@/shared/utils';
+import type { InvokeUsers, InvokeUserSummary, UserSummary } from '@/shared/types'
+import { invoke } from '@tauri-apps/api/core'
+import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { showDangerToast } from '@/shared/components'
+import { useUserStore } from '@/shared/stores'
+import { checkSteamStatus, decrypt, logEvent } from '@/shared/utils'
 
 export function useSignIn(refreshKey: number) {
-  const { t } = useTranslation();
-  const userSettings = useUserStore(state => state.userSettings);
-  const setUserSummary = useUserStore(state => state.setUserSummary);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSwitching, setIsSwitching] = useState(false);
-  const [steamUsers, setSteamUsers] = useState<UserSummary[]>([]);
-  const [userSummaries, setUserSummaries] = useState<UserSummary[]>([]);
-  const [selectedUser, setSelectedUser] = useState<UserSummary | null>(null);
+  const { t } = useTranslation()
+  const userSettings = useUserStore(state => state.userSettings)
+  const setUserSummary = useUserStore(state => state.setUserSummary)
+  const [isLoading, setIsLoading] = useState(true)
+  const [isSwitching, setIsSwitching] = useState(false)
+  const [steamUsers, setSteamUsers] = useState<UserSummary[]>([])
+  const [userSummaries, setUserSummaries] = useState<UserSummary[]>([])
+  const [selectedUser, setSelectedUser] = useState<UserSummary | null>(null)
 
   // Process user summary data from API response
   const processUserSummaries = (response: InvokeUserSummary, steamUsersData: UserSummary[]) => {
-    const players = response.response.players || [];
+    const players = response.response.players || []
 
     return steamUsersData.flatMap(userData => {
-      const player = players.find(p => p.steamid === userData?.steamId);
+      const player = players.find(p => p.steamid === userData?.steamId)
 
       if (player) {
         return {
@@ -29,85 +29,85 @@ export function useSignIn(refreshKey: number) {
           personaName: player.personaname,
           avatar: player.avatar.replace('.jpg', '_full.jpg'),
           mostRecent: userData?.mostRecent ?? 0,
-        };
+        }
       }
 
       // Don't include users without proper data
-      return [];
-    });
-  };
+      return []
+    })
+  }
 
   useEffect(() => {
     // Get all steam users
     const getSteamUsers = async () => {
-      setIsLoading(true);
+      setIsLoading(true)
 
       // Simulate loading time for better UX
       // await new Promise(resolve => setTimeout(resolve, 1000))
 
       try {
-        const response = await invoke<InvokeUsers>('get_users');
+        const response = await invoke<InvokeUsers>('get_users')
 
         if (response.users && response.users.length > 0) {
-          const apiKey = userSettings.general?.apiKey;
-          const validUsers = response.users.filter(user => user?.steamId);
+          const apiKey = userSettings.general?.apiKey
+          const validUsers = response.users.filter(user => user?.steamId)
 
           if (validUsers.length === 0) {
-            setSteamUsers([]);
-            setUserSummaries([]);
-            setIsLoading(false);
-            return;
+            setSteamUsers([])
+            setUserSummaries([])
+            setIsLoading(false)
+            return
           }
 
           try {
             // Check for cached user summaries first
-            const cachedUserSummaries = await invoke<InvokeUserSummary[]>('get_user_summary_cache');
+            const cachedUserSummaries = await invoke<InvokeUserSummary[]>('get_user_summary_cache')
 
-            const steamUsers: UserSummary[] = [];
-            const uncachedUsers: UserSummary[] = [];
+            const steamUsers: UserSummary[] = []
+            const uncachedUsers: UserSummary[] = []
 
             // Process each user - use cache if available, otherwise collect for API call
             validUsers.forEach(user => {
               const cachedUserSummary = cachedUserSummaries.find(
                 (summary: InvokeUserSummary) =>
                   summary?.response?.players?.[0]?.steamid === String(user?.steamId),
-              );
+              )
 
               if (cachedUserSummary) {
                 // Use cached data
-                const player = cachedUserSummary.response.players[0];
+                const player = cachedUserSummary.response.players[0]
                 steamUsers.push({
                   steamId: player.steamid,
                   personaName: player.personaname,
                   avatar: player.avatar.replace('.jpg', '_full.jpg'),
                   mostRecent: user?.mostRecent ?? 0,
-                });
+                })
               } else {
                 // Collect for API call
-                uncachedUsers.push(user);
+                uncachedUsers.push(user)
               }
-            });
+            })
 
             // If there are uncached users, make API call for them
             if (uncachedUsers.length > 0) {
-              const steamIds = uncachedUsers.map(user => String(user?.steamId)).join(',');
+              const steamIds = uncachedUsers.map(user => String(user?.steamId)).join(',')
               const userSummaryResponse = await invoke<InvokeUserSummary>('get_user_summary', {
                 steamId: steamIds,
                 apiKey: apiKey ? decrypt(apiKey) : null,
-              });
+              })
 
-              const freshUsers = processUserSummaries(userSummaryResponse, uncachedUsers);
-              steamUsers.push(...freshUsers);
+              const freshUsers = processUserSummaries(userSummaryResponse, uncachedUsers)
+              steamUsers.push(...freshUsers)
             }
 
             // Sort users by last logged in to Steam client - most recent first
-            steamUsers.sort((b, a) => (a?.mostRecent ?? 0) - (b?.mostRecent ?? 0));
+            steamUsers.sort((b, a) => (a?.mostRecent ?? 0) - (b?.mostRecent ?? 0))
 
-            setSteamUsers(steamUsers);
-            setUserSummaries(steamUsers);
-            setIsLoading(false);
+            setSteamUsers(steamUsers)
+            setUserSummaries(steamUsers)
+            setIsLoading(false)
           } catch (error) {
-            console.error('Error fetching user summaries:', error);
+            console.error('Error fetching user summaries:', error)
 
             // Fallback: create basic user summaries without API data
             const steamUsers = validUsers.map(user => ({
@@ -115,93 +115,93 @@ export function useSignIn(refreshKey: number) {
               personaName: user?.personaName || 'Unknown User',
               avatar: '',
               mostRecent: user?.mostRecent ?? 0,
-            }));
+            }))
 
-            steamUsers.sort((b, a) => (a?.mostRecent ?? 0) - (b?.mostRecent ?? 0));
-            setSteamUsers(steamUsers);
-            setUserSummaries(steamUsers);
-            setIsLoading(false);
+            steamUsers.sort((b, a) => (a?.mostRecent ?? 0) - (b?.mostRecent ?? 0))
+            setSteamUsers(steamUsers)
+            setUserSummaries(steamUsers)
+            setIsLoading(false)
           }
         } else {
-          setSteamUsers([]);
-          setUserSummaries([]);
+          setSteamUsers([])
+          setUserSummaries([])
         }
       } catch (error) {
-        console.error('Error in getSteamUsers:', error);
-        setSteamUsers([]);
-        setUserSummaries([]);
+        console.error('Error in getSteamUsers:', error)
+        setSteamUsers([])
+        setUserSummaries([])
       } finally {
-        setIsLoading(false);
-      }
-    };
-    getSteamUsers();
-  }, [userSettings.general?.apiKey, refreshKey]);
-
-  const handleSelectUser = async (user: UserSummary) => {
-    setSelectedUser(user);
-    if (user?.mostRecent !== 1) {
-      try {
-        await invoke('prepare_steam_account_switch', { steamId: user?.steamId });
-      } catch (error) {
-        console.error('Error in (prepare_steam_account_switch):', error);
-        logEvent(`[Error] in (prepare_steam_account_switch): ${error}`);
+        setIsLoading(false)
       }
     }
-  };
+    getSteamUsers()
+  }, [userSettings.general?.apiKey, refreshKey])
+
+  const handleSelectUser = async (user: UserSummary) => {
+    setSelectedUser(user)
+    if (user?.mostRecent !== 1) {
+      try {
+        await invoke('prepare_steam_account_switch', { steamId: user?.steamId })
+      } catch (error) {
+        console.error('Error in (prepare_steam_account_switch):', error)
+        logEvent(`[Error] in (prepare_steam_account_switch): ${error}`)
+      }
+    }
+  }
 
   const handleLogin = async (index: number) => {
     try {
-      const isSwitchingAccount = userSummaries[index]?.mostRecent !== 1;
-      const devAccounts = JSON.parse(process.env.STEAM_DEV_ACCOUNTS ?? '[]') as string[];
-      const isDev = await invoke('is_dev');
+      const isSwitchingAccount = userSummaries[index]?.mostRecent !== 1
+      const devAccounts = JSON.parse(process.env.STEAM_DEV_ACCOUNTS ?? '[]') as string[]
+      const isDev = await invoke('is_dev')
 
-      const isDevAccount = devAccounts.includes(userSummaries[index]?.steamId ?? '');
+      const isDevAccount = devAccounts.includes(userSummaries[index]?.steamId ?? '')
 
-      setIsLoading(true);
-      const userSummary = userSummaries[index];
+      setIsLoading(true)
+      const userSummary = userSummaries[index]
 
       if (isSwitchingAccount && !isDev && !isDevAccount) {
         // VDF + registry already written on card selection; just restart Steam
-        setIsSwitching(true);
+        setIsSwitching(true)
         try {
-          await invoke('switch_steam_account');
+          await invoke('switch_steam_account')
         } catch (error) {
-          console.error('Error in (switch_steam_account):', error);
-          logEvent(`[Error] in (switch_steam_account): ${error}`);
+          console.error('Error in (switch_steam_account):', error)
+          logEvent(`[Error] in (switch_steam_account): ${error}`)
         }
-        setIsSwitching(false);
+        setIsSwitching(false)
       } else if (!isDev && !isDevAccount) {
         // Same account: launch Steam if it isn't already running
-        const isSteamRunning = await checkSteamStatus(false);
+        const isSteamRunning = await checkSteamStatus(false)
         if (!isSteamRunning) {
           try {
-            await invoke('launch_steam');
+            await invoke('launch_steam')
           } catch (error) {
-            console.error('Error in (launch_steam):', error);
-            logEvent(`[Error] in (launch_steam): ${error}`);
+            console.error('Error in (launch_steam):', error)
+            logEvent(`[Error] in (launch_steam): ${error}`)
           }
         }
       }
 
       // Save selected user to localStorage and context for app-wide access
-      localStorage.setItem('userSummary', JSON.stringify(userSummary));
+      localStorage.setItem('userSummary', JSON.stringify(userSummary))
 
-      setUserSummary(userSummary);
-      setIsLoading(false);
-      logEvent(`[System] Logged in as ${userSummary?.personaName}`);
+      setUserSummary(userSummary)
+      setIsLoading(false)
+      logEvent(`[System] Logged in as ${userSummary?.personaName}`)
     } catch (error) {
-      setIsLoading(false);
-      showDangerToast(t($ => $['common.error']));
-      console.error('Error in (handleLogin):', error);
-      logEvent(`[Error] in (handleLogin): ${error}`);
+      setIsLoading(false)
+      showDangerToast(t('common.error'))
+      console.error('Error in (handleLogin):', error)
+      logEvent(`[Error] in (handleLogin): ${error}`)
     }
-  };
+  }
 
   const getRandomAvatarUrl = () => {
-    const randomSeed = Math.random().toString(36).substring(7);
-    const avatarUrl = `https://api.dicebear.com/9.x/fun-emoji/svg?seed=${randomSeed}`;
-    return avatarUrl;
-  };
+    const randomSeed = Math.random().toString(36).substring(7)
+    const avatarUrl = `https://api.dicebear.com/9.x/fun-emoji/svg?seed=${randomSeed}`
+    return avatarUrl
+  }
 
   return {
     isLoading,
@@ -212,5 +212,5 @@ export function useSignIn(refreshKey: number) {
     steamUsers,
     selectedUser,
     getRandomAvatarUrl,
-  };
+  }
 }

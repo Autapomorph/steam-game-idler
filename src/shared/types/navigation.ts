@@ -1,10 +1,10 @@
-import type { ComponentType } from 'react';
+import type { ComponentType } from 'react'
 
 export type CustomListType =
   | 'cardFarmingList'
   | 'achievementUnlockerList'
   | 'autoIdleList'
-  | 'favoritesList';
+  | 'favoritesList'
 export type ActivePageType =
   | 'setup'
   | 'games'
@@ -12,8 +12,8 @@ export type ActivePageType =
   | 'freeGames'
   | 'settings'
   | `customlists/${string}`
-  | 'inventoryManager';
-export type CurrentTabType = 'achievements' | 'statistics';
+  | 'inventoryManager'
+export type CurrentTabType = 'achievements' | 'statistics'
 export type CurrentSettingsTabType =
   | 'general'
   | 'card-farming'
@@ -24,28 +24,28 @@ export type CurrentSettingsTabType =
   | 'game-settings'
   | 'customization'
   | 'keybinds'
-  | 'debug';
+  | 'debug'
 
 export interface NavigationContextType {
-  activePage: ActivePageType;
-  setActivePage: (value: ActivePageType) => void;
-  currentTab: CurrentTabType;
-  setCurrentTab: (value: CurrentTabType) => void;
-  currentSettingsTab: CurrentSettingsTabType;
-  setCurrentSettingsTab: (value: CurrentSettingsTabType) => void;
-  previousActivePage: ActivePageType;
-  setPreviousActivePage: (value: ActivePageType) => void;
+  activePage: ActivePageType
+  setActivePage: (value: ActivePageType) => void
+  currentTab: CurrentTabType
+  setCurrentTab: (value: CurrentTabType) => void
+  currentSettingsTab: CurrentSettingsTabType
+  setCurrentSettingsTab: (value: CurrentSettingsTabType) => void
+  previousActivePage: ActivePageType
+  setPreviousActivePage: (value: ActivePageType) => void
 }
 
 export interface SidebarItem {
-  id: string;
-  page: ActivePageType;
-  title: string;
-  icon: ComponentType<{ fontSize?: number; className?: string }>;
-  shouldShow?: boolean;
-  isActive?: boolean;
-  customClassName?: string;
-  hasDivider?: boolean;
-  isBeta?: boolean;
-  hasUnread?: boolean;
+  id: string
+  page: ActivePageType
+  title: string
+  icon: ComponentType<{ fontSize?: number; className?: string }>
+  shouldShow?: boolean
+  isActive?: boolean
+  customClassName?: string
+  hasDivider?: boolean
+  isBeta?: boolean
+  hasUnread?: boolean
 }

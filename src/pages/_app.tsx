@@ -1,26 +1,26 @@
-import type { AppProps } from 'next/app';
-import { useTranslation } from 'react-i18next';
-import { HeroUIProvider, ToastProvider } from '@heroui/react';
-import { TbX } from 'react-icons/tb';
+import type { AppProps } from 'next/app'
+import { useTranslation } from 'react-i18next'
+import { HeroUIProvider, ToastProvider } from '@heroui/react'
+import { TbX } from 'react-icons/tb'
 
-import { FullscreenLoader, Layout } from '@/shared/components';
-import { ErrorBoundaryProvider, I18nProvider, ThemeProvider } from '@/shared/providers';
-import { useLoaderStore, useStateStore } from '@/shared/stores';
+import { FullscreenLoader, Layout } from '@/shared/components'
+import { ErrorBoundaryProvider, I18nProvider, ThemeProvider } from '@/shared/providers'
+import { useLoaderStore, useStateStore } from '@/shared/stores'
 
-import '@/styles/globals.css';
+import '@/styles/globals.css'
 
 const App = ({ Component, pageProps }: AppProps) => {
-  const { i18n } = useTranslation();
-  const { loadingUserSummary } = useStateStore();
-  const { loaderFadeOut } = useLoaderStore();
+  const { i18n } = useTranslation()
+  const { loadingUserSummary } = useStateStore()
+  const { loaderFadeOut } = useLoaderStore()
 
   return (
     <I18nProvider>
       <ThemeProvider
-        attribute="class"
+        attribute='class'
         themes={['dark', 'black']}
         enableSystem
-        defaultTheme="dark"
+        defaultTheme='dark'
         disableTransitionOnChange
       >
         <HeroUIProvider locale={i18n.language}>
@@ -30,7 +30,7 @@ const App = ({ Component, pageProps }: AppProps) => {
               variant: 'flat',
               timeout: 3000,
               shouldShowTimeoutProgress: true,
-              closeIcon: <TbX size={16} className="text-content" />,
+              closeIcon: <TbX size={16} className='text-content' />,
               classNames: {
                 base: ['bg-sidebar border-none cursor-default'],
                 description: ['text-content text-sm font-medium'],
@@ -47,7 +47,7 @@ const App = ({ Component, pageProps }: AppProps) => {
         </HeroUIProvider>
       </ThemeProvider>
     </I18nProvider>
-  );
-};
+  )
+}
 
-export default App;
+export default App

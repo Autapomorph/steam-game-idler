@@ -1,26 +1,26 @@
-import type { Achievement, SortOption } from '@/shared/types';
-import { useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import { TbLock, TbLockOpen, TbSortDescending2 } from 'react-icons/tb';
-import { Button, cn, Select, SelectItem, useDisclosure } from '@heroui/react';
+import type { Achievement, SortOption } from '@/shared/types'
+import { useState } from 'react'
+import { Trans, useTranslation } from 'react-i18next'
+import { TbLock, TbLockOpen, TbSortDescending2 } from 'react-icons/tb'
+import { Button, cn, Select, SelectItem, useDisclosure } from '@heroui/react'
 import {
   handleApplyChanges,
   handleLockAllAchievements,
   handleSortingChange,
   handleUnlockAllAchievements,
-} from '@/features/achievement-manager';
-import { CustomModal } from '@/shared/components';
-import { useStateStore } from '@/shared/stores';
+} from '@/features/achievement-manager'
+import { CustomModal } from '@/shared/components'
+import { useStateStore } from '@/shared/stores'
 
 interface AchievementButtonsProps {
-  achievements: Achievement[];
-  setAchievements: React.Dispatch<React.SetStateAction<Achievement[]>>;
-  protectedAchievements: boolean;
-  setRefreshKey?: React.Dispatch<React.SetStateAction<number>>;
-  selectedToUnlock: Set<string>;
-  setSelectedToUnlock: React.Dispatch<React.SetStateAction<Set<string>>>;
-  selectedToLock: Set<string>;
-  setSelectedToLock: React.Dispatch<React.SetStateAction<Set<string>>>;
+  achievements: Achievement[]
+  setAchievements: React.Dispatch<React.SetStateAction<Achievement[]>>
+  protectedAchievements: boolean
+  setRefreshKey?: React.Dispatch<React.SetStateAction<number>>
+  selectedToUnlock: Set<string>
+  setSelectedToUnlock: React.Dispatch<React.SetStateAction<Set<string>>>
+  selectedToLock: Set<string>
+  setSelectedToLock: React.Dispatch<React.SetStateAction<Set<string>>>
 }
 
 export const AchievementButtons = ({
@@ -33,108 +33,108 @@ export const AchievementButtons = ({
   selectedToLock,
   setSelectedToLock,
 }: AchievementButtonsProps) => {
-  const { t } = useTranslation();
-  const appId = useStateStore(state => state.appId);
-  const appName = useStateStore(state => state.appName);
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [state, setState] = useState('');
+  const { t } = useTranslation()
+  const appId = useStateStore(state => state.appId)
+  const appName = useStateStore(state => state.appName)
+  const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const [state, setState] = useState('')
 
   const sortOptions: SortOption[] = [
     {
       key: 'percent',
-      label: t($ => $['achievementManager.achievements.sort.percent']),
+      label: t('achievementManager.achievements.sort.percent'),
     },
     {
       key: 'title',
-      label: t($ => $['achievementManager.achievements.sort.title']),
+      label: t('achievementManager.achievements.sort.title'),
     },
     {
       key: 'unlocked',
-      label: t($ => $['achievementManager.achievements.sort.unlocked']),
+      label: t('achievementManager.achievements.sort.unlocked'),
     },
     {
       key: 'locked',
-      label: t($ => $['achievementManager.achievements.sort.locked']),
+      label: t('achievementManager.achievements.sort.locked'),
     },
     {
       key: 'unprotected',
-      label: t($ => $['achievementManager.achievements.sort.unprotected']),
+      label: t('achievementManager.achievements.sort.unprotected'),
     },
     {
       key: 'protected',
-      label: t($ => $['achievementManager.achievements.sort.protected']),
+      label: t('achievementManager.achievements.sort.protected'),
     },
-  ];
+  ]
 
-  const unAchieved = achievements.filter(achievement => !achievement.achieved);
-  const achieved = achievements.filter(achievement => achievement.achieved);
+  const unAchieved = achievements.filter(achievement => !achievement.achieved)
+  const achieved = achievements.filter(achievement => achievement.achieved)
 
-  const hasChanges = selectedToUnlock.size > 0 || selectedToLock.size > 0;
+  const hasChanges = selectedToUnlock.size > 0 || selectedToLock.size > 0
 
   const getTranslatedState = (state: string) => {
-    if (state === 'unlock') return t($ => $['achievementManager.achievements.unlock']);
-    if (state === 'lock') return t($ => $['achievementManager.achievements.lock']);
-    return state;
-  };
+    if (state === 'unlock') return t('achievementManager.achievements.unlock')
+    if (state === 'lock') return t('achievementManager.achievements.lock')
+    return state
+  }
 
   const handleShowModal = (onOpen: () => void, state: string) => {
-    setState(state);
-    onOpen();
-  };
+    setState(state)
+    onOpen()
+  }
 
   return (
-    <div className="absolute top-0 right-0 flex gap-2 mt-4 px-10">
+    <div className='absolute top-0 right-0 flex gap-2 mt-4 px-10'>
       <Button
-        className="bg-btn-secondary text-btn-text font-bold"
-        radius="full"
+        className='bg-btn-secondary text-btn-text font-bold'
+        radius='full'
         onPress={() => {
-          if (setRefreshKey) setRefreshKey(prev => prev + 1);
+          if (setRefreshKey) setRefreshKey(prev => prev + 1)
         }}
       >
-        {t($ => $['common.refresh'])}
+        {t('common.refresh')}
       </Button>
 
       {hasChanges && (
         <Button
-          className="bg-btn-secondary text-btn-text font-bold"
-          radius="full"
+          className='bg-btn-secondary text-btn-text font-bold'
+          radius='full'
           onPress={() => handleShowModal(onOpen, 'applyChanges')}
           startContent={<TbLockOpen size={20} />}
         >
-          {t($ => $['achievementManager.achievements.applyChanges'], {
+          {t('achievementManager.achievements.applyChanges', {
             total: selectedToUnlock.size + selectedToLock.size,
           })}
         </Button>
       )}
 
       <Button
-        className="bg-btn-secondary text-btn-text font-bold"
-        radius="full"
+        className='bg-btn-secondary text-btn-text font-bold'
+        radius='full'
         isDisabled={protectedAchievements || unAchieved.length === 0}
         onPress={() => handleShowModal(onOpen, 'unlock')}
         startContent={<TbLockOpen size={20} />}
       >
-        {t($ => $['achievementManager.achievements.unlockAll'])}
+        {t('achievementManager.achievements.unlockAll')}
       </Button>
 
       <Button
-        className="font-bold"
-        radius="full"
-        color="danger"
+        className='font-bold'
+        radius='full'
+        color='danger'
         isDisabled={protectedAchievements || achieved.length === 0}
         onPress={() => handleShowModal(onOpen, 'lock')}
         startContent={<TbLock size={20} />}
       >
-        {t($ => $['achievementManager.achievements.lockAll'])}
+        {t('achievementManager.achievements.lockAll')}
       </Button>
 
       <Select
-        aria-label="sort"
+        aria-label='sort'
         disallowEmptySelection
-        radius="full"
+        radius='full'
         startContent={<TbSortDescending2 fontSize={26} />}
         items={sortOptions}
-        className="w-57.5"
+        className='w-57.5'
         classNames={{
           listbox: ['p-0'],
           value: ['text-sm !text-content'],
@@ -146,7 +146,7 @@ export const AchievementButtons = ({
         }}
         defaultSelectedKeys={['percent']}
         onSelectionChange={e => {
-          handleSortingChange(e.currentKey, achievements, setAchievements);
+          handleSortingChange(e.currentKey, achievements, setAchievements)
         }}
       >
         {item => (
@@ -163,9 +163,9 @@ export const AchievementButtons = ({
       <CustomModal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
-        title={t($ => $['common.confirm'])}
+        title={t('common.confirm')}
         body={
-          <p className="text-sm">
+          <p className='text-sm'>
             {state === 'applyChanges' ? (
               <>
                 Are you sure you want to <strong>unlock {selectedToUnlock.size}</strong> and{' '}
@@ -173,7 +173,7 @@ export const AchievementButtons = ({
               </>
             ) : (
               <Trans
-                i18nKey={$ => $['achievementManager.achievements.modal']}
+                i18nKey='achievementManager.achievements.modal'
                 values={{
                   state: getTranslatedState(state).toLowerCase(),
                 }}
@@ -186,21 +186,21 @@ export const AchievementButtons = ({
         buttons={
           <>
             <Button
-              size="sm"
-              color="danger"
-              variant="light"
-              radius="full"
-              className="font-semibold"
+              size='sm'
+              color='danger'
+              variant='light'
+              radius='full'
+              className='font-semibold'
               onPress={onOpenChange}
             >
-              {t($ => $['common.cancel'])}
+              {t('common.cancel')}
             </Button>
             <Button
-              size="sm"
-              className="bg-btn-secondary text-btn-text font-bold"
-              radius="full"
+              size='sm'
+              className='bg-btn-secondary text-btn-text font-bold'
+              radius='full'
               onPress={() => {
-                if (!appId || !appName) return;
+                if (!appId || !appName) return
                 if (state === 'applyChanges') {
                   handleApplyChanges(
                     appId,
@@ -212,7 +212,7 @@ export const AchievementButtons = ({
                     setSelectedToUnlock,
                     setSelectedToLock,
                     onOpenChange,
-                  );
+                  )
                 } else if (state === 'unlock') {
                   handleUnlockAllAchievements(
                     appId,
@@ -220,7 +220,7 @@ export const AchievementButtons = ({
                     achievements,
                     setAchievements,
                     onOpenChange,
-                  );
+                  )
                 } else {
                   handleLockAllAchievements(
                     appId,
@@ -228,15 +228,15 @@ export const AchievementButtons = ({
                     achievements,
                     setAchievements,
                     onOpenChange,
-                  );
+                  )
                 }
               }}
             >
-              {t($ => $['common.confirm'])}
+              {t('common.confirm')}
             </Button>
           </>
         }
       />
     </div>
-  );
-};
+  )
+}

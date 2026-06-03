@@ -1,20 +1,20 @@
-import type { Game, UserSettings, UserSummary } from '@/shared/types';
-import { Time } from '@internationalized/date';
-import { create } from 'zustand';
+import type { Game, UserSettings, UserSummary } from '@/shared/types'
+import { Time } from '@internationalized/date'
+import { create } from 'zustand'
 
 interface UserStore {
-  userSummary: UserSummary;
-  setUserSummary: (value: UserSummary | ((prev: UserSummary) => UserSummary)) => void;
-  achievementsUnavailable: boolean;
-  setAchievementsUnavailable: (value: boolean | ((prev: boolean) => boolean)) => void;
-  statisticsUnavailable: boolean;
-  setStatisticsUnavailable: (value: boolean | ((prev: boolean) => boolean)) => void;
-  gamesList: Game[];
-  setGamesList: (value: Game[] | ((prev: Game[]) => Game[])) => void;
-  freeGamesList: Game[];
-  setFreeGamesList: (value: Game[] | ((prev: Game[]) => Game[])) => void;
-  userSettings: UserSettings;
-  setUserSettings: (value: UserSettings | ((prev: UserSettings) => UserSettings)) => void;
+  userSummary: UserSummary
+  setUserSummary: (value: UserSummary | ((prev: UserSummary) => UserSummary)) => void
+  achievementsUnavailable: boolean
+  setAchievementsUnavailable: (value: boolean | ((prev: boolean) => boolean)) => void
+  statisticsUnavailable: boolean
+  setStatisticsUnavailable: (value: boolean | ((prev: boolean) => boolean)) => void
+  gamesList: Game[]
+  setGamesList: (value: Game[] | ((prev: Game[]) => Game[])) => void
+  freeGamesList: Game[]
+  setFreeGamesList: (value: Game[] | ((prev: Game[]) => Game[])) => void
+  userSettings: UserSettings
+  setUserSettings: (value: UserSettings | ((prev: UserSettings) => UserSettings)) => void
 }
 
 export const useUserStore = create<UserStore>(set => ({
@@ -65,6 +65,7 @@ export const useUserStore = create<UserStore>(set => ({
     cardFarming: {
       listGames: false,
       allGames: true,
+      autoFarmCards: false,
       nextTaskCheckbox: false,
       nextTask: null,
       credentials: null,
@@ -101,4 +102,4 @@ export const useUserStore = create<UserStore>(set => ({
     set(state => ({
       userSettings: typeof value === 'function' ? value(state.userSettings) : value,
     })),
-}));
+}))

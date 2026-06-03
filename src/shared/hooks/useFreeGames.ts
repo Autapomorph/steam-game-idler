@@ -1,29 +1,29 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react'
 
-import { useGamesList } from '@/features/games-list';
-import { useUserStore } from '@/shared/stores';
-import { autoRedeemFreeGames, checkForFreeGames } from '@/shared/utils';
+import { useGamesList } from '@/features/games-list'
+import { useUserStore } from '@/shared/stores'
+import { autoRedeemFreeGames, checkForFreeGames } from '@/shared/utils'
 
 export function useFreeGames() {
-  const gamesContext = useGamesList();
-  const userSummary = useUserStore(state => state.userSummary);
-  const userSettings = useUserStore(state => state.userSettings);
-  const freeGamesList = useUserStore(state => state.freeGamesList);
-  const setFreeGamesList = useUserStore(state => state.setFreeGamesList);
-  const gamesList = useUserStore(state => state.gamesList);
-  const lastRedeemedIdsRef = useRef<string>('');
+  const gamesContext = useGamesList()
+  const userSummary = useUserStore(state => state.userSummary)
+  const userSettings = useUserStore(state => state.userSettings)
+  const freeGamesList = useUserStore(state => state.freeGamesList)
+  const setFreeGamesList = useUserStore(state => state.setFreeGamesList)
+  const gamesList = useUserStore(state => state.gamesList)
+  const lastRedeemedIdsRef = useRef<string>('')
 
   const freeGamesCheck = useCallback(() => {
-    checkForFreeGames(setFreeGamesList, gamesList);
-  }, [setFreeGamesList, gamesList]);
+    checkForFreeGames(setFreeGamesList, gamesList)
+  }, [setFreeGamesList, gamesList])
 
   // Check for free games
   useEffect(() => {
-    freeGamesCheck();
+    freeGamesCheck()
 
-    const intervalId = setInterval(freeGamesCheck, 60 * 60 * 1000);
-    return () => clearInterval(intervalId);
-  }, [userSummary?.steamId, freeGamesCheck]);
+    const intervalId = setInterval(freeGamesCheck, 60 * 60 * 1000)
+    return () => clearInterval(intervalId)
+  }, [userSummary?.steamId, freeGamesCheck])
 
   // Auto redeem free games
   useEffect(() => {
@@ -32,11 +32,11 @@ export function useFreeGames() {
       const ids = freeGamesList
         .map(g => g.appid)
         .sort((appIdA, appIdB) => appIdA - appIdB)
-        .join(',');
-      if (lastRedeemedIdsRef.current === ids) return; // Already redeemed this set
+        .join(',')
+      if (lastRedeemedIdsRef.current === ids) return // Already redeemed this set
 
-      lastRedeemedIdsRef.current = ids;
-      autoRedeemFreeGames(freeGamesList, setFreeGamesList, userSummary, gamesContext);
+      lastRedeemedIdsRef.current = ids
+      autoRedeemFreeGames(freeGamesList, setFreeGamesList, userSummary, gamesContext)
     }
   }, [
     userSettings.general.autoRedeemFreeGames,
@@ -44,5 +44,5 @@ export function useFreeGames() {
     setFreeGamesList,
     userSummary,
     gamesContext,
-  ]);
+  ])
 }

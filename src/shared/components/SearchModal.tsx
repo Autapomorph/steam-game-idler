@@ -1,63 +1,63 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { RiSearchLine } from 'react-icons/ri';
-import { TbX } from 'react-icons/tb';
-import { cn, Input, Modal, ModalBody, ModalContent, ModalHeader } from '@heroui/react';
-import { useTitlebar } from '@/shared/hooks';
-import { useNavigationStore, useSearchStore, useStateStore, useUserStore } from '@/shared/stores';
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { RiSearchLine } from 'react-icons/ri'
+import { TbX } from 'react-icons/tb'
+import { cn, Input, Modal, ModalBody, ModalContent, ModalHeader } from '@heroui/react'
+import { useTitlebar } from '@/shared/hooks'
+import { useNavigationStore, useSearchStore, useStateStore, useUserStore } from '@/shared/stores'
 
 interface SearchModalProps {
-  isModalOpen?: boolean;
-  onModalClose?: () => void;
+  isModalOpen?: boolean
+  onModalClose?: () => void
 }
 
 export const SearchModal = ({ isModalOpen = false, onModalClose }: SearchModalProps) => {
-  const { t } = useTranslation();
-  const [inputValue, setInputValue] = useState<string>('');
-  const searchStore = useSearchStore();
-  const showAchievements = useStateStore(state => state.showAchievements);
-  const activePage = useNavigationStore(state => state.activePage);
-  const currentTab = useNavigationStore(state => state.currentTab);
-  const achievementsUnavailable = useUserStore(state => state.achievementsUnavailable);
-  const statisticsUnavailable = useUserStore(state => state.statisticsUnavailable);
-  const hasLoadedRecentSearches = useRef(false);
-  useTitlebar();
+  const { t } = useTranslation()
+  const [inputValue, setInputValue] = useState<string>('')
+  const searchStore = useSearchStore()
+  const showAchievements = useStateStore(state => state.showAchievements)
+  const activePage = useNavigationStore(state => state.activePage)
+  const currentTab = useNavigationStore(state => state.currentTab)
+  const achievementsUnavailable = useUserStore(state => state.achievementsUnavailable)
+  const statisticsUnavailable = useUserStore(state => state.statisticsUnavailable)
+  const hasLoadedRecentSearches = useRef(false)
+  useTitlebar()
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
-  };
+    setInputValue(e.target.value)
+  }
 
   const applySearchQuery = (query: string) => {
     if (activePage === 'games' && !showAchievements) {
-      searchStore.setGameQueryValue(query);
+      searchStore.setGameQueryValue(query)
     } else if (activePage === 'inventoryManager' && !showAchievements) {
-      searchStore.setTradingCardQueryValue(query);
+      searchStore.setTradingCardQueryValue(query)
     } else if (activePage.includes('customlists') && !showAchievements) {
-      searchStore.setCustomListQueryValue(query);
+      searchStore.setCustomListQueryValue(query)
     } else if (showAchievements && currentTab === 'achievements') {
-      searchStore.setAchievementQueryValue(query);
+      searchStore.setAchievementQueryValue(query)
     } else if (showAchievements && currentTab === 'statistics') {
-      searchStore.setStatisticQueryValue(query);
+      searchStore.setStatisticQueryValue(query)
     }
-  };
+  }
 
   const getCurrentSearchQuery = useCallback(() => {
     if (activePage === 'games' && !showAchievements) {
-      return searchStore.gameQueryValue;
+      return searchStore.gameQueryValue
     }
     if (activePage === 'inventoryManager' && !showAchievements) {
-      return searchStore.tradingCardQueryValue;
+      return searchStore.tradingCardQueryValue
     }
     if (activePage.includes('customlists') && !showAchievements) {
-      return searchStore.customListQueryValue;
+      return searchStore.customListQueryValue
     }
     if (showAchievements && currentTab === 'achievements') {
-      return searchStore.achievementQueryValue;
+      return searchStore.achievementQueryValue
     }
     if (showAchievements && currentTab === 'statistics') {
-      return searchStore.statisticQueryValue;
+      return searchStore.statisticQueryValue
     }
-    return '';
+    return ''
   }, [
     activePage,
     showAchievements,
@@ -67,136 +67,136 @@ export const SearchModal = ({ isModalOpen = false, onModalClose }: SearchModalPr
     searchStore.customListQueryValue,
     searchStore.achievementQueryValue,
     searchStore.statisticQueryValue,
-  ]);
+  ])
 
   useEffect(() => {
     if (isModalOpen) {
-      const currentQuery = getCurrentSearchQuery();
+      const currentQuery = getCurrentSearchQuery()
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      setInputValue(currentQuery);
+      setInputValue(currentQuery)
     }
-  }, [isModalOpen, getCurrentSearchQuery]);
+  }, [isModalOpen, getCurrentSearchQuery])
 
   useEffect(() => {
     if (isModalOpen && !hasLoadedRecentSearches.current) {
-      const stored = localStorage.getItem('searchQueries');
+      const stored = localStorage.getItem('searchQueries')
       if (stored) {
-        const queries = JSON.parse(stored);
-        queries.forEach((query: string) => searchStore.addRecentSearch(query));
+        const queries = JSON.parse(stored)
+        queries.forEach((query: string) => searchStore.addRecentSearch(query))
       }
-      hasLoadedRecentSearches.current = true;
+      hasLoadedRecentSearches.current = true
     }
     if (!isModalOpen) {
-      hasLoadedRecentSearches.current = false;
+      hasLoadedRecentSearches.current = false
     }
-  }, [isModalOpen, searchStore]);
+  }, [isModalOpen, searchStore])
 
   const saveSearchQuery = (query: string) => {
     if (query.trim()) {
-      const stored = localStorage.getItem('searchQueries');
-      let queries: string[] = stored ? JSON.parse(stored) : [];
+      const stored = localStorage.getItem('searchQueries')
+      let queries: string[] = stored ? JSON.parse(stored) : []
 
-      queries = queries.filter(q => q !== query.trim());
-      queries.unshift(query.trim());
-      queries = queries.slice(0, 10);
+      queries = queries.filter(q => q !== query.trim())
+      queries.unshift(query.trim())
+      queries = queries.slice(0, 10)
 
-      localStorage.setItem('searchQueries', JSON.stringify(queries));
-      searchStore.addRecentSearch(query.trim());
+      localStorage.setItem('searchQueries', JSON.stringify(queries))
+      searchStore.addRecentSearch(query.trim())
     }
-  };
+  }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    const { value } = e.currentTarget;
+    const { value } = e.currentTarget
 
     if (e.key === 'Enter') {
-      applySearchQuery(value);
-      saveSearchQuery(value);
-      searchStore.setIsQuery(true);
-      onModalClose?.();
+      applySearchQuery(value)
+      saveSearchQuery(value)
+      searchStore.setIsQuery(true)
+      onModalClose?.()
     }
 
     if (e.key === 'Escape') {
-      e.preventDefault();
+      e.preventDefault()
       if (value) {
-        handleClear();
+        handleClear()
       } else {
-        onModalClose?.();
+        onModalClose?.()
       }
     }
-  };
+  }
 
   const handleRecentSearchClick = (query: string) => {
-    setInputValue(query);
-    applySearchQuery(query);
-    saveSearchQuery(query);
-    searchStore.setIsQuery(true);
-    onModalClose?.();
-  };
+    setInputValue(query)
+    applySearchQuery(query)
+    saveSearchQuery(query)
+    searchStore.setIsQuery(true)
+    onModalClose?.()
+  }
 
   const handleClear = () => {
-    setInputValue('');
-    applySearchQuery('');
-  };
+    setInputValue('')
+    applySearchQuery('')
+  }
 
   const getSearchConfig = () => {
     if (activePage === 'games' && !showAchievements) {
       return {
         isDisabled: false,
-      };
+      }
     }
 
     if (activePage.includes('customlists') && !showAchievements) {
       return {
         isDisabled: false,
-      };
+      }
     }
 
     if (activePage === 'inventoryManager' && !showAchievements) {
       return {
         isDisabled: false,
-      };
+      }
     }
 
     if (showAchievements && currentTab === 'achievements') {
       return {
         isDisabled: achievementsUnavailable,
-      };
+      }
     }
 
     if (showAchievements && currentTab === 'statistics') {
       return {
         isDisabled: statisticsUnavailable,
-      };
+      }
     }
 
     return {
       isDisabled: true,
-    };
-  };
+    }
+  }
 
-  const searchConfig = getSearchConfig();
+  const searchConfig = getSearchConfig()
 
   return (
     <Modal
       hideCloseButton
       isOpen={isModalOpen}
       onClose={onModalClose}
-      placement="top"
-      size="lg"
-      className="max-h-[75%] min-w-[40%] border border-border rounded-4xl"
+      placement='top'
+      size='lg'
+      className='max-h-[75%] min-w-[40%] border border-border rounded-4xl'
       classNames={{
         base: 'bg-gradient-bg',
         body: 'p-0 gap-0',
       }}
     >
       <ModalContent>
-        <ModalHeader className="flex gap-2 border-b border-border/40 p-3">
+        <ModalHeader className='flex gap-2 border-b border-border/40 p-3'>
           <Input
             isClearable
             isDisabled={searchConfig.isDisabled}
-            placeholder={t($ => $['common.search'])}
-            startContent={<RiSearchLine size={24} className="text-content/60" />}
-            className="w-full mb-0 pb-0"
+            placeholder={t('common.search')}
+            startContent={<RiSearchLine size={24} className='text-content/60' />}
+            className='w-full mb-0 pb-0'
             classNames={{
               inputWrapper: cn(
                 'bg-transparent hover:bg-transparent! h-24',
@@ -215,21 +215,19 @@ export const SearchModal = ({ isModalOpen = false, onModalClose }: SearchModalPr
             autoFocus
           />
         </ModalHeader>
-        <ModalBody className="relative p-0 gap-0 overflow-y-auto">
+        <ModalBody className='relative p-0 gap-0 overflow-y-auto'>
           {searchStore.recentSearches.length > 0 && (
-            <div className="p-4 border-t border-border/40">
-              <div className="flex items-center gap-2">
-                <h3 className="text-sm font-bold text-altwhite">
-                  {t($ => $['common.recentSearches'])}
-                </h3>
+            <div className='p-4 border-t border-border/40'>
+              <div className='flex items-center gap-2'>
+                <h3 className='text-sm font-bold text-altwhite'>{t('common.recentSearches')}</h3>
               </div>
 
-              <div className="grid max-h-96 overflow-y-auto">
+              <div className='grid max-h-96 overflow-y-auto'>
                 {searchStore.recentSearches
                   .slice()
                   .reverse()
                   .map(query => (
-                    <div className="flex items-center justify-between gap-2" key={query}>
+                    <div className='flex items-center justify-between gap-2' key={query}>
                       <div
                         key={query}
                         className={cn(
@@ -238,14 +236,14 @@ export const SearchModal = ({ isModalOpen = false, onModalClose }: SearchModalPr
                         )}
                         onClick={() => handleRecentSearchClick(query)}
                       >
-                        <p className="text-lg font-medium text-content truncate">{query}</p>
+                        <p className='text-lg font-medium text-content truncate'>{query}</p>
                       </div>
 
                       <div
-                        className="flex items-center justify-center cursor-pointer bg-item-hover hover:bg-item-hover/80 rounded-full p-1 duration-150"
+                        className='flex items-center justify-center cursor-pointer bg-item-hover hover:bg-item-hover/80 rounded-full p-1 duration-150'
                         onClick={() => searchStore.removeRecentSearch(query)}
                       >
-                        <TbX className="text-content" />
+                        <TbX className='text-content' />
                       </div>
                     </div>
                   ))}
@@ -254,13 +252,13 @@ export const SearchModal = ({ isModalOpen = false, onModalClose }: SearchModalPr
           )}
 
           {searchStore.recentSearches.length === 0 && (
-            <div className="text-center py-8 border-t border-border/40">
-              <RiSearchLine size={32} className="text-altwhite mx-auto mb-3" />
-              <p className="text-altwhite">{t($ => $['common.noRecentSearches'])}</p>
+            <div className='text-center py-8 border-t border-border/40'>
+              <RiSearchLine size={32} className='text-altwhite mx-auto mb-3' />
+              <p className='text-altwhite'>{t('common.noRecentSearches')}</p>
             </div>
           )}
         </ModalBody>
       </ModalContent>
     </Modal>
-  );
-};
+  )
+}

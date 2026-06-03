@@ -188,6 +188,8 @@
   "settings.general.showCardDropsCarousel": "Show Games With Card Drops",
   "settings.general.showCardDropsCarousel.description": "Display a carousel of games with card drops remaining on the Card Farming page",
   "settings.cardFarming.alert": "To use the Card Farming feature, please add your Steam Credentials in Settings → Steam Credentials",
+  "settings.cardFarming.autoFarmCards": "Automatically Farm Games",
+  "settings.cardFarming.autoFarmCards.description": "SGI monitors your library and automatically starts farming games with remaining card drops",
   "settings.cardFarming.listGames": "Farm Games In List",
   "settings.cardFarming.listGames.description": "Only farm games that are in your Card Farming list",
   "settings.cardFarming.allGames": "Farm All Games",

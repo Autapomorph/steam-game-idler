@@ -1,8 +1,8 @@
-import { invoke } from '@tauri-apps/api/core';
-import { relaunch } from '@tauri-apps/plugin-process';
-import { check } from '@tauri-apps/plugin-updater';
-import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { invoke } from '@tauri-apps/api/core'
+import { relaunch } from '@tauri-apps/plugin-process'
+import { check } from '@tauri-apps/plugin-updater'
+import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   TbBookFilled,
   TbBugFilled,
@@ -10,63 +10,63 @@ import {
   TbDownload,
   TbListCheck,
   TbSquareRoundedChevronDown,
-} from 'react-icons/tb';
-import { cn, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react';
+} from 'react-icons/tb'
+import { cn, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react'
 
-import { CustomTooltip, showDangerToast, showPrimaryToast } from '@/shared/components';
-import { useUpdateStore } from '@/shared/stores';
+import { CustomTooltip, showDangerToast, showPrimaryToast } from '@/shared/components'
+import { useUpdateStore } from '@/shared/stores'
 import {
   fetchLatest,
   isPortableCheck,
   logEvent,
   openExternalLink,
   preserveKeysAndClearData,
-} from '@/shared/utils';
+} from '@/shared/utils'
 
 export const Menu = () => {
-  const { t } = useTranslation();
-  const setShowChangelog = useUpdateStore(state => state.setShowChangelog);
-  const [showMenu, setShowMenu] = useState(false);
-  const [isPortable, setIsPortable] = useState(false);
+  const { t } = useTranslation()
+  const setShowChangelog = useUpdateStore(state => state.setShowChangelog)
+  const [showMenu, setShowMenu] = useState(false)
+  const [isPortable, setIsPortable] = useState(false)
 
   const githubIssueUrl =
-    'https://github.com/Autapomorph/steam-game-idler/issues/new?assignees=Autapomorph&labels=';
+    'https://github.com/Autapomorph/steam-game-idler/issues/new?assignees=Autapomorph&labels='
 
   useEffect(() => {
-    (async () => {
-      const portable = await isPortableCheck();
-      setIsPortable(portable);
-    })();
-  }, []);
+    ;(async () => {
+      const portable = await isPortableCheck()
+      setIsPortable(portable)
+    })()
+  }, [])
 
   const handleUpdate = async () => {
     try {
-      const update = await check();
+      const update = await check()
       if (update) {
-        localStorage.setItem('hasUpdated', 'true');
-        await invoke('kill_all_steamutil_processes');
-        const latest = await fetchLatest();
-        await update.downloadAndInstall();
+        localStorage.setItem('hasUpdated', 'true')
+        await invoke('kill_all_steamutil_processes')
+        const latest = await fetchLatest()
+        await update.downloadAndInstall()
         if (latest?.major) {
-          await preserveKeysAndClearData();
+          await preserveKeysAndClearData()
         }
-        await relaunch();
+        await relaunch()
       } else {
-        showPrimaryToast(t($ => $['toast.checkUpdate.none']));
+        showPrimaryToast(t('toast.checkUpdate.none'))
       }
     } catch (error) {
-      showDangerToast(t($ => $['toast.checkUpdate.error']));
-      console.error('Error in (handleUpdate):', error);
-      logEvent(`Error in (handleUpdate): ${error}`);
+      showDangerToast(t('toast.checkUpdate.error'))
+      console.error('Error in (handleUpdate):', error)
+      logEvent(`Error in (handleUpdate): ${error}`)
     }
-  };
+  }
 
   return (
-    <CustomTooltip content={t($ => $['common.menu'])}>
+    <CustomTooltip content={t('common.menu')}>
       <div>
         <Dropdown
-          aria-label="Settings actions"
-          backdrop="opaque"
+          aria-label='Settings actions'
+          backdrop='opaque'
           onOpenChange={() => setShowMenu(!showMenu)}
           classNames={{
             content: ['rounded-xl p-0 bg-transparent'],
@@ -84,28 +84,28 @@ export const Menu = () => {
           </DropdownTrigger>
 
           <DropdownMenu
-            aria-label="Settings actions"
+            aria-label='Settings actions'
             classNames={{ base: 'bg-popover border border-border rounded-xl' }}
           >
             <DropdownItem
               showDivider
-              key="help"
+              key='help'
               startContent={<TbBookFilled size={18} />}
-              textValue="Help"
-              className="rounded-xl text-content"
+              textValue='Help'
+              className='rounded-xl text-content'
               classNames={{
                 base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
               }}
               onPress={() => openExternalLink('https://steamgameidler.com/docs/')}
             >
-              {t($ => $['menu.guide'])}
+              {t('menu.guide')}
             </DropdownItem>
 
             <DropdownItem
-              key="report"
+              key='report'
               startContent={<TbBugFilled size={18} />}
-              textValue="Report an issue"
-              className="rounded-xl text-content"
+              textValue='Report an issue'
+              className='rounded-xl text-content'
               classNames={{
                 base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
               }}
@@ -115,15 +115,15 @@ export const Menu = () => {
                 )
               }
             >
-              {t($ => $['menu.issue'])}
+              {t('menu.issue')}
             </DropdownItem>
 
             <DropdownItem
               showDivider
-              key="feature"
+              key='feature'
               startContent={<TbBulbFilled size={18} />}
-              textValue="Feature request"
-              className="rounded-xl text-content"
+              textValue='Feature request'
+              className='rounded-xl text-content'
               classNames={{
                 base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
               }}
@@ -133,39 +133,39 @@ export const Menu = () => {
                 )
               }
             >
-              {t($ => $['menu.feature'])}
+              {t('menu.feature')}
             </DropdownItem>
 
             <DropdownItem
-              key="changelog"
+              key='changelog'
               startContent={<TbListCheck size={18} />}
-              textValue="Changelog"
-              className="rounded-xl text-content"
+              textValue='Changelog'
+              className='rounded-xl text-content'
               classNames={{
                 base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
               }}
               onPress={() => setShowChangelog(true)}
             >
-              {t($ => $['menu.changelog'])}
+              {t('menu.changelog')}
             </DropdownItem>
 
             {!isPortable ? (
               <DropdownItem
-                key="updates"
+                key='updates'
                 startContent={<TbDownload size={18} />}
-                textValue="Check for updates"
-                className="rounded-xl text-content"
+                textValue='Check for updates'
+                className='rounded-xl text-content'
                 classNames={{
                   base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
                 }}
                 onPress={handleUpdate}
               >
-                {t($ => $['menu.update'])}
+                {t('menu.update')}
               </DropdownItem>
             ) : null}
           </DropdownMenu>
         </Dropdown>
       </div>
     </CustomTooltip>
-  );
-};
+  )
+}

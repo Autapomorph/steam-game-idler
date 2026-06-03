@@ -1,24 +1,24 @@
-import type { Game } from '@/shared/types';
-import { useTranslation } from 'react-i18next';
-import { FaSteam } from 'react-icons/fa';
-import { TbAwardFilled, TbDotsVertical, TbPlayerPlayFilled } from 'react-icons/tb';
-import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react';
-import { useStateStore } from '@/shared/stores';
-import { handleIdle, openExternalLink, viewAchievments } from '@/shared/utils';
+import type { Game } from '@/shared/types'
+import { useTranslation } from 'react-i18next'
+import { FaSteam } from 'react-icons/fa'
+import { TbAwardFilled, TbDotsVertical, TbPlayerPlayFilled } from 'react-icons/tb'
+import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/react'
+import { useStateStore } from '@/shared/stores'
+import { handleIdle, openExternalLink, viewAchievments } from '@/shared/utils'
 
 export const CardMenu = ({ item }: { item: Game }) => {
-  const { t } = useTranslation();
-  const setAppId = useStateStore(state => state.setAppId);
-  const setAppName = useStateStore(state => state.setAppName);
-  const setShowAchievements = useStateStore(state => state.setShowAchievements);
+  const { t } = useTranslation()
+  const setAppId = useStateStore(state => state.setAppId)
+  const setAppName = useStateStore(state => state.setAppName)
+  const setShowAchievements = useStateStore(state => state.setShowAchievements)
 
   const viewStorePage = async (item: Game) => {
     try {
-      await openExternalLink(`https://store.steampowered.com/app/${item.appid}`);
+      await openExternalLink(`https://store.steampowered.com/app/${item.appid}`)
     } catch (error) {
-      console.error('Failed to open link:', error);
+      console.error('Failed to open link:', error)
     }
-  };
+  }
 
   return (
     <Dropdown
@@ -27,45 +27,45 @@ export const CardMenu = ({ item }: { item: Game }) => {
       }}
     >
       <DropdownTrigger>
-        <div className="p-1 bg-black/50 hover:bg-black hover:bg-opacity-80 cursor-pointer rounded-md duration-200">
+        <div className='p-1 bg-black/50 hover:bg-black hover:bg-opacity-80 cursor-pointer rounded-md duration-200'>
           <TbDotsVertical />
         </div>
       </DropdownTrigger>
       <DropdownMenu
-        aria-label="actions"
+        aria-label='actions'
         classNames={{ base: 'bg-popover border border-border rounded-xl' }}
       >
         <DropdownItem
-          className="rounded-xl"
+          className='rounded-xl'
           classNames={{ base: ['data-[hover=true]:bg-item-hover'] }}
-          key="idle"
-          startContent={<TbPlayerPlayFilled size={16} className="text-content" />}
+          key='idle'
+          startContent={<TbPlayerPlayFilled size={16} className='text-content' />}
           onPress={() => handleIdle(item)}
-          textValue="Idle game"
+          textValue='Idle game'
         >
-          <p className="text-sm text-content truncate">{t($ => $['cardMenu.idle'])}</p>
+          <p className='text-sm text-content truncate'>{t('cardMenu.idle')}</p>
         </DropdownItem>
         <DropdownItem
-          className="rounded-xl"
+          className='rounded-xl'
           classNames={{ base: ['data-[hover=true]:bg-item-hover'] }}
-          key="achievements"
-          startContent={<TbAwardFilled size={16} className="text-content" />}
+          key='achievements'
+          startContent={<TbAwardFilled size={16} className='text-content' />}
           onPress={() => viewAchievments(item, setAppId, setAppName, setShowAchievements)}
-          textValue="View achievements"
+          textValue='View achievements'
         >
-          <p className="text-sm text-content truncate">{t($ => $['cardMenu.achievements'])}</p>
+          <p className='text-sm text-content truncate'>{t('cardMenu.achievements')}</p>
         </DropdownItem>
         <DropdownItem
-          className="rounded-xl"
+          className='rounded-xl'
           classNames={{ base: ['data-[hover=true]:bg-item-hover'] }}
-          key="store"
-          startContent={<FaSteam fontSize={16} className="text-content" />}
+          key='store'
+          startContent={<FaSteam fontSize={16} className='text-content' />}
           onPress={() => viewStorePage(item)}
-          textValue="View store page"
+          textValue='View store page'
         >
-          <p className="text-sm text-content truncate">{t($ => $['cardMenu.store'])}</p>
+          <p className='text-sm text-content truncate'>{t('cardMenu.store')}</p>
         </DropdownItem>
       </DropdownMenu>
     </Dropdown>
-  );
-};
+  )
+}

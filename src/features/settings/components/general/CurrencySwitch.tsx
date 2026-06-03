@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
-import { TbCurrencyDollar } from 'react-icons/tb';
-import { cn, Select, SelectItem } from '@heroui/react';
+import { useEffect, useState } from 'react'
+import { TbCurrencyDollar } from 'react-icons/tb'
+import { cn, Select, SelectItem } from '@heroui/react'
 
 export const CurrencySwitch = () => {
-  const [mounted, setMounted] = useState(false);
-  const [currentCurrency, setCurrentCurrency] = useState(localStorage.getItem('currency') || '1');
+  const [mounted, setMounted] = useState(false)
+  const [currentCurrency, setCurrentCurrency] = useState(localStorage.getItem('currency') || '1')
 
   const currencies = [
     { key: '32', label: 'AED' },
@@ -56,23 +56,23 @@ export const CurrencySwitch = () => {
     { key: '41', label: 'UYU' },
     { key: '15', label: 'VND' },
     { key: '28', label: 'ZAR' },
-  ];
+  ]
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMounted(true);
-  }, []);
+    setMounted(true)
+  }, [])
 
-  if (!mounted) return null;
+  if (!mounted) return null
 
   return (
     <Select
-      aria-label="language"
+      aria-label='language'
       disallowEmptySelection
-      radius="none"
+      radius='none'
       startContent={<TbCurrencyDollar />}
       items={currencies}
-      className="w-62.5"
+      className='w-62.5'
       classNames={{
         listbox: ['p-0'],
         value: ['text-sm !text-content'],
@@ -84,9 +84,9 @@ export const CurrencySwitch = () => {
       }}
       defaultSelectedKeys={[currentCurrency]}
       onSelectionChange={e => {
-        const selectedCurrency = e.currentKey;
-        setCurrentCurrency(selectedCurrency || 'USD');
-        localStorage.setItem('currency', selectedCurrency || 'USD');
+        const selectedCurrency = e.currentKey
+        setCurrentCurrency(selectedCurrency || 'USD')
+        localStorage.setItem('currency', selectedCurrency || 'USD')
       }}
     >
       {currency => (
@@ -100,5 +100,5 @@ export const CurrencySwitch = () => {
         </SelectItem>
       )}
     </Select>
-  );
-};
+  )
+}

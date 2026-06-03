@@ -1,9 +1,9 @@
-import type { InvokeDropsRemaining, InvokeGamesWithDrops } from '@/shared/types';
-import type { TimeInputValue } from '@heroui/react';
-import { Time } from '@internationalized/date';
-import { invoke } from '@tauri-apps/api/core';
-import { showMissingCredentialsToast } from '@/shared/components';
-import { decrypt, logEvent } from '@/shared/utils';
+import type { InvokeDropsRemaining, InvokeGamesWithDrops } from '@/shared/types'
+import type { TimeInputValue } from '@heroui/react'
+import { Time } from '@internationalized/date'
+import { invoke } from '@tauri-apps/api/core'
+import { showMissingCredentialsToast } from '@/shared/components'
+import { decrypt, logEvent } from '@/shared/utils'
 
 // Check remaining card drops for a game
 export async function checkDrops(
@@ -15,8 +15,8 @@ export async function checkDrops(
 ) {
   try {
     if (!sid || !sls) {
-      showMissingCredentialsToast();
-      return 0;
+      showMissingCredentialsToast()
+      return 0
     }
 
     const res = await invoke<InvokeDropsRemaining>('get_drops_remaining', {
@@ -25,16 +25,16 @@ export async function checkDrops(
       sma,
       steamId,
       appId,
-    });
+    })
 
     if (res?.remaining) {
-      return res.remaining;
+      return res.remaining
     }
-    return 0;
+    return 0
   } catch (error) {
-    console.error('Error in checkDrops util: ', error);
-    logEvent(`[Error] in (checkDrops) util: ${error}`);
-    return 0;
+    console.error('Error in checkDrops util: ', error)
+    logEvent(`[Error] in (checkDrops) util: ${error}`)
+    return 0
   }
 }
 
@@ -47,8 +47,8 @@ export async function getAllGamesWithDrops(
 ) {
   try {
     if (!sid || !sls) {
-      showMissingCredentialsToast();
-      return [];
+      showMissingCredentialsToast()
+      return []
     }
 
     const res = await invoke<InvokeGamesWithDrops>('get_games_with_drops', {
@@ -56,27 +56,27 @@ export async function getAllGamesWithDrops(
       sls: decrypt(sls),
       sma,
       steamid: steamId,
-    });
+    })
 
     if (res.gamesWithDrops && res.gamesWithDrops.length > 0) {
-      return res.gamesWithDrops;
+      return res.gamesWithDrops
     }
-    return [];
+    return []
   } catch (error) {
-    console.error('Error in getAllGamesWithDrops util: ', error);
-    logEvent(`[Error] in (getAllGamesWithDrops) util: ${error}`);
-    return [];
+    console.error('Error in getAllGamesWithDrops util: ', error)
+    logEvent(`[Error] in (getAllGamesWithDrops) util: ${error}`)
+    return []
   }
 }
 
 // Check if the current time is within the specified schedule
 export function isWithinSchedule(scheduleFrom: TimeInputValue, scheduleTo: TimeInputValue) {
-  const now = new Date();
-  const currentTime = new Time(now.getHours(), now.getMinutes());
-  const scheduleFromTime = new Time(scheduleFrom.hour, scheduleFrom.minute);
-  const scheduleToTime = new Time(scheduleTo.hour, scheduleTo.minute);
+  const now = new Date()
+  const currentTime = new Time(now.getHours(), now.getMinutes())
+  const scheduleFromTime = new Time(scheduleFrom.hour, scheduleFrom.minute)
+  const scheduleToTime = new Time(scheduleTo.hour, scheduleTo.minute)
   if (scheduleToTime.compare(scheduleFromTime) < 0) {
-    return currentTime.compare(scheduleFromTime) >= 0 || currentTime.compare(scheduleToTime) < 0;
+    return currentTime.compare(scheduleFromTime) >= 0 || currentTime.compare(scheduleToTime) < 0
   }
-  return currentTime.compare(scheduleFromTime) >= 0 && currentTime.compare(scheduleToTime) < 0;
+  return currentTime.compare(scheduleFromTime) >= 0 && currentTime.compare(scheduleToTime) < 0
 }
