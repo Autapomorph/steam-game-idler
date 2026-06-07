@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://www.schemastore.org/pull-request-labeler-5.json
+# yaml-language-server: $schema=https://www.schemastore.org/pull-request-labeler-6.json
 
 # Infra labels
 ci:core:
@@ -37,13 +37,15 @@ docs:config:
     - any-glob-to-any-file:
       - "docs/.gitignore"
       - "docs/*.config.*"
-      - "docs/jsconfig.*"
+      - "docs/tsconfig.*"
 
 docs:deps:
 - all:
   - changed-files:
     - any-glob-to-any-file:
       - "docs/package.json"
+      - "docs/package-lock.json"
+      - "docs/yarn.lock"
       - "docs/pnpm-lock.yaml"
 
 docs:site:
@@ -55,13 +57,7 @@ docs:components:
 - all:
   - changed-files:
     - any-glob-to-any-file: 
-      - "docs/src/components/**/*"
       - "docs/app/**/*"
-
-docs:content:
-- all:
-  - changed-files:
-    - any-glob-to-any-file: "docs/src/content/**/*"
 
 docs:assets:
 - all:
@@ -69,46 +65,6 @@ docs:assets:
     - any-glob-to-any-file: "docs/public/**/*"
 
 # React specific labels
-ui:components:
-- all:
-  - changed-files:
-    - any-glob-to-any-file: "src/components/**/*"
-
-ui:states:
-- all:
-  - changed-files:
-    - any-glob-to-any-file: "src/components/contexts/**/*"
-
-ui:ui:
-- all:
-  - changed-files:
-    - any-glob-to-any-file: "src/components/ui/**/*"
-
-ui:hooks:
-- all:
-  - changed-files:
-    - any-glob-to-any-file: "src/hooks/**/*"
-
-ui:i18n:
-- all:
-  - changed-files:
-    - any-glob-to-any-file: "src/i18n/**/*"
-
-ui:pages:
-- all:
-  - changed-files:
-    - any-glob-to-any-file: "src/pages/**/*"
-
-ui:styles:
-- all:
-  - changed-files:
-    - any-glob-to-any-file: "src/styles/**/*"
-
-ui:utils:
-- all:
-  - changed-files:
-    - any-glob-to-any-file: "src/utils/**/*"
-
 ui:assets:
 - all:
   - changed-files:
@@ -145,31 +101,30 @@ tauri:config:
   - changed-files:
     - any-glob-to-any-file: "src-tauri/*.json"
 
-tauri:src:
-- all:
-  - changed-files:
-    - any-glob-to-any-file:
-      - "src-tauri/src/commands/**/*"
-
 # Core labels
 core:deps:
 - all:
   - changed-files:
     - any-glob-to-any-file:
       - "package.json"
+      - "package-lock.json"
+      - "yarn.lock"
       - "pnpm-lock.yaml"
 
 core:config:
 - all:
   - changed-files:
     - any-glob-to-any-file:
-      - ".eslintrc.*"
+      - "*eslint*"
+      - "*prettier*"
+      - "*lint-staged*"
       - ".gitignore"
       - ".gitmodules"
       - ".npmrc"
       - "*.config.*"
-      - "jsconfig.*"
+      - "*tsconfig.*"
       - ".husky/*"
+      - "*.json"
       - "*.yml"
 
 core:docs:
