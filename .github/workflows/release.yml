@@ -66,12 +66,12 @@ jobs:
 
       - name: Validate semantic version format
         id: validate_format
-        uses: matt-usurp/validate-semver@v2
+        uses: matt-usurp/validate-semver@v3
         with:
           version: ${{ steps.normalize_new_version.outputs.new_version }}
 
       - name: Validate version increment
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const prevVersion = '${{ steps.get_previous_version.outputs.previous_version }}'.replace(/^v/, '');
@@ -119,7 +119,7 @@ jobs:
           submodules: recursive
 
       - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v2
+        uses: microsoft/setup-msbuild@v3
 
       - name: Prepare NuGet cache directory
         run: |
@@ -172,7 +172,7 @@ jobs:
           submodules: recursive
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 24
           cache: "npm"
@@ -268,7 +268,7 @@ jobs:
         shell: pwsh
 
       - name: Update latest.json with signature
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const fs = require('fs');
@@ -293,7 +293,7 @@ jobs:
           NEW_VERSION: ${{ needs.validate_version.outputs.new_version }}
           IS_MAJOR: ${{ github.event.inputs.is_major }}
 
-      - uses: actions/create-github-app-token@v2
+      - uses: actions/create-github-app-token@v3
         id: generate-token
         with:
           app-id: ${{ secrets.APP_ID }}
@@ -321,7 +321,7 @@ jobs:
 
       - name: Generate release notes
         id: generate_notes
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const fs = require('fs');
@@ -383,7 +383,7 @@ jobs:
         shell: pwsh
 
       - name: Create release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -397,6 +397,6 @@ jobs:
 
       - name: Cleanup artifacts
         if: always()
-        uses: geekyeggo/delete-artifact@v5
+        uses: geekyeggo/delete-artifact@v6
         with:
           name: dotnet-libs
