@@ -1,10 +1,10 @@
 {
-  "version": "5.3.2",
+  "version": "5.3.3",
   "major": false,
   "platforms": {
     "windows-x86_64": {
-      "url": "https://github.com/Autapomorph/steam-game-idler/releases/download/5.3.2/Steam.Game.Idler_5.3.2_x64-setup.exe",
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTYzBIZXYxb3VJNlZKYmhCVkZ4ZVJxeDhrYjRrSTFYN1FiWUdLY21ObC9zbmlUWm9XUWRJenpxOEFuNTdsOWVQNFR4ZkFuZUg5b0VKZTVQbVJBZWFyUHZNV01oQlJSV1FJPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgwNjU3MDY3CWZpbGU6U3RlYW0gR2FtZSBJZGxlcl81LjMuMl94NjQtc2V0dXAuZXhlCjZaQmJtbDRYNU9BY2NicmcyK1lTRytXd2dtQVFnM01HQldnYkRSdVlGV2tzUkM5cTlqdFQvaUpEUXpQZ0dQc0VSbVV5SUtiaDdubEFNMHRNckhtK0NnPT0K"
+      "url": "https://github.com/Autapomorph/steam-game-idler/releases/download/5.3.3/Steam.Game.Idler_5.3.3_x64-setup.exe",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTYzBIZXYxb3VJNlJwcXRJREZTY2VlL2dXMEFhWExEK3JZUFg1SjRVbk9pcTZPdTByejZKYWJrc2JNNEM3VnVnV25GK2ZlUFVpaTMrc0VGMWJJaGVoNyt2ek9rVTNyUkFvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgwOTExNTIzCWZpbGU6U3RlYW0gR2FtZSBJZGxlcl81LjMuM194NjQtc2V0dXAuZXhlCjQ3TllEMzVwU2h0NzIreFNSTGlGM2QxR3JJNG9HNDlOVGZGdDV6eDVpekthK05tUWtiRm5FNDFqVGYrU20reTVsVU00THI3TVZld0RTOTVndU52Z0NBPT0K"
     }
   }
 }
