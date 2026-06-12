@@ -29,8 +29,7 @@ export const Menu = () => {
   const [showMenu, setShowMenu] = useState(false)
   const [isPortable, setIsPortable] = useState(false)
 
-  const githubIssueUrl =
-    'https://github.com/Autapomorph/steam-game-idler/issues/new?assignees=Autapomorph&labels='
+  const githubIssueUrl = 'https://github.com/Autapomorph/steam-game-idler/issues/new'
 
   useEffect(() => {
     ;(async () => {
@@ -110,9 +109,7 @@ export const Menu = () => {
                 base: ['data-[hover=true]:!bg-item-hover data-[hover=true]:!text-content'],
               }}
               onPress={() =>
-                openExternalLink(
-                  `${githubIssueUrl}bug%2Cinvestigating&projects=&template=issue_report.yml`,
-                )
+                openExternalLink(`${githubIssueUrl}?labels=bug&template=issue_report.yml`)
               }
             >
               {t('menu.issue')}
@@ -129,7 +126,7 @@ export const Menu = () => {
               }}
               onPress={() =>
                 openExternalLink(
-                  `${githubIssueUrl}feature+request&projects=&template=feature_request.yml`,
+                  `${githubIssueUrl}?labels=enhancement&template=feature_request.yml`,
                 )
               }
             >
